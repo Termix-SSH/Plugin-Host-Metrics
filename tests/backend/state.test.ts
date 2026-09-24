@@ -1,11 +1,14 @@
 import { describe, expect, it, vi } from "vitest";
 import {
-  authFailureTracker,
+  AuthFailureTracker,
   canStartInitialMetrics,
   ConcurrentLimiter,
+  createMetricsState,
   HostPollCache,
   metricsConcurrencyFor,
-} from "../../../../../src/backend/hosts/metrics-shared/state.js";
+} from "../../src/backend/state.js";
+
+const authFailureTracker = new AuthFailureTracker();
 
 describe("auth failure tracking", () => {
   it("permanently pauses polling after a host key mismatch", () => {
@@ -22,13 +25,23 @@ describe("auth failure tracking", () => {
 });
 
 describe("initial metrics admission", () => {
-  it("requires both an active viewer and a confirmed online status", () => {
+  it("needs a viewer and a host core does not see as offline", () => {
     expect(canStartInitialMetrics("online", true)).toBe(true);
     expect(canStartInitialMetrics("reachable", true)).toBe(true);
     expect(canStartInitialMetrics("offline", true)).toBe(false);
-    expect(canStartInitialMetrics(undefined, true)).toBe(false);
     expect(canStartInitialMetrics("online", false)).toBe(false);
-    expect(canStartInitialMetrics(undefined, true, false)).toBe(true);
+    // Status checks off: core has no status, so the sample is tried.
+    expect(canStartInitialMetrics(null, true)).toBe(true);
+  });
+});
+
+describe("createMetricsState", () => {
+  it("gives every activation its own trackers", () => {
+    const first = createMetricsState();
+    const second = createMetricsState();
+    first.authFailures.recordFailure(1, "AUTH", true);
+    expect(first.authFailures.shouldSkip(1)).toBe(true);
+    expect(second.authFailures.shouldSkip(1)).toBe(false);
   });
 });
 
