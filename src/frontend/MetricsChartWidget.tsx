@@ -1,7 +1,7 @@
-import { WidgetTitle, runVisibleInterval } from "@termix/plugin-sdk/ui";
+import { WidgetTitle, runVisibleInterval } from "@termix-ssh/plugin-sdk/ui";
 import { useEffect, useState, useRef } from "react";
 import { TrendingUp } from "lucide-react";
-import { useHost, useTranslation } from "@termix/plugin-sdk/frontend";
+import { useHost, useTranslation } from "@termix-ssh/plugin-sdk/frontend";
 import { MetricsChartEditForm } from "./MetricsChartEditForm";
 import {
   GRID_SIZE,

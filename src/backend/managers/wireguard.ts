@@ -1,4 +1,4 @@
-import { execElevated } from "@termix/plugin-sdk/host-commands";
+import { execElevated } from "@termix-ssh/plugin-sdk/host-commands";
 import {
   isValidWireGuardInterface,
   isValidWireGuardAction,

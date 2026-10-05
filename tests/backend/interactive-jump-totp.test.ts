@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from "vitest";
-import type { PluginSsh } from "@termix/plugin-sdk/backend";
+import type { PluginSsh } from "@termix-ssh/plugin-sdk/backend";
 import { startInteractive } from "../../src/backend/interactive.js";
 import type { MetricsHost } from "../../src/backend/helpers.js";
 

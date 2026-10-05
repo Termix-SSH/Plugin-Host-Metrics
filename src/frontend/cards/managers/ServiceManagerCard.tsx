@@ -1,11 +1,11 @@
 import { useMemo, useState } from "react";
 import { Cog, Play, Square, RotateCw, Power } from "lucide-react";
-import { useTranslation } from "@termix/plugin-sdk/frontend";
+import { useTranslation } from "@termix-ssh/plugin-sdk/frontend";
 import { toast } from "sonner";
 import { useHostMetricsApi } from "../../host-metrics-api";
 import { useManagerData, extractError } from "./useManagerData";
-import { ManagerCardShell } from "@termix/plugin-sdk/ui";
-import { ManagerSearch } from "@termix/plugin-sdk/ui";
+import { ManagerCardShell } from "@termix-ssh/plugin-sdk/ui";
+import { ManagerSearch } from "@termix-ssh/plugin-sdk/ui";
 
 interface SystemdService {
   unit: string;

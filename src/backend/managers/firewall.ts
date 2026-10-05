@@ -1,4 +1,4 @@
-import { execElevated, detectPlatform } from "@termix/plugin-sdk/host-commands";
+import { execElevated, detectPlatform } from "@termix-ssh/plugin-sdk/host-commands";
 import {
   isValidPort,
   isValidIpProtocol,

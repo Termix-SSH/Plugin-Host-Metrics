@@ -1,5 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import { createFakeContext } from "@termix/plugin-sdk/testing";
+import { createFakeContext } from "@termix-ssh/plugin-sdk/testing";
 import type { MetricsHost } from "../../src/backend/helpers.js";
 
 const collectMetrics = vi.fn();

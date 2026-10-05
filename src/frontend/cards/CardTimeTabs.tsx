@@ -1,5 +1,5 @@
-import { cn } from "@termix/plugin-sdk/ui";
-import { useTranslation } from "@termix/plugin-sdk/frontend";
+import { cn } from "@termix-ssh/plugin-sdk/ui";
+import { useTranslation } from "@termix-ssh/plugin-sdk/frontend";
 
 export type HistoryTab = "live" | "1h" | "6h" | "24h" | "7d";
 

@@ -1,4 +1,4 @@
-import { execCommand } from "@termix/plugin-sdk/host-commands";
+import { execCommand } from "@termix-ssh/plugin-sdk/host-commands";
 import type { Router } from "express";
 import { managerHandler } from "./route-helpers.js";
 import type { ManagerRoutesDeps } from "./types.js";

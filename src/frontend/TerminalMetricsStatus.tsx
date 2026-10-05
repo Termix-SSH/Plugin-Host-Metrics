@@ -3,14 +3,14 @@ import {
   usePluginApi,
   usePluginApiFor,
   useTranslation,
-} from "@termix/plugin-sdk/frontend";
+} from "@termix-ssh/plugin-sdk/frontend";
 import {
   cn,
   getPollingEnvironmentMultiplier,
   resolveConnectionOrigin,
   resolveRemoteHostId,
   runAdaptivePolling,
-} from "@termix/plugin-sdk/ui";
+} from "@termix-ssh/plugin-sdk/ui";
 
 /** What the ssh-terminal plugin hands a "terminal.toolbarStatus" component. */
 interface TerminalToolbarStatusProps {

@@ -6,12 +6,12 @@ import {
   SettingRow,
   FakeSwitch,
   useIsDefaultsEditor,
-} from "@termix/plugin-sdk/ui";
+} from "@termix-ssh/plugin-sdk/ui";
 import { useState } from "react";
 import {
   useTranslation,
   type HostEditorSectionProps,
-} from "@termix/plugin-sdk/frontend";
+} from "@termix-ssh/plugin-sdk/frontend";
 import { HardDrive, LayoutDashboard, Plus, Server, Trash2 } from "lucide-react";
 
 import { readHostMetricsSettings } from "../shared/stats-widgets.js";

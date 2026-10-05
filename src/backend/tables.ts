@@ -10,7 +10,7 @@ import {
   text,
   timestamp,
   varchar,
-} from "@termix/plugin-sdk/db";
+} from "@termix-ssh/plugin-sdk/db";
 
 /** One card layout per user per host, as JSON. */
 export const hostMetricsPreferences = adoptLegacyTable(

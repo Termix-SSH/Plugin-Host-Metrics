@@ -2,7 +2,7 @@ import {
   execCommand,
   execPowerShell,
   type HostPlatform,
-} from "@termix/plugin-sdk/host-commands";
+} from "@termix-ssh/plugin-sdk/host-commands";
 import { toFixedNum, kibToGiB } from "../util.js";
 import type { Client } from "ssh2";
 

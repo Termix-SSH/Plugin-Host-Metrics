@@ -2,7 +2,7 @@ import { Client, type ConnectConfig } from "ssh2";
 import type {
   PluginSsh,
   PluginSshPromptChannel,
-} from "@termix/plugin-sdk/backend";
+} from "@termix-ssh/plugin-sdk/backend";
 import {
   connectionLog,
   newSessionId,

@@ -1,4 +1,4 @@
-import type { PluginHostStatus } from "@termix/plugin-sdk/backend";
+import type { PluginHostStatus } from "@termix-ssh/plugin-sdk/backend";
 import type { CpuSamples } from "./widgets/cpu-collector.js";
 import { createNetworkSamples } from "./widgets/network-collector.js";
 

@@ -1,4 +1,4 @@
-import { execCommand } from "@termix/plugin-sdk/host-commands";
+import { execCommand } from "@termix-ssh/plugin-sdk/host-commands";
 import { toFixedNum } from "../util.js";
 import type { Client } from "ssh2";
 

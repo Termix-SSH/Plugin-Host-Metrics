@@ -6,7 +6,7 @@ import type {
   StandaloneViewProps,
   TabProps,
   TermixApp,
-} from "@termix/plugin-sdk/frontend";
+} from "@termix-ssh/plugin-sdk/frontend";
 import { HostMetricsTab } from "./HostMetricsTab";
 import HostMetricsApp from "./HostMetricsApp";
 import { HostStatsTab } from "./HostEditorStatsTab";

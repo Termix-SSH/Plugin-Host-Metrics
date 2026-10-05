@@ -1,4 +1,4 @@
-import { usePermission, useTranslation } from "@termix/plugin-sdk/frontend";
+import { usePermission, useTranslation } from "@termix-ssh/plugin-sdk/frontend";
 import type { MetricsSummaryStore } from "./summary-store";
 import { useMetricsSummary } from "./summary-store";
 

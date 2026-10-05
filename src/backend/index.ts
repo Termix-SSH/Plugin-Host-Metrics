@@ -1,5 +1,5 @@
 import type { Router } from "express";
-import type { PluginContext } from "@termix/plugin-sdk/backend";
+import type { PluginContext } from "@termix-ssh/plugin-sdk/backend";
 import { createLogger } from "./log.js";
 import { createHostMetricsRepository } from "./repository.js";
 import { createMetricsState } from "./state.js";

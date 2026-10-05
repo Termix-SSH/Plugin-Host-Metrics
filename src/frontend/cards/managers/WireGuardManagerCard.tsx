@@ -6,9 +6,9 @@ import {
   ArrowUp,
   ArrowDown,
 } from "lucide-react";
-import { useTranslation } from "@termix/plugin-sdk/frontend";
+import { useTranslation } from "@termix-ssh/plugin-sdk/frontend";
 import { useManagerData, useManagerAction } from "./useManagerData";
-import { ManagerCardShell } from "@termix/plugin-sdk/ui";
+import { ManagerCardShell } from "@termix-ssh/plugin-sdk/ui";
 
 interface WireGuardPeer {
   publicKey: string;

@@ -6,7 +6,7 @@ import {
   buildPackageActionCommand,
   parseUpgradable,
   buildListUpgradableCommand,
-} from "@termix/plugin-sdk/host-commands";
+} from "@termix-ssh/plugin-sdk/host-commands";
 import {
   isValidSystemdUnit,
   isValidPid,

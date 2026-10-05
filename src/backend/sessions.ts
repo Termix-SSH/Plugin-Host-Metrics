@@ -1,5 +1,5 @@
 import type { Client, ConnectConfig } from "ssh2";
-import type { PluginSchedule } from "@termix/plugin-sdk/backend";
+import type { PluginSchedule } from "@termix-ssh/plugin-sdk/backend";
 import type { MetricsLogger } from "./log.js";
 
 /** A connection a person opened from the tab, reused by polling. */

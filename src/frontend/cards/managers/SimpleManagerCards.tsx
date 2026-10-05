@@ -1,10 +1,10 @@
-import { BarSeries, StatRow } from "@termix/plugin-sdk/ui";
+import { BarSeries, StatRow } from "@termix-ssh/plugin-sdk/ui";
 import { useMemo, useState } from "react";
 import { MemoryStick, Timer, HardDrive } from "lucide-react";
-import { useTranslation } from "@termix/plugin-sdk/frontend";
+import { useTranslation } from "@termix-ssh/plugin-sdk/frontend";
 import { useManagerData } from "./useManagerData";
-import { ManagerCardShell } from "@termix/plugin-sdk/ui";
-import { ManagerSearch } from "@termix/plugin-sdk/ui";
+import { ManagerCardShell } from "@termix-ssh/plugin-sdk/ui";
+import { ManagerSearch } from "@termix-ssh/plugin-sdk/ui";
 
 interface MemProc {
   pid: number;

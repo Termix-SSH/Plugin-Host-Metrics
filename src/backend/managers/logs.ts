@@ -2,7 +2,7 @@ import {
   execCommand,
   execElevated,
   shellSingleQuote,
-} from "@termix/plugin-sdk/host-commands";
+} from "@termix-ssh/plugin-sdk/host-commands";
 import { isAllowedPath, isValidSystemdUnit } from "./validation.js";
 import type { Router } from "express";
 import { managerHandler, ManagerInputError } from "./route-helpers.js";

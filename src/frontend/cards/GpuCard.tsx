@@ -4,12 +4,12 @@ import {
   Sparkline,
   StatRow,
   MetricCard,
-} from "@termix/plugin-sdk/ui";
+} from "@termix-ssh/plugin-sdk/ui";
 import { type ServerMetrics } from "../../shared/metrics.js";
 import { type GpuDevice, type GpuProcess } from "../../shared/stats-widgets.js";
 import { useId } from "react";
 import { Gpu } from "lucide-react";
-import { useTranslation } from "@termix/plugin-sdk/frontend";
+import { useTranslation } from "@termix-ssh/plugin-sdk/frontend";
 import type { GpuHistories, GpuHistory } from "./gpu-history";
 
 const NA = "N/A";

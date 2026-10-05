@@ -1,7 +1,7 @@
-import { StatRow, MetricCard } from "@termix/plugin-sdk/ui";
+import { StatRow, MetricCard } from "@termix-ssh/plugin-sdk/ui";
 import { type ServerMetrics } from "../../shared/metrics.js";
 import { Thermometer } from "lucide-react";
-import { useSettings, useTranslation } from "@termix/plugin-sdk/frontend";
+import { useSettings, useTranslation } from "@termix-ssh/plugin-sdk/frontend";
 import { useEffect, useState } from "react";
 import {
   formatTemperature,

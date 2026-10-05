@@ -1,11 +1,11 @@
-import { MetricCard, PanelSearch, Select2 } from "@termix/plugin-sdk/ui";
+import { MetricCard, PanelSearch, Select2 } from "@termix-ssh/plugin-sdk/ui";
 import {
   type ServerMetrics,
   type ListeningPort,
 } from "../../shared/metrics.js";
 import { useMemo, useState } from "react";
 import { Unplug } from "lucide-react";
-import { useTranslation } from "@termix/plugin-sdk/frontend";
+import { useTranslation } from "@termix-ssh/plugin-sdk/frontend";
 
 function formatAddress(addr: string) {
   return addr === "0.0.0.0" || addr === "*" || addr === "::" ? "*" : addr;

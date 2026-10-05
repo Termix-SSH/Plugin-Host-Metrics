@@ -1,5 +1,5 @@
 import type { Client } from "ssh2";
-import type { PluginServices } from "@termix/plugin-sdk/backend";
+import type { PluginServices } from "@termix-ssh/plugin-sdk/backend";
 import type { MetricsLogger } from "./log.js";
 
 export const COLLECTORS_SERVICE = "host-metrics.collectors";

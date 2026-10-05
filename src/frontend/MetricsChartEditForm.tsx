@@ -1,5 +1,5 @@
-import { Select2 } from "@termix/plugin-sdk/ui";
-import { useHosts, useTranslation } from "@termix/plugin-sdk/frontend";
+import { Select2 } from "@termix-ssh/plugin-sdk/ui";
+import { useHosts, useTranslation } from "@termix-ssh/plugin-sdk/frontend";
 import type {
   MetricsChartConfig,
   MetricsChartMetric,

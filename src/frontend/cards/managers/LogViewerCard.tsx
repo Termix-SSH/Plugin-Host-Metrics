@@ -1,10 +1,10 @@
-import { useAdaptivePolling, Select2 } from "@termix/plugin-sdk/ui";
+import { useAdaptivePolling, Select2 } from "@termix-ssh/plugin-sdk/ui";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { ScrollText } from "lucide-react";
-import { useTranslation } from "@termix/plugin-sdk/frontend";
+import { useTranslation } from "@termix-ssh/plugin-sdk/frontend";
 import { useHostMetricsApi } from "../../host-metrics-api";
 import { extractError } from "./useManagerData";
-import { ManagerCardShell } from "@termix/plugin-sdk/ui";
+import { ManagerCardShell } from "@termix-ssh/plugin-sdk/ui";
 
 interface LogFiles {
   common: string[];

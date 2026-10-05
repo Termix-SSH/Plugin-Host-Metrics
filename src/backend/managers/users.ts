@@ -1,4 +1,4 @@
-import { execCommand, execElevated } from "@termix/plugin-sdk/host-commands";
+import { execCommand, execElevated } from "@termix-ssh/plugin-sdk/host-commands";
 import { isValidUsername, isValidGroupName } from "./validation.js";
 import type { Router } from "express";
 import { managerHandler, ManagerInputError } from "./route-helpers.js";

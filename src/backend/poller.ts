@@ -1,7 +1,7 @@
 import type {
   PluginContext,
   PluginHostStatusEntry,
-} from "@termix/plugin-sdk/backend";
+} from "@termix-ssh/plugin-sdk/backend";
 import { readHostMetricsSettings } from "../shared/stats-widgets.js";
 import {
   collectMetrics,

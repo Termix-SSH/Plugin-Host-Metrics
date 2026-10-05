@@ -3,7 +3,7 @@ import {
   execElevated,
   shellSingleQuote,
   detectPlatform,
-} from "@termix/plugin-sdk/host-commands";
+} from "@termix-ssh/plugin-sdk/host-commands";
 import {
   isValidDomain,
   isValidDnsProvider,

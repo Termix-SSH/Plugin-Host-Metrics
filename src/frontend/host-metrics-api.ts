@@ -2,7 +2,7 @@ import { useMemo } from "react";
 import {
   usePluginApi,
   type PluginApiClient,
-} from "@termix/plugin-sdk/frontend";
+} from "@termix-ssh/plugin-sdk/frontend";
 import type { HostMetricsLayout } from "../shared/host-metrics.js";
 import type { ServerMetrics } from "../shared/metrics.js";
 

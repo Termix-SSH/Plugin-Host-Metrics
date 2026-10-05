@@ -5,7 +5,7 @@ import {
   supportsMetrics,
   type MetricsHost,
 } from "../../src/backend/helpers.js";
-import { createFakeContext } from "@termix/plugin-sdk/testing";
+import { createFakeContext } from "@termix-ssh/plugin-sdk/testing";
 
 const ssh = createFakeContext().ctx.ssh;
 

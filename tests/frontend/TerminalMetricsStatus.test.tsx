@@ -12,14 +12,14 @@ const remote = vi.hoisted(() => ({
   remoteId: 70 as number | null,
 }));
 
-vi.mock("@termix/plugin-sdk/frontend", async (importOriginal) => ({
+vi.mock("@termix-ssh/plugin-sdk/frontend", async (importOriginal) => ({
   ...(await importOriginal<Record<string, unknown>>()),
   usePluginApi: () => api,
   usePluginApiFor: () => remote.api,
   useTranslation: () => ({ t: (key: string) => key, language: "en" }),
 }));
 
-vi.mock("@termix/plugin-sdk/ui", () => ({
+vi.mock("@termix-ssh/plugin-sdk/ui", () => ({
   cn: (...classes: unknown[]) => classes.filter(Boolean).join(" "),
   getPollingEnvironmentMultiplier: () => 1,
   resolveConnectionOrigin: async () => remote.origin,

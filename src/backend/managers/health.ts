@@ -1,7 +1,7 @@
 import {
   execCommand,
   shellSingleQuote,
-} from "@termix/plugin-sdk/host-commands";
+} from "@termix-ssh/plugin-sdk/host-commands";
 import { isValidPort } from "./validation.js";
 import type { Router } from "express";
 import type { Client } from "ssh2";

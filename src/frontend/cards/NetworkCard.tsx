@@ -2,11 +2,11 @@ import {
   MetricCard,
   LineChart,
   type LineChartSeries,
-} from "@termix/plugin-sdk/ui";
+} from "@termix-ssh/plugin-sdk/ui";
 import { type ServerMetrics } from "../../shared/metrics.js";
 import { useState, useEffect } from "react";
 import { Cable, Container, Network, Wifi, WifiOff } from "lucide-react";
-import { useTranslation } from "@termix/plugin-sdk/frontend";
+import { useTranslation } from "@termix-ssh/plugin-sdk/frontend";
 import { type MetricsHistoryRow, useHostMetricsApi } from "../host-metrics-api";
 import { CardTimeTabs, type HistoryTab } from "./CardTimeTabs";
 

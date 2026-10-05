@@ -1,6 +1,6 @@
 import type { Client } from "ssh2";
-import type { PluginSsh } from "@termix/plugin-sdk/backend";
-import { detectHostPlatform } from "@termix/plugin-sdk/host-commands";
+import type { PluginSsh } from "@termix-ssh/plugin-sdk/backend";
+import { detectHostPlatform } from "@termix-ssh/plugin-sdk/host-commands";
 import { collectCpuMetrics } from "./widgets/cpu-collector.js";
 import { collectMemoryMetrics } from "./widgets/memory-collector.js";
 import { collectDiskMetrics } from "./widgets/disk-collector.js";

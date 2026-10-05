@@ -2,7 +2,7 @@ import {
   execCommand,
   execPowerShell,
   type HostPlatform,
-} from "@termix/plugin-sdk/host-commands";
+} from "@termix-ssh/plugin-sdk/host-commands";
 import type { Client } from "ssh2";
 
 async function collectWindowsSystemMetrics(client: Client): Promise<{

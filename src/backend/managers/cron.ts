@@ -1,7 +1,7 @@
 import {
   execCommand,
   shellSingleQuote,
-} from "@termix/plugin-sdk/host-commands";
+} from "@termix-ssh/plugin-sdk/host-commands";
 import type { Router } from "express";
 import { managerHandler, ManagerInputError } from "./route-helpers.js";
 import type { ManagerRoutesDeps } from "./types.js";

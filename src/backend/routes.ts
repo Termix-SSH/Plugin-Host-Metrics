@@ -5,7 +5,7 @@ import type {
   Response,
   Router,
 } from "express";
-import type { PluginContext } from "@termix/plugin-sdk/backend";
+import type { PluginContext } from "@termix-ssh/plugin-sdk/backend";
 import {
   defaultLayoutFromWidgets,
   deriveEnabledWidgets,

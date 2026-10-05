@@ -1,4 +1,4 @@
-import type { PluginSsh, PluginSshHost } from "@termix/plugin-sdk/backend";
+import type { PluginSsh, PluginSshHost } from "@termix-ssh/plugin-sdk/backend";
 
 /** A host as ctx.ssh.resolveHost returns it, with the fields polling reads. */
 export type MetricsHost = PluginSshHost & {

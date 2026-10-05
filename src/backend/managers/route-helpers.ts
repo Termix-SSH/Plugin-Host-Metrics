@@ -1,7 +1,7 @@
-import { ElevationError } from "@termix/plugin-sdk/host-commands";
+import { ElevationError } from "@termix-ssh/plugin-sdk/host-commands";
 import type { Request, Response } from "express";
 import type { Client } from "ssh2";
-import type { PluginHostShareLevel } from "@termix/plugin-sdk/backend";
+import type { PluginHostShareLevel } from "@termix-ssh/plugin-sdk/backend";
 import { errorMessage } from "../util.js";
 import type { MetricsLogger } from "../log.js";
 import type { ManagerHost, RunOnHost } from "./types.js";

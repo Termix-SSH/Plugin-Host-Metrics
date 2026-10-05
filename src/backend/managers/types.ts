@@ -1,6 +1,6 @@
 import type { Client } from "ssh2";
 import type { RequestHandler } from "express";
-import type { PluginHostShareLevel } from "@termix/plugin-sdk/backend";
+import type { PluginHostShareLevel } from "@termix-ssh/plugin-sdk/backend";
 import type { HostMetricsRepository } from "../repository.js";
 import type { MetricsLogger } from "../log.js";
 

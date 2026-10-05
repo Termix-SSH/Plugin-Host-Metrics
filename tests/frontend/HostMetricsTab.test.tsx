@@ -52,7 +52,7 @@ vi.mock("../../src/frontend/host-metrics-api", async (importOriginal) => {
   };
 });
 
-vi.mock("@termix/plugin-sdk/ui", async (importOriginal) => ({
+vi.mock("@termix-ssh/plugin-sdk/ui", async (importOriginal) => ({
   ...(await importOriginal<object>()),
   logActivity: vi.fn(async () => undefined),
 }));

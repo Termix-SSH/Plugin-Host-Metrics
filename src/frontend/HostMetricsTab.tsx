@@ -10,7 +10,7 @@ import {
   CardGridCanvas,
   ColumnCountStepper,
   type GridCardCatalogEntry,
-} from "@termix/plugin-sdk/ui";
+} from "@termix-ssh/plugin-sdk/ui";
 import { readHostMetricsSettings } from "../shared/stats-widgets.js";
 import {
   defaultLayoutFromWidgets,
@@ -29,7 +29,7 @@ import {
   useHostStatus,
   logActivity,
   usePluginUiPreferences,
-} from "@termix/plugin-sdk/frontend";
+} from "@termix-ssh/plugin-sdk/frontend";
 import { toast } from "sonner";
 import { RefreshCw, Server, LayoutDashboard } from "lucide-react";
 import { useHostMetricsPreferences } from "./hooks/useHostMetricsPreferences.ts";
