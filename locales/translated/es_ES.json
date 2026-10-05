@@ -277,10 +277,6 @@
       "historyRetentionDays": {
         "label": "Retención del historial (días)",
         "description": "¿Cuánto tiempo se conservan las muestras de métricas para los gráficos históricos?"
-      },
-      "enabledForNewHosts": {
-        "label": "Métricas activadas para nuevos anfitriones",
-        "description": "Si los nuevos hosts comienzan con la recopilación de métricas activada."
       }
     },
     "user": {

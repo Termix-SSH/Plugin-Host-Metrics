@@ -277,10 +277,6 @@
       "historyRetentionDays": {
         "label": "Uchování historie (dny)",
         "description": "Jak dlouho se uchovávají vzorky metrik pro historické grafy."
-      },
-      "enabledForNewHosts": {
-        "label": "Metriky pro nové hostitele",
-        "description": "Zda noví hostitelé začínají se zapnutým sběrem metrik."
       }
     },
     "user": {

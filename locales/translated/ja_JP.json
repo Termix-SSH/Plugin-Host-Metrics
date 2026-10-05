@@ -277,10 +277,6 @@
       "historyRetentionDays": {
         "label": "履歴保持期間（日数）",
         "description": "履歴チャートのメトリクスサンプルはどのくらいの期間保持されますか。"
-      },
-      "enabledForNewHosts": {
-        "label": "新規ホスト向けのメトリクスが有効になっています",
-        "description": "新しいホストがメトリクス収集を有効にした状態で起動するかどうか。"
       }
     },
     "user": {

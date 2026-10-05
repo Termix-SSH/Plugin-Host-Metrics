@@ -277,10 +277,6 @@
       "historyRetentionDays": {
         "label": "Retenció de l'historial (dies)",
         "description": "Quant de temps es conserven les mostres de mètriques per als gràfics d'historial."
-      },
-      "enabledForNewHosts": {
-        "label": "Mètriques activades per a nous amfitrions",
-        "description": "Si els nous amfitrions comencen amb la recopilació de mètriques activada."
       }
     },
     "user": {

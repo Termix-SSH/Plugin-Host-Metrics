@@ -277,10 +277,6 @@
       "historyRetentionDays": {
         "label": "Historian säilytys (päivää)",
         "description": "Kuinka kauan historiakaavioiden mittareiden näytteitä säilytetään."
-      },
-      "enabledForNewHosts": {
-        "label": "Mittarit käytössä uusille isännille",
-        "description": "Aloittavatko uudet isännät mittaustietojen kerääminen käytössä."
       }
     },
     "user": {

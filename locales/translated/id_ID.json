@@ -277,10 +277,6 @@
       "historyRetentionDays": {
         "label": "Retensi riwayat (hari)",
         "description": "Berapa lama sampel metrik disimpan untuk grafik riwayat."
-      },
-      "enabledForNewHosts": {
-        "label": "Metrik diaktifkan untuk host baru.",
-        "description": "Apakah host baru memulai dengan pengumpulan metrik yang diaktifkan."
       }
     },
     "user": {

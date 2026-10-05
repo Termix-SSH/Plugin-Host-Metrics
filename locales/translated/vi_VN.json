@@ -277,10 +277,6 @@
       "historyRetentionDays": {
         "label": "Thời gian lưu trữ lịch sử (ngày)",
         "description": "Thời gian lưu giữ mẫu số liệu cho biểu đồ lịch sử là bao lâu?"
-      },
-      "enabledForNewHosts": {
-        "label": "Số liệu thống kê dành cho máy chủ mới",
-        "description": "Liệu các máy chủ mới có bắt đầu với tính năng thu thập số liệu được bật hay không."
       }
     },
     "user": {

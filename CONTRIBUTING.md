@@ -16,7 +16,6 @@ npm run format     # format the code with Prettier
 
 - **Metrics interval (seconds):** how often a host is checked while someone views it
 - **History retention (days):** how long history is kept for the charts
-- **Metrics on for new hosts:** whether new hosts start with metrics turned on
 
 ### User
 

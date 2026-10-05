@@ -277,10 +277,6 @@
       "historyRetentionDays": {
         "label": "历史数据保留时间（天）",
         "description": "历史图表中的指标样本保留多长时间？"
-      },
-      "enabledForNewHosts": {
-        "label": "新主机指标",
-        "description": "新主机是否默认开启指标收集功能。"
       }
     },
     "user": {

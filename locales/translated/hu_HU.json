@@ -277,10 +277,6 @@
       "historyRetentionDays": {
         "label": "Előzménymegőrzés (nap)",
         "description": "Mennyi ideig tárolják a metrika mintákat az előzménydiagramokhoz."
-      },
-      "enabledForNewHosts": {
-        "label": "Metrikák bekapcsolva az új házigazdák számára",
-        "description": "Az új hosztok bekapcsolt metrikák gyűjtésével indulnak-e."
       }
     },
     "user": {

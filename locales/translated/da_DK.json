@@ -277,10 +277,6 @@
       "historyRetentionDays": {
         "label": "Historikopbevaring (dage)",
         "description": "Hvor længe metrikker gemmes til historikdiagrammerne."
-      },
-      "enabledForNewHosts": {
-        "label": "Målinger aktiveret for nye værter",
-        "description": "Om nye værter starter med indsamling af metrics aktiveret."
       }
     },
     "user": {

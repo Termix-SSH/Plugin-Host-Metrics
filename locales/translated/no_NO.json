@@ -277,10 +277,6 @@
       "historyRetentionDays": {
         "label": "Historikklagring (dager)",
         "description": "Hvor lenge metrikkprøver oppbevares for historikkdiagrammene."
-      },
-      "enabledForNewHosts": {
-        "label": "Målinger på for nye verter",
-        "description": "Om nye verter starter med innsamling av metrikk aktivert."
       }
     },
     "user": {

@@ -277,10 +277,6 @@
       "historyRetentionDays": {
         "label": "歷史資料保留時間（天）",
         "description": "歷史圖表中的指標樣本保留多久？"
-      },
-      "enabledForNewHosts": {
-        "label": "新主機指標",
-        "description": "新主機是否預設開啟指標收集功能。"
       }
     },
     "user": {

@@ -277,10 +277,6 @@
       "historyRetentionDays": {
         "label": "Historiklagring (dagar)",
         "description": "Hur länge mätvärden sparas för historikdiagrammen."
-      },
-      "enabledForNewHosts": {
-        "label": "Mätvärden aktiverade för nya värdar",
-        "description": "Om nya värdar börjar med att mätvärdesinsamling är aktiverad."
       }
     },
     "user": {

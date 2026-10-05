@@ -277,10 +277,6 @@
       "historyRetentionDays": {
         "label": "Aufbewahrungsdauer (Tage)",
         "description": "Wie lange die Messwertbeispiele für die Verlaufsdiagramme aufbewahrt werden."
-      },
-      "enabledForNewHosts": {
-        "label": "Metriken für neue Hosts aktiviert",
-        "description": "Ob neue Hosts mit aktivierter Metrikenerfassung starten."
       }
     },
     "user": {

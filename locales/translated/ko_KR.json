@@ -277,10 +277,6 @@
       "historyRetentionDays": {
         "label": "기록 보존 기간(일)",
         "description": "기록 차트를 위해 측정값 샘플을 보관하는 기간은 얼마나 되나요?"
-      },
-      "enabledForNewHosts": {
-        "label": "새 호스트에 대한 메트릭 활성화",
-        "description": "새 호스트가 메트릭 수집 기능을 켠 상태로 시작하는지 여부."
       }
     },
     "user": {

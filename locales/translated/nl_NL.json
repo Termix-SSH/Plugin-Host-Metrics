@@ -277,10 +277,6 @@
       "historyRetentionDays": {
         "label": "Bewaartermijn van de gegevens (dagen)",
         "description": "Hoe lang worden meetwaarden bewaard voor de historische grafieken?"
-      },
-      "enabledForNewHosts": {
-        "label": "Statistieken ingeschakeld voor nieuwe hosts",
-        "description": "Of nieuwe hosts starten met ingeschakelde metrische gegevensverzameling."
       }
     },
     "user": {

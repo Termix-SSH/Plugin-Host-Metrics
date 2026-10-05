@@ -277,10 +277,6 @@
       "historyRetentionDays": {
         "label": "Conservation de l'historique (jours)",
         "description": "Durée de conservation des échantillons de métriques pour les graphiques d'historique."
-      },
-      "enabledForNewHosts": {
-        "label": "Indicateurs activés pour les nouveaux hôtes",
-        "description": "Indique si les nouveaux hôtes démarrent avec la collecte de métriques activée."
       }
     },
     "user": {

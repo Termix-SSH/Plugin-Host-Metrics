@@ -277,10 +277,6 @@
       "historyRetentionDays": {
         "label": "Geskiedenisbewaring (dae)",
         "description": "Hoe lank word metrieke-monsters vir die geskiedenisgrafieke gehou."
-      },
-      "enabledForNewHosts": {
-        "label": "Metrieke aan vir nuwe gashere",
-        "description": "Of nuwe gashere begin met metrieke-insameling aangeskakel."
       }
     },
     "user": {

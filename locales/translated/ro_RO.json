@@ -277,10 +277,6 @@
       "historyRetentionDays": {
         "label": "Păstrarea istoricului (zile)",
         "description": "Cât timp sunt păstrate mostrele de metrici pentru graficele istorice."
-      },
-      "enabledForNewHosts": {
-        "label": "Metrici activate pentru gazdele noi",
-        "description": "Dacă noile gazde încep cu colectarea de metrici activată."
       }
     },
     "user": {

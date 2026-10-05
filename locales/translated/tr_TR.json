@@ -277,10 +277,6 @@
       "historyRetentionDays": {
         "label": "Geçmiş verilerin saklanma süresi (gün)",
         "description": "Geçmiş grafikler için metrik örneklerinin ne kadar süreyle saklandığı."
-      },
-      "enabledForNewHosts": {
-        "label": "Yeni sunucular için ölçümler açık.",
-        "description": "Yeni sunucuların ölçüm toplama özelliği açık olarak başlatılıp başlatılmadığı."
       }
     },
     "user": {

@@ -277,10 +277,6 @@
       "historyRetentionDays": {
         "label": "Retencja historii (dni)",
         "description": "Jak długo przechowywane są próbki metryk na potrzeby wykresów historycznych."
-      },
-      "enabledForNewHosts": {
-        "label": "Metryki dla nowych hostów",
-        "description": "Czy nowi gospodarze rozpoczynają pracę z włączonym zbieraniem danych metrycznych."
       }
     },
     "user": {
