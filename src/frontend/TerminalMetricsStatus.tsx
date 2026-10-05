@@ -51,7 +51,7 @@ function StatBar({
               value >= 90
                 ? "bg-red-500"
                 : value >= 70
-                  ? "bg-yellow-500"
+                  ? "bg-warning"
                   : "bg-accent-brand",
             )}
             style={{ width: `${value}%` }}

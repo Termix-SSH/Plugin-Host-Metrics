@@ -168,7 +168,7 @@ export function FirewallManagerCard({ hostId }: { hostId: number | null }) {
             <Trash2 className="size-3" />
           </Button>
         </div>
-        <span className="text-[10px] text-yellow-500">
+        <span className="text-[10px] text-warning">
           {t("hostMetrics.managers.firewallWarning")}
         </span>
       </div>

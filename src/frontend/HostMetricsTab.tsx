@@ -511,12 +511,12 @@ function HostMetricsInner({
         <div className="flex flex-1 flex-col overflow-x-hidden overflow-y-auto">
           {!totpRequired &&
             (metricsRetry.status === "connected" || showOffline) && (
-              <div className="mx-3 mt-3 flex shrink-0 items-center justify-between border border-border bg-card px-3 py-3">
-                <div className="flex items-center gap-3">
-                  <div className="flex size-10 shrink-0 items-center justify-center border border-border bg-muted">
-                    <Server className="size-5 text-accent-brand" />
-                  </div>
-                  <h1 className="text-lg font-bold md:text-2xl">{title}</h1>
+              <div className="flex h-12.5 shrink-0 items-center justify-between gap-2 border-b border-border px-3">
+                <div className="flex min-w-0 items-center gap-2">
+                  <Server className="size-4 shrink-0 text-accent-brand" />
+                  <h1 className="truncate text-base font-bold tracking-tight">
+                    {title}
+                  </h1>
                 </div>
                 <div className="flex items-center gap-0">
                   <ComponentSlot
@@ -606,7 +606,7 @@ function HostMetricsInner({
 
         {metricsEnabled && !totpRequired && (
           <ConnectionScreen
-            status={showOffline ? "connected" : metricsRetry.status}
+            status={showOffline ? "error" : metricsRetry.status}
             message={t("hostMetrics.connecting")}
             attempt={metricsRetry.attempt}
             maxAttempts={metricsRetry.maxAttempts}
@@ -618,18 +618,13 @@ function HostMetricsInner({
                 ? "top"
                 : "bottom"
             }
-            emptyState={
-              showOffline ? (
-                <div className="text-center opacity-40">
-                  <Server className="mx-auto mb-4 size-16" />
-                  <p className="text-xl font-bold uppercase tracking-widest">
-                    {t("hostMetrics.serverOffline")}
-                  </p>
-                  <p className="text-sm font-semibold">
-                    {t("hostMetrics.cannotFetchMetrics")}
-                  </p>
-                </div>
-              ) : undefined
+            unavailable={
+              showOffline
+                ? {
+                    title: t("hostMetrics.serverOffline"),
+                    hint: t("hostMetrics.cannotFetchMetrics"),
+                  }
+                : null
             }
           />
         )}

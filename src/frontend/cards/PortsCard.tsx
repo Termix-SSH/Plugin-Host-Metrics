@@ -1,10 +1,10 @@
-import { MetricCard, Select2 } from "@termix/plugin-sdk/ui";
+import { MetricCard, PanelSearch, Select2 } from "@termix/plugin-sdk/ui";
 import {
   type ServerMetrics,
   type ListeningPort,
 } from "../../shared/metrics.js";
 import { useMemo, useState } from "react";
-import { Unplug, Search } from "lucide-react";
+import { Unplug } from "lucide-react";
 import { useTranslation } from "@termix/plugin-sdk/frontend";
 
 function formatAddress(addr: string) {
@@ -57,15 +57,12 @@ export function PortsCard({ metrics }: { metrics: ServerMetrics | null }) {
       scroll
     >
       <div className="mb-2 flex items-center gap-1.5">
-        <div className="relative flex-1">
-          <Search className="pointer-events-none absolute left-2 top-1/2 size-3 -translate-y-1/2 text-muted-foreground/60" />
-          <input
-            value={query}
-            onChange={(e) => setQuery(e.target.value)}
-            placeholder={t("hostMetrics.ports.search")}
-            className="h-7 w-full border border-border bg-background pl-7 pr-2 text-xs outline-none focus:ring-1 focus:ring-ring"
-          />
-        </div>
+        <PanelSearch
+          value={query}
+          onChange={setQuery}
+          placeholder={t("hostMetrics.ports.search")}
+          fill
+        />
         <Select2
           value={proto}
           onChange={(e) => setProto(e.target.value as "all" | "tcp" | "udp")}

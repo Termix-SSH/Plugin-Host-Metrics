@@ -178,7 +178,8 @@
       "wgLastHandshake": "Last handshake",
       "wgHandshakeNever": "Never",
       "wgTransfer": "Transfer",
-      "wgNoPeers": "No peers"
+      "wgNoPeers": "No peers",
+      "revoke": "Revoke"
     }
   },
   "metricsHistory": {

@@ -10,7 +10,7 @@ function RowBar({ label, value }: { label: string; value: number }) {
     value >= 90
       ? ["bg-red-500", "text-red-400"]
       : value >= 70
-        ? ["bg-yellow-500", "text-yellow-400"]
+        ? ["bg-warning", "text-warning"]
         : ["bg-accent-brand", "text-accent-brand"];
   return (
     <div className="flex flex-col gap-0.5 w-16">

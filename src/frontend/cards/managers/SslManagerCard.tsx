@@ -1,4 +1,4 @@
-import { Button, Select2 } from "@termix/plugin-sdk/ui";
+import { Button, Select2, useConfirm } from "@termix/plugin-sdk/ui";
 import { useMemo, useState } from "react";
 import { ShieldCheck, RefreshCw, Plus, X, Trash2 } from "lucide-react";
 import { useTranslation } from "@termix/plugin-sdk/frontend";
@@ -40,7 +40,7 @@ function ExpiryBadge({ expiry }: { expiry: string | null }) {
     days < 0
       ? "text-destructive"
       : days < 14
-        ? "text-yellow-500"
+        ? "text-warning"
         : "text-accent-brand";
   return (
     <span className={tone} title={expiry ?? undefined}>
@@ -54,6 +54,7 @@ function ExpiryBadge({ expiry }: { expiry: string | null }) {
 export function SslManagerCard({ hostId }: { hostId: number | null }) {
   const { managerPost } = useHostMetricsApi();
   const { t } = useTranslation();
+  const confirm = useConfirm();
   const { data, loading, error, refresh } = useManagerData<SslData>(
     hostId,
     "ssl",
@@ -91,14 +92,13 @@ export function SslManagerCard({ hostId }: { hostId: number | null }) {
     );
   };
 
-  const revoke = (cert: CertInfo) => {
+  const revoke = async (cert: CertInfo) => {
     if (cert.client !== "certbot" && cert.client !== "acme.sh") return;
-    if (
-      !window.confirm(
-        t("hostMetrics.managers.sslRevokeConfirm", { name: cert.name }),
-      )
-    )
-      return;
+    const ok = await confirm({
+      title: t("hostMetrics.managers.sslRevokeConfirm", { name: cert.name }),
+      confirmLabel: t("hostMetrics.managers.revoke"),
+    });
+    if (!ok) return;
     run(
       "ssl",
       { client: cert.client, name: cert.name },
@@ -285,7 +285,7 @@ export function SslManagerCard({ hostId }: { hostId: number | null }) {
               </span>
               {(c.client === "certbot" || c.client === "acme.sh") && (
                 <button
-                  onClick={() => revoke(c)}
+                  onClick={() => void revoke(c)}
                   disabled={busy}
                   title={t("hostMetrics.managers.sslRevoke")}
                   className="text-muted-foreground transition-colors hover:text-destructive disabled:opacity-40"
