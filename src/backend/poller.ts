@@ -19,8 +19,8 @@ import {
   type MetricsState,
 } from "./state.js";
 
-export const DEFAULT_METRICS_INTERVAL = 30;
-export const DEFAULT_RETENTION_DAYS = 7;
+const DEFAULT_METRICS_INTERVAL = 30;
+const DEFAULT_RETENTION_DAYS = 7;
 /** Viewers that stop sending heartbeats are dropped after this long. */
 const VIEWER_TIMEOUT_MS = 120_000;
 

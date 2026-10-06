@@ -29,7 +29,7 @@ export type HostMetricsCardId = HostMetricCardId | HostMetricManagerId;
 
 export type HostMetricsColSpan = 1 | 2 | 3;
 
-export interface HostMetricsSlot {
+interface HostMetricsSlot {
   id: HostMetricsCardId;
   order: number;
   colSpan: HostMetricsColSpan;
@@ -57,7 +57,7 @@ export const METRIC_CARD_IDS: HostMetricCardId[] = [
   "gpu",
 ];
 
-export const MANAGER_CARD_IDS: HostMetricManagerId[] = [
+const MANAGER_CARD_IDS: HostMetricManagerId[] = [
   "service_manager",
   "process_inspector",
   "log_viewer",

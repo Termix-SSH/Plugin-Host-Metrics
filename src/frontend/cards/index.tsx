@@ -41,7 +41,7 @@ export interface MetricCardHistories {
   gpu: GpuHistories;
 }
 
-export interface CardRenderContext {
+interface CardRenderContext {
   metrics: ServerMetrics | null;
   histories: MetricCardHistories;
   hostId: number | null;

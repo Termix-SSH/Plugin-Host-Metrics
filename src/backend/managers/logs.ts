@@ -9,7 +9,7 @@ import { managerHandler, ManagerInputError } from "./route-helpers.js";
 import type { ManagerRoutesDeps } from "./types.js";
 
 /** Directories from which arbitrary log files may be tailed. */
-export const LOG_PATH_ALLOWLIST = ["/var/log"];
+const LOG_PATH_ALLOWLIST = ["/var/log"];
 
 const COMMON_LOGS = [
   "/var/log/syslog",
@@ -37,7 +37,7 @@ export function buildTailCommand(path: string, lines: number): string {
   return `tail -n ${lines} ${shellSingleQuote(path)}`;
 }
 
-export function buildJournalCommand(unit: string, lines: number): string {
+function buildJournalCommand(unit: string, lines: number): string {
   return `journalctl -u ${shellSingleQuote(unit)} -n ${lines} --no-pager`;
 }
 

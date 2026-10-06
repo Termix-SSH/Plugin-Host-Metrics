@@ -36,7 +36,7 @@ export function parseTopMemory(output: string): MemProcessRow[] {
 
 // ─── Systemd timers ─────────────────────────────────────────────────────────
 
-export interface TimerRow {
+interface TimerRow {
   next: string;
   left: string;
   last: string;
@@ -47,7 +47,7 @@ export interface TimerRow {
 const TIMERS_CMD =
   "systemctl list-timers --all --no-legend --no-pager 2>/dev/null";
 
-export function parseTimers(output: string): TimerRow[] {
+function parseTimers(output: string): TimerRow[] {
   const rows: TimerRow[] = [];
   for (const raw of output.split("\n")) {
     const line = raw.trim();

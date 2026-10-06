@@ -2,7 +2,7 @@ import type { PluginHostStatus } from "@termix-ssh/plugin-sdk/backend";
 import type { CpuSamples } from "./widgets/cpu-collector.js";
 import { createNetworkSamples } from "./widgets/network-collector.js";
 
-export class RequestQueue {
+class RequestQueue {
   private queues = new Map<number, Array<() => Promise<unknown>>>();
   private processing = new Set<number>();
   private requestTimeout = 60000;
@@ -69,7 +69,7 @@ interface CachedMetrics {
   hostId: number;
 }
 
-export class MetricsCache {
+class MetricsCache {
   private cache = new Map<number, CachedMetrics>();
   private ttl = 30000;
 
@@ -200,7 +200,7 @@ export class AuthFailureTracker {
   }
 }
 
-export class PollingBackoff {
+class PollingBackoff {
   private failures = new Map<number, { count: number; nextRetry: number }>();
   private baseDelay = 30000;
   private maxDelay = 600000;
@@ -354,7 +354,7 @@ export class ConcurrentLimiter {
  * minute for a "30 second" metric. Scaling with the fleet keeps a sweep inside
  * its interval; the cap keeps file descriptors and CPU bounded.
  */
-export const METRICS_CONCURRENCY_ENV = "METRICS_POLL_CONCURRENCY";
+const METRICS_CONCURRENCY_ENV = "METRICS_POLL_CONCURRENCY";
 const MIN_METRICS_CONCURRENCY = 5;
 const MAX_METRICS_CONCURRENCY = 50;
 /** Aim to spend about a twentieth of the interval per sweep wave. */
@@ -425,7 +425,7 @@ export function canStartInitialMetrics(
 
 /** Everything one activation of the plugin polls with. */
 /** The last CPU and network sample per host, for rates between polls. */
-export function createRateSamples() {
+function createRateSamples() {
   const cpu: CpuSamples = new Map();
   const network = createNetworkSamples();
   return {

@@ -14,7 +14,7 @@ import { managerHandler, ManagerInputError } from "./route-helpers.js";
 import type { ManagerRoutesDeps } from "./types.js";
 
 export type AcmeClient = "certbot" | "acme.sh";
-export type ChallengeType = "http-standalone" | "http-webroot" | "dns";
+type ChallengeType = "http-standalone" | "http-webroot" | "dns";
 
 export interface CertInfo {
   client: AcmeClient | "other";
@@ -58,7 +58,7 @@ export function parseCertbotCertificates(output: string): CertInfo[] {
 }
 
 /** Parse `acme.sh --list` (tab/space separated columns with a header). */
-export function parseAcmeShList(output: string): CertInfo[] {
+function parseAcmeShList(output: string): CertInfo[] {
   const certs: CertInfo[] = [];
   const lines = output.split("\n").filter((l) => l.trim());
   if (lines.length < 2) return certs;

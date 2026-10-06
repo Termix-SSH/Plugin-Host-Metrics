@@ -34,7 +34,7 @@ export interface PlatformInfo {
   osPrettyName: string | null;
 }
 
-export interface ConnectionLogEntry {
+interface ConnectionLogEntry {
   type: "info" | "success" | "warning" | "error";
   stage: string;
   message: string;

@@ -2,7 +2,7 @@ import type { Client } from "ssh2";
 import type { PluginServices } from "@termix-ssh/plugin-sdk/backend";
 import type { MetricsLogger } from "./log.js";
 
-export const COLLECTORS_SERVICE = "host-metrics.collectors";
+const COLLECTORS_SERVICE = "host-metrics.collectors";
 
 /**
  * The "host-metrics.collectors" service, version 1. Another plugin provides

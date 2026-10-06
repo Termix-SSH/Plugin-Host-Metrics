@@ -28,7 +28,7 @@ export interface HealthResult {
 const TARGET_RE = /^[A-Za-z0-9.\-_:]+$/;
 const PATH_RE = /^\/[A-Za-z0-9._~!$&'()*+,;=:@/%-]*$/;
 
-export function isValidHealthCheck(c: unknown): c is HealthCheck {
+function isValidHealthCheck(c: unknown): c is HealthCheck {
   if (!c || typeof c !== "object") return false;
   const o = c as Record<string, unknown>;
   if (typeof o.id !== "string" || !o.id) return false;

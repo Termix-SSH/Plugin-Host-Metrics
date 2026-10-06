@@ -1,7 +1,7 @@
 import { execCommand } from "@termix-ssh/plugin-sdk/host-commands";
 import type { Client } from "ssh2";
 
-export interface LoginRecord {
+interface LoginRecord {
   user: string;
   ip: string;
   time: string;

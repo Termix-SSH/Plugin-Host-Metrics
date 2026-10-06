@@ -1,4 +1,7 @@
-import { execCommand, execElevated } from "@termix-ssh/plugin-sdk/host-commands";
+import {
+  execCommand,
+  execElevated,
+} from "@termix-ssh/plugin-sdk/host-commands";
 import { isValidUsername, isValidGroupName } from "./validation.js";
 import type { Router } from "express";
 import { managerHandler, ManagerInputError } from "./route-helpers.js";
@@ -12,7 +15,7 @@ export interface SystemUser {
   shell: string;
 }
 
-export interface SystemGroup {
+interface SystemGroup {
   name: string;
   gid: number;
   members: string[];
@@ -42,7 +45,7 @@ export function parsePasswd(output: string): SystemUser[] {
   return users;
 }
 
-export function parseGroups(output: string): SystemGroup[] {
+function parseGroups(output: string): SystemGroup[] {
   const groups: SystemGroup[] = [];
   for (const line of output.split("\n")) {
     const parts = line.split(":");
@@ -69,7 +72,7 @@ export function parseSudoers(output: string): string[] {
   return [...members];
 }
 
-export type UserAction = "create" | "delete" | "addToGroup" | "removeFromGroup";
+type UserAction = "create" | "delete" | "addToGroup" | "removeFromGroup";
 
 export function registerUserRoutes(app: Router, deps: ManagerRoutesDeps): void {
   const { validateHostId } = deps;

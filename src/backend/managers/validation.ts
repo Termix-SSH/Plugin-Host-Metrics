@@ -99,9 +99,9 @@ export function isValidWireGuardAction(a: unknown): a is WireGuardAction {
   return typeof a === "string" && (WG_ACTIONS as string[]).includes(a);
 }
 
-export type TailscaleAction = "up" | "down";
+type TailscaleAction = "up" | "down";
 const TAILSCALE_ACTIONS: TailscaleAction[] = ["up", "down"];
-export function isValidTailscaleAction(a: unknown): a is TailscaleAction {
+function isValidTailscaleAction(a: unknown): a is TailscaleAction {
   return typeof a === "string" && (TAILSCALE_ACTIONS as string[]).includes(a);
 }
 

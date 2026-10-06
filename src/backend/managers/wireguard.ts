@@ -7,7 +7,7 @@ import type { Router } from "express";
 import { managerHandler, ManagerInputError } from "./route-helpers.js";
 import type { ManagerRoutesDeps } from "./types.js";
 
-export interface WireGuardPeer {
+interface WireGuardPeer {
   publicKey: string;
   endpoint: string | null;
   allowedIPs: string[];
@@ -16,7 +16,7 @@ export interface WireGuardPeer {
   txBytes: number;
 }
 
-export interface WireGuardInterface {
+interface WireGuardInterface {
   name: string;
   publicKey: string | null;
   listenPort: number | null;
@@ -24,7 +24,7 @@ export interface WireGuardInterface {
   peers: WireGuardPeer[];
 }
 
-export interface WireGuardData {
+interface WireGuardData {
   installed: boolean;
   interfaces: WireGuardInterface[];
 }
@@ -36,7 +36,7 @@ const PROBE_CMD = [
   "wg show all dump 2>/dev/null",
 ].join("; ");
 
-export function parseWireGuardData(output: string): WireGuardData {
+function parseWireGuardData(output: string): WireGuardData {
   if (output.includes("wg_installed=0")) {
     return { installed: false, interfaces: [] };
   }

@@ -56,7 +56,7 @@ export interface TemperatureSensor {
   celsius: number;
 }
 
-export interface TemperatureMetrics {
+interface TemperatureMetrics {
   source: "sysfs" | "sensors" | "none";
   highestCelsius: number | null;
   sensors: TemperatureSensor[];
@@ -102,7 +102,7 @@ export interface HostMetricsSettings {
   monitoredMounts: Array<{ path: string; label?: string }>;
 }
 
-export const DEFAULT_ENABLED_WIDGETS: WidgetType[] = [
+const DEFAULT_ENABLED_WIDGETS: WidgetType[] = [
   "cpu",
   "memory",
   "disk",
@@ -116,7 +116,7 @@ export const DEFAULT_ENABLED_WIDGETS: WidgetType[] = [
   "temperature",
 ];
 
-export const DEFAULT_HOST_METRICS_SETTINGS: HostMetricsSettings = {
+const DEFAULT_HOST_METRICS_SETTINGS: HostMetricsSettings = {
   metricsEnabled: true,
   metricsInterval: null,
   enabledWidgets: DEFAULT_ENABLED_WIDGETS,

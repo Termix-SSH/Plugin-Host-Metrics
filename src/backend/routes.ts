@@ -51,7 +51,7 @@ function validateHostId(req: Request, res: Response, next: NextFunction) {
   next();
 }
 
-export function sanitizeLayout(input: unknown): HostMetricsLayout | null {
+function sanitizeLayout(input: unknown): HostMetricsLayout | null {
   if (!input || typeof input !== "object") return null;
   const obj = input as Record<string, unknown>;
   if (!Array.isArray(obj.slots)) return null;

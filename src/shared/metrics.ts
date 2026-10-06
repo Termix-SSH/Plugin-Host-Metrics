@@ -1,13 +1,13 @@
 import type { GpuMetrics } from "./stats-widgets.js";
 
 /** What GET /metrics/:id answers. */
-export interface CpuMetrics {
+interface CpuMetrics {
   percent: number | null;
   cores: number | null;
   load: [number, number, number] | null;
 }
 
-export interface MemoryMetrics {
+interface MemoryMetrics {
   percent: number | null;
   usedGiB: number | null;
   totalGiB: number | null;
@@ -36,7 +36,7 @@ interface DiskMetrics {
   filesystems?: DiskFilesystem[];
 }
 
-export interface NetworkInterface {
+interface NetworkInterface {
   name: string;
   ip: string;
   state: string;
@@ -48,7 +48,7 @@ export interface NetworkInterface {
   txRateBps?: number | null;
 }
 
-export interface ProcessInfo {
+interface ProcessInfo {
   pid: string;
   user: string;
   cpu: string;
@@ -56,7 +56,7 @@ export interface ProcessInfo {
   command: string;
 }
 
-export interface LoginRecord {
+interface LoginRecord {
   user: string;
   ip: string;
   time: string;
@@ -72,7 +72,7 @@ export interface ListeningPort {
   process?: string;
 }
 
-export interface FirewallRule {
+interface FirewallRule {
   chain: string;
   target: string;
   protocol: string;
