@@ -517,8 +517,20 @@ function HostMetricsInner({
                   <h1 className="truncate text-base font-bold tracking-tight">
                     {title}
                   </h1>
+                  {currentHostConfig && (
+                    <>
+                      <span
+                        aria-hidden
+                        className="h-4 w-px shrink-0 bg-border"
+                      />
+                      <span className="truncate font-mono text-[10px] text-muted-foreground">
+                        {currentHostConfig.username}@{currentHostConfig.ip}:
+                        {currentHostConfig.port}
+                      </span>
+                    </>
+                  )}
                 </div>
-                <div className="flex items-center gap-0">
+                <div className="flex items-center gap-1">
                   <ComponentSlot
                     slotId="host-metrics.toolbar"
                     props={{
@@ -536,8 +548,8 @@ function HostMetricsInner({
                       />
                       <Button
                         variant="ghost"
-                        size="sm"
-                        className="ml-2 text-xs text-muted-foreground"
+                        size="xs"
+                        className="text-muted-foreground"
                         onClick={() =>
                           setLayout(
                             defaultLayoutFromWidgets(
@@ -551,32 +563,35 @@ function HostMetricsInner({
                     </>
                   )}
                   <Button
-                    variant={editMode ? "default" : "ghost"}
-                    size="icon"
-                    className="ml-1"
+                    variant="ghost"
+                    size="icon-sm"
+                    className={editMode ? "text-accent-brand" : ""}
                     title={t("hostMetrics.customize")}
+                    aria-label={t("hostMetrics.customize")}
+                    aria-pressed={editMode}
                     onClick={() => setEditMode((v) => !v)}
                   >
                     <LayoutDashboard className="size-4" />
                   </Button>
                   <Button
-                    variant="outline"
-                    size="default"
+                    variant="ghost"
+                    size="icon-sm"
                     onClick={handleRefresh}
                     disabled={isRefreshing}
-                    className="ml-1 gap-2 font-semibold"
+                    className="text-accent-brand hover:text-accent-brand"
+                    title={t("hostMetrics.refresh")}
+                    aria-label={t("hostMetrics.refresh")}
                   >
                     <RefreshCw
-                      className={`size-3.5 ${isRefreshing ? "animate-spin" : ""}`}
+                      className={`size-4 ${isRefreshing ? "animate-spin" : ""}`}
                     />
-                    {t("hostMetrics.refresh")}
                   </Button>
                 </div>
               </div>
             )}
 
           {editMode && (
-            <div className="mx-3 mt-3 flex shrink-0 items-center gap-2 border border-dashed border-accent-brand/40 bg-accent-brand/5 px-4 py-2">
+            <div className="mx-2.5 mt-2.5 flex shrink-0 items-center gap-2 border border-dashed border-accent-brand/40 bg-accent-brand/5 px-3 py-2">
               <LayoutDashboard className="size-3.5 shrink-0 text-accent-brand" />
               <span className="text-xs font-semibold text-accent-brand">
                 {t("hostMetrics.editModeInstructions")}
@@ -585,7 +600,7 @@ function HostMetricsInner({
           )}
 
           {showCards && (
-            <div className="px-3 pt-3 pb-3">
+            <div className="p-2.5">
               <CardGridCanvas
                 slots={visibleSlots}
                 columns={effectiveLayout.columns}

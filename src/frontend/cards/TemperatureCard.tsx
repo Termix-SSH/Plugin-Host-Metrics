@@ -1,4 +1,4 @@
-import { StatRow, MetricCard } from "@termix-ssh/plugin-sdk/ui";
+import { StatRow, MetricCard, Select2 } from "@termix-ssh/plugin-sdk/ui";
 import { type ServerMetrics } from "../../shared/metrics.js";
 import { Thermometer } from "lucide-react";
 import { useSettings, useTranslation } from "@termix-ssh/plugin-sdk/frontend";
@@ -65,7 +65,7 @@ export function TemperatureCard({
         {sensors.length > 1 && (
           <label className="flex flex-col gap-1 text-xs text-muted-foreground">
             <span>{t("hostMetrics.primaryTemperatureSensor")}</span>
-            <select
+            <Select2
               value={preferredSensor?.label ?? ""}
               onChange={(event) => chooseSensor(event.target.value)}
               className="h-8 border border-border bg-background px-2 text-xs text-foreground outline-none focus:ring-1 focus:ring-ring"
@@ -76,7 +76,7 @@ export function TemperatureCard({
                   {sensor.label}
                 </option>
               ))}
-            </select>
+            </Select2>
           </label>
         )}
 

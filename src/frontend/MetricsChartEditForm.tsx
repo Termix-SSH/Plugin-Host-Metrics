@@ -1,4 +1,4 @@
-import { Select2 } from "@termix-ssh/plugin-sdk/ui";
+import { Select2, Checkbox } from "@termix-ssh/plugin-sdk/ui";
 import { useHosts, useTranslation } from "@termix-ssh/plugin-sdk/frontend";
 import type {
   MetricsChartConfig,
@@ -92,13 +92,11 @@ export function MetricsChartEditForm({
       </div>
 
       <label className="flex items-center gap-2 text-xs text-muted-foreground cursor-pointer">
-        <input
-          type="checkbox"
+        <Checkbox
           checked={config.showCurrentValue}
-          onChange={(e) =>
-            onChange({ ...config, showCurrentValue: e.target.checked })
+          onCheckedChange={(checked) =>
+            onChange({ ...config, showCurrentValue: checked === true })
           }
-          className="accent-accent-brand"
         />
         {t("homepage.showCurrentValue")}
       </label>

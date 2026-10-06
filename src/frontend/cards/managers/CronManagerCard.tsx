@@ -1,4 +1,4 @@
-import { Button } from "@termix-ssh/plugin-sdk/ui";
+import { Button, Checkbox } from "@termix-ssh/plugin-sdk/ui";
 import { useEffect, useMemo, useState } from "react";
 import { Clock4, Plus, Trash2, Save } from "lucide-react";
 import { useTranslation } from "@termix-ssh/plugin-sdk/frontend";
@@ -129,11 +129,11 @@ export function CronManagerCard({ hostId }: { hostId: number | null }) {
             className="flex flex-col gap-1 border border-border bg-muted/20 p-2"
           >
             <div className="flex items-center gap-2">
-              <input
-                type="checkbox"
+              <Checkbox
                 checked={e.enabled}
-                onChange={(ev) => update(i, { enabled: ev.target.checked })}
-                className="accent-accent-brand"
+                onCheckedChange={(checked) =>
+                  update(i, { enabled: checked === true })
+                }
                 title={t("hostMetrics.managers.enabled")}
               />
               <input

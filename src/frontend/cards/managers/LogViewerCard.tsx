@@ -1,4 +1,8 @@
-import { useAdaptivePolling, Select2 } from "@termix-ssh/plugin-sdk/ui";
+import {
+  useAdaptivePolling,
+  Select2,
+  Checkbox,
+} from "@termix-ssh/plugin-sdk/ui";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { ScrollText } from "lucide-react";
 import { useTranslation } from "@termix-ssh/plugin-sdk/frontend";
@@ -115,11 +119,9 @@ export function LogViewerCard({ hostId }: { hostId: number | null }) {
       onRefresh={fetchLog}
       headerExtra={
         <label className="flex items-center gap-1 text-[10px] text-muted-foreground">
-          <input
-            type="checkbox"
+          <Checkbox
             checked={follow}
-            onChange={(e) => setFollow(e.target.checked)}
-            className="accent-accent-brand"
+            onCheckedChange={(checked) => setFollow(checked === true)}
           />
           {t("hostMetrics.managers.follow")}
         </label>
