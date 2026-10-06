@@ -36,8 +36,6 @@
       "noProcesses": "No processes are using the GPU"
     },
     "failedToFetchHostConfig": "Failed to fetch host configuration",
-    "serverOffline": "Server Offline",
-    "cannotFetchMetrics": "Cannot fetch metrics from offline server",
     "totpFailed": "TOTP verification failed",
     "noneAuthNotSupported": "Host Metrics does not support 'none' authentication type.",
     "noHostSelected": "No host selected",

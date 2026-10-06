@@ -1,4 +1,7 @@
-import { FullScreenAppWrapper, ConnectionScreen } from "@termix-ssh/plugin-sdk/ui";
+import {
+  FullScreenAppWrapper,
+  ConnectionScreen,
+} from "@termix-ssh/plugin-sdk/ui";
 import React from "react";
 import { useTranslation } from "@termix-ssh/plugin-sdk/frontend";
 import { HostMetricsTab } from "./HostMetricsTab.tsx";
@@ -27,8 +30,8 @@ const HostMetricsApp: React.FC<HostMetricsAppProps> = ({ hostId }) => {
           return (
             <div className="relative h-full w-full">
               <ConnectionScreen
-                status="disconnected"
-                message={t("hosts.hostNotFound")}
+                status="error"
+                unavailable={{ title: t("hosts.hostNotFound") }}
               />
             </div>
           );

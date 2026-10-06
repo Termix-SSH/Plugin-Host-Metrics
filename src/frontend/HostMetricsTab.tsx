@@ -623,23 +623,21 @@ function HostMetricsInner({
           <ConnectionScreen
             status={showOffline ? "error" : metricsRetry.status}
             message={t("hostMetrics.connecting")}
+            detail={
+              currentHostConfig?.ip
+                ? `${currentHostConfig.username ? `${currentHostConfig.username}@` : ""}${currentHostConfig.ip}${currentHostConfig.port ? `:${currentHostConfig.port}` : ""}`
+                : undefined
+            }
             attempt={metricsRetry.attempt}
             maxAttempts={metricsRetry.maxAttempts}
             nextRetryInMs={metricsRetry.nextRetryInMs}
             onManualRetry={metricsRetry.retryNow}
             logPosition={
+              showOffline ||
               metricsRetry.status === "error" ||
               metricsRetry.status === "disconnected"
                 ? "top"
                 : "bottom"
-            }
-            unavailable={
-              showOffline
-                ? {
-                    title: t("hostMetrics.serverOffline"),
-                    hint: t("hostMetrics.cannotFetchMetrics"),
-                  }
-                : null
             }
           />
         )}
