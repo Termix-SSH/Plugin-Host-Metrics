@@ -217,10 +217,6 @@
     "hostNotFound": "Host not found",
     "loadingHost": "Loading host..."
   },
-  "onboarding": {
-    "feature_metrics": "Metrics and alerts",
-    "feature_metrics_desc": "Track CPU, memory and disk over time, and get alerted when they go bad."
-  },
   "admin": {
     "metricsHistoryRetention": "Metrics History Retention",
     "metricsHistoryRetentionRange": "1 to 90 days",

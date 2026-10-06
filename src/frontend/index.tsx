@@ -1,4 +1,3 @@
-import type { ComponentType } from "react";
 import { Activity, Server } from "lucide-react";
 import type {
   HostEditorSectionProps,
@@ -125,13 +124,6 @@ export async function activate(app: TermixApp): Promise<void> {
     titleKey: "nav.hostMetrics",
     kind: "component",
     component: createHomepageHostMetrics(summaries),
-  });
-
-  app.registerSlotContribution("onboarding.features", {
-    actionId: "host-metrics.feature",
-    titleKey: "onboarding.feature_metrics",
-    descriptionKey: "onboarding.feature_metrics_desc",
-    icon: Activity as ComponentType<{ className?: string }>,
   });
 
   app.declareActionSlot({
