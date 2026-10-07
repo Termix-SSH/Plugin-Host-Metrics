@@ -25,6 +25,7 @@ npm run format     # format the code with Prettier
 
 - **Collect metrics:** turn metrics on for this host
 - **Metrics interval (seconds):** use a different interval for this host
+- **Enabled widgets:** which metrics cards show for this host
 - **Excluded mounts:** mount points or filesystem types to hide
 - **Monitored paths:** extra paths to watch that are not separate mounts
 
