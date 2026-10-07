@@ -32,3 +32,9 @@ npm run format     # format the code with Prettier
 ## Permissions
 
 - `host-metrics.use`: view metrics and use the manager cards. Admins and users have it by default.
+
+## Services
+
+Provides to other plugins:
+
+- `host-metrics.viewers`: read a host's current metrics

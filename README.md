@@ -27,14 +27,6 @@ Host Metrics shows what is happening on your servers, live and over time, and le
 
 <br />
 
-## Services
-
-Provides to other plugins:
-
-- `host-metrics.viewers`: read a host's current metrics
-
-<br />
-
 ## Sponsors
 
 Interested in a paid placement to support development? Email [mail@termix.site](mailto:mail@termix.site).
