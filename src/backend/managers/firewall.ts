@@ -1,4 +1,7 @@
-import { execElevated, detectPlatform } from "@termix-ssh/plugin-sdk/host-commands";
+import {
+  execElevated,
+  detectPlatform,
+} from "@termix-ssh/plugin-sdk/host-commands";
 import {
   isValidPort,
   isValidIpProtocol,
@@ -41,6 +44,21 @@ export function buildNftRuleCommand(
       ? "reject"
       : spec.target.toLowerCase();
   return `nft ${verb} rule inet filter input ${spec.protocol} dport ${spec.port} ${action}`;
+}
+
+const UFW_ACTIONS: Record<string, string> = {
+  ACCEPT: "allow",
+  DROP: "deny",
+  REJECT: "reject",
+};
+
+export function buildUfwRuleCommand(
+  op: "add" | "delete",
+  spec: FirewallRuleSpec,
+): string {
+  const action = UFW_ACTIONS[spec.target.toUpperCase()] ?? "deny";
+  const rule = `${action} ${spec.port}/${spec.protocol}`;
+  return op === "add" ? `ufw ${rule}` : `ufw delete ${rule}`;
 }
 
 export function registerFirewallRoutes(
@@ -132,9 +150,11 @@ export function registerFirewallRoutes(
         };
         const fw = await collectFirewallMetrics(client);
         const cmd =
-          fw.type === "nftables"
-            ? buildNftRuleCommand(op, spec)
-            : buildIptablesRuleCommand(op, spec);
+          fw.type === "ufw"
+            ? buildUfwRuleCommand(op, spec)
+            : fw.type === "nftables"
+              ? buildNftRuleCommand(op, spec)
+              : buildIptablesRuleCommand(op, spec);
         const result = await execElevated(client, cmd, host.sudoPassword, {
           forceSudo: true,
         });

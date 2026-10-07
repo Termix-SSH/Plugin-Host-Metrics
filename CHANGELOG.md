@@ -1,5 +1,11 @@
 # Changelog
 
+## Unreleased
+
+### Fixed
+
+- The firewall card reads ufw and finds firewall tools outside the user's PATH, with passwordless sudo when needed
+
 ## 1.0.0
 
 ### Added

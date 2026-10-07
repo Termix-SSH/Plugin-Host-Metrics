@@ -46,7 +46,7 @@ export interface FirewallChain {
 }
 
 export interface FirewallMetrics {
-  type: "iptables" | "nftables" | "none";
+  type: "iptables" | "nftables" | "ufw" | "none";
   status: "active" | "inactive" | "unknown";
   chains: FirewallChain[];
 }

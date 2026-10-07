@@ -198,18 +198,78 @@ function parseNftablesOutput(output: string): FirewallChain[] {
   return chains;
 }
 
+/** Parses `ufw status verbose`. */
+export function parseUfwStatus(output: string): FirewallMetrics | null {
+  const lines = output.split("\n").map((line) => line.trimEnd());
+  const statusLine = lines.find((line) => line.startsWith("Status:"));
+  if (!statusLine) return null;
+  const active = /status:\s*active/i.test(statusLine);
+
+  const defaults = lines.find((line) => line.startsWith("Default:")) ?? "";
+  const policyFor = (direction: string) =>
+    new RegExp(`(\\w+) \\(${direction}\\)`, "i")
+      .exec(defaults)?.[1]
+      ?.toUpperCase() ?? "-";
+  const input: FirewallChain = {
+    name: "INPUT",
+    policy: policyFor("incoming"),
+    rules: [],
+  };
+  const output_: FirewallChain = {
+    name: "OUTPUT",
+    policy: policyFor("outgoing"),
+    rules: [],
+  };
+
+  const header = lines.findIndex((line) => /^--\s+------/.test(line));
+  for (const line of header === -1 ? [] : lines.slice(header + 1)) {
+    const [to, action, from] = line.trim().split(/\s{2,}/);
+    if (!to || !action || !from) continue;
+    const [target, direction] = action.split(/\s+/);
+    const [port, protocol] = to.replace(/\s*\(v6\)$/, "").split("/");
+    const anywhere = (value: string) =>
+      /^anywhere/i.test(value) ? "0.0.0.0/0" : value;
+    const rule: FirewallRule = {
+      chain: direction === "OUT" ? "OUTPUT" : "INPUT",
+      target: target.toUpperCase(),
+      protocol: protocol || "all",
+      source: anywhere(from),
+      destination: "0.0.0.0/0",
+      ...(/^[\d,:]+$/.test(port) ? { dport: port } : { extra: to }),
+    };
+    (rule.chain === "OUTPUT" ? output_ : input).rules.push(rule);
+  }
+
+  return {
+    type: "ufw",
+    status: active ? "active" : "inactive",
+    chains: active ? [input, output_] : [],
+  };
+}
+
+// Firewall tools live in sbin, which a normal user's PATH often lacks. When
+// the plain command can't read the rules, try passwordless sudo.
+const SBIN_PATH = 'PATH="$PATH:/usr/local/sbin:/usr/sbin:/sbin"';
+
+async function readFirewall(client: Client, command: string): Promise<string> {
+  for (const prefix of ["", "sudo -n "]) {
+    const result = await execCommand(
+      client,
+      `${SBIN_PATH} ${prefix}${command} 2>/dev/null`,
+      15000,
+    );
+    if (result.stdout?.trim()) return result.stdout;
+  }
+  return "";
+}
+
 export async function collectFirewallMetrics(
   client: Client,
 ): Promise<FirewallMetrics> {
   try {
-    const iptablesResult = await execCommand(
-      client,
-      "iptables-save 2>/dev/null",
-      15000,
-    );
-
-    if (iptablesResult.stdout && iptablesResult.stdout.includes("*filter")) {
-      const chains = parseIptablesOutput(iptablesResult.stdout);
+    const iptables = await readFirewall(client, "iptables-save");
+    if (iptables.includes("*filter")) {
+      const chains = parseIptablesOutput(iptables);
       const hasRules = chains.some((c) => c.rules.length > 0);
 
       return {
@@ -222,14 +282,9 @@ export async function collectFirewallMetrics(
       };
     }
 
-    const nftResult = await execCommand(
-      client,
-      "nft list ruleset 2>/dev/null",
-      15000,
-    );
-
-    if (nftResult.stdout && nftResult.stdout.trim()) {
-      const chains = parseNftablesOutput(nftResult.stdout);
+    const nft = await readFirewall(client, "nft list ruleset");
+    if (nft.trim()) {
+      const chains = parseNftablesOutput(nft);
       const hasRules = chains.some((c) => c.rules.length > 0);
 
       return {
@@ -238,6 +293,11 @@ export async function collectFirewallMetrics(
         chains,
       };
     }
+
+    const ufw = parseUfwStatus(
+      await readFirewall(client, "ufw status verbose"),
+    );
+    if (ufw) return ufw;
 
     return {
       type: "none",

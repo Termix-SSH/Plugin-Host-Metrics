@@ -10,7 +10,7 @@ import { ManagerCardShell } from "@termix-ssh/plugin-sdk/ui";
 import { ManagerSearch } from "@termix-ssh/plugin-sdk/ui";
 
 interface FirewallData {
-  type: "iptables" | "nftables" | "none";
+  type: "iptables" | "nftables" | "ufw" | "none";
   status: string;
   chains: FirewallChain[];
 }

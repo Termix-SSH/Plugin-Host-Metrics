@@ -47,6 +47,7 @@ import {
 import {
   buildIptablesRuleCommand,
   buildNftRuleCommand,
+  buildUfwRuleCommand,
 } from "../../../src/backend/managers/firewall.js";
 import {
   parsePasswd,
@@ -365,6 +366,16 @@ describe("firewall", () => {
         target: "ACCEPT",
       }),
     ).toContain("add rule inet filter input tcp dport 22 accept");
+  });
+  it("builds ufw rules", () => {
+    const spec = { protocol: "tcp", port: 443, target: "ACCEPT" } as const;
+    expect(buildUfwRuleCommand("add", spec)).toBe("ufw allow 443/tcp");
+    expect(buildUfwRuleCommand("delete", spec)).toBe(
+      "ufw delete allow 443/tcp",
+    );
+    expect(
+      buildUfwRuleCommand("add", { protocol: "udp", port: 53, target: "DROP" }),
+    ).toBe("ufw deny 53/udp");
   });
 });
 
