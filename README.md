@@ -14,6 +14,8 @@
 
 Host Metrics shows what is happening on your servers, live and over time, and lets you manage common things on them without opening a terminal. It works over SSH on most Linux servers with nothing to install.
 
+Read the [docs](https://docs.termix.site/plugins/host-metrics) to set it up and use it.
+
 <br />
 
 ## Features

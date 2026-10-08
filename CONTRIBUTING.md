@@ -10,31 +10,6 @@ npm run validate   # check manifest.json
 npm run format     # format the code with Prettier
 ```
 
-## Settings
+## Docs
 
-### Admin
-
-- **Metrics interval (seconds):** how often a host is checked while someone views it
-- **History retention (days):** how long history is kept for the charts
-
-### User
-
-- **Temperature unit:** Celsius or Fahrenheit
-
-### Host
-
-- **Collect metrics:** turn metrics on for this host
-- **Metrics interval (seconds):** use a different interval for this host
-- **Enabled widgets:** which metrics cards show for this host
-- **Excluded mounts:** mount points or filesystem types to hide
-- **Monitored paths:** extra paths to watch that are not separate mounts
-
-## Permissions
-
-- `host-metrics.use`: view metrics and use the manager cards. Admins and users have it by default.
-
-## Services
-
-Provides to other plugins:
-
-- `host-metrics.viewers`: read a host's current metrics
+The docs for this plugin are in [docs/](docs/) and are published at https://docs.termix.site/plugins/host-metrics. Settings, permissions, services, environment variables and the API reference are made from `manifest.json` and the `@openapi` comments in the code, so keep those up to date instead of writing them by hand. See [writing docs](https://docs.termix.site/develop/docs).
