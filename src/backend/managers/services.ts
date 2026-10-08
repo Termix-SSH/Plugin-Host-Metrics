@@ -1,4 +1,7 @@
-import { execCommand, execElevated } from "@termix-ssh/plugin-sdk/host-commands";
+import {
+  execCommand,
+  execElevated,
+} from "@termix-ssh/plugin-sdk/host-commands";
 import {
   isValidSystemdUnit,
   isValidServiceAction,
