@@ -58,7 +58,7 @@ export function registerProcessRoutes(
   const { validateHostId } = deps;
   /**
    * @openapi
-   * /host-metrics/managers/processes/{id}:
+   * /plugin-api/host-metrics/host-metrics/managers/processes/{id}:
    *   get:
    *     summary: List processes (rich, sortable, filterable client-side)
    *     tags: [Host Metrics]
@@ -81,7 +81,7 @@ export function registerProcessRoutes(
 
   /**
    * @openapi
-   * /host-metrics/managers/processes/{id}/signal:
+   * /plugin-api/host-metrics/host-metrics/managers/processes/{id}/signal:
    *   post:
    *     summary: Send a signal to a process (TERM/KILL/HUP/INT)
    *     tags: [Host Metrics]

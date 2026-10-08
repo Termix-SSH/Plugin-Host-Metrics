@@ -78,7 +78,7 @@ export function registerUserRoutes(app: Router, deps: ManagerRoutesDeps): void {
   const { validateHostId } = deps;
   /**
    * @openapi
-   * /plugin-api/host-metrics/managers/users/{id}:
+   * /plugin-api/host-metrics/host-metrics/managers/users/{id}:
    *   get:
    *     summary: List local users and groups
    *     tags: [Host Metrics]
@@ -112,7 +112,7 @@ export function registerUserRoutes(app: Router, deps: ManagerRoutesDeps): void {
 
   /**
    * @openapi
-   * /plugin-api/host-metrics/managers/users/{id}/action:
+   * /plugin-api/host-metrics/host-metrics/managers/users/{id}/action:
    *   post:
    *     summary: Create or delete a user, or change a user's groups
    *     tags: [Host Metrics]

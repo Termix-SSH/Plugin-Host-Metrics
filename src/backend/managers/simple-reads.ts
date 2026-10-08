@@ -112,7 +112,7 @@ export function registerSimpleReadRoutes(
   const { validateHostId } = deps;
   /**
    * @openapi
-   * /plugin-api/host-metrics/managers/top-memory/{id}:
+   * /plugin-api/host-metrics/host-metrics/managers/top-memory/{id}:
    *   get:
    *     summary: List the processes using the most memory
    *     tags: [Host Metrics]
@@ -138,7 +138,7 @@ export function registerSimpleReadRoutes(
 
   /**
    * @openapi
-   * /plugin-api/host-metrics/managers/timers/{id}:
+   * /plugin-api/host-metrics/host-metrics/managers/timers/{id}:
    *   get:
    *     summary: List systemd timers
    *     tags: [Host Metrics]
@@ -164,7 +164,7 @@ export function registerSimpleReadRoutes(
 
   /**
    * @openapi
-   * /plugin-api/host-metrics/managers/disk-breakdown/{id}:
+   * /plugin-api/host-metrics/host-metrics/managers/disk-breakdown/{id}:
    *   get:
    *     summary: List mounted filesystems and their usage
    *     tags: [Host Metrics]

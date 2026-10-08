@@ -19,7 +19,7 @@ export function registerPackageRoutes(
   const { validateHostId } = deps;
   /**
    * @openapi
-   * /plugin-api/host-metrics/managers/packages/{id}:
+   * /plugin-api/host-metrics/host-metrics/managers/packages/{id}:
    *   get:
    *     summary: List upgradable packages and the package manager
    *     tags: [Host Metrics]
@@ -51,7 +51,7 @@ export function registerPackageRoutes(
 
   /**
    * @openapi
-   * /plugin-api/host-metrics/managers/packages/{id}/action:
+   * /plugin-api/host-metrics/host-metrics/managers/packages/{id}/action:
    *   post:
    *     summary: Install or upgrade a package, or upgrade everything
    *     tags: [Host Metrics]

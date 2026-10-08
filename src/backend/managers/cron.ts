@@ -84,7 +84,7 @@ export function registerCronRoutes(app: Router, deps: ManagerRoutesDeps): void {
   const { validateHostId } = deps;
   /**
    * @openapi
-   * /plugin-api/host-metrics/managers/cron/{id}:
+   * /plugin-api/host-metrics/host-metrics/managers/cron/{id}:
    *   get:
    *     summary: List the SSH user's crontab entries
    *     tags: [Host Metrics]
@@ -110,7 +110,7 @@ export function registerCronRoutes(app: Router, deps: ManagerRoutesDeps): void {
 
   /**
    * @openapi
-   * /plugin-api/host-metrics/managers/cron/{id}:
+   * /plugin-api/host-metrics/host-metrics/managers/cron/{id}:
    *   post:
    *     summary: Replace the SSH user's crontab
    *     tags: [Host Metrics]

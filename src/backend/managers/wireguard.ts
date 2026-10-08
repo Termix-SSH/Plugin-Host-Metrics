@@ -123,7 +123,7 @@ export function registerWireGuardRoutes(
   const { validateHostId } = deps;
   /**
    * @openapi
-   * /host-metrics/managers/wireguard/{id}:
+   * /plugin-api/host-metrics/host-metrics/managers/wireguard/{id}:
    *   get:
    *     summary: Get WireGuard interfaces and peers
    *     tags:
@@ -152,7 +152,7 @@ export function registerWireGuardRoutes(
 
   /**
    * @openapi
-   * /host-metrics/managers/wireguard/{id}/action:
+   * /plugin-api/host-metrics/host-metrics/managers/wireguard/{id}/action:
    *   post:
    *     summary: Bring a WireGuard interface up or down
    *     tags:

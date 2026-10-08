@@ -58,7 +58,7 @@ export function registerServiceRoutes(
   const { validateHostId } = deps;
   /**
    * @openapi
-   * /host-metrics/managers/services/{id}:
+   * /plugin-api/host-metrics/host-metrics/managers/services/{id}:
    *   get:
    *     summary: List systemd services
    *     tags: [Host Metrics]
@@ -81,7 +81,7 @@ export function registerServiceRoutes(
 
   /**
    * @openapi
-   * /host-metrics/managers/services/{id}/action:
+   * /plugin-api/host-metrics/host-metrics/managers/services/{id}/action:
    *   post:
    *     summary: Start/stop/restart/enable/disable a systemd service
    *     tags: [Host Metrics]

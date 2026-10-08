@@ -26,7 +26,7 @@ export function registerManagerRoutes(
 
   /**
    * @openapi
-   * /host-metrics/platform/{id}:
+   * /plugin-api/host-metrics/host-metrics/platform/{id}:
    *   get:
    *     summary: Detect available management tooling on a host
    *     tags:

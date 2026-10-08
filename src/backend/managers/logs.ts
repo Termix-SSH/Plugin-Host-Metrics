@@ -45,7 +45,7 @@ export function registerLogRoutes(app: Router, deps: ManagerRoutesDeps): void {
   const { validateHostId } = deps;
   /**
    * @openapi
-   * /plugin-api/host-metrics/managers/logs/{id}/files:
+   * /plugin-api/host-metrics/host-metrics/managers/logs/{id}/files:
    *   get:
    *     summary: List readable log files under /var/log
    *     tags: [Host Metrics]
@@ -76,7 +76,7 @@ export function registerLogRoutes(app: Router, deps: ManagerRoutesDeps): void {
 
   /**
    * @openapi
-   * /plugin-api/host-metrics/managers/logs/{id}:
+   * /plugin-api/host-metrics/host-metrics/managers/logs/{id}:
    *   get:
    *     summary: Tail a log file or a systemd unit's journal
    *     tags: [Host Metrics]

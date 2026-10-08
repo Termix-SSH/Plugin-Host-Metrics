@@ -153,7 +153,7 @@ export function registerSslRoutes(app: Router, deps: ManagerRoutesDeps): void {
   const { validateHostId } = deps;
   /**
    * @openapi
-   * /plugin-api/host-metrics/managers/ssl/{id}:
+   * /plugin-api/host-metrics/host-metrics/managers/ssl/{id}:
    *   get:
    *     summary: List certificates from certbot and acme.sh
    *     tags: [Host Metrics]
@@ -202,7 +202,7 @@ export function registerSslRoutes(app: Router, deps: ManagerRoutesDeps): void {
 
   /**
    * @openapi
-   * /plugin-api/host-metrics/managers/ssl/{id}/issue:
+   * /plugin-api/host-metrics/host-metrics/managers/ssl/{id}/issue:
    *   post:
    *     summary: Issue a certificate with certbot or acme.sh
    *     tags: [Host Metrics]
@@ -276,7 +276,7 @@ export function registerSslRoutes(app: Router, deps: ManagerRoutesDeps): void {
 
   /**
    * @openapi
-   * /plugin-api/host-metrics/managers/ssl/{id}/renew:
+   * /plugin-api/host-metrics/host-metrics/managers/ssl/{id}/renew:
    *   post:
    *     summary: Renew certificates
    *     tags: [Host Metrics]
@@ -326,7 +326,7 @@ export function registerSslRoutes(app: Router, deps: ManagerRoutesDeps): void {
 
   /**
    * @openapi
-   * /host-metrics/managers/ssl/{id}/revoke:
+   * /plugin-api/host-metrics/host-metrics/managers/ssl/{id}/revoke:
    *   post:
    *     summary: Revoke and remove an issued certificate (certbot or acme.sh)
    *     tags: [Host Metrics]

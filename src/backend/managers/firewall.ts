@@ -68,7 +68,7 @@ export function registerFirewallRoutes(
   const { validateHostId } = deps;
   /**
    * @openapi
-   * /plugin-api/host-metrics/managers/firewall/{id}:
+   * /plugin-api/host-metrics/host-metrics/managers/firewall/{id}:
    *   get:
    *     summary: Read the host firewall (iptables, nftables or ufw)
    *     tags: [Host Metrics]
@@ -93,7 +93,7 @@ export function registerFirewallRoutes(
 
   /**
    * @openapi
-   * /plugin-api/host-metrics/managers/firewall/{id}/rule:
+   * /plugin-api/host-metrics/host-metrics/managers/firewall/{id}/rule:
    *   post:
    *     summary: Add or delete an input rule
    *     tags: [Host Metrics]
@@ -169,7 +169,7 @@ export function registerFirewallRoutes(
 
   /**
    * @openapi
-   * /plugin-api/host-metrics/managers/firewall/{id}/persist:
+   * /plugin-api/host-metrics/host-metrics/managers/firewall/{id}/persist:
    *   post:
    *     summary: Save the current firewall rules so they survive a reboot
    *     tags: [Host Metrics]

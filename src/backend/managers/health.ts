@@ -151,7 +151,7 @@ export function registerHealthRoutes(
   };
   /**
    * @openapi
-   * /plugin-api/host-metrics/managers/health/{id}:
+   * /plugin-api/host-metrics/host-metrics/managers/health/{id}:
    *   get:
    *     summary: Get the host's health checks and their last results
    *     tags: [Host Metrics]
@@ -181,7 +181,7 @@ export function registerHealthRoutes(
 
   /**
    * @openapi
-   * /plugin-api/host-metrics/managers/health/{id}/config:
+   * /plugin-api/host-metrics/host-metrics/managers/health/{id}/config:
    *   post:
    *     summary: Save the host's health checks
    *     tags: [Host Metrics]
@@ -241,7 +241,7 @@ export function registerHealthRoutes(
 
   /**
    * @openapi
-   * /plugin-api/host-metrics/managers/health/{id}/run:
+   * /plugin-api/host-metrics/host-metrics/managers/health/{id}/run:
    *   post:
    *     summary: Run the host's health checks now
    *     tags: [Host Metrics]
