@@ -1,6 +1,7 @@
 import { usePermission, useTranslation } from "@termix-ssh/plugin-sdk/frontend";
 import type { MetricsSummaryStore } from "./summary-store";
 import { useMetricsSummary } from "./summary-store";
+import { hostHasMetrics } from "./host-filter";
 
 type MetricKey =
   "cpu" | "memory" | "disk" | "uptime" | "system" | "network" | "processes";
@@ -34,12 +35,16 @@ export function createDashboardHostMetrics(store: MetricsSummaryStore) {
     const allowed = usePermission("use");
     const hostId = Number(props.hostId) || null;
     const online = props.online === true;
-    const metrics = useMetricsSummary(store, allowed && online ? hostId : null);
+    const wanted = hostHasMetrics(props.host);
+    const metrics = useMetricsSummary(
+      store,
+      allowed && online && wanted ? hostId : null,
+    );
 
     const cpu = metrics?.cpu?.percent ?? null;
     const ram = metrics?.memory?.percent ?? null;
     const disk = metrics?.disk?.percent ?? null;
-    if (!allowed) return null;
+    if (!allowed || !wanted) return null;
     if (!online || (cpu === null && ram === null && disk === null)) {
       return (
         <div className="flex items-center gap-3">

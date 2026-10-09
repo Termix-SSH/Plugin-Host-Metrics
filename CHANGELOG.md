@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.0.1
+
+### Fixed
+
+- Dashboard rows no longer poll metrics for hosts without SSH or with metrics turned off
+
 ## 1.0.0
 
 ### Added

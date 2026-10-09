@@ -13,20 +13,13 @@ import { metricsChartWidget } from "./MetricsChartWidget";
 import { TerminalMetricsStatus } from "./TerminalMetricsStatus";
 import { createHostMetricsApi } from "./host-metrics-api";
 import { createMetricsSummaryStore } from "./summary-store";
+import { metricsEnabledFor } from "./host-filter";
 import {
   createDashboardHostMetrics,
   createHomepageHostMetrics,
 } from "./SummaryViews";
 
 type HostMetricsTabConfig = Parameters<typeof HostMetricsTab>[0]["hostConfig"];
-
-/** This plugin's metricsEnabled host setting; on unless turned off. */
-function metricsEnabledFor(host: unknown): boolean {
-  const bag = (
-    host as { pluginSettings?: Record<string, Record<string, unknown>> }
-  )?.pluginSettings;
-  return bag?.["host-metrics"]?.metricsEnabled !== false;
-}
 
 function MetricsTab({ sshHost, label, isVisible }: TabProps) {
   return (
