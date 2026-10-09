@@ -217,6 +217,30 @@ describe("health checks", () => {
     ]);
   });
 
+  it("lists saved checks for the scheduler", async () => {
+    server = await startServer();
+    const checks = [
+      { id: "web", name: "Web", type: "tcp", target: "x", port: 80 },
+    ];
+    await server.request("POST", "/host-metrics/managers/health/7/config", {
+      body: { checks, intervalSeconds: 5 },
+    });
+    const { createHostMetricsRepository } =
+      await import("../../src/backend/repository.js");
+    const repository = await createHostMetricsRepository(
+      server.mock.ctx.db as never,
+    );
+    // Below the minimum, so the default is stored.
+    expect(await repository.listAllChecks()).toEqual([
+      {
+        userId: "user-1",
+        hostId: 7,
+        checks: JSON.stringify(checks),
+        intervalSeconds: 300,
+      },
+    ]);
+  });
+
   it("rejects invalid checks", async () => {
     server = await startServer();
     const response = await server.request(

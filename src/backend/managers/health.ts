@@ -6,7 +6,7 @@ import { isValidPort } from "./validation.js";
 import type { Router } from "express";
 import type { Client } from "ssh2";
 import { managerHandler, ManagerInputError } from "./route-helpers.js";
-import type { ManagerRoutesDeps } from "./types.js";
+import type { HealthCheckEvent, ManagerRoutesDeps } from "./types.js";
 import type { HostMetricsRepository } from "../repository.js";
 
 export interface HealthCheck {
@@ -84,7 +84,7 @@ export function parseHealthResult(
   };
 }
 
-async function runChecks(
+export async function runChecks(
   client: Client,
   checks: HealthCheck[],
 ): Promise<HealthResult[]> {
@@ -111,33 +111,64 @@ async function runChecks(
 
 const HISTORY_KEEP = 500;
 
-async function loadChecks(
-  repository: HostMetricsRepository,
-  userId: string,
-  hostId: number,
-): Promise<HealthCheck[]> {
-  const row = await repository.findChecks(userId, hostId);
-  if (!row?.checks) return [];
+/** Saved interval bounds, in seconds. The scheduler never runs faster than the minimum. */
+export const MIN_HEALTH_INTERVAL = 30;
+export const MAX_HEALTH_INTERVAL = 86400;
+export const DEFAULT_HEALTH_INTERVAL = 300;
+
+/** The valid checks in a saved JSON array. */
+export function parseChecks(json: string | null | undefined): HealthCheck[] {
+  if (!json) return [];
   try {
-    const parsed = JSON.parse(row.checks);
+    const parsed = JSON.parse(json);
     return Array.isArray(parsed) ? parsed.filter(isValidHealthCheck) : [];
   } catch {
     return [];
   }
 }
 
-export function registerHealthRoutes(
-  app: Router,
-  deps: ManagerRoutesDeps,
-): void {
-  const { validateHostId, repository } = deps;
+async function loadChecks(
+  repository: HostMetricsRepository,
+  userId: string,
+  hostId: number,
+): Promise<{ checks: HealthCheck[]; intervalSeconds: number }> {
+  const row = await repository.findChecks(userId, hostId);
+  return {
+    checks: parseChecks(row?.checks),
+    intervalSeconds: row?.intervalSeconds || DEFAULT_HEALTH_INTERVAL,
+  };
+}
 
-  const record = async (
-    userId: string,
-    hostId: number,
-    results: HealthResult[],
-  ) => {
+/** A check that went from passing to failing, or back. */
+export interface HealthChange {
+  userId: string;
+  hostId: number;
+  check: HealthCheck;
+  result: HealthResult;
+}
+
+/** Stores results, emits the health check event and reports flips. */
+export type HealthRecorder = (
+  userId: string,
+  hostId: number,
+  checks: HealthCheck[],
+  results: HealthResult[],
+) => Promise<void>;
+
+export function createHealthRecorder(deps: {
+  repository: HostMetricsRepository;
+  onHealthCheck: (event: HealthCheckEvent) => void;
+  onChange?: (change: HealthChange) => Promise<void>;
+}): HealthRecorder {
+  const { repository } = deps;
+  return async (userId, hostId, checks, results) => {
     if (!results.length) return;
+    const previous = new Map<string, boolean>();
+    if (deps.onChange) {
+      for (const row of await repository.listHealth(userId, hostId, 200)) {
+        if (!previous.has(row.checkId)) previous.set(row.checkId, row.ok);
+      }
+    }
     await repository.recordHealth(userId, hostId, results, HISTORY_KEEP);
     for (const result of results) {
       deps.onHealthCheck({
@@ -147,8 +178,26 @@ export function registerHealthRoutes(
         ok: result.ok,
         detail: result.detail ?? undefined,
       });
+      const before = previous.get(result.checkId);
+      const check = checks.find((c) => c.id === result.checkId);
+      if (
+        deps.onChange &&
+        check &&
+        before !== undefined &&
+        before !== result.ok
+      ) {
+        await deps.onChange({ userId, hostId, check, result });
+      }
     }
   };
+}
+
+export function registerHealthRoutes(
+  app: Router,
+  deps: ManagerRoutesDeps,
+): void {
+  const { validateHostId, repository, recordHealth } = deps;
+
   /**
    * @openapi
    * /plugin-api/host-metrics/host-metrics/managers/health/{id}:
@@ -161,7 +210,7 @@ export function registerHealthRoutes(
    *         required: true
    *         schema: { type: integer }
    *     responses:
-   *       200: { description: The configured checks and results. }
+   *       200: { description: The configured checks, their interval and results. }
    *       400: { description: Invalid input. }
    *       403: { description: No access to the host, or elevation denied. }
    *       500: { description: The command failed on the host. }
@@ -171,11 +220,15 @@ export function registerHealthRoutes(
     validateHostId,
     managerHandler(deps, "connect", "health_get", async (client, host) => {
       const userId = host.actorId;
-      const checks = await loadChecks(repository, userId, host.id);
+      const { checks, intervalSeconds } = await loadChecks(
+        repository,
+        userId,
+        host.id,
+      );
       const results = checks.length ? await runChecks(client, checks) : [];
-      await record(userId, host.id, results);
+      await recordHealth(userId, host.id, checks, results);
       const history = await repository.listHealth(userId, host.id, 200);
-      return { checks, results, history };
+      return { checks, intervalSeconds, results, history };
     }),
   );
 
@@ -224,10 +277,10 @@ export function registerHealthRoutes(
         }
         const interval =
           typeof intervalSeconds === "number" &&
-          intervalSeconds >= 30 &&
-          intervalSeconds <= 86400
+          intervalSeconds >= MIN_HEALTH_INTERVAL &&
+          intervalSeconds <= MAX_HEALTH_INTERVAL
             ? Math.round(intervalSeconds)
-            : 300;
+            : DEFAULT_HEALTH_INTERVAL;
         await repository.saveChecks(
           userId,
           host.id,
@@ -260,9 +313,9 @@ export function registerHealthRoutes(
     "/host-metrics/managers/health/:id/run",
     validateHostId,
     managerHandler(deps, "connect", "health_run", async (client, host) => {
-      const checks = await loadChecks(repository, host.actorId, host.id);
+      const { checks } = await loadChecks(repository, host.actorId, host.id);
       const results = await runChecks(client, checks);
-      await record(host.actorId, host.id, results);
+      await recordHealth(host.actorId, host.id, checks, results);
       return { results };
     }),
   );

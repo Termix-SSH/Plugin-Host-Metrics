@@ -29,6 +29,13 @@ export interface HealthHistoryRow {
   detail: string | null;
 }
 
+export interface HealthChecksRow {
+  userId: string;
+  hostId: number;
+  checks: string;
+  intervalSeconds: number;
+}
+
 export interface MetricsHistoryInput {
   hostId: number;
   cpuPercent: number | null;
@@ -126,6 +133,25 @@ export async function createHostMetricsRepository(db: PluginDatabase) {
       intervalSeconds: number,
     ) {
       return upsert(checks, userId, hostId, { checks: json, intervalSeconds });
+    },
+
+    /** Every saved set of checks, for the scheduler. */
+    async listAllChecks(): Promise<HealthChecksRow[]> {
+      const drizzle = await client();
+      const rows = await drizzle
+        .select({
+          userId: checks.userId,
+          hostId: checks.hostId,
+          checks: checks.checks,
+          intervalSeconds: checks.intervalSeconds,
+        })
+        .from(checks);
+      return rows.map((row: Record<string, unknown>) => ({
+        userId: String(row.userId),
+        hostId: Number(row.hostId),
+        checks: String(row.checks ?? ""),
+        intervalSeconds: Number(row.intervalSeconds) || 0,
+      }));
     },
 
     /** Adds results and keeps only the newest `keep` rows for the host. */

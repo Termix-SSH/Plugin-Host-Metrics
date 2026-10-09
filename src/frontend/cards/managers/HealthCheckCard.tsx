@@ -37,6 +37,7 @@ interface HistoryRow {
 }
 interface HealthData {
   checks: HealthCheck[];
+  intervalSeconds?: number;
   results: HealthResult[];
   history: HistoryRow[];
 }
@@ -60,12 +61,19 @@ export function HealthCheckCard({ hostId }: { hostId: number | null }) {
   );
   const [editing, setEditing] = useState(false);
   const [draft, setDraft] = useState<HealthCheck[]>([]);
+  const [intervalMinutes, setIntervalMinutes] = useState(5);
   const [saving, setSaving] = useState(false);
   const [running, setRunning] = useState(false);
 
   useEffect(() => {
     if (data?.checks && !editing) setDraft(data.checks);
   }, [data?.checks, editing]);
+
+  useEffect(() => {
+    if (data?.intervalSeconds && !editing) {
+      setIntervalMinutes(Math.max(1, Math.round(data.intervalSeconds / 60)));
+    }
+  }, [data?.intervalSeconds, editing]);
 
   const byCheck = useMemo(() => {
     const map = new Map<string, HistoryRow[]>();
@@ -90,7 +98,11 @@ export function HealthCheckCard({ hostId }: { hostId: number | null }) {
       const res = await managerPost<{ success: boolean }>(
         hostId,
         "health",
-        { checks: draft },
+        {
+          checks: draft,
+          intervalSeconds:
+            Math.min(1440, Math.max(1, Math.round(intervalMinutes) || 5)) * 60,
+        },
         "config",
       );
       if (res.success) {
@@ -173,6 +185,17 @@ export function HealthCheckCard({ hostId }: { hostId: number | null }) {
     >
       {editing ? (
         <div className="flex flex-col gap-2">
+          <label className="flex items-center gap-2 text-xs text-muted-foreground">
+            {t("hostMetrics.managers.healthInterval")}
+            <input
+              type="number"
+              min={1}
+              max={1440}
+              value={intervalMinutes}
+              onChange={(e) => setIntervalMinutes(Number(e.target.value))}
+              className="h-7 w-16 border border-border bg-background px-1.5 text-xs outline-none focus:ring-1 focus:ring-ring"
+            />
+          </label>
           {draft.map((c) => (
             <div
               key={c.id}

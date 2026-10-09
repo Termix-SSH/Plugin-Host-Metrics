@@ -9,6 +9,8 @@ import { MetricsPoller, TOPIC_HEALTH_CHECK } from "./poller.js";
 import { registerRoutes } from "./routes.js";
 import { hostImportNormalizer, hostPayloadLegacy } from "./host-import.js";
 import { newSessionId, supportsMetrics } from "./helpers.js";
+import { createHealthRecorder } from "./managers/health.js";
+import { createHealthAlerts, HealthScheduler } from "./health-scheduler.js";
 
 export type { MetricsCollectorV1 } from "./collectors.js";
 export type { CollectionStatusPayload, SnapshotPayload } from "./poller.js";
@@ -44,13 +46,28 @@ export async function activate(ctx: PluginContext) {
     sessions.dispose();
   });
 
+  const recordHealth = createHealthRecorder({
+    repository,
+    onHealthCheck: (event) => ctx.events.emit(TOPIC_HEALTH_CHECK, event),
+    onChange: createHealthAlerts(ctx, log),
+  });
+  const healthScheduler = new HealthScheduler({
+    ctx,
+    repository,
+    poller,
+    record: recordHealth,
+    log,
+  });
+  healthScheduler.start();
+  ctx.disposables.add(() => healthScheduler.dispose());
+
   registerRoutes(ctx.http.router<Router>(), {
     ctx,
     log,
     poller,
     sessions,
     repository,
-    onHealthCheck: (event) => ctx.events.emit(TOPIC_HEALTH_CHECK, event),
+    recordHealth,
   });
 
   ctx.schedule.every(60_000, () => poller.cleanupInactiveViewers());

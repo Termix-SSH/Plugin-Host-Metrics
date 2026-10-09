@@ -20,11 +20,11 @@ import {
 import type { MetricsLogger } from "./log.js";
 import { registerManagerRoutes } from "./managers/index.js";
 import { AccessDeniedError } from "./managers/route-helpers.js";
-import type { HealthCheckEvent } from "./managers/types.js";
+import type { HealthRecorder } from "./managers/health.js";
 import type { MetricsPoller } from "./poller.js";
 import { sqlTimestamp, type HostMetricsRepository } from "./repository.js";
 import { sessionKey, type MetricsSessions } from "./sessions.js";
-import { sudoPasswordOf } from "./helpers.js";
+import { MANAGER_CONNECTION, sudoPasswordOf } from "./helpers.js";
 
 export interface RouteDeps {
   ctx: PluginContext;
@@ -32,7 +32,7 @@ export interface RouteDeps {
   poller: MetricsPoller;
   sessions: MetricsSessions;
   repository: HostMetricsRepository;
-  onHealthCheck: (event: HealthCheckEvent) => void;
+  recordHealth: HealthRecorder;
 }
 
 const RANGE_OFFSETS: Record<string, number> = {
@@ -657,7 +657,7 @@ export function registerRoutes(router: Router, deps: RouteDeps): void {
     validateHostId,
     log,
     repository,
-    onHealthCheck: deps.onHealthCheck,
+    recordHealth: deps.recordHealth,
     runOnHost: async (hostId, level, fn) => {
       const userId = ctx.currentActor();
       if (!userId) throw new AccessDeniedError("Authentication required");
@@ -665,21 +665,14 @@ export function registerRoutes(router: Router, deps: RouteDeps): void {
       if (!access.hasAccess) throw new AccessDeniedError();
       const host = await poller.resolve(hostId, userId);
       if (!host) throw new AccessDeniedError("Host not found");
-      return ctx.ssh.withConnection(
-        host,
-        {
-          pool: "stats",
-          purpose: "metrics",
-          overrides: { readyTimeout: 60000 },
-        },
-        (client) =>
-          fn(client as never, {
-            id: host.id,
-            userId: host.userId,
-            actorId: userId,
-            sudoPassword: sudoPasswordOf(host),
-            enableDocker: !!host.enableDocker,
-          }),
+      return ctx.ssh.withConnection(host, MANAGER_CONNECTION, (client) =>
+        fn(client as never, {
+          id: host.id,
+          userId: host.userId,
+          actorId: userId,
+          sudoPassword: sudoPasswordOf(host),
+          enableDocker: !!host.enableDocker,
+        }),
       );
     },
   });

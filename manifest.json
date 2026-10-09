@@ -32,7 +32,8 @@
     "network:serve",
     "ui:surface",
     "events:core",
-    "users:impersonate"
+    "users:impersonate",
+    "notify:send"
   ],
   "provides": [
     {

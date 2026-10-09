@@ -22,6 +22,13 @@ export function supportsMetrics(
   return ssh.supportsBackground(host.authType || "none");
 }
 
+/** How manager routes and scheduled health checks reach a host. */
+export const MANAGER_CONNECTION = {
+  pool: "stats",
+  purpose: "metrics",
+  overrides: { readyTimeout: 60000 },
+} as const;
+
 export function sudoPasswordOf(host: MetricsHost): string | undefined {
   return host.sudoPassword || undefined;
 }

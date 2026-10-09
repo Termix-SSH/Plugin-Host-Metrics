@@ -3,6 +3,7 @@ import type { RequestHandler } from "express";
 import type { PluginHostShareLevel } from "@termix-ssh/plugin-sdk/backend";
 import type { HostMetricsRepository } from "../repository.js";
 import type { MetricsLogger } from "../log.js";
+import type { HealthRecorder } from "./health.js";
 
 /** Minimal host shape managers need (includes the decrypted sudo password). */
 export interface ManagerHost {
@@ -39,5 +40,5 @@ export interface ManagerRoutesDeps {
   runOnHost: RunOnHost;
   log: MetricsLogger;
   repository: HostMetricsRepository;
-  onHealthCheck: (event: HealthCheckEvent) => void;
+  recordHealth: HealthRecorder;
 }

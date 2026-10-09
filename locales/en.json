@@ -141,6 +141,7 @@
       "healthName": "Name",
       "healthTarget": "Host / address",
       "healthAddCheck": "Add check",
+      "healthInterval": "Check every (minutes)",
       "healthSaved": "Health checks saved",
       "healthMissingFields": "Each check needs a name and target",
       "logFile": "File",
