@@ -36,11 +36,11 @@ describe("permissions", () => {
 });
 
 describe("metrics", () => {
-  it("answers 404 until a sample exists", async () => {
+  it("answers null until a sample exists", async () => {
     server = await startServer();
     const response = await server.request("GET", "/metrics/7");
-    expect(response.status).toBe(404);
-    expect(response.body.error).toBe("Metrics not available");
+    expect(response.status).toBe(200);
+    expect(response.body).toBeNull();
   });
 
   it("refuses a host the user cannot see", async () => {

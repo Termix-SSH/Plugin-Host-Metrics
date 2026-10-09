@@ -5,6 +5,7 @@
 ### Fixed
 
 - Dashboard rows no longer poll metrics for hosts without SSH or with metrics turned off
+- Asking for metrics before the first sample returns nothing instead of a 404 that showed as a console error
 
 ## 1.0.0
 

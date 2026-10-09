@@ -121,11 +121,9 @@ export function registerRoutes(router: Router, deps: RouteDeps): void {
    *           type: integer
    *     responses:
    *       200:
-   *         description: Host metrics data.
+   *         description: Host metrics data, or null before the first sample.
    *       403:
    *         description: No access to this host.
-   *       404:
-   *         description: Metrics not available.
    */
   router.get("/metrics/:id", validateHostId, async (req, res) => {
     const id = Number(req.params.id);
@@ -134,26 +132,8 @@ export function registerRoutes(router: Router, deps: RouteDeps): void {
       return res.status(403).json({ error: "No access to this host" });
     }
     const sample = poller.getMetrics(id);
-    if (!sample) {
-      return res.status(404).json({
-        error: "Metrics not available",
-        cpu: { percent: null, cores: null, load: null },
-        memory: { percent: null, usedGiB: null, totalGiB: null },
-        disk: {
-          percent: null,
-          usedHuman: null,
-          totalHuman: null,
-          availableHuman: null,
-          mount: null,
-          filesystems: [],
-        },
-        network: { interfaces: [] },
-        uptime: { seconds: null, formatted: null },
-        processes: { total: null, running: null, top: [] },
-        system: { hostname: null, kernel: null, os: null },
-        lastChecked: new Date().toISOString(),
-      });
-    }
+    // No sample yet is normal while collection starts, so it is not an error.
+    if (!sample) return res.json(null);
     res.json({
       ...sample.data,
       lastChecked: new Date(sample.timestamp).toISOString(),
