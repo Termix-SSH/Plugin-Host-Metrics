@@ -5,6 +5,7 @@ import { useTranslation } from "@termix-ssh/plugin-sdk/frontend";
 import { toast } from "sonner";
 import { useHostMetricsApi } from "../../host-metrics-api";
 import { useManagerData, extractError } from "./useManagerData";
+import { useCanEditHost } from "./useCanEditHost";
 import { ManagerCardShell } from "@termix-ssh/plugin-sdk/ui";
 import { ManagerSearch } from "@termix-ssh/plugin-sdk/ui";
 
@@ -18,6 +19,7 @@ interface CronEntry {
 export function CronManagerCard({ hostId }: { hostId: number | null }) {
   const { managerPost } = useHostMetricsApi();
   const { t } = useTranslation();
+  const canEdit = useCanEditHost(hostId);
   const { data, loading, error, refresh } = useManagerData<{
     entries: CronEntry[];
   }>(hostId, "cron");
@@ -82,7 +84,7 @@ export function CronManagerCard({ hostId }: { hostId: number | null }) {
         toast.error(res.output || t("hostMetrics.managers.actionFailed"));
       }
     } catch (e) {
-      toast.error(extractError(e).message);
+      toast.error(extractError(e, t).message);
     } finally {
       setSaving(false);
     }
@@ -96,22 +98,24 @@ export function CronManagerCard({ hostId }: { hostId: number | null }) {
       error={error}
       onRefresh={refresh}
       headerExtra={
-        <>
-          <Button variant="ghost" size="xs" onClick={add}>
-            <Plus className="size-3" />
-          </Button>
-          {dirty && (
-            <Button
-              variant="outline"
-              size="xs"
-              disabled={saving}
-              onClick={save}
-            >
-              <Save className="size-3" />
-              {t("hostMetrics.managers.save")}
+        canEdit && (
+          <>
+            <Button variant="ghost" size="xs" onClick={add}>
+              <Plus className="size-3" />
             </Button>
-          )}
-        </>
+            {dirty && (
+              <Button
+                variant="outline"
+                size="xs"
+                disabled={saving}
+                onClick={save}
+              >
+                <Save className="size-3" />
+                {t("hostMetrics.managers.save")}
+              </Button>
+            )}
+          </>
+        )
       }
       empty={!loading && entries.length === 0}
     >
@@ -131,6 +135,7 @@ export function CronManagerCard({ hostId }: { hostId: number | null }) {
             <div className="flex items-center gap-2">
               <Checkbox
                 checked={e.enabled}
+                disabled={!canEdit}
                 onCheckedChange={(checked) =>
                   update(i, { enabled: checked === true })
                 }
@@ -138,19 +143,23 @@ export function CronManagerCard({ hostId }: { hostId: number | null }) {
               />
               <input
                 value={e.schedule}
+                readOnly={!canEdit}
                 onChange={(ev) => update(i, { schedule: ev.target.value })}
                 placeholder="0 * * * *"
                 className="h-6 w-28 border border-border bg-background px-1.5 font-mono text-[11px] outline-none focus:ring-1 focus:ring-ring"
               />
-              <button
-                onClick={() => remove(i)}
-                className="ml-auto text-muted-foreground hover:text-destructive"
-              >
-                <Trash2 className="size-3.5" />
-              </button>
+              {canEdit && (
+                <button
+                  onClick={() => remove(i)}
+                  className="ml-auto text-muted-foreground hover:text-destructive"
+                >
+                  <Trash2 className="size-3.5" />
+                </button>
+              )}
             </div>
             <input
               value={e.command}
+              readOnly={!canEdit}
               onChange={(ev) => update(i, { command: ev.target.value })}
               placeholder={t("hostMetrics.managers.command")}
               className="h-6 w-full border border-border bg-background px-1.5 font-mono text-[11px] outline-none focus:ring-1 focus:ring-ring"

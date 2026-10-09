@@ -5,6 +5,7 @@ import { useTranslation } from "@termix-ssh/plugin-sdk/frontend";
 import { toast } from "sonner";
 import { useHostMetricsApi } from "../../host-metrics-api";
 import { useManagerData, extractError } from "./useManagerData";
+import { useCanEditHost } from "./useCanEditHost";
 import { ManagerCardShell } from "@termix-ssh/plugin-sdk/ui";
 import { ManagerSearch } from "@termix-ssh/plugin-sdk/ui";
 
@@ -21,6 +22,7 @@ interface UsersData {
 export function UserManagerCard({ hostId }: { hostId: number | null }) {
   const { managerPost } = useHostMetricsApi();
   const { t } = useTranslation();
+  const canEdit = useCanEditHost(hostId);
   const { data, loading, error, refresh } = useManagerData<UsersData>(
     hostId,
     "users",
@@ -56,7 +58,7 @@ export function UserManagerCard({ hostId }: { hostId: number | null }) {
         toast.error(res.output || t("hostMetrics.managers.actionFailed"));
       }
     } catch (e) {
-      toast.error(extractError(e).message);
+      toast.error(extractError(e, t).message);
     } finally {
       setBusy(null);
     }
@@ -70,23 +72,25 @@ export function UserManagerCard({ hostId }: { hostId: number | null }) {
       error={error}
       onRefresh={refresh}
     >
-      <div className="mb-2 flex items-center gap-1.5">
-        <input
-          value={newUser}
-          onChange={(e) => setNewUser(e.target.value)}
-          placeholder={t("hostMetrics.managers.newUsername")}
-          className="h-7 flex-1 border border-border bg-background px-2 text-xs outline-none focus:ring-1 focus:ring-ring"
-        />
-        <Button
-          variant="outline"
-          size="xs"
-          disabled={!newUser || busy === newUser}
-          onClick={() => action("create", newUser)}
-        >
-          <Plus className="size-3" />
-          {t("hostMetrics.managers.addUser")}
-        </Button>
-      </div>
+      {canEdit && (
+        <div className="mb-2 flex items-center gap-1.5">
+          <input
+            value={newUser}
+            onChange={(e) => setNewUser(e.target.value)}
+            placeholder={t("hostMetrics.managers.newUsername")}
+            className="h-7 flex-1 border border-border bg-background px-2 text-xs outline-none focus:ring-1 focus:ring-ring"
+          />
+          <Button
+            variant="outline"
+            size="xs"
+            disabled={!newUser || busy === newUser}
+            onClick={() => action("create", newUser)}
+          >
+            <Plus className="size-3" />
+            {t("hostMetrics.managers.addUser")}
+          </Button>
+        </div>
+      )}
       <ManagerSearch value={filter} onChange={setFilter} count={users.length} />
       <div className="flex flex-col">
         {users.map((u) => {
@@ -105,38 +109,40 @@ export function UserManagerCard({ hostId }: { hostId: number | null }) {
                   {u.uid}
                 </span>
               </div>
-              <div className="flex shrink-0 items-center gap-1">
-                <button
-                  onClick={() =>
-                    action(
-                      isSudoer ? "removeFromGroup" : "addToGroup",
-                      u.name,
-                      "sudo",
-                    )
-                  }
-                  disabled={busy === u.name}
-                  title={
-                    isSudoer
-                      ? t("hostMetrics.managers.revokeSudo")
-                      : t("hostMetrics.managers.grantSudo")
-                  }
-                  className={`disabled:opacity-40 ${
-                    isSudoer
-                      ? "text-accent-brand hover:text-muted-foreground"
-                      : "text-muted-foreground hover:text-accent-brand"
-                  }`}
-                >
-                  <Shield className="size-3.5" />
-                </button>
-                <button
-                  onClick={() => action("delete", u.name)}
-                  disabled={busy === u.name}
-                  title={t("hostMetrics.managers.deleteUser")}
-                  className="text-muted-foreground hover:text-destructive disabled:opacity-40"
-                >
-                  <Trash2 className="size-3.5" />
-                </button>
-              </div>
+              {canEdit && (
+                <div className="flex shrink-0 items-center gap-1">
+                  <button
+                    onClick={() =>
+                      action(
+                        isSudoer ? "removeFromGroup" : "addToGroup",
+                        u.name,
+                        "sudo",
+                      )
+                    }
+                    disabled={busy === u.name}
+                    title={
+                      isSudoer
+                        ? t("hostMetrics.managers.revokeSudo")
+                        : t("hostMetrics.managers.grantSudo")
+                    }
+                    className={`disabled:opacity-40 ${
+                      isSudoer
+                        ? "text-accent-brand hover:text-muted-foreground"
+                        : "text-muted-foreground hover:text-accent-brand"
+                    }`}
+                  >
+                    <Shield className="size-3.5" />
+                  </button>
+                  <button
+                    onClick={() => action("delete", u.name)}
+                    disabled={busy === u.name}
+                    title={t("hostMetrics.managers.deleteUser")}
+                    className="text-muted-foreground hover:text-destructive disabled:opacity-40"
+                  >
+                    <Trash2 className="size-3.5" />
+                  </button>
+                </div>
+              )}
             </div>
           );
         })}

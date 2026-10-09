@@ -5,6 +5,7 @@ import { useTranslation } from "@termix-ssh/plugin-sdk/frontend";
 import { toast } from "sonner";
 import { useHostMetricsApi } from "../../host-metrics-api";
 import { useManagerData, extractError } from "./useManagerData";
+import { useCanEditHost } from "./useCanEditHost";
 import { ManagerCardShell } from "@termix-ssh/plugin-sdk/ui";
 import { ManagerSearch } from "@termix-ssh/plugin-sdk/ui";
 
@@ -17,6 +18,7 @@ interface UpgradablePackage {
 export function PackageManagerCard({ hostId }: { hostId: number | null }) {
   const { managerPost } = useHostMetricsApi();
   const { t } = useTranslation();
+  const canEdit = useCanEditHost(hostId);
   const { data, loading, error, refresh } = useManagerData<{
     pkg: string | null;
     upgradable: UpgradablePackage[];
@@ -51,7 +53,7 @@ export function PackageManagerCard({ hostId }: { hostId: number | null }) {
       );
       if (res.success) refresh();
     } catch (e) {
-      toast.error(extractError(e).message, { id: "pkg-op" });
+      toast.error(extractError(e, t).message, { id: "pkg-op" });
     } finally {
       setBusy(null);
     }
@@ -67,7 +69,7 @@ export function PackageManagerCard({ hostId }: { hostId: number | null }) {
       empty={!loading && all.length === 0}
       emptyMessage={t("hostMetrics.managers.allUpToDate")}
       headerExtra={
-        all.length > 0 ? (
+        all.length > 0 && canEdit ? (
           <Button
             variant="outline"
             size="xs"
@@ -100,14 +102,16 @@ export function PackageManagerCard({ hostId }: { hostId: number | null }) {
                 {p.newVersion ?? ""}
               </span>
             </div>
-            <Button
-              variant="ghost"
-              size="xs"
-              disabled={busy === p.name}
-              onClick={() => run("install", p.name)}
-            >
-              {t("hostMetrics.managers.update")}
-            </Button>
+            {canEdit && (
+              <Button
+                variant="ghost"
+                size="xs"
+                disabled={busy === p.name}
+                onClick={() => run("install", p.name)}
+              >
+                {t("hostMetrics.managers.update")}
+              </Button>
+            )}
           </div>
         ))}
       </div>

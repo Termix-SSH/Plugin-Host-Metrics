@@ -77,7 +77,7 @@ export function LogViewerCard({ hostId }: { hostId: number | null }) {
       }
       return changed;
     } catch (e) {
-      setError(extractError(e).message);
+      setError(extractError(e, t).message);
     } finally {
       setLoading(false);
     }

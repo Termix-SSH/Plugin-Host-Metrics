@@ -102,14 +102,14 @@ export function registerServiceRoutes(
    *     responses:
    *       200: { description: Action result. }
    *       400: { description: Invalid unit or action. }
-   *       403: { description: Elevation required or denied. }
+   *       403: { description: No edit access to the host, or elevation denied. }
    */
   app.post(
     "/host-metrics/managers/services/:id/action",
     validateHostId,
     managerHandler(
       deps,
-      "connect",
+      "edit",
       "services_action",
       async (client, host, req) => {
         const { unit, action } = req.body as {

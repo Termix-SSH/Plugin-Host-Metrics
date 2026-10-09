@@ -113,7 +113,7 @@ export function HealthCheckCard({ hostId }: { hostId: number | null }) {
         toast.error(t("hostMetrics.managers.actionFailed"));
       }
     } catch (e) {
-      toast.error(extractError(e).message);
+      toast.error(extractError(e, t).message);
     } finally {
       setSaving(false);
     }
@@ -126,7 +126,7 @@ export function HealthCheckCard({ hostId }: { hostId: number | null }) {
       await managerPost(hostId, "health", {}, "run");
       refresh();
     } catch (e) {
-      toast.error(extractError(e).message);
+      toast.error(extractError(e, t).message);
     } finally {
       setRunning(false);
     }

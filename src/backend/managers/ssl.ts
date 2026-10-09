@@ -234,13 +234,13 @@ export function registerSslRoutes(app: Router, deps: ManagerRoutesDeps): void {
    *     responses:
    *       200: { description: The issue result. }
    *       400: { description: Invalid input. }
-   *       403: { description: No access to the host, or elevation denied. }
+   *       403: { description: No edit access to the host, or elevation denied. }
    *       500: { description: The command failed on the host. }
    */
   app.post(
     "/host-metrics/managers/ssl/:id/issue",
     validateHostId,
-    managerHandler(deps, "connect", "ssl_issue", async (client, host, req) => {
+    managerHandler(deps, "edit", "ssl_issue", async (client, host, req) => {
       const body = req.body as Partial<IssueRequest>;
       if (body.client !== "certbot" && body.client !== "acme.sh") {
         throw new ManagerInputError("Invalid ACME client");
@@ -305,13 +305,13 @@ export function registerSslRoutes(app: Router, deps: ManagerRoutesDeps): void {
    *     responses:
    *       200: { description: The renew result. }
    *       400: { description: Invalid input. }
-   *       403: { description: No access to the host, or elevation denied. }
+   *       403: { description: No edit access to the host, or elevation denied. }
    *       500: { description: The command failed on the host. }
    */
   app.post(
     "/host-metrics/managers/ssl/:id/renew",
     validateHostId,
-    managerHandler(deps, "connect", "ssl_renew", async (client, host, req) => {
+    managerHandler(deps, "edit", "ssl_renew", async (client, host, req) => {
       const { client: acmeClient, dryRun } = req.body as {
         client?: AcmeClient;
         dryRun?: boolean;
@@ -357,12 +357,12 @@ export function registerSslRoutes(app: Router, deps: ManagerRoutesDeps): void {
    *     responses:
    *       200: { description: Revoke result. }
    *       400: { description: Invalid client or certificate name. }
-   *       403: { description: Elevation required or denied. }
+   *       403: { description: No edit access to the host, or elevation denied. }
    */
   app.post(
     "/host-metrics/managers/ssl/:id/revoke",
     validateHostId,
-    managerHandler(deps, "connect", "ssl_revoke", async (client, host, req) => {
+    managerHandler(deps, "edit", "ssl_revoke", async (client, host, req) => {
       const { client: acmeClient, name } = req.body as {
         client?: AcmeClient;
         name?: string;

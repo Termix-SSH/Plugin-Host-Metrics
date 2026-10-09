@@ -4,6 +4,7 @@ import { useTranslation } from "@termix-ssh/plugin-sdk/frontend";
 import { toast } from "sonner";
 import { useHostMetricsApi } from "../../host-metrics-api";
 import { useManagerData, extractError } from "./useManagerData";
+import { useCanEditHost } from "./useCanEditHost";
 import { ManagerCardShell } from "@termix-ssh/plugin-sdk/ui";
 import { ManagerSearch } from "@termix-ssh/plugin-sdk/ui";
 
@@ -17,6 +18,7 @@ interface SystemdService {
 export function ServiceManagerCard({ hostId }: { hostId: number | null }) {
   const { managerPost } = useHostMetricsApi();
   const { t } = useTranslation();
+  const canEdit = useCanEditHost(hostId);
   const { data, loading, error, refresh } = useManagerData<{
     services: SystemdService[];
   }>(hostId, "services");
@@ -51,7 +53,7 @@ export function ServiceManagerCard({ hostId }: { hostId: number | null }) {
         toast.error(res.output || t("hostMetrics.managers.actionFailed"));
       }
     } catch (e) {
-      toast.error(extractError(e).message);
+      toast.error(extractError(e, t).message);
     } finally {
       setBusy(null);
     }
@@ -90,40 +92,42 @@ export function ServiceManagerCard({ hostId }: { hostId: number | null }) {
                 </span>
               </div>
             </div>
-            <div className="flex shrink-0 items-center gap-0.5">
-              <ActionBtn
-                onClick={() => act(s.unit, "start")}
-                busy={busy === `${s.unit}:start`}
-                title={t("hostMetrics.managers.start")}
-              >
-                <Play className="size-3" />
-              </ActionBtn>
-              <ActionBtn
-                onClick={() => act(s.unit, "restart")}
-                busy={busy === `${s.unit}:restart`}
-                title={t("hostMetrics.managers.restart")}
-              >
-                <RotateCw className="size-3" />
-              </ActionBtn>
-              <ActionBtn
-                onClick={() => act(s.unit, "stop")}
-                busy={busy === `${s.unit}:stop`}
-                title={t("hostMetrics.managers.stop")}
-              >
-                <Square className="size-3" />
-              </ActionBtn>
-              <ActionBtn
-                onClick={() =>
-                  act(s.unit, s.sub === "running" ? "disable" : "enable")
-                }
-                busy={
-                  busy === `${s.unit}:enable` || busy === `${s.unit}:disable`
-                }
-                title={t("hostMetrics.managers.enableDisable")}
-              >
-                <Power className="size-3" />
-              </ActionBtn>
-            </div>
+            {canEdit && (
+              <div className="flex shrink-0 items-center gap-0.5">
+                <ActionBtn
+                  onClick={() => act(s.unit, "start")}
+                  busy={busy === `${s.unit}:start`}
+                  title={t("hostMetrics.managers.start")}
+                >
+                  <Play className="size-3" />
+                </ActionBtn>
+                <ActionBtn
+                  onClick={() => act(s.unit, "restart")}
+                  busy={busy === `${s.unit}:restart`}
+                  title={t("hostMetrics.managers.restart")}
+                >
+                  <RotateCw className="size-3" />
+                </ActionBtn>
+                <ActionBtn
+                  onClick={() => act(s.unit, "stop")}
+                  busy={busy === `${s.unit}:stop`}
+                  title={t("hostMetrics.managers.stop")}
+                >
+                  <Square className="size-3" />
+                </ActionBtn>
+                <ActionBtn
+                  onClick={() =>
+                    act(s.unit, s.sub === "running" ? "disable" : "enable")
+                  }
+                  busy={
+                    busy === `${s.unit}:enable` || busy === `${s.unit}:disable`
+                  }
+                  title={t("hostMetrics.managers.enableDisable")}
+                >
+                  <Power className="size-3" />
+                </ActionBtn>
+              </div>
+            )}
           </div>
         ))}
       </div>

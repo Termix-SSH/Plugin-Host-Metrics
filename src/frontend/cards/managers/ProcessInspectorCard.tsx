@@ -5,6 +5,7 @@ import { useTranslation } from "@termix-ssh/plugin-sdk/frontend";
 import { toast } from "sonner";
 import { useHostMetricsApi } from "../../host-metrics-api";
 import { useManagerData, extractError } from "./useManagerData";
+import { useCanEditHost } from "./useCanEditHost";
 import { ManagerCardShell } from "@termix-ssh/plugin-sdk/ui";
 import { ManagerSearch } from "@termix-ssh/plugin-sdk/ui";
 
@@ -24,6 +25,7 @@ type Signal = "TERM" | "KILL";
 export function ProcessInspectorCard({ hostId }: { hostId: number | null }) {
   const { managerPost } = useHostMetricsApi();
   const { t } = useTranslation();
+  const canEdit = useCanEditHost(hostId);
   const { data, loading, error, refresh } = useManagerData<{
     processes: ProcessRow[];
   }>(hostId, "processes");
@@ -91,7 +93,7 @@ export function ProcessInspectorCard({ hostId }: { hostId: number | null }) {
         toast.error(res.output || t("hostMetrics.managers.actionFailed"));
       }
     } catch (e) {
-      toast.error(extractError(e).message);
+      toast.error(extractError(e, t).message);
     } finally {
       setBusy(null);
     }
@@ -171,22 +173,26 @@ export function ProcessInspectorCard({ hostId }: { hostId: number | null }) {
               {/* `comm` is capped at 15 chars by the kernel; the full command line is in args. */}
               {p.args || p.command}
             </span>
-            <button
-              onClick={() => kill(p.pid, "TERM")}
-              onContextMenu={(e) => {
-                e.preventDefault();
-                kill(p.pid, "KILL");
-              }}
-              disabled={busy === p.pid}
-              title={t("hostMetrics.managers.killHint")}
-              className="flex size-5 items-center justify-center text-muted-foreground transition-colors hover:bg-destructive/10 hover:text-destructive disabled:opacity-40"
-            >
-              {busy === p.pid ? (
-                <Skull className="size-3" />
-              ) : (
-                <X className="size-3" />
-              )}
-            </button>
+            {canEdit ? (
+              <button
+                onClick={() => kill(p.pid, "TERM")}
+                onContextMenu={(e) => {
+                  e.preventDefault();
+                  kill(p.pid, "KILL");
+                }}
+                disabled={busy === p.pid}
+                title={t("hostMetrics.managers.killHint")}
+                className="flex size-5 items-center justify-center text-muted-foreground transition-colors hover:bg-destructive/10 hover:text-destructive disabled:opacity-40"
+              >
+                {busy === p.pid ? (
+                  <Skull className="size-3" />
+                ) : (
+                  <X className="size-3" />
+                )}
+              </button>
+            ) : (
+              <span className="size-5" />
+            )}
           </div>
         ))}
       </div>

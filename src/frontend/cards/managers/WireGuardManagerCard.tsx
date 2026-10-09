@@ -8,6 +8,7 @@ import {
 } from "lucide-react";
 import { useTranslation } from "@termix-ssh/plugin-sdk/frontend";
 import { useManagerData, useManagerAction } from "./useManagerData";
+import { useCanEditHost } from "./useCanEditHost";
 import { ManagerCardShell } from "@termix-ssh/plugin-sdk/ui";
 
 interface WireGuardPeer {
@@ -60,6 +61,7 @@ export function WireGuardManagerCard({ hostId }: { hostId: number | null }) {
     "wireguard",
   );
   const { busy, run } = useManagerAction(hostId);
+  const canEdit = useCanEditHost(hostId);
   const [expanded, setExpanded] = useState<Set<string>>(new Set());
 
   const toggleExpand = (name: string) => {
@@ -142,22 +144,24 @@ export function WireGuardManagerCard({ hostId }: { hostId: number | null }) {
                   </span>
                 </div>
               </button>
-              <button
-                onClick={() => handleAction(iface)}
-                disabled={busy}
-                title={
-                  iface.up
-                    ? t("hostMetrics.managers.wgInterfaceDown")
-                    : t("hostMetrics.managers.wgInterfaceUp")
-                }
-                className="flex size-6 shrink-0 items-center justify-center text-muted-foreground transition-colors hover:bg-muted hover:text-foreground disabled:opacity-40"
-              >
-                {iface.up ? (
-                  <ArrowDown className="size-3" />
-                ) : (
-                  <ArrowUp className="size-3" />
-                )}
-              </button>
+              {canEdit && (
+                <button
+                  onClick={() => handleAction(iface)}
+                  disabled={busy}
+                  title={
+                    iface.up
+                      ? t("hostMetrics.managers.wgInterfaceDown")
+                      : t("hostMetrics.managers.wgInterfaceUp")
+                  }
+                  className="flex size-6 shrink-0 items-center justify-center text-muted-foreground transition-colors hover:bg-muted hover:text-foreground disabled:opacity-40"
+                >
+                  {iface.up ? (
+                    <ArrowDown className="size-3" />
+                  ) : (
+                    <ArrowUp className="size-3" />
+                  )}
+                </button>
+              )}
             </div>
 
             {expanded.has(iface.name) && (

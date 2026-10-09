@@ -178,13 +178,15 @@ export function registerWireGuardRoutes(
    *     responses:
    *       200:
    *         description: Action result.
+   *       403:
+   *         description: No edit access to the host, or elevation denied.
    */
   app.post(
     "/host-metrics/managers/wireguard/:id/action",
     validateHostId,
     managerHandler(
       deps,
-      "connect",
+      "edit",
       "wireguard_action",
       async (client, host, req) => {
         const { interface: iface, action } = req.body as {

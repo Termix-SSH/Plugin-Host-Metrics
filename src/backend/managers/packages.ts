@@ -73,7 +73,7 @@ export function registerPackageRoutes(
    *     responses:
    *       200: { description: The command output. }
    *       400: { description: Invalid input. }
-   *       403: { description: No access to the host, or elevation denied. }
+   *       403: { description: No edit access to the host, or elevation denied. }
    *       500: { description: The command failed on the host. }
    */
   app.post(
@@ -81,7 +81,7 @@ export function registerPackageRoutes(
     validateHostId,
     managerHandler(
       deps,
-      "connect",
+      "edit",
       "packages_action",
       async (client, host, req) => {
         const { action, pkg: name } = req.body as {

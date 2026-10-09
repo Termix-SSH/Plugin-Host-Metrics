@@ -142,42 +142,36 @@ export function registerCronRoutes(app: Router, deps: ManagerRoutesDeps): void {
    *     responses:
    *       200: { description: The crontab was written. }
    *       400: { description: Invalid input. }
-   *       403: { description: No access to the host, or elevation denied. }
+   *       403: { description: No edit access to the host, or elevation denied. }
    *       500: { description: The command failed on the host. }
    */
   app.post(
     "/host-metrics/managers/cron/:id",
     validateHostId,
-    managerHandler(
-      deps,
-      "connect",
-      "cron_replace",
-      async (client, _host, req) => {
-        const { entries } = (req.body ?? {}) as { entries?: CronEntry[] };
-        if (!Array.isArray(entries)) {
-          throw new ManagerInputError("entries must be an array");
+    managerHandler(deps, "edit", "cron_replace", async (client, _host, req) => {
+      const { entries } = (req.body ?? {}) as { entries?: CronEntry[] };
+      if (!Array.isArray(entries)) {
+        throw new ManagerInputError("entries must be an array");
+      }
+      for (const e of entries) {
+        if (typeof e?.command !== "string" || !e.command.trim()) {
+          throw new ManagerInputError("Each entry needs a command");
         }
-        for (const e of entries) {
-          if (typeof e?.command !== "string" || !e.command.trim()) {
-            throw new ManagerInputError("Each entry needs a command");
-          }
-          if (/[\r\n]/.test(e.command)) {
-            throw new ManagerInputError("Commands cannot contain newlines");
-          }
-          if (!isValidCronSchedule(String(e.schedule))) {
-            throw new ManagerInputError(`Invalid schedule: ${e.schedule}`);
-          }
+        if (/[\r\n]/.test(e.command)) {
+          throw new ManagerInputError("Commands cannot contain newlines");
         }
-        const current = await execCommand(client, READ_CRONTAB_CMD, 15000);
-        const body =
-          crontabPreamble(current.stdout) + serializeCrontab(entries);
-        const { stdout, stderr, code } = await execCommand(
-          client,
-          buildApplyCrontabCommand(body),
-          15000,
-        );
-        return { success: code === 0, output: stdout || stderr };
-      },
-    ),
+        if (!isValidCronSchedule(String(e.schedule))) {
+          throw new ManagerInputError(`Invalid schedule: ${e.schedule}`);
+        }
+      }
+      const current = await execCommand(client, READ_CRONTAB_CMD, 15000);
+      const body = crontabPreamble(current.stdout) + serializeCrontab(entries);
+      const { stdout, stderr, code } = await execCommand(
+        client,
+        buildApplyCrontabCommand(body),
+        15000,
+      );
+      return { success: code === 0, output: stdout || stderr };
+    }),
   );
 }

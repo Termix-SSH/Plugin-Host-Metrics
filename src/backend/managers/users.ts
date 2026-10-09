@@ -135,62 +135,57 @@ export function registerUserRoutes(app: Router, deps: ManagerRoutesDeps): void {
    *     responses:
    *       200: { description: The command result. }
    *       400: { description: Invalid input. }
-   *       403: { description: No access to the host, or elevation denied. }
+   *       403: { description: No edit access to the host, or elevation denied. }
    *       500: { description: The command failed on the host. }
    */
   app.post(
     "/host-metrics/managers/users/:id/action",
     validateHostId,
-    managerHandler(
-      deps,
-      "connect",
-      "users_action",
-      async (client, host, req) => {
-        const { action, username, group } = req.body as {
-          action?: UserAction;
-          username?: string;
-          group?: string;
-        };
-        if (!isValidUsername(username))
-          throw new ManagerInputError("Invalid username");
+    managerHandler(deps, "edit", "users_action", async (client, host, req) => {
+      const { action, username, group } = req.body as {
+        action?: UserAction;
+        username?: string;
+        group?: string;
+      };
+      if (!isValidUsername(username))
+        throw new ManagerInputError("Invalid username");
 
-        // Never modify/delete the user we're connected as, or root.
-        const who = (await execCommand(client, "id -un", 8000)).stdout.trim();
-        if (username === who || username === "root") {
-          throw new ManagerInputError(
-            "Refusing to modify the connected user or root",
-          );
-        }
+      // Never modify/delete the user we're connected as, or root.
+      const who = (await execCommand(client, "id -un", 8000)).stdout.trim();
+      if (username === who || username === "root") {
+        throw new ManagerInputError(
+          "Refusing to modify the connected user or root",
+        );
+      }
 
-        let cmd: string;
-        switch (action) {
-          case "create":
-            cmd = `useradd -m ${username}`;
-            break;
-          case "delete":
-            cmd = `userdel -r ${username}`;
-            break;
-          case "addToGroup":
-          case "removeFromGroup":
-            if (!isValidGroupName(group))
-              throw new ManagerInputError("Invalid group");
-            cmd =
-              action === "addToGroup"
-                ? `usermod -aG ${group} ${username}`
-                : `gpasswd -d ${username} ${group}`;
-            break;
-          default:
-            throw new ManagerInputError("Invalid action");
-        }
+      let cmd: string;
+      switch (action) {
+        case "create":
+          cmd = `useradd -m ${username}`;
+          break;
+        case "delete":
+          cmd = `userdel -r ${username}`;
+          break;
+        case "addToGroup":
+        case "removeFromGroup":
+          if (!isValidGroupName(group))
+            throw new ManagerInputError("Invalid group");
+          cmd =
+            action === "addToGroup"
+              ? `usermod -aG ${group} ${username}`
+              : `gpasswd -d ${username} ${group}`;
+          break;
+        default:
+          throw new ManagerInputError("Invalid action");
+      }
 
-        const result = await execElevated(client, cmd, host.sudoPassword, {
-          forceSudo: true,
-        });
-        return {
-          success: result.code === 0,
-          output: result.stdout || result.stderr,
-        };
-      },
-    ),
+      const result = await execElevated(client, cmd, host.sudoPassword, {
+        forceSudo: true,
+      });
+      return {
+        success: result.code === 0,
+        output: result.stdout || result.stderr,
+      };
+    }),
   );
 }

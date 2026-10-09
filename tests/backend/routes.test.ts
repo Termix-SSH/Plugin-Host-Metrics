@@ -251,3 +251,67 @@ describe("health checks", () => {
     expect(response.status).toBe(400);
   });
 });
+
+const WRITE_ROUTES: Array<[string, unknown]> = [
+  ["/host-metrics/managers/services/7/action", { unit: "a.service" }],
+  ["/host-metrics/managers/processes/7/signal", { pid: 1 }],
+  ["/host-metrics/managers/cron/7", { entries: [] }],
+  ["/host-metrics/managers/packages/7/action", { action: "upgrade-all" }],
+  ["/host-metrics/managers/ssl/7/issue", {}],
+  ["/host-metrics/managers/ssl/7/renew", {}],
+  ["/host-metrics/managers/ssl/7/revoke", {}],
+  ["/host-metrics/managers/firewall/7/rule", {}],
+  ["/host-metrics/managers/firewall/7/persist", {}],
+  ["/host-metrics/managers/users/7/action", {}],
+  ["/host-metrics/managers/wireguard/7/action", {}],
+];
+
+describe("manager write actions", () => {
+  // A user the host was shared with at connect level.
+  function connectOnly(server: TestServer) {
+    const levels = ["connect"];
+    server.mock.ctx.hosts.checkAccess = async (_hostId, level) => ({
+      hasAccess: levels.includes(level),
+      isOwner: false,
+      isShared: true,
+      permissionLevel: "connect",
+    });
+  }
+
+  it.each(WRITE_ROUTES)("POST %s needs edit access", async (path, body) => {
+    server = await startServer();
+    connectOnly(server);
+    const response = await server.request("POST", path, { body });
+    expect(response.status).toBe(403);
+    expect(response.body).toEqual({
+      error: "You need edit access to this host to change it",
+      code: "HOST_EDIT_REQUIRED",
+    });
+  });
+
+  it("still lets a connect-level user read", async () => {
+    server = await startServer();
+    connectOnly(server);
+    const response = await server.request(
+      "GET",
+      "/host-metrics/managers/services/7",
+    );
+    expect(response.status).not.toBe(403);
+  });
+
+  it("gives the plain error to someone with no access at all", async () => {
+    server = await startServer();
+    server.mock.ctx.hosts.checkAccess = async () => ({
+      hasAccess: false,
+      isOwner: false,
+      isShared: false,
+    });
+    const response = await server.request(
+      "POST",
+      "/host-metrics/managers/services/7/action",
+      { body: { unit: "a.service" } },
+    );
+    expect(response.status).toBe(403);
+    expect(response.body).toEqual({ error: "No access to this host" });
+  });
+});

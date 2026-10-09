@@ -1,5 +1,9 @@
 import { useCallback, useEffect, useState } from "react";
 import { toast } from "sonner";
+import {
+  useTranslation,
+  type TranslateFn,
+} from "@termix-ssh/plugin-sdk/frontend";
 import { useHostMetricsApi } from "../../host-metrics-api";
 
 interface ManagerError {
@@ -7,14 +11,21 @@ interface ManagerError {
   code?: string;
 }
 
-function extractError(err: unknown): ManagerError {
+/** Set when the server refuses a change because the user lacks edit access. */
+export const HOST_EDIT_REQUIRED = "HOST_EDIT_REQUIRED";
+
+function extractError(err: unknown, t?: TranslateFn): ManagerError {
   const e = err as {
     response?: { data?: { error?: string; code?: string } };
     message?: string;
   };
+  const code = e?.response?.data?.code;
+  if (code === HOST_EDIT_REQUIRED && t) {
+    return { message: t("hostMetrics.managers.editRequired"), code };
+  }
   return {
     message: e?.response?.data?.error || e?.message || "Request failed",
-    code: e?.response?.data?.code,
+    code,
   };
 }
 
@@ -68,6 +79,7 @@ interface ActionResult {
  */
 export function useManagerAction(hostId: number | null) {
   const { managerPost } = useHostMetricsApi();
+  const { t } = useTranslation();
   const [busy, setBusy] = useState(false);
 
   const run = useCallback(
@@ -105,13 +117,13 @@ export function useManagerAction(hostId: number | null) {
         }
         return res;
       } catch (err) {
-        toast.error(extractError(err).message, { id });
+        toast.error(extractError(err, t).message, { id });
         return null;
       } finally {
         setBusy(false);
       }
     },
-    [hostId],
+    [hostId, t],
   );
 
   return { busy, run };

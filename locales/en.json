@@ -95,6 +95,7 @@
       "restart": "Restart",
       "actionDone": "{{name}} updated",
       "actionFailed": "Action failed",
+      "editRequired": "You need edit access to this host to change it",
       "signalSent": "Signal sent to PID {{pid}}",
       "killHint": "Click: terminate (SIGTERM). Right-click: force kill (SIGKILL).",
       "working": "Working...",

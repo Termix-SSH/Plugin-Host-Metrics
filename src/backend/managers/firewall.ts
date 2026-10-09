@@ -119,54 +119,49 @@ export function registerFirewallRoutes(
    *     responses:
    *       200: { description: The command result and firewall backend used. }
    *       400: { description: Invalid input. }
-   *       403: { description: No access to the host, or elevation denied. }
+   *       403: { description: No edit access to the host, or elevation denied. }
    *       500: { description: The command failed on the host. }
    */
   app.post(
     "/host-metrics/managers/firewall/:id/rule",
     validateHostId,
-    managerHandler(
-      deps,
-      "connect",
-      "firewall_rule",
-      async (client, host, req) => {
-        const { op, protocol, port, target } = req.body as {
-          op?: "add" | "delete";
-          protocol?: string;
-          port?: number;
-          target?: string;
-        };
-        if (op !== "add" && op !== "delete") {
-          throw new ManagerInputError("Invalid op");
-        }
-        if (!isValidIpProtocol(protocol))
-          throw new ManagerInputError("Invalid protocol");
-        if (!isValidPort(port)) throw new ManagerInputError("Invalid port");
-        if (!isValidFirewallTarget(target))
-          throw new ManagerInputError("Invalid target");
+    managerHandler(deps, "edit", "firewall_rule", async (client, host, req) => {
+      const { op, protocol, port, target } = req.body as {
+        op?: "add" | "delete";
+        protocol?: string;
+        port?: number;
+        target?: string;
+      };
+      if (op !== "add" && op !== "delete") {
+        throw new ManagerInputError("Invalid op");
+      }
+      if (!isValidIpProtocol(protocol))
+        throw new ManagerInputError("Invalid protocol");
+      if (!isValidPort(port)) throw new ManagerInputError("Invalid port");
+      if (!isValidFirewallTarget(target))
+        throw new ManagerInputError("Invalid target");
 
-        const spec: FirewallRuleSpec = {
-          protocol,
-          port: Number(port),
-          target,
-        };
-        const fw = await collectFirewallMetrics(client);
-        const cmd =
-          fw.type === "ufw"
-            ? buildUfwRuleCommand(op, spec)
-            : fw.type === "nftables"
-              ? buildNftRuleCommand(op, spec)
-              : buildIptablesRuleCommand(op, spec);
-        const result = await execElevated(client, cmd, host.sudoPassword, {
-          forceSudo: true,
-        });
-        return {
-          success: result.code === 0,
-          output: result.stdout || result.stderr,
-          backend: fw.type,
-        };
-      },
-    ),
+      const spec: FirewallRuleSpec = {
+        protocol,
+        port: Number(port),
+        target,
+      };
+      const fw = await collectFirewallMetrics(client);
+      const cmd =
+        fw.type === "ufw"
+          ? buildUfwRuleCommand(op, spec)
+          : fw.type === "nftables"
+            ? buildNftRuleCommand(op, spec)
+            : buildIptablesRuleCommand(op, spec);
+      const result = await execElevated(client, cmd, host.sudoPassword, {
+        forceSudo: true,
+      });
+      return {
+        success: result.code === 0,
+        output: result.stdout || result.stderr,
+        backend: fw.type,
+      };
+    }),
   );
 
   /**
@@ -183,32 +178,27 @@ export function registerFirewallRoutes(
    *     responses:
    *       200: { description: The save result. }
    *       400: { description: Invalid input. }
-   *       403: { description: No access to the host, or elevation denied. }
+   *       403: { description: No edit access to the host, or elevation denied. }
    *       500: { description: The command failed on the host. }
    */
   app.post(
     "/host-metrics/managers/firewall/:id/persist",
     validateHostId,
-    managerHandler(
-      deps,
-      "connect",
-      "firewall_persist",
-      async (client, host) => {
-        const platform = await detectPlatform(client);
-        // Best-effort persistence across common tools.
-        const cmd =
-          "(command -v netfilter-persistent >/dev/null 2>&1 && netfilter-persistent save) || " +
-          "(command -v service >/dev/null 2>&1 && service iptables save) || " +
-          "(command -v nft >/dev/null 2>&1 && nft list ruleset > /etc/nftables.conf) || true";
-        const result = await execElevated(client, cmd, host.sudoPassword, {
-          forceSudo: true,
-        });
-        return {
-          success: result.code === 0,
-          output: result.stdout || result.stderr,
-          pkg: platform.pkg,
-        };
-      },
-    ),
+    managerHandler(deps, "edit", "firewall_persist", async (client, host) => {
+      const platform = await detectPlatform(client);
+      // Best-effort persistence across common tools.
+      const cmd =
+        "(command -v netfilter-persistent >/dev/null 2>&1 && netfilter-persistent save) || " +
+        "(command -v service >/dev/null 2>&1 && service iptables save) || " +
+        "(command -v nft >/dev/null 2>&1 && nft list ruleset > /etc/nftables.conf) || true";
+      const result = await execElevated(client, cmd, host.sudoPassword, {
+        forceSudo: true,
+      });
+      return {
+        success: result.code === 0,
+        output: result.stdout || result.stderr,
+        pkg: platform.pkg,
+      };
+    }),
   );
 }

@@ -6,6 +6,7 @@ import { useTranslation } from "@termix-ssh/plugin-sdk/frontend";
 import { toast } from "sonner";
 import { useHostMetricsApi } from "../../host-metrics-api";
 import { useManagerData, extractError } from "./useManagerData";
+import { useCanEditHost } from "./useCanEditHost";
 import { ManagerCardShell } from "@termix-ssh/plugin-sdk/ui";
 import { ManagerSearch } from "@termix-ssh/plugin-sdk/ui";
 
@@ -18,6 +19,7 @@ interface FirewallData {
 export function FirewallManagerCard({ hostId }: { hostId: number | null }) {
   const { managerPost } = useHostMetricsApi();
   const { t } = useTranslation();
+  const canEdit = useCanEditHost(hostId);
   const { data, loading, error, refresh } = useManagerData<FirewallData>(
     hostId,
     "firewall",
@@ -50,7 +52,7 @@ export function FirewallManagerCard({ hostId }: { hostId: number | null }) {
         toast.error(res.output || t("hostMetrics.managers.actionFailed"));
       }
     } catch (e) {
-      toast.error(extractError(e).message);
+      toast.error(extractError(e, t).message);
     } finally {
       setBusy(false);
     }
@@ -74,7 +76,7 @@ export function FirewallManagerCard({ hostId }: { hostId: number | null }) {
         { id: "fw-persist", description: res.output?.slice(-200) },
       );
     } catch (e) {
-      toast.error(extractError(e).message, { id: "fw-persist" });
+      toast.error(extractError(e, t).message, { id: "fw-persist" });
     } finally {
       setBusy(false);
     }
@@ -109,69 +111,73 @@ export function FirewallManagerCard({ hostId }: { hostId: number | null }) {
           <span className="text-[10px] uppercase tracking-widest text-muted-foreground">
             {data?.type ?? ""}
           </span>
-          <Button
-            variant="ghost"
-            size="xs"
-            disabled={busy || data?.type === "none"}
-            onClick={persist}
-            title={t("hostMetrics.managers.firewallPersist")}
-          >
-            <Save className="size-3" />
-          </Button>
+          {canEdit && (
+            <Button
+              variant="ghost"
+              size="xs"
+              disabled={busy || data?.type === "none"}
+              onClick={persist}
+              title={t("hostMetrics.managers.firewallPersist")}
+            >
+              <Save className="size-3" />
+            </Button>
+          )}
         </>
       }
     >
-      <div className="mb-3 flex flex-col gap-2 border border-dashed border-border p-2">
-        <span className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">
-          {t("hostMetrics.managers.addInputRule")}
-        </span>
-        <div className="flex items-center gap-1.5">
-          <Select2
-            value={proto}
-            onChange={(e) => setProto(e.target.value as "tcp" | "udp")}
-            className="h-7 border border-border bg-background px-1 text-xs"
-          >
-            <option value="tcp">tcp</option>
-            <option value="udp">udp</option>
-          </Select2>
-          <input
-            value={port}
-            onChange={(e) => setPort(e.target.value)}
-            placeholder={t("hostMetrics.ports.port")}
-            className="h-7 w-16 border border-border bg-background px-1.5 text-xs outline-none focus:ring-1 focus:ring-ring"
-          />
-          <Select2
-            value={target}
-            onChange={(e) =>
-              setTarget(e.target.value as "ACCEPT" | "DROP" | "REJECT")
-            }
-            className="h-7 border border-border bg-background px-1 text-xs"
-          >
-            <option>ACCEPT</option>
-            <option>DROP</option>
-            <option>REJECT</option>
-          </Select2>
-          <Button
-            variant="outline"
-            size="xs"
-            disabled={busy}
-            onClick={() => rule("add")}
-          >
-            <Plus className="size-3" />
-          </Button>
-          <Button
-            variant="ghost"
-            size="xs"
-            disabled={busy}
-            onClick={() => rule("delete")}
-          >
-            <Trash2 className="size-3" />
-          </Button>
+      {canEdit && (
+        <div className="mb-3 flex flex-col gap-2 border border-dashed border-border p-2">
+          <span className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">
+            {t("hostMetrics.managers.addInputRule")}
+          </span>
+          <div className="flex items-center gap-1.5">
+            <Select2
+              value={proto}
+              onChange={(e) => setProto(e.target.value as "tcp" | "udp")}
+              className="h-7 border border-border bg-background px-1 text-xs"
+            >
+              <option value="tcp">tcp</option>
+              <option value="udp">udp</option>
+            </Select2>
+            <input
+              value={port}
+              onChange={(e) => setPort(e.target.value)}
+              placeholder={t("hostMetrics.ports.port")}
+              className="h-7 w-16 border border-border bg-background px-1.5 text-xs outline-none focus:ring-1 focus:ring-ring"
+            />
+            <Select2
+              value={target}
+              onChange={(e) =>
+                setTarget(e.target.value as "ACCEPT" | "DROP" | "REJECT")
+              }
+              className="h-7 border border-border bg-background px-1 text-xs"
+            >
+              <option>ACCEPT</option>
+              <option>DROP</option>
+              <option>REJECT</option>
+            </Select2>
+            <Button
+              variant="outline"
+              size="xs"
+              disabled={busy}
+              onClick={() => rule("add")}
+            >
+              <Plus className="size-3" />
+            </Button>
+            <Button
+              variant="ghost"
+              size="xs"
+              disabled={busy}
+              onClick={() => rule("delete")}
+            >
+              <Trash2 className="size-3" />
+            </Button>
+          </div>
+          <span className="text-[10px] text-warning">
+            {t("hostMetrics.managers.firewallWarning")}
+          </span>
         </div>
-        <span className="text-[10px] text-warning">
-          {t("hostMetrics.managers.firewallWarning")}
-        </span>
-      </div>
+      )}
 
       <ManagerSearch value={query} onChange={setQuery} />
 

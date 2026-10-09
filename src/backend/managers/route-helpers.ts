@@ -7,10 +7,24 @@ import type { MetricsLogger } from "../log.js";
 import type { ManagerHost, RunOnHost } from "./types.js";
 
 export class AccessDeniedError extends Error {
-  constructor(message = "No access to this host") {
+  constructor(
+    message = "No access to this host",
+    readonly code?: string,
+  ) {
     super(message);
     this.name = "AccessDeniedError";
   }
+}
+
+/** Code for a user who can reach a host but may not change it. */
+export const HOST_EDIT_REQUIRED = "HOST_EDIT_REQUIRED";
+
+/** Denies a write action to someone with less than edit access. */
+export function editAccessDenied(): AccessDeniedError {
+  return new AccessDeniedError(
+    "You need edit access to this host to change it",
+    HOST_EDIT_REQUIRED,
+  );
 }
 
 export class ManagerInputError extends Error {
@@ -42,7 +56,10 @@ export function managerHandler(
         return res.status(400).json({ error: error.message });
       }
       if (error instanceof AccessDeniedError) {
-        return res.status(403).json({ error: error.message });
+        return res.status(403).json({
+          error: error.message,
+          ...(error.code ? { code: error.code } : {}),
+        });
       }
       if (error instanceof ElevationError) {
         return res.status(403).json({ error: error.message, code: error.code });

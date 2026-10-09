@@ -102,14 +102,14 @@ export function registerProcessRoutes(
    *     responses:
    *       200: { description: Signal result. }
    *       400: { description: Invalid pid or signal. }
-   *       403: { description: Elevation required or denied. }
+   *       403: { description: No edit access to the host, or elevation denied. }
    */
   app.post(
     "/host-metrics/managers/processes/:id/signal",
     validateHostId,
     managerHandler(
       deps,
-      "connect",
+      "edit",
       "processes_signal",
       async (client, host, req) => {
         const { pid, signal } = req.body as {

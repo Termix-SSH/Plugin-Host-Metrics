@@ -8,6 +8,7 @@ import {
   useManagerAction,
   extractError,
 } from "./useManagerData";
+import { useCanEditHost } from "./useCanEditHost";
 import { ManagerCardShell } from "@termix-ssh/plugin-sdk/ui";
 
 interface CertInfo {
@@ -60,6 +61,7 @@ export function SslManagerCard({ hostId }: { hostId: number | null }) {
     "ssl",
   );
   const { busy, run } = useManagerAction(hostId);
+  const canEdit = useCanEditHost(hostId);
   const [showIssue, setShowIssue] = useState(false);
   const [domains, setDomains] = useState("");
   const [challenge, setChallenge] = useState<Challenge>("http-standalone");
@@ -152,7 +154,7 @@ export function SslManagerCard({ hostId }: { hostId: number | null }) {
         refresh();
       }
     } catch (e) {
-      toast.error(extractError(e).message, { id: "ssl-issue" });
+      toast.error(extractError(e, t).message, { id: "ssl-issue" });
     } finally {
       setIssuing(false);
     }
@@ -168,7 +170,7 @@ export function SslManagerCard({ hostId }: { hostId: number | null }) {
       empty={!loading && certs.length === 0 && !activeClient}
       emptyMessage={t("hostMetrics.managers.noAcmeClient")}
       headerExtra={
-        activeClient ? (
+        activeClient && canEdit ? (
           <>
             {activeClient === "certbot" && (
               <Button
@@ -203,7 +205,7 @@ export function SslManagerCard({ hostId }: { hostId: number | null }) {
             acme.sh
           </span>
         </div>
-        {activeClient && (
+        {activeClient && canEdit && (
           <Button
             variant="ghost"
             size="xs"
@@ -215,7 +217,7 @@ export function SslManagerCard({ hostId }: { hostId: number | null }) {
         )}
       </div>
 
-      {showIssue && activeClient && (
+      {showIssue && activeClient && canEdit && (
         <div className="mb-3 flex flex-col gap-2 border border-dashed border-border p-2">
           <input
             value={domains}
@@ -285,16 +287,17 @@ export function SslManagerCard({ hostId }: { hostId: number | null }) {
               <span className="font-mono text-[11px]">
                 <ExpiryBadge expiry={c.expiry} />
               </span>
-              {(c.client === "certbot" || c.client === "acme.sh") && (
-                <button
-                  onClick={() => void revoke(c)}
-                  disabled={busy}
-                  title={t("hostMetrics.managers.sslRevoke")}
-                  className="text-muted-foreground transition-colors hover:text-destructive disabled:opacity-40"
-                >
-                  <Trash2 className="size-3.5" />
-                </button>
-              )}
+              {canEdit &&
+                (c.client === "certbot" || c.client === "acme.sh") && (
+                  <button
+                    onClick={() => void revoke(c)}
+                    disabled={busy}
+                    title={t("hostMetrics.managers.sslRevoke")}
+                    className="text-muted-foreground transition-colors hover:text-destructive disabled:opacity-40"
+                  >
+                    <Trash2 className="size-3.5" />
+                  </button>
+                )}
             </div>
           </div>
         ))}

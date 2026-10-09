@@ -19,7 +19,10 @@ import {
 } from "./interactive.js";
 import type { MetricsLogger } from "./log.js";
 import { registerManagerRoutes } from "./managers/index.js";
-import { AccessDeniedError } from "./managers/route-helpers.js";
+import {
+  AccessDeniedError,
+  editAccessDenied,
+} from "./managers/route-helpers.js";
 import type { HealthRecorder } from "./managers/health.js";
 import type { MetricsPoller } from "./poller.js";
 import { sqlTimestamp, type HostMetricsRepository } from "./repository.js";
@@ -662,7 +665,15 @@ export function registerRoutes(router: Router, deps: RouteDeps): void {
       const userId = ctx.currentActor();
       if (!userId) throw new AccessDeniedError("Authentication required");
       const access = await ctx.hosts.checkAccess(hostId, level);
-      if (!access.hasAccess) throw new AccessDeniedError();
+      if (!access.hasAccess) {
+        if (
+          level !== "connect" &&
+          (await ctx.hosts.checkAccess(hostId, "connect")).hasAccess
+        ) {
+          throw editAccessDenied();
+        }
+        throw new AccessDeniedError();
+      }
       const host = await poller.resolve(hostId, userId);
       if (!host) throw new AccessDeniedError("Host not found");
       return ctx.ssh.withConnection(host, MANAGER_CONNECTION, (client) =>
