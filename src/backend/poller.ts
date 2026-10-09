@@ -245,6 +245,8 @@ export class MetricsPoller {
       return;
     }
 
+    // Another start for this host may have finished during the awaits above.
+    this.polled.get(hostId)?.stop();
     const intervalMs = settings.intervalSeconds * 1000;
     const stop = this.ctx.schedule.every(
       intervalMs,

@@ -38,12 +38,14 @@ export function buildNftRuleCommand(
   spec: FirewallRuleSpec,
 ): string {
   // nftables uses the inet filter table's input chain by convention.
-  const verb = op === "add" ? "add" : "delete";
-  const action =
-    spec.target.toLowerCase() === "reject"
-      ? "reject"
-      : spec.target.toLowerCase();
-  return `nft ${verb} rule inet filter input ${spec.protocol} dport ${spec.port} ${action}`;
+  const rule = `${spec.protocol} dport ${spec.port} ${spec.target.toLowerCase()}`;
+  if (op === "add") return `nft add rule inet filter input ${rule}`;
+  // nft only deletes by handle, so look up the first matching rule's handle.
+  return (
+    `handle=$(nft -a list chain inet filter input | ` +
+    `awk '$0 ~ /^[[:space:]]*${rule} # handle [0-9]+$/ {print $NF; exit}'); ` +
+    `[ -n "$handle" ] && nft delete rule inet filter input handle "$handle"`
+  );
 }
 
 const UFW_ACTIONS: Record<string, string> = {

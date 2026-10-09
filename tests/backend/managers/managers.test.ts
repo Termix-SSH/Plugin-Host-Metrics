@@ -33,6 +33,7 @@ import {
 } from "../../../src/backend/managers/simple-reads.js";
 import {
   parseCrontab,
+  crontabPreamble,
   serializeCrontab,
   isValidCronSchedule,
   buildApplyCrontabCommand,
@@ -219,6 +220,21 @@ describe("cron", () => {
     expect(entries[0]).toMatchObject({ enabled: true, schedule: "0 2 * * *" });
     expect(entries[1].enabled).toBe(false);
   });
+  it("does not read plain comments as disabled jobs", () => {
+    const out =
+      "# Edit this file to introduce tasks to be run by cron.\n# m h  dom mon dow   command\n0 2 * * * /backup.sh";
+    const entries = parseCrontab(out);
+    expect(entries).toHaveLength(1);
+    expect(entries[0].command).toBe("/backup.sh");
+  });
+  it("keeps variables and comments when jobs are rewritten", () => {
+    const out =
+      "MAILTO=me@example.com\n# notes here\n0 2 * * * /a.sh\n# 30 4 * * * /old.sh\nshell_opts=1\n";
+    expect(crontabPreamble(out)).toBe(
+      "MAILTO=me@example.com\n# notes here\nshell_opts=1\n",
+    );
+    expect(crontabPreamble("0 2 * * * /a.sh\n")).toBe("");
+  });
   it("validates schedules", () => {
     expect(isValidCronSchedule("0 2 * * *")).toBe(true);
     expect(isValidCronSchedule("@daily")).toBe(true);
@@ -307,6 +323,7 @@ describe("ssl (dual client)", () => {
   it("builds renew per client", () => {
     expect(buildRenewCommand("certbot", true)).toBe("certbot renew --dry-run");
     expect(buildRenewCommand("acme.sh", false)).toContain("--renew-all");
+    expect(buildRenewCommand("acme.sh", true)).toBeNull();
   });
   it("builds revoke per client", () => {
     expect(buildRevokeCommand("certbot", "example.com")).toBe(
@@ -365,7 +382,17 @@ describe("firewall", () => {
         port: 22,
         target: "ACCEPT",
       }),
-    ).toContain("add rule inet filter input tcp dport 22 accept");
+    ).toBe("nft add rule inet filter input tcp dport 22 accept");
+  });
+  it("deletes an nft rule by its handle", () => {
+    const cmd = buildNftRuleCommand("delete", {
+      protocol: "udp",
+      port: 53,
+      target: "DROP",
+    });
+    expect(cmd).toContain("nft -a list chain inet filter input");
+    expect(cmd).toContain("udp dport 53 drop # handle");
+    expect(cmd).toContain('nft delete rule inet filter input handle "$handle"');
   });
   it("builds ufw rules", () => {
     const spec = { protocol: "tcp", port: 443, target: "ACCEPT" } as const;

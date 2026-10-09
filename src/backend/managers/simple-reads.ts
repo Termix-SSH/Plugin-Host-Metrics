@@ -3,7 +3,7 @@ import type { Router } from "express";
 import { managerHandler } from "./route-helpers.js";
 import type { ManagerRoutesDeps } from "./types.js";
 
-// ─── Top by memory ──────────────────────────────────────────────────────────
+// Top by memory
 
 export interface MemProcessRow {
   pid: number;
@@ -34,7 +34,7 @@ export function parseTopMemory(output: string): MemProcessRow[] {
   return rows;
 }
 
-// ─── Systemd timers ─────────────────────────────────────────────────────────
+// Systemd timers
 
 interface TimerRow {
   next: string;
@@ -70,7 +70,7 @@ function parseTimers(output: string): TimerRow[] {
   return rows;
 }
 
-// ─── Disk breakdown (per-mount) ─────────────────────────────────────────────
+// Disk breakdown (per-mount)
 
 export interface MountUsage {
   filesystem: string;

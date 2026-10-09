@@ -127,11 +127,18 @@ export function buildIssueCommand(req: IssueRequest): string {
   return `${ACMESH_BIN} --issue --standalone ${dFlags}`;
 }
 
-export function buildRenewCommand(client: AcmeClient, dryRun: boolean): string {
+/**
+ * acme.sh has no dry run: --staging on a renew reissues every certificate
+ * from the staging CA and replaces the real ones, so it returns null there.
+ */
+export function buildRenewCommand(
+  client: AcmeClient,
+  dryRun: boolean,
+): string | null {
   if (client === "certbot") {
     return `certbot renew${dryRun ? " --dry-run" : ""}`;
   }
-  return `${ACMESH_BIN} --renew-all${dryRun ? " --staging" : ""}`;
+  return dryRun ? null : `${ACMESH_BIN} --renew-all`;
 }
 
 /**
@@ -313,6 +320,9 @@ export function registerSslRoutes(app: Router, deps: ManagerRoutesDeps): void {
         throw new ManagerInputError("Invalid ACME client");
       }
       const cmd = buildRenewCommand(acmeClient, !!dryRun);
+      if (!cmd) {
+        throw new ManagerInputError("acme.sh does not support a dry run");
+      }
       const result = await execElevated(client, cmd, host.sudoPassword, {
         forceSudo: true,
         timeoutMs: 300000,

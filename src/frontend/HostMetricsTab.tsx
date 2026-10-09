@@ -128,7 +128,7 @@ function HostMetricsInner({
   }>();
 
   const effectiveLayout: HostMetricsLayout = React.useMemo(() => {
-    // A saved layout is user-authored, so the preset never rewrites it -- it
+    // A saved layout is user-authored, so the preset never rewrites it, it
     // only decides the shape of the first layout a host gets.
     if (layout) return layout;
     return defaultLayoutFromWidgets(
@@ -419,7 +419,7 @@ function HostMetricsInner({
 
   // Connects once per host and stays connected while this tab exists, even
   // when the user switches to another tab and back. Only the browser tab
-  // going into the background (isPageVisible) pauses/resumes it -- switching
+  // going into the background (isPageVisible) pauses/resumes it, switching
   // between Termix tabs must not tear down and reconnect the session.
   React.useEffect(() => {
     if (!metricsEnabled || !currentHostConfig?.id) return;

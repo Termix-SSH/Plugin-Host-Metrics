@@ -166,11 +166,11 @@ export function NetworkCard({
                     <span className="shrink-0">
                       &#8595;{" "}
                       {iface.rxRateBps == null
-                        ? "—"
+                        ? "-"
                         : formatBytes(iface.rxRateBps)}{" "}
                       / &#8593;{" "}
                       {iface.txRateBps == null
-                        ? "—"
+                        ? "-"
                         : formatBytes(iface.txRateBps)}
                     </span>
                   )}

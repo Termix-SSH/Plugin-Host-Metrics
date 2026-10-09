@@ -214,7 +214,7 @@ export function FirewallManagerCard({ hostId }: { hostId: number | null }) {
                       <span className="text-muted-foreground">
                         {r.protocol.toUpperCase()}
                       </span>
-                      <span>{r.dport ?? "—"}</span>
+                      <span>{r.dport ?? "-"}</span>
                       <span className="truncate text-muted-foreground">
                         {r.source}
                       </span>

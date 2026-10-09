@@ -348,7 +348,7 @@ export class ConcurrentLimiter {
 /**
  * How many metrics polls may run at once for a given number of polled hosts.
  *
- * A metrics poll is an SSH exec, so this cannot simply be unbounded — but the
+ * A metrics poll is an SSH exec, so this cannot simply be unbounded, but the
  * old fixed ceiling of 5 meant a sweep of 500 hosts took ~40s against a 30s
  * interval, so polling fell permanently behind and a host could wait over a
  * minute for a "30 second" metric. Scaling with the fleet keeps a sweep inside
@@ -376,7 +376,7 @@ export function metricsConcurrencyFor(
   );
 }
 
-/** Short-lived host snapshots for polling — avoids decrypting host rows every tick. */
+/** Short-lived host snapshots for polling, avoids decrypting host rows every tick. */
 export class HostPollCache<THost extends { id: number } = { id: number }> {
   private cache = new Map<
     number,

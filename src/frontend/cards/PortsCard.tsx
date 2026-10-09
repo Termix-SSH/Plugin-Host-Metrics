@@ -21,7 +21,7 @@ function PortRow({ port }: { port: ListeningPort }) {
         {port.protocol.toUpperCase()}
       </span>
       <span className="truncate font-semibold">
-        {port.process ?? (port.pid ? `PID:${port.pid}` : "—")}
+        {port.process ?? (port.pid ? `PID:${port.pid}` : "-")}
       </span>
       <span className="truncate text-right text-muted-foreground">
         {formatAddress(port.localAddress)}

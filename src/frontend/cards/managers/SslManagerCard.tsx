@@ -35,7 +35,7 @@ function ExpiryBadge({ expiry }: { expiry: string | null }) {
   const { t } = useTranslation();
   const days = daysUntil(expiry);
   if (days == null)
-    return <span className="text-muted-foreground">{expiry ?? "—"}</span>;
+    return <span className="text-muted-foreground">{expiry ?? "-"}</span>;
   const tone =
     days < 0
       ? "text-destructive"
@@ -170,14 +170,16 @@ export function SslManagerCard({ hostId }: { hostId: number | null }) {
       headerExtra={
         activeClient ? (
           <>
-            <Button
-              variant="ghost"
-              size="xs"
-              disabled={busy}
-              onClick={() => renew(true)}
-            >
-              {t("hostMetrics.managers.dryRun")}
-            </Button>
+            {activeClient === "certbot" && (
+              <Button
+                variant="ghost"
+                size="xs"
+                disabled={busy}
+                onClick={() => renew(true)}
+              >
+                {t("hostMetrics.managers.dryRun")}
+              </Button>
+            )}
             <Button
               variant="outline"
               size="xs"
