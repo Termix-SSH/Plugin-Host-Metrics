@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.0.2
+
+### Fixed
+
+- macOS disk gauge uses the data volume instead of the sealed system volume
+- macOS disk percent now matches df instead of using the whole APFS container size
+
 ## 1.0.1
 
 ### Added

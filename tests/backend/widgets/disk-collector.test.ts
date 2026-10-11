@@ -305,11 +305,24 @@ describe("parseDarwinDfRows", () => {
     expect(root.totalBytes).toBe(971350180 * 1024);
     expect(root.usedBytes).toBe(10904432 * 1024);
     expect(root.availableBytes).toBe(723545416 * 1024);
-    // Our percent is used/total (matches the Linux/Windows collectors), which
-    // differs slightly from df's own Capacity% (used/(used+available)).
     expect(root.percent).toBe(1);
     expect(root.usedHuman).toBeTruthy();
     expect(root.totalHuman).toBeTruthy();
+  });
+
+  it("matches df's Capacity for volumes sharing an APFS container", () => {
+    const rows = parseDarwinDfRows(
+      "/dev/disk3s1s1 239362496 12262808 70690144 15% /\n" +
+        "/dev/disk3s5 239362496 139671936 70690144 67% /System/Volumes/Data\n",
+      new Map(),
+    );
+    expect(rows.map((r) => r.percent)).toEqual([15, 66]);
+  });
+
+  it("picks the data volume over the sealed system volume", () => {
+    const typeByMount = parseDarwinMountTypes(DARWIN_MOUNT_OUTPUT);
+    const rows = parseDarwinDfRows(DARWIN_DF_OUTPUT, typeByMount);
+    expect(selectPrimaryFilesystem(rows)?.mount).toBe("/System/Volumes/Data");
   });
 
   it("returns an empty list for blank output", () => {

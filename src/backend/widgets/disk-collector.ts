@@ -6,6 +6,8 @@ import {
 import { toFixedNum } from "../util.js";
 import type { Client } from "ssh2";
 
+const DARWIN_DATA_MOUNT = "/System/Volumes/Data";
+
 const PSEUDO_FS_RE =
   /^(tmpfs|devtmpfs|overlay|udev|none|shm|squashfs|efivarfs)$/;
 
@@ -142,14 +144,17 @@ export function buildFilesystemList(
 }
 
 // The headline disk figure should be the root filesystem - that is what users
-// mean by "the server's disk". Only when there is no root mount (containers,
+// mean by "the server's disk". On macOS "/" is the small sealed system volume,
+// so the data volume wins there. Only when there is no root mount (containers,
 // chroots) do we fall back to the most-utilized mount.
 export function selectPrimaryFilesystem(
   filesystems: DiskFilesystem[],
 ): DiskFilesystem | null {
   if (filesystems.length === 0) return null;
 
-  const root = filesystems.find((fs) => fs.mount === "/");
+  const root =
+    filesystems.find((fs) => fs.mount === DARWIN_DATA_MOUNT) ??
+    filesystems.find((fs) => fs.mount === "/");
   if (root) return root;
 
   let best = filesystems[0];
@@ -269,9 +274,15 @@ export function parseDarwinDfRows(
       const availableBytes = Number.isFinite(availableKb)
         ? availableKb * 1024
         : null;
+      // APFS volumes all report the whole container as their size, so use
+      // used / (used + available) like df's Capacity column.
+      const capacity =
+        usedBytes !== null && availableBytes !== null
+          ? usedBytes + availableBytes
+          : totalBytes;
       const percent =
-        usedBytes !== null
-          ? Math.max(0, Math.min(100, (usedBytes / totalBytes) * 100))
+        usedBytes !== null && capacity > 0
+          ? Math.max(0, Math.min(100, (usedBytes / capacity) * 100))
           : null;
 
       return {
