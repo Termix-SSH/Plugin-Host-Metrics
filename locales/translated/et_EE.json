@@ -1,0 +1,279 @@
+{
+  "nav": {
+    "hostMetrics": "Mõõdikud"
+  },
+  "hostMetrics": {
+    "cpu": "CPU",
+    "memory": "Mälu",
+    "disk": "Ketas",
+    "uptime": "Ühendusaja pikkus",
+    "processes": "Protsessid",
+    "available": "Saadaval",
+    "free": "Vaba",
+    "connecting": "Ühenduse loomine...",
+    "connectionFailed": "Serveriga ühendumine ebaõnnestus",
+    "cpuCores_one": "{{count}} tuum",
+    "cpuCores_other": "{{count}} tuuma",
+    "cpuUsage": "CPU kasutus",
+    "memoryUsage": "Mälu kasutus",
+    "diskUsage": "Ketta kasutus",
+    "selectFilesystem": "Vali failisüsteem",
+    "temperature": "Temperatuur",
+    "highestTemperature": "Kõrgeim temperatuur",
+    "primaryTemperatureSensor": "Põhisensor",
+    "gpu": {
+      "title": "GPU",
+      "noDevice": "GPU-d ei tuvastatud. NVIDIA kaardid vajavad NVIDIA draiverit (mis pakub nvidia-smi), AMD kaardid vajavad amdgpu draiverit.",
+      "driver": "Draiver {{version}}",
+      "utilization": "Kasutusaste",
+      "memory": "VRAM",
+      "temperature": "Temp",
+      "power": "Võimsus",
+      "fan": "Ventilaator",
+      "processes": "GPU protsessid",
+      "noProcesses": "Ükski protsess ei kasuta GPU-d"
+    },
+    "totpFailed": "TOTP kinnitamine ebaõnnestus",
+    "noneAuthNotSupported": "Mõõdikud ei toeta autentimistüüpi 'none'.",
+    "noHostSelected": "Ühtegi peremeesmasinat ei ole valitud",
+    "systemInfo": "Süsteemi teave",
+    "hostname": "Peremeesmasin",
+    "operatingSystem": "Operatsioonisüsteem",
+    "kernel": "Tuum",
+    "seconds": "sekundit",
+    "networkInterfaces": "Võrguliidesed",
+    "noInterfacesFound": "Ühtegi võrguliidest ei leitud",
+    "noProcessesFound": "Ühtegi protsessi ei leitud",
+    "processesTotal": "kokku",
+    "processesRunning": "töötav",
+    "loginStats": "SSH sisselogimise statistika",
+    "noRecentLoginData": "Viimaseid sisselogimise andmeid pole",
+    "ports": {
+      "title": "Kuulavad pordid",
+      "protocol": "Protokoll",
+      "port": "Port",
+      "address": "Aadress",
+      "process": "Protsess",
+      "search": "Otsi porte...",
+      "allProtocols": "Kõik",
+      "noData": "Kuulavate portide andmed puuduvad"
+    },
+    "firewall": {
+      "title": "Tulemüür",
+      "inactive": "Mitteaktiivne",
+      "policy": "Poliitika",
+      "rules": "reeglit",
+      "noRules": "Selles ahelas pole reegleid",
+      "noData": "Tulemüüri andmed pole saadaval",
+      "action": "Tegevus",
+      "protocol": "Proto",
+      "port": "Port",
+      "source": "Allikas",
+      "chains": "ahelad"
+    },
+    "architecture": "Arhitektuur",
+    "refresh": "Värskenda",
+    "customize": "Kohanda paigutust",
+    "reset": "Lähtesta",
+    "tabLive": "Reaalajas",
+    "editModeInstructions": "Kaartide ümberjärjestamiseks lohista neid, suuruse muutmiseks lohista alumist serva ja laiuse muutmiseks kasuta laiuse nuppu. Kaarte saab lisada või eemaldada allpool.",
+    "managers": {
+      "services": "Teenused",
+      "processInspector": "Protsesside vaataja",
+      "logViewer": "Logide vaataja",
+      "cron": "Croni ülesanded",
+      "packages": "Paketid",
+      "ssl": "SSL-sertifikaadid",
+      "firewall": "Tulemüür",
+      "users": "Kasutajad ja õigused",
+      "healthCheck": "Tervisekontrollid",
+      "diskBreakdown": "Ketta jaotus",
+      "systemdTimers": "Ajasturid",
+      "topMemory": "Suurimad mälu kasutajad",
+      "start": "Käivita",
+      "stop": "Peata",
+      "restart": "Taaskäivita",
+      "actionDone": "{{name}} uuendatud",
+      "actionFailed": "Tegevus ebaõnnestus",
+      "editRequired": "Muutmiseks on vaja sellele hostile kirjutamisõigust",
+      "signalSent": "Signaal saadetud protsessile {{pid}}",
+      "killHint": "Klõps: lõpeta (SIGTERM). Paremklik: sunniviisiline lõpetamine (SIGKILL).",
+      "working": "Töötlemine...",
+      "update": "Uuenda",
+      "upgradeAll": "Uuenda kõiki",
+      "allUpToDate": "Kõik on uuendatud",
+      "save": "Salvesta",
+      "command": "Käsk",
+      "enabled": "Lubatud",
+      "cronSaved": "Crontab uuendatud",
+      "clients": "Kliendid",
+      "dryRun": "Kuivkäik",
+      "renew": "Pikenda",
+      "noAcmeClient": "Sellel hostil ei leitud ACME-klienti (certbot või acme.sh).",
+      "addInputRule": "Lisa INPUT-reegel",
+      "firewallWarning": "Muudatused kehtivad ainult käivitusaegselt, kuni need on salvestatud. Olge ettevaatlik, et end lukku ei jätaks.",
+      "ruleApplied": "Reegel rakendatud",
+      "invalidPort": "Sisesta kehtiv port (1-65535)",
+      "newUsername": "Uus kasutajanimi",
+      "addUser": "Lisa",
+      "deleteUser": "Kustuta kasutaja",
+      "noHealthChecks": "Tervisekontrollid pole veel seadistatud.",
+      "follow": "Jälgi",
+      "noLogData": "Logiväljundit pole.",
+      "tree": "Puu",
+      "enableDisable": "Luba / keela käivitamisel",
+      "grantSudo": "Anna sudo-õigused",
+      "revokeSudo": "Eemalda sudo-õigused",
+      "sslIssueCert": "Sertifikaadi väljastamine",
+      "sslExpired": "Aegunud",
+      "sslInDays": "{{days}} päeva pärast",
+      "sslNeedDomain": "Sisesta vähemalt üks domeen",
+      "sslIssued": "Sertifikaat väljastatud",
+      "sslDomainsPlaceholder": "example.com, www.example.com",
+      "sslHttpStandalone": "HTTP (iseseisev)",
+      "sslHttpWebroot": "HTTP (webroot)",
+      "sslDns": "DNS",
+      "sslDnsProvider": "DNS-pakkuja (nt Cloudflare)",
+      "sslIssueHint": "DNS-pakkuja usaldusandmed peavad olema hostil juba konfigureeritud.",
+      "sslRevoke": "Tõmba sertifikaat tagasi",
+      "sslRevoked": "Sertifikaat on tagasi tõmmatud",
+      "sslRevokeConfirm": "Kas tõmmata sertifikaat \"{{name}}\" tagasi ja eemaldada see? Seda ei saa tagasi pöörata.",
+      "healthRun": "Käivita",
+      "healthName": "Nimi",
+      "healthTarget": "Host / aadress",
+      "healthAddCheck": "Lisa kontroll",
+      "healthInterval": "Kontrolli iga (minut)",
+      "healthSaved": "Tervisekontrollid on salvestatud",
+      "healthMissingFields": "Iga kontroll vajab nime ja sihtmärki",
+      "logFile": "Fail",
+      "logUnit": "Ühik",
+      "logCustomPath": "Kohandatud tee kausta /var/log all (valikuline)",
+      "logGrep": "Filtreeri read...",
+      "firewallPersist": "Salvesta reeglid",
+      "firewallPersisted": "Tulemüüri reeglid on salvestatud",
+      "wireguard": "WireGuard",
+      "wgNotInstalled": "WireGuardi pole sellel hostil paigaldatud",
+      "wgNoInterfaces": "Ühtegi WireGuardi liidest ei ole konfigureeritud",
+      "wgInterfaceUp": "Käivita",
+      "wgInterfaceDown": "Peata",
+      "wgBringingUp": "Käivitan {{name}}...",
+      "wgBringingDown": "Peatan {{name}}...",
+      "wgInterfaceUpDone": "{{name}} on käivitatud",
+      "wgInterfaceDownDone": "{{name}} on peatatud",
+      "wgLastHandshake": "Viimane käepigistus",
+      "wgHandshakeNever": "Mitte kunagi",
+      "wgNoPeers": "Ühtegi partnerit",
+      "revoke": "Tõmba tagasi"
+    }
+  },
+  "metricsHistory": {
+    "download": "RX",
+    "upload": "TX",
+    "noData": "Selle ajavahemiku kohta pole ajalooandmeid saadaval."
+  },
+  "hosts": {
+    "tabHostMetrics": "Hosti meetrikad",
+    "metricsCollectionLabel": "Meetrikate kogumine",
+    "enableMetricsLabel": "Luba meetrikad",
+    "enableMetricsDesc": "Kogu sellelt hostilt CPU, RAM, ketta ja teisi meetrikaid",
+    "useGlobalMetrics": "Kasuta globaalset intervalli",
+    "useGlobalMetricsDesc": "Asenda serveriüldise meetrikate intervalliga",
+    "metricsIntervalS": "Meetrikate intervall (s)",
+    "metricsIntervalDesc2": "Sekundeid meetrikate hetktahvlite vahel",
+    "excludedMountsLabel": "Välistatud mnt-punktid",
+    "monitoredMountsLabel": "Kohandatud jälgitavad teed",
+    "monitoredMountsDesc": "Lisa teed, mida ei kuvata eraldi mnt-punktidega, sealhulgas Home Assistanti sidumismnt-punktid nagu /config.",
+    "monitoredMountPathPlaceholder": "Tee (/config, /mnt/data)",
+    "monitoredMountLabelPlaceholder": "Silt (valikuline)",
+    "addMonitoredMount": "Lisa tee",
+    "excludedMountsDesc": "Peida konkreetseid mnt-punkte või failisüsteemi tüüpe (nt nfs, cifs) selle hosti ketta kasutuse ja hoiatuste hulgast.",
+    "excludedMountsPlaceholder": "Mnt-tee (/mnt/nas) või failisüsteemi tüüp (nfs, cifs)",
+    "excludedMountsEmpty": "Ühtegi mnt-punkti ei ole välistatud. Kõik tuvastatud failisüsteemid on nähtavad.",
+    "addExcludedMount": "Lisa",
+    "visibleWidgets": "Nähtavad vidinad",
+    "widgetsMovedToHostMetrics": "Kaardid lisatakse, paigutatakse ja suurustatakse nüüd otse hosti meetrikate vahelehel. Ava selle hosti hosti meetrikad ja kasuta kohandamist, et valida, millised kaardid kuvatakse.",
+    "hostNotFound": "Hosti ei leitud",
+    "loadingHost": "Laadin hosti..."
+  },
+  "homepage": {
+    "noData": "Andmeid pole saadaval",
+    "showCurrentValue": "Näita praegust väärtust",
+    "chartMetric": "Mõõdik",
+    "metricRange": "Vahemik",
+    "host": "Peremeesmasin",
+    "loading": "Laadimine...",
+    "metricCpu": "CPU",
+    "metricDisk": "Ketas",
+    "metricHostname": "Peremeesmasina nimi",
+    "metricKernel": "Tuum",
+    "metricMemory": "Mälu",
+    "metricNetwork": "Võrk",
+    "metricOs": "OS",
+    "metricProcesses": "Protsessid",
+    "metricProcessesRunning": "töötamas",
+    "metricProcessesTotal": "kokku",
+    "metricUptime": "Ülesoleku aeg",
+    "metricsNotAvailable": "Mõõdikud pole saadaval",
+    "noHostSelected": "Peremeesmasinat ei ole valitud",
+    "selectHost": "Valige peremeesmasin..."
+  },
+  "terminalStatus": {
+    "unavailable": "Reaalajas statistika pole saadaval"
+  },
+  "dashboard": {
+    "cpu": "CPU",
+    "ram": "RAM"
+  },
+  "dashboardTab": {
+    "disk": "Ketas"
+  },
+  "terminal": {
+    "connected": "Ühendatud"
+  },
+  "permissions": {
+    "use": {
+      "title": "Kasuta peremeesmasina mõõdikuid",
+      "description": "Vaata peremeesmasina mõõdikuid ja kasuta peremeesmasina haldusvahendeid (teenused, paketid, tulemüür jne) masinatel, millele sul on ligipääs."
+    }
+  },
+  "settings": {
+    "admin": {
+      "metricsInterval": {
+        "label": "Mõõdikute intervall (sekundites)",
+        "description": "Kui sageli vaadatavat peremeesmasinat mõõdetakse, kui peremeesmasin ei määra oma intervalli."
+      },
+      "historyRetentionDays": {
+        "label": "Ajaloo säilitamine (päevi)",
+        "description": "Kui kaua hoitakse ajaloo graafikute jaoks mõõdikute näidiseid."
+      }
+    },
+    "user": {
+      "temperatureUnit": {
+        "label": "Temperatuuriühik",
+        "description": "Kuidas temperatuure Peremeesmasina mõõdikutes kuvatakse.",
+        "celsius": "Celsius",
+        "fahrenheit": "Fahrenheit"
+      }
+    },
+    "host": {
+      "metricsEnabled": {
+        "label": "Kogu mõõdikuid"
+      },
+      "metricsInterval": {
+        "label": "Mõõdikute intervall (sekundites)"
+      },
+      "enabledWidgets": {
+        "label": "Lubatud vidinad"
+      },
+      "excludedMounts": {
+        "label": "Välistatud muntimispunktid"
+      },
+      "monitoredMounts": {
+        "label": "Monitooritavad asukohad"
+      }
+    }
+  },
+  "plugin": {
+    "name": "Peremeesmasina mõõdikud"
+  }
+}

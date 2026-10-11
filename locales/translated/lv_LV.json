@@ -1,0 +1,280 @@
+{
+  "nav": {
+    "hostMetrics": "Servera rādītāji"
+  },
+  "hostMetrics": {
+    "cpu": "CPU",
+    "memory": "Atmiņa",
+    "disk": "Diska",
+    "uptime": "Darba laiks",
+    "processes": "Procesi",
+    "available": "Pieejams",
+    "free": "Brīvs",
+    "connecting": "Notiek savienojums...",
+    "connectionFailed": "Neizdevās izveidot savienojumu ar serveri",
+    "cpuCores_zero": "{{count}} kodoli",
+    "cpuCores_one": "{{count}} kodols",
+    "cpuCores_other": "{{count}} kodoli",
+    "cpuUsage": "CPU izmantošana",
+    "memoryUsage": "Atmiņas izmantošana",
+    "diskUsage": "Diska izmantošana",
+    "selectFilesystem": "Izvēlieties failu sistēmu",
+    "temperature": "Temperatūra",
+    "highestTemperature": "Augstākā temperatūra",
+    "primaryTemperatureSensor": "Galvenais sensors",
+    "gpu": {
+      "title": "GPU",
+      "noDevice": "GPU nav noteikta. NVIDIA kartēm ir nepieciešams NVIDIA draiveris (kas nodrošina nvidia-smi), AMD kartēm ir nepieciešams amdgpu draiveris.",
+      "driver": "Draiveris {{version}}",
+      "utilization": "Izmantošana",
+      "memory": "VRAM",
+      "temperature": "Temperatūra",
+      "power": "Jauda",
+      "fan": "Ventilators",
+      "processes": "GPU procesi",
+      "noProcesses": "Nav procesu, kas izmanto GPU"
+    },
+    "totpFailed": "TOTP verifikācija neizdevās",
+    "noneAuthNotSupported": "Servera rādītāji neatbalsta autentifikācijas veidu 'none'.",
+    "noHostSelected": "Nav izvēlēts serveris",
+    "systemInfo": "Sistēmas informācija",
+    "hostname": "Servera nosaukums",
+    "operatingSystem": "Operētājsistēma",
+    "kernel": "Kodols",
+    "seconds": "sekundes",
+    "networkInterfaces": "Tīkla saskarnes",
+    "noInterfacesFound": "Nav atrasta tīkla saskarne",
+    "noProcessesFound": "Nav atrasts process",
+    "processesTotal": "kopā",
+    "processesRunning": "palošo",
+    "loginStats": "SSH pieteikšanās statistika",
+    "noRecentLoginData": "Nav nesenās pieteikšanās datu",
+    "ports": {
+      "title": "Klausīšanās porti",
+      "protocol": "Protokols",
+      "port": "Ports",
+      "address": "Adrese",
+      "process": "Process",
+      "search": "Meklēt portus...",
+      "allProtocols": "Visi",
+      "noData": "Nav klausīšanās portu datu"
+    },
+    "firewall": {
+      "title": "Ugunsmūris",
+      "inactive": "Neaktīvs",
+      "policy": "Politika",
+      "rules": "noteikumi",
+      "noRules": "Šajā ķēdē nav noteikumu",
+      "noData": "Nav pieejamu ugunsmūra datu",
+      "action": "Darbība",
+      "protocol": "Proto",
+      "port": "Ports",
+      "source": "Avots",
+      "chains": "sētas"
+    },
+    "architecture": "Arhitektūra",
+    "refresh": "Atsvaidzināt",
+    "customize": "Pielāgot izkārtojumu",
+    "reset": "Atiestatīt",
+    "tabLive": "Tiešraide",
+    "editModeInstructions": "Velciet kartītes, lai pārkārtotu, velciet apakšējo malu, lai mainītu izmēru, un izmantojiet platuma pogu, lai mainītu kartītes platumu. Pievienojiet vai noņemiet kartītes zemāk.",
+    "managers": {
+      "services": "Pakalpojumi",
+      "processInspector": "Procesu pārskatītājs",
+      "logViewer": "Žurnālu skatītājs",
+      "cron": "Cron uzdevumi",
+      "packages": "Pakotnes",
+      "ssl": "SSL sertifikāti",
+      "firewall": "Ugunsmūris",
+      "users": "Lietotāji un atļaujas",
+      "healthCheck": "Darbības pārbaudes",
+      "diskBreakdown": "Diska sadalījums",
+      "systemdTimers": "Taimeris",
+      "topMemory": "Vairāk pēc atmiņas",
+      "start": "Sākt",
+      "stop": "Apturēt",
+      "restart": "Restartēt",
+      "actionDone": "{{name}} atjaunināts",
+      "actionFailed": "Darbība neizdevās",
+      "editRequired": "Lai to mainītu, jums ir nepieciešama rediģēšanas piekļuve šim resursam",
+      "signalSent": "Signāls nosūtīts uz PID {{pid}}",
+      "killHint": "Klikšķiniet: izbeigt (SIGTERM). Labais klikšķis: piespiedu izbeigšana (SIGKILL).",
+      "working": "Strādā...",
+      "update": "Atjaunināt",
+      "upgradeAll": "Atjaunināt visu",
+      "allUpToDate": "Viss ir atjaunināts",
+      "save": "Saglabāt",
+      "command": "Komanda",
+      "enabled": "Iespējots",
+      "cronSaved": "Crontab atjaunināts",
+      "clients": "Klienti",
+      "dryRun": "Tukša izpilde",
+      "renew": "Atjaunot",
+      "noAcmeClient": "Šajā resursā nav atrasts neviens ACME klients (certbot vai acme.sh).",
+      "addInputRule": "Pievienot INPUT noteikumu",
+      "firewallWarning": "Izmaiņas ir tikai izpildes laikā, līdz tās tiek saglabātas. Rīcieties uzmanīgi, lai sevi neizslēgtu.",
+      "ruleApplied": "Noteikums piemērots",
+      "invalidPort": "Ievadiet derīgu portu (1-65535)",
+      "newUsername": "Jaunais lietotājvārds",
+      "addUser": "Pievienot",
+      "deleteUser": "Dzēst lietotāju",
+      "noHealthChecks": "Darbības pārbaudes vēl nav konfigurētas.",
+      "follow": "Sekot",
+      "noLogData": "Nav žurnāla izvades.",
+      "tree": "Koks",
+      "enableDisable": "Iespējot / atspējot pie starta",
+      "grantSudo": "Piešķirt sudo",
+      "revokeSudo": "Atņemt sudo",
+      "sslIssueCert": "Izdot sertifikātu",
+      "sslExpired": "Beidzies",
+      "sslInDays": "pēc {{days}}d",
+      "sslNeedDomain": "Ievadiet vismaz vienu domēnu",
+      "sslIssued": "Sertifikāts izdots",
+      "sslDomainsPlaceholder": "example.com, www.example.com",
+      "sslHttpStandalone": "HTTP (stāvā režīmā)",
+      "sslHttpWebroot": "HTTP (webroot)",
+      "sslDns": "DNS",
+      "sslDnsProvider": "DNS pakalpojumu sniedzējs (piem., cloudflare)",
+      "sslIssueHint": "DNS pakalpojumu sniedzēja pieteikšanās dati jau ir jābūt konfigurētiem šajā serverī.",
+      "sslRevoke": "Atsaukt sertifikātu",
+      "sslRevoked": "Sertifikāts atsaukts",
+      "sslRevokeConfirm": "Vai atsaukt un noņemt sertifikātu \"{{name}}\"? Šo darbību nevar atsaukt.",
+      "healthRun": "Palaist",
+      "healthName": "Nosaukums",
+      "healthTarget": "Serveris / adrese",
+      "healthAddCheck": "Pievienot pārbaudi",
+      "healthInterval": "Pārbaudīt ik (minūtes)",
+      "healthSaved": "Veselības pārbaudes saglabātas",
+      "healthMissingFields": "Katram pārbaudes uzdevumam ir nepieciešams nosaukums un mērķis",
+      "logFile": "Fails",
+      "logUnit": "Vienība",
+      "logCustomPath": "Pielāgots ceļš zem /var/log (neobligāts)",
+      "logGrep": "Filtrēt rindas...",
+      "firewallPersist": "Saglabāt noteikumus",
+      "firewallPersisted": "Ugunsmūra noteikumi saglabāti",
+      "wireguard": "WireGuard",
+      "wgNotInstalled": "WireGuard šajā serverī nav instalēts",
+      "wgNoInterfaces": "Nav konfigurētu WireGuard saskarņu",
+      "wgInterfaceUp": "Ieslēgt",
+      "wgInterfaceDown": "Izslēgt",
+      "wgBringingUp": "Ieslēdz {{name}}...",
+      "wgBringingDown": "Izslēdz {{name}}...",
+      "wgInterfaceUpDone": "{{name}} ir ieslēgts",
+      "wgInterfaceDownDone": "{{name}} ir izslēgts",
+      "wgLastHandshake": "Pēdējā rokas spiešana",
+      "wgHandshakeNever": "Nekad",
+      "wgNoPeers": "Nav partneru",
+      "revoke": "Atsaukt"
+    }
+  },
+  "metricsHistory": {
+    "download": "RX",
+    "upload": "TX",
+    "noData": "Šim laika posmam nav pieejamu vēsturisko datu."
+  },
+  "hosts": {
+    "tabHostMetrics": "Servera metriķes",
+    "metricsCollectionLabel": "Metriķu vākšana",
+    "enableMetricsLabel": "Iespējot metriķes",
+    "enableMetricsDesc": "Vākt CPU, RAM, diska un citas metriķes no šī servera",
+    "useGlobalMetrics": "Izmantot globālo intervālu",
+    "useGlobalMetricsDesc": "Pārslēgt ar servera līmeņa metriķu intervālu",
+    "metricsIntervalS": "Metriķu intervāls (s)",
+    "metricsIntervalDesc2": "Sekundes starp metriķu uzņēmumiem",
+    "excludedMountsLabel": "Izslēgtās pievienošanas",
+    "monitoredMountsLabel": "Pielāgoti uzraudzītie ceļi",
+    "monitoredMountsDesc": "Pievienojiet ceļus, kas nav izveidoti kā atsevišķas pievienošanas, tostarp Home Assistant ceļi, piemēram, /config.",
+    "monitoredMountPathPlaceholder": "Ceļš (/config, /mnt/data)",
+    "monitoredMountLabelPlaceholder": "Etiķete (neobligāts)",
+    "addMonitoredMount": "Pievienot ceļu",
+    "excludedMountsDesc": "Paslēpiet konkrētus pievienošanas punktus vai failu sistēmu tipus (piem., nfs, cifs) no šī servera diska lietošanas un brīdinājumiem.",
+    "excludedMountsPlaceholder": "Pievienošanas ceļš (/mnt/nas) vai failu sistēmas tips (nfs, cifs)",
+    "excludedMountsEmpty": "Nav izslēgtu pievienošanu. Rādītas visas atklātās failu sistēmas.",
+    "addExcludedMount": "Pievienot",
+    "visibleWidgets": "Redzamie logrīki",
+    "widgetsMovedToHostMetrics": "Kartes tagad tiek pievienotas, sakārtotas un izmēra mainītas tieši cilnē Servera metriķes. Atveriet šī servera Servera metriķes un izmantojiet pielāgošanu, lai izvēlētos, kuras kartes tiek rādītas.",
+    "hostNotFound": "Serveris nav atrasts",
+    "loadingHost": "Ielādē serveri..."
+  },
+  "homepage": {
+    "noData": "Nav pieejamu datu",
+    "showCurrentValue": "Rādīt pašreizējo vērtību",
+    "chartMetric": "Mērvienība",
+    "metricRange": "Diapazons",
+    "host": "Resursdators",
+    "loading": "Ielādē...",
+    "metricCpu": "CPU",
+    "metricDisk": "Diska",
+    "metricHostname": "Resursdatora nosaukums",
+    "metricKernel": "Pamatkodols",
+    "metricMemory": "Atmiņa",
+    "metricNetwork": "Tīkls",
+    "metricOs": "OS",
+    "metricProcesses": "Procesi",
+    "metricProcessesRunning": "paloši",
+    "metricProcessesTotal": "kopā",
+    "metricUptime": "Darbības laiks",
+    "metricsNotAvailable": "Mērījumu dati nav pieejami",
+    "noHostSelected": "Nav izvēlēts resursdators",
+    "selectHost": "Izvēlieties resursdatoru..."
+  },
+  "terminalStatus": {
+    "unavailable": "Tiešraides statistika nav pieejama"
+  },
+  "dashboard": {
+    "cpu": "CPU",
+    "ram": "RAM"
+  },
+  "dashboardTab": {
+    "disk": "Diska"
+  },
+  "terminal": {
+    "connected": "Savienots"
+  },
+  "permissions": {
+    "use": {
+      "title": "Izmantot resursdatora mērījumus",
+      "description": "Apskatīt resursdatora mērījumus un izmantot resursdatora pārvaldības rīkus (pakalpojumus, pakotnes, ugunsmūri un citus) resursdatoros, uz kuriem varat piekļūt."
+    }
+  },
+  "settings": {
+    "admin": {
+      "metricsInterval": {
+        "label": "Mērījumu intervāls (sekundes)",
+        "description": "Cik bieži tiek veikts mērījums skatāmajam resursdatoram, ja resursdators nav iestatījis savu intervālu."
+      },
+      "historyRetentionDays": {
+        "label": "Vēstures saglabāšana (dienas)",
+        "description": "Cik ilgi mērījumu dati tiek saglabāti vēstures diagrammām."
+      }
+    },
+    "user": {
+      "temperatureUnit": {
+        "label": "Temperatūras mērvienība",
+        "description": "Kā temperatūra tiek rādīta resursdatora mērījumos.",
+        "celsius": "Celsija",
+        "fahrenheit": "Farenheita"
+      }
+    },
+    "host": {
+      "metricsEnabled": {
+        "label": "Vākt mērījumus"
+      },
+      "metricsInterval": {
+        "label": "Mērījumu intervāls (sekundes)"
+      },
+      "enabledWidgets": {
+        "label": "Iespējotie logrīki"
+      },
+      "excludedMounts": {
+        "label": "Izslēgtie pievienojumi"
+      },
+      "monitoredMounts": {
+        "label": "Pārraugāmie ceļi"
+      }
+    }
+  },
+  "plugin": {
+    "name": "Resursdatora mērījumi"
+  }
+}

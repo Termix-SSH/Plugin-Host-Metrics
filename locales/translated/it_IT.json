@@ -1,47 +1,42 @@
 {
   "nav": {
-    "hostMetrics": "Metriche host"
+    "hostMetrics": "Metriche Host"
   },
   "hostMetrics": {
     "cpu": "CPU",
     "memory": "Memoria",
     "disk": "Disco",
-    "network": "Rete",
     "uptime": "Tempo di attività",
     "processes": "Processi",
     "available": "Disponibile",
     "free": "Libero",
     "connecting": "Connessione in corso...",
-    "connectionFailed": "Connessione al server non riuscita",
-    "naCpus": "CPU N/D",
+    "connectionFailed": "Impossibile connettersi al server",
     "cpuCores_one": "{{count}} Core",
+    "cpuCores_many": "{{count}} Core",
     "cpuCores_other": "{{count}} Core",
     "cpuUsage": "Utilizzo CPU",
     "memoryUsage": "Utilizzo memoria",
     "diskUsage": "Utilizzo disco",
-    "selectFilesystem": "Seleziona il filesystem",
+    "selectFilesystem": "Seleziona filesystem",
     "temperature": "Temperatura",
     "highestTemperature": "Temperatura massima",
-    "primaryTemperatureSensor": "Sensore primario",
+    "primaryTemperatureSensor": "Sensore principale",
     "gpu": {
       "title": "GPU",
-      "noDevice": "Nessuna GPU NVIDIA rilevata. Installa il driver NVIDIA (che fornisce nvidia-smi) per visualizzare le metriche della GPU.",
-      "driver": "Autista {{version}}",
+      "noDevice": "Nessuna GPU rilevata. Le schede NVIDIA richiedono il driver NVIDIA (che fornisce nvidia-smi), le schede AMD richiedono il driver amdgpu.",
+      "driver": "Driver {{version}}",
       "utilization": "Utilizzo",
       "memory": "VRAM",
       "temperature": "Temp",
-      "power": "Energia",
-      "fan": "Fan",
-      "processes": "Elaborazione GPU",
+      "power": "Potenza",
+      "fan": "Ventola",
+      "processes": "Processi GPU",
       "noProcesses": "Nessun processo sta utilizzando la GPU"
     },
-    "failedToFetchHostConfig": "Recupero configurazione host non riuscito",
-    "serverOffline": "Server offline",
-    "cannotFetchMetrics": "Impossibile recuperare le metriche dal server offline",
     "totpFailed": "Verifica TOTP non riuscita",
-    "noneAuthNotSupported": "Host Metrics non supporta il tipo di autenticazione 'none'.",
+    "noneAuthNotSupported": "Le metriche host non supportano il tipo di autenticazione 'none'.",
     "noHostSelected": "Nessun host selezionato",
-    "load": "Carico",
     "systemInfo": "Informazioni di sistema",
     "hostname": "Nome host",
     "operatingSystem": "Sistema operativo",
@@ -52,7 +47,7 @@
     "noProcessesFound": "Nessun processo trovato",
     "processesTotal": "totale",
     "processesRunning": "in esecuzione",
-    "loginStats": "Statistiche di accesso SSH",
+    "loginStats": "Statistiche accessi SSH",
     "noRecentLoginData": "Nessun dato di accesso recente",
     "ports": {
       "title": "Porte in ascolto",
@@ -74,42 +69,36 @@
       "action": "Azione",
       "protocol": "Proto",
       "port": "Porta",
-      "source": "Sorgente",
-      "anywhere": "Ovunque",
-      "chains": "Catene"
+      "source": "Origine",
+      "chains": "catene"
     },
-    "loadAvg": "Carico medio",
-    "swap": "Swap",
     "architecture": "Architettura",
     "refresh": "Aggiorna",
-    "retry": "Riprova",
     "customize": "Personalizza layout",
     "reset": "Reimposta",
     "tabLive": "Live",
-    "editModeInstructions": "Trascina le schede per riordinarle, trascina il bordo inferiore per ridimensionarle e usa il pulsante della larghezza per modificare l'estensione della scheda. Aggiungi o rimuovi schede qui sotto.",
+    "editModeInstructions": "Trascina le schede per riordinarle, trascina il bordo inferiore per ridimensionarle e usa il pulsante della larghezza per modificare l'ampiezza di una scheda. Aggiungi o rimuovi schede qui sotto.",
     "managers": {
       "services": "Servizi",
-      "processInspector": "Ispettore dei processi",
-      "logViewer": "Visualizzatore di log",
-      "cron": "Cron",
+      "processInspector": "Ispezione processi",
+      "logViewer": "Visualizzatore log",
+      "cron": "Cron Jobs",
       "packages": "Pacchetti",
       "ssl": "Certificati SSL",
       "firewall": "Firewall",
       "users": "Utenti e permessi",
-      "healthCheck": "Controlli di integrità",
-      "diskBreakdown": "Analisi del disco",
+      "healthCheck": "Controlli salute",
+      "diskBreakdown": "Dettaglio disco",
       "systemdTimers": "Timer",
-      "topMemory": "Principali per memoria",
-      "noData": "Nessun dato",
-      "sudoHint": "Imposta una password sudo per questo host nell'editor host per abilitare azioni privilegiate.",
-      "filter": "Filtra...",
+      "topMemory": "Top per memoria",
       "start": "Avvia",
       "stop": "Ferma",
       "restart": "Riavvia",
       "actionDone": "{{name}} aggiornato",
       "actionFailed": "Azione non riuscita",
+      "editRequired": "È necessario l'accesso in modifica a questo host per apportare modifiche",
       "signalSent": "Segnale inviato al PID {{pid}}",
-      "killHint": "Clic: termina (SIGTERM). Clic destro: terminazione forzata (SIGKILL).",
+      "killHint": "Clic: termina (SIGTERM). Clic destro: forza kill (SIGKILL).",
       "working": "In corso...",
       "update": "Aggiorna",
       "upgradeAll": "Aggiorna tutto",
@@ -119,26 +108,26 @@
       "enabled": "Abilitato",
       "cronSaved": "Crontab aggiornato",
       "clients": "Client",
-      "dryRun": "Prova",
+      "dryRun": "Simulazione",
       "renew": "Rinnova",
       "noAcmeClient": "Nessun client ACME (certbot o acme.sh) trovato su questo host.",
       "addInputRule": "Aggiungi regola INPUT",
-      "firewallWarning": "Le modifiche sono solo runtime finché non vengono rese permanenti. Fai attenzione a non rimanere bloccato fuori.",
+      "firewallWarning": "Le modifiche sono solo runtime finché non vengono salvate. Fai attenzione a non bloccare l'accesso.",
       "ruleApplied": "Regola applicata",
       "invalidPort": "Inserisci una porta valida (1-65535)",
       "newUsername": "Nuovo nome utente",
       "addUser": "Aggiungi",
       "deleteUser": "Elimina utente",
-      "noHealthChecks": "Nessun health check configurato al momento.",
+      "noHealthChecks": "Nessun controllo salute configurato.",
       "follow": "Segui",
       "noLogData": "Nessun output di log.",
       "tree": "Albero",
-      "enableDisable": "Abilita / disabilita all'avvio",
+      "enableDisable": "Abilita/disabilita all'avvio",
       "grantSudo": "Concedi sudo",
       "revokeSudo": "Revoca sudo",
       "sslIssueCert": "Emetti certificato",
       "sslExpired": "Scaduto",
-      "sslInDays": "in {{days}}d",
+      "sslInDays": "tra {{days}}g",
       "sslNeedDomain": "Inserisci almeno un dominio",
       "sslIssued": "Certificato emesso",
       "sslDomainsPlaceholder": "example.com, www.example.com",
@@ -154,78 +143,58 @@
       "healthName": "Nome",
       "healthTarget": "Host / indirizzo",
       "healthAddCheck": "Aggiungi controllo",
-      "healthSaved": "Controlli di integrità salvati",
-      "healthMissingFields": "Ogni controllo richiede un nome e un obiettivo",
+      "healthInterval": "Controlla ogni (minuti)",
+      "healthSaved": "Controlli di salute salvati",
+      "healthMissingFields": "Ogni controllo richiede un nome e un target",
       "logFile": "File",
       "logUnit": "Unità",
-      "logCustomPath": "Percorso personalizzato in /var/log (opzionale)",
+      "logCustomPath": "Percorso personalizzato sotto /var/log (opzionale)",
       "logGrep": "Filtra righe...",
-      "firewallPersist": "Rendi permanenti le regole",
-      "firewallPersisted": "Regole del firewall rese permanenti",
+      "firewallPersist": "Salva regole",
+      "firewallPersisted": "Regole del firewall salvate",
       "wireguard": "WireGuard",
       "wgNotInstalled": "WireGuard non è installato su questo host",
       "wgNoInterfaces": "Nessuna interfaccia WireGuard configurata",
       "wgInterfaceUp": "Attiva",
       "wgInterfaceDown": "Disattiva",
-      "wgBringingUp": "Attivazione di {{name}} in corso...",
-      "wgBringingDown": "Disattivazione di {{name}} in corso...",
+      "wgBringingUp": "Attivazione di {{name}}...",
+      "wgBringingDown": "Disattivazione di {{name}}...",
       "wgInterfaceUpDone": "{{name}} è attivo",
-      "wgInterfaceDownDone": "{{name}} è disattivo",
-      "wgListenPort": "Porta",
-      "wgPublicKey": "Chiave pubblica",
-      "wgEndpoint": "Endpoint",
-      "wgAllowedIPs": "IP consentiti",
+      "wgInterfaceDownDone": "{{name}} è disattivato",
       "wgLastHandshake": "Ultimo handshake",
       "wgHandshakeNever": "Mai",
-      "wgTransfer": "Trasferimento",
-      "wgNoPeers": "Senza eguali"
+      "wgNoPeers": "Nessun peer",
+      "revoke": "Revoca"
     }
   },
   "metricsHistory": {
-    "title": "Cronologia metriche",
-    "historySuffix": "Cronologia",
-    "cpuMemoryDisk": "CPU / Memoria / Disco",
-    "network": "Rete",
     "download": "RX",
     "upload": "TX",
-    "noData": "Nessun dato storico disponibile per questo intervallo di tempo.",
-    "custom": "Personalizzato",
-    "to": "a",
-    "apply": "Applica",
-    "viewHistory": "Visualizza cronologia"
+    "noData": "Nessun dato storico disponibile per questo intervallo di tempo."
   },
   "hosts": {
-    "tabHostMetrics": "Metriche host",
-    "metricsCollectionLabel": "Raccolta metriche",
-    "enableMetricsLabel": "Abilita metriche",
-    "enableMetricsDesc": "Raccogli CPU, RAM, disco e altre metriche da questo host",
-    "useGlobalMetrics": "Usa intervallo globale",
-    "useGlobalMetricsDesc": "Sovrascrivi con l'intervallo delle metriche del server",
-    "metricsIntervalS": "Intervallo metriche (s)",
-    "metricsIntervalDesc2": "Secondi tra uno snapshot delle metriche e l'altro",
-    "excludedMountsLabel": "Montature escluse",
+    "tabHostMetrics": "Metriche Host",
+    "metricsCollectionLabel": "Raccolta Metriche",
+    "enableMetricsLabel": "Abilita Metriche",
+    "enableMetricsDesc": "Raccogli metriche CPU, RAM, disco e altre da questo host",
+    "useGlobalMetrics": "Usa Intervallo Globale",
+    "useGlobalMetricsDesc": "Sovrascrivi con l'intervallo delle metriche a livello di server",
+    "metricsIntervalS": "Intervallo Metriche (s)",
+    "metricsIntervalDesc2": "Secondi tra gli snapshot delle metriche",
+    "excludedMountsLabel": "Mount Esclusi",
     "monitoredMountsLabel": "Percorsi monitorati personalizzati",
-    "monitoredMountsDesc": "Aggiungi i percorsi che non sono esposti come mount separati, inclusi i percorsi di Home Assistant montati tramite bind, come /config.",
+    "monitoredMountsDesc": "Aggiungi percorsi non esposti come mount separati, inclusi i percorsi di Home Assistant montati via bind come /config.",
     "monitoredMountPathPlaceholder": "Percorso (/config, /mnt/data)",
-    "monitoredMountLabelPlaceholder": "Etichetta (facoltativa)",
+    "monitoredMountLabelPlaceholder": "Etichetta (opzionale)",
     "addMonitoredMount": "Aggiungi percorso",
-    "excludedMountsDesc": "Nascondi specifici punti di montaggio o tipi di filesystem (ad esempio nfs, cifs) dall'utilizzo del disco e dagli avvisi per questo host.",
-    "excludedMountsPlaceholder": "Percorso di montaggio (/mnt/nas) o tipo di filesystem (nfs, cifs)",
-    "excludedMountsEmpty": "Nessun mount escluso. Vengono mostrati tutti i filesystem rilevati.",
+    "excludedMountsDesc": "Nascondi punti di mount o tipi di filesystem specifici (es. nfs, cifs) dall'utilizzo del disco e dagli avvisi per questo host.",
+    "excludedMountsPlaceholder": "Percorso di mount (/mnt/nas) o tipo di filesystem (nfs, cifs)",
+    "excludedMountsEmpty": "Nessun mount escluso. Tutti i filesystem rilevati sono visualizzati.",
     "addExcludedMount": "Aggiungi",
-    "visibleWidgets": "Widget visibili",
-    "widgetsMovedToHostMetrics": "Le schede ora vengono aggiunte, disposte e ridimensionate direttamente nella scheda Metriche host. Apri Metriche host per questo host e usa Personalizza per scegliere quali schede mostrare.",
+    "visibleWidgets": "Widget Visibili",
+    "widgetsMovedToHostMetrics": "Le card vengono ora aggiunte, disposte e ridimensionate direttamente nella scheda Metriche Host. Apri Metriche Host per questo host e usa Personalizza per scegliere quali card mostrare.",
     "hostNotFound": "Host non trovato",
     "loadingHost": "Caricamento host..."
-  },
-  "onboarding": {
-    "feature_metrics": "Metriche e avvisi",
-    "feature_metrics_desc": "Monitora l'utilizzo di CPU, memoria e disco nel tempo e ricevi avvisi in caso di malfunzionamenti."
-  },
-  "admin": {
-    "metricsHistoryRetention": "Conservazione cronologia metriche",
-    "metricsHistoryRetentionRange": "Da 1 a 90 giorni",
-    "days": "giorni"
   },
   "homepage": {
     "noData": "Nessun dato disponibile",
@@ -240,11 +209,11 @@
     "metricKernel": "Kernel",
     "metricMemory": "Memoria",
     "metricNetwork": "Rete",
-    "metricOs": "OS",
+    "metricOs": "Sistema operativo",
     "metricProcesses": "Processi",
     "metricProcessesRunning": "in esecuzione",
     "metricProcessesTotal": "totale",
-    "metricUptime": "Uptime",
+    "metricUptime": "Tempo di attività",
     "metricsNotAvailable": "Metriche non disponibili",
     "noHostSelected": "Nessun host selezionato",
     "selectHost": "Seleziona un host..."
@@ -264,41 +233,41 @@
   },
   "permissions": {
     "use": {
-      "title": "Utilizzare le metriche dell'host",
-      "description": "Visualizza le metriche dell'host e utilizza i gestori host (servizi, pacchetti, firewall e altro) sugli host raggiungibili."
+      "title": "Usa metriche host",
+      "description": "Visualizza le metriche dell'host e usa i gestori dell'host (servizi, pacchetti, firewall e altro) sugli host a cui puoi accedere."
     }
   },
   "settings": {
     "admin": {
       "metricsInterval": {
-        "label": "Intervallo delle metriche (secondi)",
-        "description": "Con quale frequenza viene campionato un host visualizzato, a meno che l'host non imposti un intervallo personalizzato."
+        "label": "Intervallo metriche (secondi)",
+        "description": "Frequenza con cui viene campionato un host visualizzato, a meno che l'host non imposti il proprio intervallo."
       },
       "historyRetentionDays": {
-        "label": "Conservazione della cronologia (giorni)",
-        "description": "Per quanto tempo vengono conservati i campioni delle metriche per i grafici storici."
+        "label": "Conservazione storico (giorni)",
+        "description": "Per quanto tempo i campioni delle metriche vengono conservati per i grafici storici."
       }
     },
     "user": {
       "temperatureUnit": {
         "label": "Unità di temperatura",
         "description": "Come vengono visualizzate le temperature nelle metriche dell'host.",
-        "celsius": "Centigrado",
+        "celsius": "Celsius",
         "fahrenheit": "Fahrenheit"
       }
     },
     "host": {
       "metricsEnabled": {
-        "label": "Raccogliere metriche"
+        "label": "Raccogli metriche"
       },
       "metricsInterval": {
-        "label": "Intervallo delle metriche (secondi)"
+        "label": "Intervallo metriche (secondi)"
       },
       "enabledWidgets": {
         "label": "Widget abilitati"
       },
       "excludedMounts": {
-        "label": "Montature escluse"
+        "label": "Mount esclusi"
       },
       "monitoredMounts": {
         "label": "Percorsi monitorati"
@@ -306,6 +275,6 @@
     }
   },
   "plugin": {
-    "name": "Host Metrics"
+    "name": "Metriche host"
   }
 }

@@ -1,0 +1,281 @@
+{
+  "nav": {
+    "hostMetrics": "Serverio metrikos"
+  },
+  "hostMetrics": {
+    "cpu": "CPU",
+    "memory": "Atmintis",
+    "disk": "Diskas",
+    "uptime": "Veikimo laikas",
+    "processes": "Procesai",
+    "available": "Laisva",
+    "free": "Laisva",
+    "connecting": "Jungiama...",
+    "connectionFailed": "Nepavyko prisijungti prie serverio",
+    "cpuCores_one": "{{count}} branduolys",
+    "cpuCores_few": "{{count}} branduoliai",
+    "cpuCores_many": "{{count}} branduolių",
+    "cpuCores_other": "{{count}} branduolių",
+    "cpuUsage": "CPU nauda",
+    "memoryUsage": "Atminties nauda",
+    "diskUsage": "Disco nauda",
+    "selectFilesystem": "Pasirinkite failų sistemą",
+    "temperature": "Temperatūra",
+    "highestTemperature": "Aukščiausia temperatūra",
+    "primaryTemperatureSensor": "Pagrindinis jutiklis",
+    "gpu": {
+      "title": "GPU",
+      "noDevice": "GPU neaptikta. NVIDIA plokštėms reikia NVIDIA tvarkyklės (ji teikia nvidia-smi), AMD plokštėms – amdgpu tvarkyklės.",
+      "driver": "Tvarkyklė {{version}}",
+      "utilization": "Naudojimas",
+      "memory": "VRAM",
+      "temperature": "Temp.",
+      "power": "Galia",
+      "fan": "Ventiliatorius",
+      "processes": "GPU procesai",
+      "noProcesses": "Nėra procesų, naudojančių GPU"
+    },
+    "totpFailed": "TOTP patikrinimas nepavyko",
+    "noneAuthNotSupported": "Serverio metrikos nepalaiko „none“ autentifikacijos tipo.",
+    "noHostSelected": "Nepasirinktas serveris",
+    "systemInfo": "Sistemos informacija",
+    "hostname": "Serverio vardas",
+    "operatingSystem": "Operacinė sistema",
+    "kernel": "Branduolys",
+    "seconds": "sekundės",
+    "networkInterfaces": "Tinklo sąsajos",
+    "noInterfacesFound": "Tinklo sąsajų nerasta",
+    "noProcessesFound": "Procesų nerasta",
+    "processesTotal": "iš viso",
+    "processesRunning": "vykstantys",
+    "loginStats": "SSH prisijungimų statistika",
+    "noRecentLoginData": "Nėra naujausių prisijungimų duomenų",
+    "ports": {
+      "title": "Klausomos prievados",
+      "protocol": "Protokolas",
+      "port": "Prievada",
+      "address": "Adresas",
+      "process": "Procesas",
+      "search": "Ieškoti prievadų...",
+      "allProtocols": "Visi",
+      "noData": "Nėra klausomų prievadų duomenų"
+    },
+    "firewall": {
+      "title": "Ugniasienė",
+      "inactive": "Neaktyvi",
+      "policy": "Politika",
+      "rules": "taisyklės",
+      "noRules": "Šioje grandinėje nėra taisyklių",
+      "noData": "Ugniasienės duomenų nėra",
+      "action": "Veiksmas",
+      "protocol": "Prot.",
+      "port": "Prievada",
+      "source": "Šaltinis",
+      "chains": "grandinės"
+    },
+    "architecture": "Architektūra",
+    "refresh": "Atnaujinti",
+    "customize": "Pritaikyti išdėstymą",
+    "reset": "Atstatyti",
+    "tabLive": "Tiesiogiai",
+    "editModeInstructions": "Vilkite korteles, kad pakeistumėte jų išdėstymą, vilkite apatinį kraštą, kad pakeistumėte dydį, ir naudokite pločio mygtuką, kad pakeistumėte kortelės plotį. Pridėkite arba pašalinkite korteles žemiau.",
+    "managers": {
+      "services": "Paslaugos",
+      "processInspector": "Procesų peržiūra",
+      "logViewer": "Žurnalų peržiūra",
+      "cron": "Cron užduotys",
+      "packages": "Paketai",
+      "ssl": "SSL sertifikatai",
+      "firewall": "Ugniasienė",
+      "users": "Naudotojai ir leidimai",
+      "healthCheck": "Būklės tikrinimai",
+      "diskBreakdown": "Disko naudojimo analizė",
+      "systemdTimers": "Laikmačiai",
+      "topMemory": "Daugiausia atminties",
+      "start": "Paleisti",
+      "stop": "Sustabdyti",
+      "restart": "Perkrauti",
+      "actionDone": "{{name}} atnaujinta",
+      "actionFailed": "Veiksmas nepavyko",
+      "editRequired": "Norint tai pakeisti, reikia turėti redagavimo prieigą prie šio serverio",
+      "signalSent": "Signalas nusiųstas PID {{pid}}",
+      "killHint": "Spustelėkite: nutraukti (SIGTERM). Dešinysis pelės klavišas: priverstinai nutraukti (SIGKILL).",
+      "working": "Vykdoma...",
+      "update": "Atnaujinti",
+      "upgradeAll": "Atnaujinti visus",
+      "allUpToDate": "Viskas atnaujinta",
+      "save": "Išsaugoti",
+      "command": "Komanda",
+      "enabled": "Įjungta",
+      "cronSaved": "Crontab atnaujintas",
+      "clients": "Klientai",
+      "dryRun": "Bandomasis paleidimas",
+      "renew": "Atnaujinti",
+      "noAcmeClient": "Šiame serveryje nerastas ACME klientas (certbot arba acme.sh).",
+      "addInputRule": "Pridėti INPUT taisyklę",
+      "firewallWarning": "Pakeitimai galioja tik iki sistemos perkrovimo. Būkite atsargūs, kad neužrakintumėte prieigos.",
+      "ruleApplied": "Taisyklė pritaikyta",
+      "invalidPort": "Įveskite galiojantį portą (1-65535)",
+      "newUsername": "Naujas naudotojo vardas",
+      "addUser": "Pridėti",
+      "deleteUser": "Pašalinti naudotoją",
+      "noHealthChecks": "Būklės tikrinimai dar nesukonfigūruoti.",
+      "follow": "Sekti",
+      "noLogData": "Žurnale nėra duomenų.",
+      "tree": "Medis",
+      "enableDisable": "Įjungti / išjungti paleidimo metu",
+      "grantSudo": "Suteikti sudo teises",
+      "revokeSudo": "Atimti sudo teises",
+      "sslIssueCert": "Išduoti sertifikatą",
+      "sslExpired": "Pasibaigęs",
+      "sslInDays": "po {{days}} d.",
+      "sslNeedDomain": "Įveskite bent vieną domeną",
+      "sslIssued": "Sertifikatas išduotas",
+      "sslDomainsPlaceholder": "example.com, www.example.com",
+      "sslHttpStandalone": "HTTP (nepriklausomas)",
+      "sslHttpWebroot": "HTTP (webroot)",
+      "sslDns": "DNS",
+      "sslDnsProvider": "DNS tiekėjas (pvz., cloudflare)",
+      "sslIssueHint": "DNS tiekėjo prisijungimo duomenys turi būti jau sukonfigūruoti šioje serverio mašinoje.",
+      "sslRevoke": "Atšaukti sertifikatą",
+      "sslRevoked": "Sertifikatas atšauktas",
+      "sslRevokeConfirm": "Ar atšaukti ir pašalinti sertifikatą „{{name}}“? Šio veiksmo negalima atšaukti.",
+      "healthRun": "Vykdyti",
+      "healthName": "Pavadinimas",
+      "healthTarget": "Serverio mašina / adresas",
+      "healthAddCheck": "Pridėti tikrinimą",
+      "healthInterval": "Tikrinti kas (min.)",
+      "healthSaved": "Sveikatos tikrinimai išsaugoti",
+      "healthMissingFields": "Kiekvienam tikrinimui reikia pavadinimo ir tikslo",
+      "logFile": "Failas",
+      "logUnit": "Vienetas",
+      "logCustomPath": "Nepaprastas kelias po /var/log (nebūtina)",
+      "logGrep": "Filtruoti eilutes...",
+      "firewallPersist": "Išsaugoti taisykles",
+      "firewallPersisted": "Ugniasienės taisyklės išsaugotos",
+      "wireguard": "WireGuard",
+      "wgNotInstalled": "WireGuard nėra įdiegta šioje serverio mašinoje",
+      "wgNoInterfaces": "Nėra sukonfigūruotų WireGuard sąsajų",
+      "wgInterfaceUp": "Paleisti",
+      "wgInterfaceDown": "Sustabdyti",
+      "wgBringingUp": "Paleidžiama {{name}}...",
+      "wgBringingDown": "Sustabdoma {{name}}...",
+      "wgInterfaceUpDone": "{{name}} paleista",
+      "wgInterfaceDownDone": "{{name}} sustabdyta",
+      "wgLastHandshake": "Paskutinis susitarimas",
+      "wgHandshakeNever": "Niekada",
+      "wgNoPeers": "Nėra partnerių",
+      "revoke": "Atšaukti"
+    }
+  },
+  "metricsHistory": {
+    "download": "RX",
+    "upload": "TX",
+    "noData": "Šiam laikotarpiui istorijos duomenų nėra."
+  },
+  "hosts": {
+    "tabHostMetrics": "Serverio mašinos metrikos",
+    "metricsCollectionLabel": "Metrikų rinkimas",
+    "enableMetricsLabel": "Įjungti metrikas",
+    "enableMetricsDesc": "Rinkti CPU, RAM, disko ir kitas metrikas iš šios serverio mašinos",
+    "useGlobalMetrics": "Naudoti globalų intervalą",
+    "useGlobalMetricsDesc": "Perrašyti naudojant serverio masto metrikų intervalą",
+    "metricsIntervalS": "Metrikų intervalas (s)",
+    "metricsIntervalDesc2": "Sekundės tarp metrikų momentinių vaizdų",
+    "excludedMountsLabel": "Išimtos montavimo vietos",
+    "monitoredMountsLabel": "Pritaikytos stebimos vietos",
+    "monitoredMountsDesc": "Pridėkite kelius, kurie nėra rodomi kaip atskiros montavimo vietos, įskaitant Home Assistant kelius, tokius kaip /config.",
+    "monitoredMountPathPlaceholder": "Kelias (/config, /mnt/data)",
+    "monitoredMountLabelPlaceholder": "Etiketė (nebūtina)",
+    "addMonitoredMount": "Pridėti kelią",
+    "excludedMountsDesc": "Paslėpti konkrečias montavimo vietas arba failų sistemų tipus (pvz., nfs, cifs) nuo disko naudojimo ir įspėjimų šiai serverio mašinai.",
+    "excludedMountsPlaceholder": "Montavimo kelias (/mnt/nas) arba failų sistemos tipas (nfs, cifs)",
+    "excludedMountsEmpty": "Nėra išimtų montavimo vietų. Rodymos visos aptiktos failų sistemos.",
+    "addExcludedMount": "Pridėti",
+    "visibleWidgets": "Matomi valdikliai",
+    "widgetsMovedToHostMetrics": "Kortelės dabar pridedamos, išdėstomos ir keičiamos dydžio tiesiogiai skirtuke „Serverio mašinos metrikos“. Atidarykite šios serverio mašinos „Serverio mašinos metrikas“ ir naudokite „Pritaikyti“, kad pasirinktumėte, kurios kortelės rodomos.",
+    "hostNotFound": "Serverio mašina nerasta",
+    "loadingHost": "Kraunama serverio mašina..."
+  },
+  "homepage": {
+    "noData": "Duomenų nėra",
+    "showCurrentValue": "Rodyti dabartinę reikšmę",
+    "chartMetric": "Metrika",
+    "metricRange": "Diapazonas",
+    "host": "Svečias",
+    "loading": "Įkeliama...",
+    "metricCpu": "CPU",
+    "metricDisk": "Diskas",
+    "metricHostname": "Svečio pavadinimas",
+    "metricKernel": "Branduolys",
+    "metricMemory": "Atmintis",
+    "metricNetwork": "Tinklas",
+    "metricOs": "OS",
+    "metricProcesses": "Procesai",
+    "metricProcessesRunning": "veikia",
+    "metricProcessesTotal": "iš viso",
+    "metricUptime": "Veikimo laikas",
+    "metricsNotAvailable": "Metrikos nepasiekiamos",
+    "noHostSelected": "Svečias nepasirinktas",
+    "selectHost": "Pasirinkite svečią..."
+  },
+  "terminalStatus": {
+    "unavailable": "Tiesioginės statistikos nepasiekiamos"
+  },
+  "dashboard": {
+    "cpu": "CPU",
+    "ram": "RAM"
+  },
+  "dashboardTab": {
+    "disk": "Diskas"
+  },
+  "terminal": {
+    "connected": "Prijungta"
+  },
+  "permissions": {
+    "use": {
+      "title": "Naudoti svečių metrikas",
+      "description": "Peržiūrėti svečių metrikas ir naudoti svečių valdymo įrankius (paslaugas, paketus, ugniasienę ir kt.) pasiekiamuose svečiuose."
+    }
+  },
+  "settings": {
+    "admin": {
+      "metricsInterval": {
+        "label": "Metrikų intervalas (sekundėmis)",
+        "description": "Kaip dažnai imami duomenys iš peržiūrimo svečio, nebent svečias nustato savo intervalą."
+      },
+      "historyRetentionDays": {
+        "label": "Istorijos išsaugojimas (dienomis)",
+        "description": "Kaip ilgai metrikų duomenys išsaugomi istorijos diagramoms."
+      }
+    },
+    "user": {
+      "temperatureUnit": {
+        "label": "Temperatūros vienetas",
+        "description": "Kaip temperatūros rodomos svečių metrikose.",
+        "celsius": "Celsijus",
+        "fahrenheit": "Farenheitas"
+      }
+    },
+    "host": {
+      "metricsEnabled": {
+        "label": "Rinkti metrikas"
+      },
+      "metricsInterval": {
+        "label": "Metrikų intervalas (sekundėmis)"
+      },
+      "enabledWidgets": {
+        "label": "Įgalinti valdikliai"
+      },
+      "excludedMounts": {
+        "label": "Išimti prijungimai"
+      },
+      "monitoredMounts": {
+        "label": "Stebimi keliai"
+      }
+    }
+  },
+  "plugin": {
+    "name": "Svečių metrikos"
+  }
+}

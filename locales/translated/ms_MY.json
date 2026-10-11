@@ -1,0 +1,278 @@
+{
+  "nav": {
+    "hostMetrics": "Metrik Host"
+  },
+  "hostMetrics": {
+    "cpu": "CPU",
+    "memory": "Memori",
+    "disk": "Cakera",
+    "uptime": "Masa Aktif",
+    "processes": "Proses",
+    "available": "Boleh Didapati",
+    "free": "Perlu",
+    "connecting": "Menyambung...",
+    "connectionFailed": "Gagal menyambung ke pelayan",
+    "cpuCores_other": "{{count}} Teras",
+    "cpuUsage": "Penggunaan CPU",
+    "memoryUsage": "Penggunaan Memori",
+    "diskUsage": "Penggunaan Cakera",
+    "selectFilesystem": "Pilih sistem fail",
+    "temperature": "Suhu",
+    "highestTemperature": "Suhu tertinggi",
+    "primaryTemperatureSensor": "Sensor utama",
+    "gpu": {
+      "title": "GPU",
+      "noDevice": "Tiada GPU dikesan. Kad NVIDIA memerlukan pemacu NVIDIA (ia menyediakan nvidia-smi), kad AMD memerlukan pemacu amdgpu.",
+      "driver": "Pemacu {{version}}",
+      "utilization": "Penggunaan",
+      "memory": "VRAM",
+      "temperature": "Suhu",
+      "power": "Kuasa",
+      "fan": "Kipas",
+      "processes": "Proses GPU",
+      "noProcesses": "Tiada proses menggunakan GPU"
+    },
+    "totpFailed": "Pengesahan TOTP gagal",
+    "noneAuthNotSupported": "Metrik Host tidak menyokong jenis pengesahan 'none'.",
+    "noHostSelected": "Tiada host dipilih",
+    "systemInfo": "Maklumat Sistem",
+    "hostname": "Nama Host",
+    "operatingSystem": "Sistem Operasi",
+    "kernel": "Teras",
+    "seconds": "saat",
+    "networkInterfaces": "Antara Muka Rangkaian",
+    "noInterfacesFound": "Tiada antara muka rangkaian ditemui",
+    "noProcessesFound": "Tiada proses ditemui",
+    "processesTotal": "jumlah",
+    "processesRunning": "berjalan",
+    "loginStats": "Statistik Log Masuk SSH",
+    "noRecentLoginData": "Tiada data log masuk terkini",
+    "ports": {
+      "title": "Port Pendengar",
+      "protocol": "Protokol",
+      "port": "Port",
+      "address": "Alamat",
+      "process": "Proses",
+      "search": "Cari port...",
+      "allProtocols": "Semua",
+      "noData": "Tiada data port pendengar"
+    },
+    "firewall": {
+      "title": "Tembok Api",
+      "inactive": "Tidak Aktif",
+      "policy": "Dasar",
+      "rules": "peraturan",
+      "noRules": "Tiada peraturan dalam rantaian ini",
+      "noData": "Tiada data tembok api tersedia",
+      "action": "Tindakan",
+      "protocol": "Proto",
+      "port": "Port",
+      "source": "Sumber",
+      "chains": "rantaian"
+    },
+    "architecture": "Seni bina",
+    "refresh": "Muat semula",
+    "customize": "Sesuaikan susun atur",
+    "reset": "Set semula",
+    "tabLive": "Langsung",
+    "editModeInstructions": "Seret kad untuk menyusun semula, seret tepi bawah untuk mengubah saiz, dan gunakan butang lebar untuk mengubah rentang kad. Tambah atau buang kad di bawah.",
+    "managers": {
+      "services": "Perkhidmatan",
+      "processInspector": "Pemeriksa Proses",
+      "logViewer": "Penonton Log",
+      "cron": "Tugas Cron",
+      "packages": "Pakej",
+      "ssl": "Sijil SSL",
+      "firewall": "Tembok api",
+      "users": "Pengguna & Kebenaran",
+      "healthCheck": "Semakan Kesihatan",
+      "diskBreakdown": "Perincian Cakera",
+      "systemdTimers": "Pemasa",
+      "topMemory": "Teratas mengikut Memori",
+      "start": "Mula",
+      "stop": "Henti",
+      "restart": "Mula semula",
+      "actionDone": "{{name}} dikemas kini",
+      "actionFailed": "Tindakan gagal",
+      "editRequired": "Anda memerlukan akses sunting ke hos ini untuk mengubahnya",
+      "signalSent": "Isyarat dihantar ke PID {{pid}}",
+      "killHint": "Klik: tamatkan (SIGTERM). Klik kanan: bunuh paksa (SIGKILL).",
+      "working": "Sedang bekerja...",
+      "update": "Kemas kini",
+      "upgradeAll": "Naik taraf semua",
+      "allUpToDate": "Semuanya terkini",
+      "save": "Simpan",
+      "command": "Arahan",
+      "enabled": "Dilayakan",
+      "cronSaved": "Crontab dikemas kini",
+      "clients": "Pelanggan",
+      "dryRun": "Larian kering",
+      "renew": "Barui",
+      "noAcmeClient": "Tiada pelanggan ACME (certbot atau acme.sh) ditemui pada hos ini.",
+      "addInputRule": "Tambah peraturan INPUT",
+      "firewallWarning": "Perubahan hanya berkuat kuasa semasa masa sehingga disimpan. Berhati-hati agar tidak mengunci diri sendiri.",
+      "ruleApplied": "Peraturan digunakan",
+      "invalidPort": "Masukkan port yang sah (1-65535)",
+      "newUsername": "Nama pengguna baharu",
+      "addUser": "Tambah",
+      "deleteUser": "Padam pengguna",
+      "noHealthChecks": "Tiada semakan kesihatan dikonfigurasi lagi.",
+      "follow": "Ikuti",
+      "noLogData": "Tiada output log.",
+      "tree": "Pokok",
+      "enableDisable": "Layakan / nyahlayakan pada but",
+      "grantSudo": "Berikan sudo",
+      "revokeSudo": "Cabut sudo",
+      "sslIssueCert": "Terbitkan sijil",
+      "sslExpired": "Tamat tempoh",
+      "sslInDays": "dalam {{days}}h",
+      "sslNeedDomain": "Masukkan sekurang-kurangnya satu domain",
+      "sslIssued": "Sijil diterbitkan",
+      "sslDomainsPlaceholder": "contoh.com, www.contoh.com",
+      "sslHttpStandalone": "HTTP (berdiri sendiri)",
+      "sslHttpWebroot": "HTTP (webroot)",
+      "sslDns": "DNS",
+      "sslDnsProvider": "Pembekal DNS (cth. cloudflare)",
+      "sslIssueHint": "Kelayakan pembekal DNS mesti telah dikonfigurasi pada hos.",
+      "sslRevoke": "Batalkan sijil",
+      "sslRevoked": "Sijil telah dibatalkan",
+      "sslRevokeConfirm": "Batalkan dan buang sijil \"{{name}}\"? Tindakan ini tidak boleh dibatalkan.",
+      "healthRun": "Jalankan",
+      "healthName": "Nama",
+      "healthTarget": "Hos / alamat",
+      "healthAddCheck": "Tambah semakan",
+      "healthInterval": "Semak setiap (minit)",
+      "healthSaved": "Semakan kesihatan disimpan",
+      "healthMissingFields": "Setiap semakan memerlukan nama dan sasaran",
+      "logFile": "Fail",
+      "logUnit": "Unit",
+      "logCustomPath": "Laluan tersuai di bawah /var/log (pilihan)",
+      "logGrep": "Tapis baris...",
+      "firewallPersist": "Kekalkan peraturan",
+      "firewallPersisted": "Peraturan tembok api telah dikekalkan",
+      "wireguard": "WireGuard",
+      "wgNotInstalled": "WireGuard tidak dipasang pada hos ini",
+      "wgNoInterfaces": "Tiada antara muka WireGuard dikonfigurasi",
+      "wgInterfaceUp": "Aktifkan",
+      "wgInterfaceDown": "Nyahaktif",
+      "wgBringingUp": "Mengaktifkan {{name}}...",
+      "wgBringingDown": "Menyahaktifkan {{name}}...",
+      "wgInterfaceUpDone": "{{name}} sedang aktif",
+      "wgInterfaceDownDone": "{{name}} sedang tidak aktif",
+      "wgLastHandshake": "Jemputan terakhir",
+      "wgHandshakeNever": "Tidak pernah",
+      "wgNoPeers": "Tiada rakan",
+      "revoke": "Batalkan"
+    }
+  },
+  "metricsHistory": {
+    "download": "RX",
+    "upload": "TX",
+    "noData": "Tiada data sejarah tersedia untuk julat masa ini."
+  },
+  "hosts": {
+    "tabHostMetrics": "Metrik Hos",
+    "metricsCollectionLabel": "Pengumpulan Metrik",
+    "enableMetricsLabel": "Dayakan Metrik",
+    "enableMetricsDesc": "Kumpulkan metrik CPU, RAM, cakera, dan lain-lain dari hos ini",
+    "useGlobalMetrics": "Gunakan Selang Global",
+    "useGlobalMetricsDesc": "Tindih dengan selang metrik seluruh pelayan",
+    "metricsIntervalS": "Selang Metrik (s)",
+    "metricsIntervalDesc2": "Saat antara tangkapan metrik",
+    "excludedMountsLabel": "Pemasangan Dikecualikan",
+    "monitoredMountsLabel": "Laluan dipantau tersuai",
+    "monitoredMountsDesc": "Tambah laluan yang tidak terdedah sebagai pemasangan berasingan, termasuk laluan Home Assistant yang dipasang ikatan seperti /config.",
+    "monitoredMountPathPlaceholder": "Laluan (/config, /mnt/data)",
+    "monitoredMountLabelPlaceholder": "Label (pilihan)",
+    "addMonitoredMount": "Tambah laluan",
+    "excludedMountsDesc": "Sembunyikan titik pemasangan atau jenis sistem fail tertentu (cth. nfs, cifs) daripada penggunaan cakera dan amaran untuk hos ini.",
+    "excludedMountsPlaceholder": "Laluan pemasangan (/mnt/nas) atau jenis sistem fail (nfs, cifs)",
+    "excludedMountsEmpty": "Tiada pemasangan dikecualikan. Semua sistem fail yang dikesan dipaparkan.",
+    "addExcludedMount": "Tambah",
+    "visibleWidgets": "Widget Terlihat",
+    "widgetsMovedToHostMetrics": "Kad kini ditambah, disusun, dan diubah saiz terus dalam tab Metrik Hos. Buka Metrik Hos untuk hos ini dan gunakan Sesuaikan untuk memilih kad mana yang dipaparkan.",
+    "hostNotFound": "Hos tidak dijumpai",
+    "loadingHost": "Memuatkan hos..."
+  },
+  "homepage": {
+    "noData": "Tiada data tersedia",
+    "showCurrentValue": "Paparkan Nilai Semasa",
+    "chartMetric": "Metrik",
+    "metricRange": "Julat",
+    "host": "Hos",
+    "loading": "Memuatkan...",
+    "metricCpu": "CPU",
+    "metricDisk": "Cakera",
+    "metricHostname": "Nama Hos",
+    "metricKernel": "Teras",
+    "metricMemory": "Memori",
+    "metricNetwork": "Rangkaian",
+    "metricOs": "OS",
+    "metricProcesses": "Proses",
+    "metricProcessesRunning": "berjalan",
+    "metricProcessesTotal": "jumlah",
+    "metricUptime": "Masa Aktif",
+    "metricsNotAvailable": "Metrik tidak tersedia",
+    "noHostSelected": "Tiada hos dipilih",
+    "selectHost": "Pilih hos..."
+  },
+  "terminalStatus": {
+    "unavailable": "Statistik langsung tidak tersedia"
+  },
+  "dashboard": {
+    "cpu": "CPU",
+    "ram": "RAM"
+  },
+  "dashboardTab": {
+    "disk": "Cakera"
+  },
+  "terminal": {
+    "connected": "Disambung"
+  },
+  "permissions": {
+    "use": {
+      "title": "Gunakan Metrik Hos",
+      "description": "Lihat metrik hos dan gunakan pengurus hos (perkhidmatan, pakej, firewall dan lain-lain) pada hos yang boleh dicapai."
+    }
+  },
+  "settings": {
+    "admin": {
+      "metricsInterval": {
+        "label": "Selang metrik (saat)",
+        "description": "Seberapa kerap hos yang sedang dilihat disampel, melainkan hos menetapkan selangnya sendiri."
+      },
+      "historyRetentionDays": {
+        "label": "Penyimpanan sejarah (hari)",
+        "description": "Seberapa lama sampel metrik disimpan untuk carta sejarah."
+      }
+    },
+    "user": {
+      "temperatureUnit": {
+        "label": "Unit suhu",
+        "description": "Bagaimana suhu dipaparkan dalam Metrik Hos.",
+        "celsius": "Celsius",
+        "fahrenheit": "Fahrenheit"
+      }
+    },
+    "host": {
+      "metricsEnabled": {
+        "label": "Kumpul metrik"
+      },
+      "metricsInterval": {
+        "label": "Selang metrik (saat)"
+      },
+      "enabledWidgets": {
+        "label": "Widget yang didayakan"
+      },
+      "excludedMounts": {
+        "label": "Pemasangan yang dikecualikan"
+      },
+      "monitoredMounts": {
+        "label": "Laluan yang dipantau"
+      }
+    }
+  },
+  "plugin": {
+    "name": "Metrik Hos"
+  }
+}

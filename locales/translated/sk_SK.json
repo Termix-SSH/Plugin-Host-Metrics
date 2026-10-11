@@ -1,0 +1,281 @@
+{
+  "nav": {
+    "hostMetrics": "Metriky hostiteľa"
+  },
+  "hostMetrics": {
+    "cpu": "CPU",
+    "memory": "Pamäť",
+    "disk": "Disk",
+    "uptime": "Doba prevádzky",
+    "processes": "Procesy",
+    "available": "Dostupné",
+    "free": "Voľné",
+    "connecting": "Pripájanie...",
+    "connectionFailed": "Nepodarilo sa pripojiť k serveru",
+    "cpuCores_one": "{{count}} jadro",
+    "cpuCores_few": "{{count}} jadrá",
+    "cpuCores_many": "{{count}} jadier",
+    "cpuCores_other": "{{count}} jadier",
+    "cpuUsage": "Využitie CPU",
+    "memoryUsage": "Využitie pamäte",
+    "diskUsage": "Využitie disku",
+    "selectFilesystem": "Vybrať súborový systém",
+    "temperature": "Teplota",
+    "highestTemperature": "Najvyššia teplota",
+    "primaryTemperatureSensor": "Primárny senzor",
+    "gpu": {
+      "title": "GPU",
+      "noDevice": "Nebola zistená žiadna GPU. Karty NVIDIA vyžadujú ovládač NVIDIA (poskytuje nvidia-smi), karty AMD vyžadujú ovládač amdgpu.",
+      "driver": "Ovládač {{version}}",
+      "utilization": "Využitie",
+      "memory": "VRAM",
+      "temperature": "Teplota",
+      "power": "Výkon",
+      "fan": "Ventilátor",
+      "processes": "Procesy GPU",
+      "noProcesses": "Žiadny proces nepoužíva GPU"
+    },
+    "totpFailed": "Overenie TOTP zlyhalo",
+    "noneAuthNotSupported": "Metriky hostiteľa nepodporujú typ overovania 'none'.",
+    "noHostSelected": "Nie je vybraný žiadny hostiteľ",
+    "systemInfo": "Informácie o systéme",
+    "hostname": "Meno hostiteľa",
+    "operatingSystem": "Operačný systém",
+    "kernel": "Jadro",
+    "seconds": "sekúnd",
+    "networkInterfaces": "Sieťové rozhrania",
+    "noInterfacesFound": "Neboli nájdené žiadne sieťové rozhrania",
+    "noProcessesFound": "Neboli nájdené žiadne procesy",
+    "processesTotal": "celkom",
+    "processesRunning": "bežiacich",
+    "loginStats": "Štatistiky prihlásení SSH",
+    "noRecentLoginData": "Žiadne nedávne údaje o prihláseniach",
+    "ports": {
+      "title": "Počúvajúce porty",
+      "protocol": "Protokol",
+      "port": "Port",
+      "address": "Adresa",
+      "process": "Proces",
+      "search": "Hľadať porty...",
+      "allProtocols": "Všetky",
+      "noData": "Žiadne údaje o počúvajúcich portoch"
+    },
+    "firewall": {
+      "title": "Firewall",
+      "inactive": "Neaktívny",
+      "policy": "Politika",
+      "rules": "pravidiel",
+      "noRules": "V tomto reťazci nie sú žiadne pravidlá",
+      "noData": "Nie sú dostupné žiadne údaje o firewalle",
+      "action": "Akcia",
+      "protocol": "Protokol",
+      "port": "Port",
+      "source": "Zdroj",
+      "chains": "reťazce"
+    },
+    "architecture": "Architektúra",
+    "refresh": "Obnoviť",
+    "customize": "Prispôsobiť rozloženie",
+    "reset": "Obnoviť predvolené",
+    "tabLive": "Živo",
+    "editModeInstructions": "Ťahajte karty pre usporiadanie, ťahajte spodný okraj pre zmenu veľkosti a použite tlačidlo šírky na zmenu rozsahu karty. Pridajte alebo odstráňte karty nižšie.",
+    "managers": {
+      "services": "Služby",
+      "processInspector": "Inšpektor procesov",
+      "logViewer": "Zobrazenie logov",
+      "cron": "Cron úlohy",
+      "packages": "Balíčky",
+      "ssl": "SSL certifikáty",
+      "firewall": "Firewall",
+      "users": "Používatelia a oprávnenia",
+      "healthCheck": "Kontroly stavu",
+      "diskBreakdown": "Rozdelenie disku",
+      "systemdTimers": "Časovače",
+      "topMemory": "Top podľa pamäte",
+      "start": "Štart",
+      "stop": "Zastaviť",
+      "restart": "Reštartovať",
+      "actionDone": "{{name}} aktualizované",
+      "actionFailed": "Akcia zlyhala",
+      "editRequired": "Na zmenu je potrebný prístup na úpravu tohto hostiteľa",
+      "signalSent": "Signál odoslaný do PID {{pid}}",
+      "killHint": "Kliknutie: ukončiť (SIGTERM). Pravé kliknutie: nútené ukončenie (SIGKILL).",
+      "working": "Spracováva sa...",
+      "update": "Aktualizovať",
+      "upgradeAll": "Aktualizovať všetko",
+      "allUpToDate": "Všetko je aktuálne",
+      "save": "Uložiť",
+      "command": "Príkaz",
+      "enabled": "Povolené",
+      "cronSaved": "Crontab aktualizovaný",
+      "clients": "Klienti",
+      "dryRun": "Testovací beh",
+      "renew": "Obnoviť",
+      "noAcmeClient": "Na tomto hostiteľovi nebol nájdený žiadny ACME klient (certbot alebo acme.sh).",
+      "addInputRule": "Pridať pravidlo INPUT",
+      "firewallWarning": "Zmeny sú iba dočasné, kým nie sú uložené. Buďte opatrní, aby ste sa neuzamkli.",
+      "ruleApplied": "Pravidlo aplikované",
+      "invalidPort": "Zadajte platný port (1-65535)",
+      "newUsername": "Nové používateľské meno",
+      "addUser": "Pridať",
+      "deleteUser": "Odstrániť používateľa",
+      "noHealthChecks": "Zatiaľ nie sú nastavené žiadne kontroly stavu.",
+      "follow": "Sledovať",
+      "noLogData": "Žiadny výstup logov.",
+      "tree": "Strom",
+      "enableDisable": "Povoliť / zakázať pri štarte",
+      "grantSudo": "Udeliť sudo",
+      "revokeSudo": "Odzvrat sudo",
+      "sslIssueCert": "Vydanie certifikátu",
+      "sslExpired": "Expirované",
+      "sslInDays": "za {{days}} dní",
+      "sslNeedDomain": "Zadajte aspoň jednu doménu",
+      "sslIssued": "Certifikát vydaný",
+      "sslDomainsPlaceholder": "example.com, www.example.com",
+      "sslHttpStandalone": "HTTP (samostatný)",
+      "sslHttpWebroot": "HTTP (webroot)",
+      "sslDns": "DNS",
+      "sslDnsProvider": "DNS poskytovateľ (napr. cloudflare)",
+      "sslIssueHint": "Poverenia DNS poskytovateľa musia byť už nakonfigurované na hostiteľovi.",
+      "sslRevoke": "Zrušiť certifikát",
+      "sslRevoked": "Certifikát bol zrušený",
+      "sslRevokeConfirm": "Zrušiť a odstrániť certifikát „{{name}}“? Túto akciu nie je možné vrátiť späť.",
+      "healthRun": "Spustiť",
+      "healthName": "Názov",
+      "healthTarget": "Hostiteľ / adresa",
+      "healthAddCheck": "Pridať kontrolu",
+      "healthInterval": "Kontrolovať každých (minút)",
+      "healthSaved": "Kontroly stavu boli uložené",
+      "healthMissingFields": "Každá kontrola potrebuje názov a cieľ",
+      "logFile": "Súbor",
+      "logUnit": "Jednotka",
+      "logCustomPath": "Vlastná cesta pod /var/log (voliteľné)",
+      "logGrep": "Filtrovať riadky...",
+      "firewallPersist": "Uložiť pravidlá",
+      "firewallPersisted": "Pravidlá firewallu boli uložené",
+      "wireguard": "WireGuard",
+      "wgNotInstalled": "WireGuard nie je na tomto hostiteľovi nainštalovaný",
+      "wgNoInterfaces": "Nie sú nakonfigurované žiadne rozhrania WireGuard",
+      "wgInterfaceUp": "Spustiť",
+      "wgInterfaceDown": "Zastaviť",
+      "wgBringingUp": "Spúšťam {{name}}...",
+      "wgBringingDown": "Zastavujem {{name}}...",
+      "wgInterfaceUpDone": "{{name}} je spustený",
+      "wgInterfaceDownDone": "{{name}} je zastavený",
+      "wgLastHandshake": "Posledný handshake",
+      "wgHandshakeNever": "Nikdy",
+      "wgNoPeers": "Žiadni peeri",
+      "revoke": "Zrušiť"
+    }
+  },
+  "metricsHistory": {
+    "download": "RX",
+    "upload": "TX",
+    "noData": "Pre toto časové obdobie nie sú k dispozícii žiadne historické údaje."
+  },
+  "hosts": {
+    "tabHostMetrics": "Metriky hostiteľa",
+    "metricsCollectionLabel": "Zber metrík",
+    "enableMetricsLabel": "Povoliť metriky",
+    "enableMetricsDesc": "Zbierať metriky CPU, RAM, disku a iné z tohto hostiteľa",
+    "useGlobalMetrics": "Použiť globálny interval",
+    "useGlobalMetricsDesc": "Prekryť intervalom metrík pre celý server",
+    "metricsIntervalS": "Interval metrík (s)",
+    "metricsIntervalDesc2": "Sekundy medzi snímkami metrík",
+    "excludedMountsLabel": "Vylúčené pripojenia",
+    "monitoredMountsLabel": "Vlastné monitorované cesty",
+    "monitoredMountsDesc": "Pridajte cesty, ktoré nie sú vystavené ako samostatné pripojenia, vrátane ciest Home Assistant pripojených cez bind, ako napr. /config.",
+    "monitoredMountPathPlaceholder": "Cesta (/config, /mnt/data)",
+    "monitoredMountLabelPlaceholder": "Štítok (voliteľné)",
+    "addMonitoredMount": "Pridať cestu",
+    "excludedMountsDesc": "Skryť konkrétne body pripojenia alebo typy súborových systémov (napr. nfs, cifs) z využitia disku a upozornení pre tohto hostiteľa.",
+    "excludedMountsPlaceholder": "Cesta pripojenia (/mnt/nas) alebo typ súborového systému (nfs, cifs)",
+    "excludedMountsEmpty": "Žiadne pripojenia nie sú vylúčené. Zobrazené sú všetky zistené súborové systémy.",
+    "addExcludedMount": "Pridať",
+    "visibleWidgets": "Zobrazené widgety",
+    "widgetsMovedToHostMetrics": "Karty sa teraz pridávajú, usporiadavajú a menia ich veľkosť priamo v karte Metriky hostiteľa. Otvorte Metriky hostiteľa pre tohto hostiteľa a použite Prispôsobiť na výber zobrazených kariet.",
+    "hostNotFound": "Hostiteľ nebol nájdený",
+    "loadingHost": "Načítavam hostiteľa..."
+  },
+  "homepage": {
+    "noData": "Žiadne údaje nie sú k dispozícii",
+    "showCurrentValue": "Zobraziť aktuálnu hodnotu",
+    "chartMetric": "Metrika",
+    "metricRange": "Rozsah",
+    "host": "Hostiteľ",
+    "loading": "Načítava sa...",
+    "metricCpu": "CPU",
+    "metricDisk": "Disk",
+    "metricHostname": "Meno hostiteľa",
+    "metricKernel": "Jadro",
+    "metricMemory": "Pamäť",
+    "metricNetwork": "Sieť",
+    "metricOs": "OS",
+    "metricProcesses": "Procesy",
+    "metricProcessesRunning": "bežiacich",
+    "metricProcessesTotal": "celkom",
+    "metricUptime": "Doba prevádzky",
+    "metricsNotAvailable": "Metriky nie sú dostupné",
+    "noHostSelected": "Nevybraný žiadny hostiteľ",
+    "selectHost": "Vyberte hostiteľa..."
+  },
+  "terminalStatus": {
+    "unavailable": "Živé štatistiky nie sú dostupné"
+  },
+  "dashboard": {
+    "cpu": "CPU",
+    "ram": "RAM"
+  },
+  "dashboardTab": {
+    "disk": "Disk"
+  },
+  "terminal": {
+    "connected": "Pripojené"
+  },
+  "permissions": {
+    "use": {
+      "title": "Používať metriky hostiteľa",
+      "description": "Zobraziť metriky hostiteľa a používať manažéry hostiteľov (služby, balíčky, firewall a ďalšie) na hostiteľoch, ku ktorým máte prístup."
+    }
+  },
+  "settings": {
+    "admin": {
+      "metricsInterval": {
+        "label": "Interval merania (sekundy)",
+        "description": "Ako často sa odoberajú vzorky z hostiteľa, ktorý sa práve zobrazuje, pokiaľ hostiteľ nenastaví vlastný interval."
+      },
+      "historyRetentionDays": {
+        "label": "Ukladanie histórie (dni)",
+        "description": "Ako dlho sa ukladajú vzorky metrík pre grafy histórie."
+      }
+    },
+    "user": {
+      "temperatureUnit": {
+        "label": "Jednotka teploty",
+        "description": "Ako sa zobrazujú teploty v Metrikách hostiteľa.",
+        "celsius": "Celsius",
+        "fahrenheit": "Fahrenheit"
+      }
+    },
+    "host": {
+      "metricsEnabled": {
+        "label": "Zbierať metriky"
+      },
+      "metricsInterval": {
+        "label": "Interval merania (sekundy)"
+      },
+      "enabledWidgets": {
+        "label": "Povolené widgety"
+      },
+      "excludedMounts": {
+        "label": "Vylúčené pripojenia"
+      },
+      "monitoredMounts": {
+        "label": "Monitorované cesty"
+      }
+    }
+  },
+  "plugin": {
+    "name": "Metriky hostiteľa"
+  }
+}

@@ -3,20 +3,20 @@
     "hostMetrics": "Метрики хоста"
   },
   "hostMetrics": {
-    "cpu": "ЦП",
+    "cpu": "CPU",
     "memory": "Память",
     "disk": "Диск",
-    "network": "Сеть",
     "uptime": "Время работы",
     "processes": "Процессы",
     "available": "Доступно",
     "free": "Свободно",
     "connecting": "Подключение...",
     "connectionFailed": "Не удалось подключиться к серверу",
-    "naCpus": "Н/Д ЦП",
     "cpuCores_one": "{{count}} ядро",
+    "cpuCores_few": "{{count}} ядра",
+    "cpuCores_many": "{{count}} ядер",
     "cpuCores_other": "{{count}} ядер",
-    "cpuUsage": "Использование ЦП",
+    "cpuUsage": "Загрузка CPU",
     "memoryUsage": "Использование памяти",
     "diskUsage": "Использование диска",
     "selectFilesystem": "Выберите файловую систему",
@@ -25,35 +25,31 @@
     "primaryTemperatureSensor": "Основной датчик",
     "gpu": {
       "title": "GPU",
-      "noDevice": "Графический процессор NVIDIA не обнаружен. Установите драйвер NVIDIA (он включает nvidia-smi), чтобы увидеть показатели графического процессора.",
-      "driver": "Водитель {{version}}",
-      "utilization": "Использование",
-      "memory": "ВПМ",
-      "temperature": "Температура",
-      "power": "Власть",
+      "noDevice": "GPU не обнаружен. Для видеокарт NVIDIA требуется драйвер NVIDIA (он предоставляет nvidia-smi), для AMD — драйвер amdgpu.",
+      "driver": "Драйвер {{version}}",
+      "utilization": "Загрузка",
+      "memory": "VRAM",
+      "temperature": "Темп.",
+      "power": "Мощность",
       "fan": "Вентилятор",
-      "processes": "процессы графического процессора",
-      "noProcesses": "Никакие процессы не используют графический процессор."
+      "processes": "Процессы GPU",
+      "noProcesses": "Процессы не используют GPU"
     },
-    "failedToFetchHostConfig": "Не удалось получить конфигурацию хоста",
-    "serverOffline": "Сервер недоступен",
-    "cannotFetchMetrics": "Не удалось загрузить метрики с недоступного сервера",
-    "totpFailed": "Проверка TOTP не пройдена",
-    "noneAuthNotSupported": "Host Metrics не поддерживает тип аутентификации 'none'.",
+    "totpFailed": "Ошибка проверки TOTP",
+    "noneAuthNotSupported": "Метрики хоста не поддерживают тип аутентификации «none».",
     "noHostSelected": "Хост не выбран",
-    "load": "Нагрузка",
-    "systemInfo": "Информация о системе",
+    "systemInfo": "Сведения о системе",
     "hostname": "Имя хоста",
     "operatingSystem": "Операционная система",
     "kernel": "Ядро",
-    "seconds": "секунды",
+    "seconds": "секунд",
     "networkInterfaces": "Сетевые интерфейсы",
     "noInterfacesFound": "Сетевые интерфейсы не найдены",
     "noProcessesFound": "Процессы не найдены",
     "processesTotal": "всего",
     "processesRunning": "выполняется",
-    "loginStats": "Статистика входов SSH",
-    "noRecentLoginData": "Нет данных о недавних входах",
+    "loginStats": "Статистика SSH-входов",
+    "noRecentLoginData": "Нет недавних данных о входе",
     "ports": {
       "title": "Прослушиваемые порты",
       "protocol": "Протокол",
@@ -65,55 +61,49 @@
       "noData": "Нет данных о прослушиваемых портах"
     },
     "firewall": {
-      "title": "Брандмауэр",
+      "title": "Межсетевой экран",
       "inactive": "Неактивен",
       "policy": "Политика",
-      "rules": "правила",
-      "noRules": "Нет правил в этой цепочке",
-      "noData": "Нет данных о брандмауэре",
+      "rules": "правил",
+      "noRules": "В этой цепи нет правил",
+      "noData": "Нет данных о межсетевом экране",
       "action": "Действие",
       "protocol": "Протокол",
       "port": "Порт",
       "source": "Источник",
-      "anywhere": "Любое",
-      "chains": "цепочки"
+      "chains": "цепи"
     },
-    "loadAvg": "Средняя нагрузка",
-    "swap": "Своп",
     "architecture": "Архитектура",
     "refresh": "Обновить",
-    "retry": "Повторить",
     "customize": "Настроить макет",
     "reset": "Сбросить",
-    "tabLive": "Онлайн",
-    "editModeInstructions": "Перетаскивайте карточки для изменения порядка, перетаскивайте нижний край для изменения размера и используйте кнопку ширины, чтобы изменить занимаемое пространство. Добавляйте или удаляйте карточки ниже.",
+    "tabLive": "В реальном времени",
+    "editModeInstructions": "Перетаскивайте карточки для изменения порядка, тяните за нижний край для изменения размера и используйте кнопку ширины для изменения ширины карточки. Добавляйте или удаляйте карточки ниже.",
     "managers": {
-      "services": "Службы",
+      "services": "Сервисы",
       "processInspector": "Инспектор процессов",
-      "logViewer": "Просмотр журналов",
-      "cron": "Задания Cron",
+      "logViewer": "Просмотр логов",
+      "cron": "Cron-задачи",
       "packages": "Пакеты",
       "ssl": "SSL-сертификаты",
-      "firewall": "Брандмауэр",
-      "users": "Пользователи и разрешения",
-      "healthCheck": "Проверки состояния",
-      "diskBreakdown": "Разбивка дисков",
+      "firewall": "Файрвол",
+      "users": "Пользователи и права",
+      "healthCheck": "Проверки работоспособности",
+      "diskBreakdown": "Детализация диска",
       "systemdTimers": "Таймеры",
-      "topMemory": "Топ по памяти",
-      "noData": "Нет данных",
-      "sudoHint": "Установите пароль sudo для этого хоста в редакторе хостов, чтобы включить привилегированные действия.",
-      "filter": "Фильтр...",
+      "topMemory": "По памяти",
       "start": "Запустить",
       "stop": "Остановить",
       "restart": "Перезапустить",
       "actionDone": "{{name}} обновлено",
-      "actionFailed": "Действие не удалось",
+      "actionFailed": "Действие не выполнено",
+      "editRequired": "Для внесения изменений требуется доступ на редактирование этого хоста",
       "signalSent": "Сигнал отправлен PID {{pid}}",
-      "killHint": "Нажмите: завершить (SIGTERM). Правый клик: принудительно завершить (SIGKILL).",
+      "killHint": "ЛКМ: завершить (SIGTERM). ПКМ: принудительно завершить (SIGKILL).",
       "working": "Выполняется...",
       "update": "Обновить",
       "upgradeAll": "Обновить всё",
-      "allUpToDate": "Всё актуально",
+      "allUpToDate": "Всё обновлено",
       "save": "Сохранить",
       "command": "Команда",
       "enabled": "Включено",
@@ -123,109 +113,89 @@
       "renew": "Продлить",
       "noAcmeClient": "На этом хосте не найден ACME-клиент (certbot или acme.sh).",
       "addInputRule": "Добавить правило INPUT",
-      "firewallWarning": "Изменения действуют только до перезагрузки, пока не сохранены. Будьте осторожны, чтобы не заблокировать себе доступ.",
+      "firewallWarning": "Изменения действуют только до перезагрузки, пока не сохранены. Будьте осторожны, чтобы не заблокировать доступ к серверу.",
       "ruleApplied": "Правило применено",
-      "invalidPort": "Введите допустимый порт (1–65535)",
+      "invalidPort": "Введите корректный порт (1-65535)",
       "newUsername": "Новое имя пользователя",
       "addUser": "Добавить",
       "deleteUser": "Удалить пользователя",
       "noHealthChecks": "Проверки работоспособности ещё не настроены.",
       "follow": "Следить",
-      "noLogData": "Нет данных журнала.",
+      "noLogData": "Нет вывода логов.",
       "tree": "Дерево",
       "enableDisable": "Включить/отключить при загрузке",
       "grantSudo": "Предоставить sudo",
       "revokeSudo": "Отозвать sudo",
-      "sslIssueCert": "Выпустить сертификат",
+      "sslIssueCert": "Выдать сертификат",
       "sslExpired": "Истёк",
-      "sslInDays": "через {{days}}д",
+      "sslInDays": "через {{days}} дн.",
       "sslNeedDomain": "Введите хотя бы один домен",
-      "sslIssued": "Сертификат выпущен",
+      "sslIssued": "Сертификат выдан",
       "sslDomainsPlaceholder": "example.com, www.example.com",
       "sslHttpStandalone": "HTTP (автономный)",
       "sslHttpWebroot": "HTTP (webroot)",
       "sslDns": "DNS",
-      "sslDnsProvider": "DNS-провайдер (например, cloudflare)",
+      "sslDnsProvider": "DNS-провайдер (например, Cloudflare)",
       "sslIssueHint": "Учетные данные DNS-провайдера должны быть уже настроены на хосте.",
       "sslRevoke": "Отозвать сертификат",
       "sslRevoked": "Сертификат отозван",
-      "sslRevokeConfirm": "Отозвать и удалить сертификат \"{{name}}\"? Это действие нельзя отменить.",
+      "sslRevokeConfirm": "Отозвать и удалить сертификат «{{name}}»? Это действие нельзя отменить.",
       "healthRun": "Запустить",
-      "healthName": "Название",
+      "healthName": "Имя",
       "healthTarget": "Хост / адрес",
       "healthAddCheck": "Добавить проверку",
-      "healthSaved": "Проверки работоспособности сохранены",
-      "healthMissingFields": "Для каждой проверки нужны название и цель",
+      "healthInterval": "Интервал проверки (минуты)",
+      "healthSaved": "Проверки состояния сохранены",
+      "healthMissingFields": "Для каждой проверки требуется имя и цель",
       "logFile": "Файл",
-      "logUnit": "Юнит",
-      "logCustomPath": "Произвольный путь в /var/log (необязательно)",
+      "logUnit": "Единица",
+      "logCustomPath": "Пользовательский путь в /var/log (необязательно)",
       "logGrep": "Фильтр строк...",
       "firewallPersist": "Сохранить правила",
       "firewallPersisted": "Правила брандмауэра сохранены",
       "wireguard": "WireGuard",
       "wgNotInstalled": "WireGuard не установлен на этом хосте",
-      "wgNoInterfaces": "Не настроено ни одного интерфейса WireGuard",
-      "wgInterfaceUp": "Поднять",
+      "wgNoInterfaces": "Интерфейсы WireGuard не настроены",
+      "wgInterfaceUp": "Включить",
       "wgInterfaceDown": "Отключить",
-      "wgBringingUp": "Поднимается {{name}}...",
-      "wgBringingDown": "Отключается {{name}}...",
-      "wgInterfaceUpDone": "{{name}} поднят",
+      "wgBringingUp": "Включение {{name}}...",
+      "wgBringingDown": "Отключение {{name}}...",
+      "wgInterfaceUpDone": "{{name}} включен",
       "wgInterfaceDownDone": "{{name}} отключен",
-      "wgListenPort": "Порт",
-      "wgPublicKey": "Открытый ключ",
-      "wgEndpoint": "Конечная точка",
-      "wgAllowedIPs": "Разрешенные IP-адреса",
       "wgLastHandshake": "Последнее рукопожатие",
       "wgHandshakeNever": "Никогда",
-      "wgTransfer": "Передано",
-      "wgNoPeers": "Нет равных"
+      "wgNoPeers": "Нет узлов",
+      "revoke": "Отозвать"
     }
   },
   "metricsHistory": {
-    "title": "История метрик",
-    "historySuffix": "История",
-    "cpuMemoryDisk": "ЦП / Память / Диск",
-    "network": "Сеть",
-    "download": "RX",
-    "upload": "TX",
-    "noData": "Нет исторических данных за этот период.",
-    "custom": "Пользовательский",
-    "to": "по",
-    "apply": "Применить",
-    "viewHistory": "Просмотреть историю"
+    "download": "Прием",
+    "upload": "Передача",
+    "noData": "Нет данных истории для этого диапазона времени."
   },
   "hosts": {
     "tabHostMetrics": "Метрики хоста",
     "metricsCollectionLabel": "Сбор метрик",
     "enableMetricsLabel": "Включить метрики",
-    "enableMetricsDesc": "Собирать метрики ЦП, ОЗУ, диска и другие с этого хоста",
+    "enableMetricsDesc": "Собирать метрики CPU, RAM, диска и другие с этого хоста",
     "useGlobalMetrics": "Использовать глобальный интервал",
-    "useGlobalMetricsDesc": "Переопределить глобальным интервалом сбора метрик сервера",
-    "metricsIntervalS": "Интервал сбора метрик (с)",
-    "metricsIntervalDesc2": "Секунд между снимками метрик",
-    "excludedMountsLabel": "Исключенные крепления",
-    "monitoredMountsLabel": "Пользовательские контролируемые пути",
-    "monitoredMountsDesc": "Добавьте пути, которые не отображаются как отдельные точки монтирования, включая пути Home Assistant, смонтированные с помощью bind-mount, например, /config.",
+    "useGlobalMetricsDesc": "Переопределить интервалом сбора метрик на уровне сервера",
+    "metricsIntervalS": "Интервал метрик (с)",
+    "metricsIntervalDesc2": "Секунды между снимками метрик",
+    "excludedMountsLabel": "Исключенные точки монтирования",
+    "monitoredMountsLabel": "Пользовательские пути для мониторинга",
+    "monitoredMountsDesc": "Добавьте пути, которые не отображаются как отдельные точки монтирования, включая пути Home Assistant, смонтированные через bind, например /config.",
     "monitoredMountPathPlaceholder": "Путь (/config, /mnt/data)",
     "monitoredMountLabelPlaceholder": "Метка (необязательно)",
     "addMonitoredMount": "Добавить путь",
-    "excludedMountsDesc": "Скрыть определенные точки монтирования или типы файловых систем (например, nfs, cifs) от информации об использовании диска и оповещений для этого хоста.",
+    "excludedMountsDesc": "Скрыть определенные точки монтирования или типы файловых систем (например, nfs, cifs) из использования диска и уведомлений для этого хоста.",
     "excludedMountsPlaceholder": "Путь монтирования (/mnt/nas) или тип файловой системы (nfs, cifs)",
-    "excludedMountsEmpty": "Исключены все точки монтирования. Отображаются все обнаруженные файловые системы.",
+    "excludedMountsEmpty": "Нет исключенных точек монтирования. Отображаются все обнаруженные файловые системы.",
     "addExcludedMount": "Добавить",
-    "visibleWidgets": "Видимые виджеты",
-    "widgetsMovedToHostMetrics": "Карточки теперь добавляются, упорядочиваются и изменяются в размере непосредственно на вкладке «Метрики хоста». Откройте метрики для этого хоста и используйте «Настроить», чтобы выбрать отображаемые карточки.",
+    "visibleWidgets": "Виджеты",
+    "widgetsMovedToHostMetrics": "Карточки теперь добавляются, располагаются и изменяются по размеру непосредственно во вкладке «Метрики хоста». Откройте «Метрики хоста» для этого хоста и используйте «Настроить», чтобы выбрать отображаемые карточки.",
     "hostNotFound": "Хост не найден",
     "loadingHost": "Загрузка хоста..."
-  },
-  "onboarding": {
-    "feature_metrics": "Метрики и оповещения",
-    "feature_metrics_desc": "Отслеживайте состояние процессора, памяти и диска с течением времени и получайте оповещения при возникновении неполадок."
-  },
-  "admin": {
-    "metricsHistoryRetention": "Срок хранения метрик",
-    "metricsHistoryRetentionRange": "от 1 до 90 дней",
-    "days": "дней"
   },
   "homepage": {
     "noData": "Нет данных",
@@ -234,7 +204,7 @@
     "metricRange": "Диапазон",
     "host": "Хост",
     "loading": "Загрузка...",
-    "metricCpu": "ЦП",
+    "metricCpu": "CPU",
     "metricDisk": "Диск",
     "metricHostname": "Имя хоста",
     "metricKernel": "Ядро",
@@ -242,7 +212,7 @@
     "metricNetwork": "Сеть",
     "metricOs": "ОС",
     "metricProcesses": "Процессы",
-    "metricProcessesRunning": "запущено",
+    "metricProcessesRunning": "работает",
     "metricProcessesTotal": "всего",
     "metricUptime": "Время работы",
     "metricsNotAvailable": "Метрики недоступны",
@@ -250,7 +220,7 @@
     "selectHost": "Выберите хост..."
   },
   "terminalStatus": {
-    "unavailable": "Статистика в режиме реального времени недоступна"
+    "unavailable": "Статистика в реальном времени недоступна"
   },
   "dashboard": {
     "cpu": "CPU",
@@ -264,48 +234,48 @@
   },
   "permissions": {
     "use": {
-      "title": "Используйте метрики хоста",
-      "description": "Просматривайте метрики хоста и используйте менеджеры хостов (службы, пакеты, брандмауэр и многое другое) на доступных вам хостах."
+      "title": "Использовать метрики хоста",
+      "description": "Просматривать метрики хоста и использовать менеджеры хоста (службы, пакеты, брандмауэр и другие) на хостах, к которым у вас есть доступ."
     }
   },
   "settings": {
     "admin": {
       "metricsInterval": {
-        "label": "Интервал метрик (секунды)",
-        "description": "Как часто производится выборка данных с просматриваемого хоста, если только хост не устанавливает собственный интервал."
+        "label": "Интервал сбора метрик (секунды)",
+        "description": "Как часто собираются данные с просматриваемого хоста, если сам хост не задаёт собственный интервал."
       },
       "historyRetentionDays": {
-        "label": "Срок хранения истории болезни (дни)",
-        "description": "Как долго хранятся выборки метрик для построения исторических графиков?"
+        "label": "Хранение истории (дни)",
+        "description": "Как долго сохраняются образцы метрик для графиков истории."
       }
     },
     "user": {
       "temperatureUnit": {
         "label": "Единица измерения температуры",
         "description": "Как отображается температура в метриках хоста.",
-        "celsius": "Цельсия",
-        "fahrenheit": "Фаренгейт"
+        "celsius": "Цельсии",
+        "fahrenheit": "Фаренгейты"
       }
     },
     "host": {
       "metricsEnabled": {
-        "label": "Собирайте метрики"
+        "label": "Собирать метрики"
       },
       "metricsInterval": {
-        "label": "Интервал метрик (секунды)"
+        "label": "Интервал сбора метрик (секунды)"
       },
       "enabledWidgets": {
         "label": "Включенные виджеты"
       },
       "excludedMounts": {
-        "label": "Крепления не включены"
+        "label": "Исключённые точки монтирования"
       },
       "monitoredMounts": {
-        "label": "Контролируемые пути"
+        "label": "Мониторимые пути"
       }
     }
   },
   "plugin": {
-    "name": "Host Metrics"
+    "name": "Метрики хоста"
   }
 }

@@ -1,0 +1,281 @@
+{
+  "nav": {
+    "hostMetrics": "Metrike strežnika"
+  },
+  "hostMetrics": {
+    "cpu": "CPU",
+    "memory": "Pomnilnik",
+    "disk": "Disk",
+    "uptime": "Čas delovanja",
+    "processes": "Postopki",
+    "available": "Na voljo",
+    "free": "Prosto",
+    "connecting": "Povezovanje...",
+    "connectionFailed": "Povezava s strežnikom ni uspela",
+    "cpuCores_one": "{{count}} jedro",
+    "cpuCores_two": "{{count}} jedri",
+    "cpuCores_few": "{{count}} jedra",
+    "cpuCores_other": "{{count}} jeder",
+    "cpuUsage": "Poraba CPU",
+    "memoryUsage": "Poraba pomnilnika",
+    "diskUsage": "Poraba diska",
+    "selectFilesystem": "Izberi datotečni sistem",
+    "temperature": "Temperatura",
+    "highestTemperature": "Najvišja temperatura",
+    "primaryTemperatureSensor": "Glavni senzor",
+    "gpu": {
+      "title": "GPU",
+      "noDevice": "Grafična kartica ni zaznana. Za kartice NVIDIA je potreben gonilnik NVIDIA (zagotavlja nvidia-smi), za kartice AMD pa gonilnik amdgpu.",
+      "driver": "Gonilnik {{version}}",
+      "utilization": "Izkoriščenost",
+      "memory": "VRAM",
+      "temperature": "Temp",
+      "power": "Moč",
+      "fan": "Ventilator",
+      "processes": "Postopki GPU",
+      "noProcesses": "Noben postopek ne uporablja grafične kartice"
+    },
+    "totpFailed": "Preverjanje TOTP ni uspelo",
+    "noneAuthNotSupported": "Metrike strežnika ne podpirajo vrste overitve 'none'.",
+    "noHostSelected": "Ni izbranega strežnika",
+    "systemInfo": "Sistemske informacije",
+    "hostname": "Ime gostitelja",
+    "operatingSystem": "Operacijski sistem",
+    "kernel": "Jedro",
+    "seconds": "sekund",
+    "networkInterfaces": "Omrežni vmesniki",
+    "noInterfacesFound": "Ni najdenih omrežnih vmesnikov",
+    "noProcessesFound": "Ni najdenih postopkov",
+    "processesTotal": "skupaj",
+    "processesRunning": "v teku",
+    "loginStats": "Statistika SSH prijave",
+    "noRecentLoginData": "Ni nedavnih podatkov o prijavi",
+    "ports": {
+      "title": "Poslušajoči porti",
+      "protocol": "Protokol",
+      "port": "Port",
+      "address": "Naslov",
+      "process": "Postopek",
+      "search": "Išči porte...",
+      "allProtocols": "Vsi",
+      "noData": "Ni podatkov o poslušajočih portih"
+    },
+    "firewall": {
+      "title": "Varnostno pregrado",
+      "inactive": "Neaktivno",
+      "policy": "Politika",
+      "rules": "pravila",
+      "noRules": "V tej verigi ni pravil",
+      "noData": "Podatki o varnostni pregradi niso na voljo",
+      "action": "Dejanje",
+      "protocol": "Proto",
+      "port": "Port",
+      "source": "Vir",
+      "chains": "verige"
+    },
+    "architecture": "Arhitektura",
+    "refresh": "Osveži",
+    "customize": "Prilagodi razporeditev",
+    "reset": "Ponastavi",
+    "tabLive": "V živo",
+    "editModeInstructions": "Povlecite kartice za preurejanje, spodnji rob za spreminjanje velikosti in gumb za širino za spremembo širine kartice. Dodajte ali odstranite kartice spodaj.",
+    "managers": {
+      "services": "Storitve",
+      "processInspector": "Inšpektor procesov",
+      "logViewer": "Pregledovalnik dnevnika",
+      "cron": "Cron opravila",
+      "packages": "Paketi",
+      "ssl": "SSL certifikati",
+      "firewall": "Varnostno pregrado",
+      "users": "Uporabniki in dovoljenja",
+      "healthCheck": "Preverjanja stanja",
+      "diskBreakdown": "Razčlenitev diska",
+      "systemdTimers": "Časovniki",
+      "topMemory": "Največ po pomnilniku",
+      "start": "Zaženi",
+      "stop": "Ustavi",
+      "restart": "Ponovno zaženi",
+      "actionDone": "{{name}} posodobljeno",
+      "actionFailed": "Dejanje ni uspelo",
+      "editRequired": "Za spremembo potrebujete dostop za urejanje tega gostitelja",
+      "signalSent": "Signal poslan PID {{pid}}",
+      "killHint": "Klik: prekinitev (SIGTERM). Desni klik: prisilno prekinitev (SIGKILL).",
+      "working": "V delu...",
+      "update": "Posodobi",
+      "upgradeAll": "Nadgradi vse",
+      "allUpToDate": "Vse je posodobljeno",
+      "save": "Shrani",
+      "command": "Ukaz",
+      "enabled": "Omogočeno",
+      "cronSaved": "Crontab posodobljen",
+      "clients": "Odjemalci",
+      "dryRun": "Suho testiranje",
+      "renew": "Podaljšaj",
+      "noAcmeClient": "Na tem gostitelju ni bil najden ACME odjemalec (certbot ali acme.sh).",
+      "addInputRule": "Dodaj pravilo za INPUT",
+      "firewallWarning": "Spremembe veljajo le za trenutno izvajanje, dokler niso shranjene. Bodite previdni, da se ne zaklenete izven sistema.",
+      "ruleApplied": "Pravilo uporabljeno",
+      "invalidPort": "Vnesite veljavno vrata (1-65535)",
+      "newUsername": "Novo uporabniško ime",
+      "addUser": "Dodaj",
+      "deleteUser": "Izbriši uporabnika",
+      "noHealthChecks": "Preverjanja stanja še niso konfigurirana.",
+      "follow": "Sledi",
+      "noLogData": "Ni izpisa dnevnika.",
+      "tree": "Drevo",
+      "enableDisable": "Omogoči/onemogoči ob zagonu",
+      "grantSudo": "Dodeli sudo",
+      "revokeSudo": "Uveljavi sudo",
+      "sslIssueCert": "Izdaj certifikat",
+      "sslExpired": "Poteklo",
+      "sslInDays": "čez {{days}} d",
+      "sslNeedDomain": "Vnesite vsaj eno domeno",
+      "sslIssued": "Certifikat izdan",
+      "sslDomainsPlaceholder": "primer.com, www.primer.com",
+      "sslHttpStandalone": "HTTP (samostojno)",
+      "sslHttpWebroot": "HTTP (webroot)",
+      "sslDns": "DNS",
+      "sslDnsProvider": "Ponudnik DNS (npr. cloudflare)",
+      "sslIssueHint": "Poverilnice ponudnika DNS morajo biti že konfigurirane na gostitelju.",
+      "sslRevoke": "Razveljavi certifikat",
+      "sslRevoked": "Certifikat je razveljavljen",
+      "sslRevokeConfirm": "Razveljaviti in odstraniti certifikat \"{{name}}\"? Tega dejanja ni mogoče razveljaviti.",
+      "healthRun": "Zaženi",
+      "healthName": "Ime",
+      "healthTarget": "Gostitelj / naslov",
+      "healthAddCheck": "Dodaj preverjanje",
+      "healthInterval": "Preveri vsakih (minut)",
+      "healthSaved": "Preverjanja zdravja so shranjena",
+      "healthMissingFields": "Vsako preverjanje potrebuje ime in cilj",
+      "logFile": "Datoteka",
+      "logUnit": "Enota",
+      "logCustomPath": "Prilagojena pot pod /var/log (izbirno)",
+      "logGrep": "Filtriraj vrstice...",
+      "firewallPersist": "Ohrani pravila",
+      "firewallPersisted": "Pravila požarnega zidu so ohranjena",
+      "wireguard": "WireGuard",
+      "wgNotInstalled": "WireGuard ni nameščen na tem gostitelju",
+      "wgNoInterfaces": "Ni konfiguriranih vmesnikov WireGuard",
+      "wgInterfaceUp": "Omogoči",
+      "wgInterfaceDown": "Onemogoči",
+      "wgBringingUp": "Omogočanje {{name}}...",
+      "wgBringingDown": "Onemogočanje {{name}}...",
+      "wgInterfaceUpDone": "{{name}} je omogočen",
+      "wgInterfaceDownDone": "{{name}} je onemogočen",
+      "wgLastHandshake": "Zadnji rokojaz",
+      "wgHandshakeNever": "Nikoli",
+      "wgNoPeers": "Ni vrstnikov",
+      "revoke": "Razveljavi"
+    }
+  },
+  "metricsHistory": {
+    "download": "RX",
+    "upload": "TX",
+    "noData": "Za ta časovni obseg ni na voljo zgodovinskih podatkov."
+  },
+  "hosts": {
+    "tabHostMetrics": "Metrike gostitelja",
+    "metricsCollectionLabel": "Zbiranje metrik",
+    "enableMetricsLabel": "Omogoči metrike",
+    "enableMetricsDesc": "Zbiraj metrike CPU, RAM, diska in druge iz tega gostitelja",
+    "useGlobalMetrics": "Uporabi globalni interval",
+    "useGlobalMetricsDesc": "Ponastavi z intervalom metrik za celoten strežnik",
+    "metricsIntervalS": "Interval metrik (s)",
+    "metricsIntervalDesc2": "Sekunde med posnetki metrik",
+    "excludedMountsLabel": "Izključene točke montiranja",
+    "monitoredMountsLabel": "Prilagojene spremljane poti",
+    "monitoredMountsDesc": "Dodajte poti, ki niso izpostavljene kot ločene točke montiranja, vključno s potmi Home Assistant, montiranimi z bind, kot je /config.",
+    "monitoredMountPathPlaceholder": "Pot (/config, /mnt/data)",
+    "monitoredMountLabelPlaceholder": "Oznaka (izbirno)",
+    "addMonitoredMount": "Dodaj pot",
+    "excludedMountsDesc": "Skrij specifične točke montiranja ali vrste datotečnih sistemov (npr. nfs, cifs) iz porabe diska in opozoril za tega gostitelja.",
+    "excludedMountsPlaceholder": "Pot montiranja (/mnt/nas) ali vrsta datotečnega sistema (nfs, cifs)",
+    "excludedMountsEmpty": "Ni izključenih točk montiranja. Prikažejo se vsi zaznani datotečni sistemi.",
+    "addExcludedMount": "Dodaj",
+    "visibleWidgets": "Vidžeti",
+    "widgetsMovedToHostMetrics": "Kartice se zdaj dodajajo, razporejajo in spreminjajo velikost neposredno na zavihku Metrike gostitelja. Odprite Metrike gostitelja za tega gostitelja in uporabite Prilagodi za izbiro prikazanih kartic.",
+    "hostNotFound": "Gostitelj ni najden",
+    "loadingHost": "Nalaganje gostitelja..."
+  },
+  "homepage": {
+    "noData": "Podatki niso na voljo",
+    "showCurrentValue": "Pokaži trenutno vrednost",
+    "chartMetric": "Metrika",
+    "metricRange": "Razpon",
+    "host": "Gostitelj",
+    "loading": "Nalaganje...",
+    "metricCpu": "CPU",
+    "metricDisk": "Disk",
+    "metricHostname": "Ime gostitelja",
+    "metricKernel": "Jedro",
+    "metricMemory": "Pomnilnik",
+    "metricNetwork": "Omrežje",
+    "metricOs": "OS",
+    "metricProcesses": "Postopki",
+    "metricProcessesRunning": "v teku",
+    "metricProcessesTotal": "skupaj",
+    "metricUptime": "Čas delovanja",
+    "metricsNotAvailable": "Metrike niso na voljo",
+    "noHostSelected": "Ni izbranega gostitelja",
+    "selectHost": "Izberite gostitelja..."
+  },
+  "terminalStatus": {
+    "unavailable": "Žive statistike niso na voljo"
+  },
+  "dashboard": {
+    "cpu": "CPU",
+    "ram": "RAM"
+  },
+  "dashboardTab": {
+    "disk": "Disk"
+  },
+  "terminal": {
+    "connected": "Povezano"
+  },
+  "permissions": {
+    "use": {
+      "title": "Uporaba metrik gostitelja",
+      "description": "Oglejte si metrike gostitelja in uporabite upravitelje gostiteljev (storitve, paketi, požarni zid in več) na gostiteljih, do katerih lahko dostopate."
+    }
+  },
+  "settings": {
+    "admin": {
+      "metricsInterval": {
+        "label": "Interval metrik (sekunde)",
+        "description": "Kako pogosto se vzorci gostitelja, ki se ogleduje, če gostitelj ne nastavi svojega intervala."
+      },
+      "historyRetentionDays": {
+        "label": "Obdobje hrambe zgodovine (dni)",
+        "description": "Kako dolgo se vzorci metrik hranijo za zgodovinske grafikone."
+      }
+    },
+    "user": {
+      "temperatureUnit": {
+        "label": "Enota temperature",
+        "description": "Kako so temperature prikazane v metriki gostitelja.",
+        "celsius": "Celzij",
+        "fahrenheit": "Fahrenheit"
+      }
+    },
+    "host": {
+      "metricsEnabled": {
+        "label": "Zbiranje metrik"
+      },
+      "metricsInterval": {
+        "label": "Interval metrik (sekunde)"
+      },
+      "enabledWidgets": {
+        "label": "Omogočeni vtičniki"
+      },
+      "excludedMounts": {
+        "label": "Izključene točke montaže"
+      },
+      "monitoredMounts": {
+        "label": "Nadzirane poti"
+      }
+    }
+  },
+  "plugin": {
+    "name": "Metrike gostitelja"
+  }
+}

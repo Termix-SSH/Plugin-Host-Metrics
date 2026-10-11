@@ -1,19 +1,17 @@
 {
   "nav": {
-    "hostMetrics": "Sunucu Metrikleri"
+    "hostMetrics": "Ana Bilgisayar Metrikleri"
   },
   "hostMetrics": {
     "cpu": "CPU",
     "memory": "Bellek",
     "disk": "Disk",
-    "network": "Ağ",
     "uptime": "Çalışma Süresi",
     "processes": "İşlemler",
     "available": "Kullanılabilir",
     "free": "Boş",
     "connecting": "Bağlanıyor...",
     "connectionFailed": "Sunucuya bağlanılamadı",
-    "naCpus": "CPU yok",
     "cpuCores_one": "{{count}} Çekirdek",
     "cpuCores_other": "{{count}} Çekirdek",
     "cpuUsage": "CPU Kullanımı",
@@ -25,64 +23,56 @@
     "primaryTemperatureSensor": "Birincil sensör",
     "gpu": {
       "title": "GPU",
-      "noDevice": "NVIDIA GPU algılanmadı. GPU ölçümlerini görmek için NVIDIA sürücüsünü (nvidia-smi içerir) yükleyin.",
+      "noDevice": "GPU algılanamadı. NVIDIA kartlar için NVIDIA sürücüsü (nvidia-smi sağlar), AMD kartlar için amdgpu sürücüsü gereklidir.",
       "driver": "Sürücü {{version}}",
-      "utilization": "Kullanım",
+      "utilization": "Kullanım Oranı",
       "memory": "VRAM",
-      "temperature": "Geçici",
+      "temperature": "Sıcaklık",
       "power": "Güç",
       "fan": "Fan",
       "processes": "GPU işlemleri",
-      "noProcesses": "GPU'yu kullanan hiçbir işlem yok."
+      "noProcesses": "GPU kullanan işlem yok"
     },
-    "failedToFetchHostConfig": "Host yapılandırması alınamadı",
-    "serverOffline": "Sunucu Çevrimdışı",
-    "cannotFetchMetrics": "Çevrimdışı sunucudan ölçümler alınamaz",
-    "totpFailed": "TOTP doğrulaması başarısız",
-    "noneAuthNotSupported": "Sunucu Metrikleri 'none' kimlik doğrulama türünü desteklemiyor.",
-    "noHostSelected": "Sunucu seçilmedi",
-    "load": "Yük",
-    "systemInfo": "Sistem Bilgisi",
-    "hostname": "Sunucu Adı",
+    "totpFailed": "TOTP doğrulaması başarısız oldu",
+    "noneAuthNotSupported": "Ana Bilgisayar Metrikleri, 'none' kimlik doğrulama türünü desteklemez.",
+    "noHostSelected": "Hiçbir ana bilgisayar seçilmedi",
+    "systemInfo": "Sistem Bilgileri",
+    "hostname": "Bilgisayar Adı",
     "operatingSystem": "İşletim Sistemi",
     "kernel": "Çekirdek",
     "seconds": "saniye",
     "networkInterfaces": "Ağ Arayüzleri",
-    "noInterfacesFound": "Ağ arayüzleri bulunamadı",
-    "noProcessesFound": "Hiç işlem bulunamadı",
+    "noInterfacesFound": "Ağ arayüzü bulunamadı",
+    "noProcessesFound": "İşlem bulunamadı",
     "processesTotal": "toplam",
-    "processesRunning": "çalışan",
+    "processesRunning": "çalışıyor",
     "loginStats": "SSH Giriş İstatistikleri",
     "noRecentLoginData": "Son giriş verisi yok",
     "ports": {
-      "title": "Dinlenen Portlar",
+      "title": "Dinleyen Portlar",
       "protocol": "Protokol",
       "port": "Port",
       "address": "Adres",
       "process": "İşlem",
       "search": "Portları ara...",
       "allProtocols": "Tümü",
-      "noData": "Dinlenen port verisi yok"
+      "noData": "Dinleyen port verisi yok"
     },
     "firewall": {
       "title": "Güvenlik Duvarı",
       "inactive": "Etkin Değil",
       "policy": "Politika",
-      "rules": "kurallar",
+      "rules": "kural",
       "noRules": "Bu zincirde kural yok",
-      "noData": "Güvenlik duvarı verisi bulunamadı",
+      "noData": "Güvenlik duvarı verisi mevcut değil",
       "action": "Eylem",
-      "protocol": "Protokol",
+      "protocol": "Proto",
       "port": "Port",
       "source": "Kaynak",
-      "anywhere": "Her yer",
       "chains": "zincirler"
     },
-    "loadAvg": "Ortalama Yük",
-    "swap": "Takas",
     "architecture": "Mimari",
     "refresh": "Yenile",
-    "retry": "Yeniden dene",
     "customize": "Düzeni özelleştir",
     "reset": "Sıfırla",
     "tabLive": "Canlı",
@@ -99,17 +89,15 @@
       "healthCheck": "Sağlık Kontrolleri",
       "diskBreakdown": "Disk Dağılımı",
       "systemdTimers": "Zamanlayıcılar",
-      "topMemory": "Bellek Sıralaması",
-      "noData": "Veri yok",
-      "sudoHint": "Ayrıcalıklı eylemleri etkinleştirmek için host düzenleyicisinde bu host için bir sudo parolası belirleyin.",
-      "filter": "Filtrele...",
+      "topMemory": "Belleğe Göre En Yüksek",
       "start": "Başlat",
       "stop": "Durdur",
       "restart": "Yeniden Başlat",
       "actionDone": "{{name}} güncellendi",
-      "actionFailed": "Eylem başarısız oldu",
-      "signalSent": "PID {{pid}}'e sinyal gönderildi",
-      "killHint": "Tıklama: sonlandır (SIGTERM). Sağ tıklama: zorla sonlandır (SIGKILL).",
+      "actionFailed": "İşlem başarısız oldu",
+      "editRequired": "Değiştirmek için bu ana bilgisayara düzen erişiminiz gerekir",
+      "signalSent": "PID {{pid}}'ye sinyal gönderildi",
+      "killHint": "Tıkla: sonlandır (SIGTERM). Sağ tıkla: zorla öldür (SIGKILL).",
       "working": "Çalışıyor...",
       "update": "Güncelle",
       "upgradeAll": "Tümünü yükselt",
@@ -119,43 +107,44 @@
       "enabled": "Etkin",
       "cronSaved": "Crontab güncellendi",
       "clients": "İstemciler",
-      "dryRun": "Deneme çalıştırması",
+      "dryRun": "Kuru çalıştırma",
       "renew": "Yenile",
-      "noAcmeClient": "Bu sunucuda ACME istemcisi (certbot veya acme.sh) bulunamadı.",
-      "addInputRule": "INPUT kuralı ekle",
-      "firewallWarning": "Değişiklikler, kalıcı hale getirilene kadar yalnızca çalışma zamanında geçerlidir. Kendinizi kilitlememeye dikkat edin.",
+      "noAcmeClient": "Bu ana bilgisayarda ACME istemcisi (certbot veya acme.sh) bulunamadı.",
+      "addInputRule": "GİRİŞ kuralı ekle",
+      "firewallWarning": "Değişiklikler kalıcı hale getirilene kadar yalnızca çalışma zamanı içindir. Kendinizi kilitlememeye dikkat edin.",
       "ruleApplied": "Kural uygulandı",
       "invalidPort": "Geçerli bir bağlantı noktası girin (1-65535)",
       "newUsername": "Yeni kullanıcı adı",
       "addUser": "Ekle",
       "deleteUser": "Kullanıcıyı sil",
-      "noHealthChecks": "Henüz yapılandırılmış bir sağlık denetimi yok.",
+      "noHealthChecks": "Henüz yapılandırılmış sağlık kontrolü yok.",
       "follow": "Takip et",
       "noLogData": "Günlük çıktısı yok.",
       "tree": "Ağaç",
-      "enableDisable": "Önyüklemede etkinleştir / devre dışı bırak",
+      "enableDisable": "Önyüklemeye etkinleştir / devre dışı bırak",
       "grantSudo": "Sudo yetkisi ver",
-      "revokeSudo": "Sudo yetkisini kaldır",
-      "sslIssueCert": "Sertifika oluştur",
+      "revokeSudo": "Sudo yetkisini geri al",
+      "sslIssueCert": "Sertifika çıkar",
       "sslExpired": "Süresi dolmuş",
       "sslInDays": "{{days}} gün içinde",
       "sslNeedDomain": "En az bir alan adı girin",
-      "sslIssued": "Sertifika oluşturuldu",
+      "sslIssued": "Sertifika çıkarıldı",
       "sslDomainsPlaceholder": "example.com, www.example.com",
       "sslHttpStandalone": "HTTP (bağımsız)",
       "sslHttpWebroot": "HTTP (webroot)",
       "sslDns": "DNS",
       "sslDnsProvider": "DNS sağlayıcısı (örn. cloudflare)",
-      "sslIssueHint": "DNS sağlayıcı kimlik bilgileri sunucuda zaten yapılandırılmış olmalıdır.",
+      "sslIssueHint": "DNS sağlayıcı kimlik bilgileri zaten ana makinede yapılandırılmış olmalıdır.",
       "sslRevoke": "Sertifikayı iptal et",
       "sslRevoked": "Sertifika iptal edildi",
-      "sslRevokeConfirm": "\"{{name}}\" sertifikası iptal edilip kaldırılsın mı? Bu işlem geri alınamaz.",
+      "sslRevokeConfirm": "\"{{name}}\" sertifikası iptal edilsin ve kaldırılsın mı? Bu işlem geri alınamaz.",
       "healthRun": "Çalıştır",
       "healthName": "Ad",
-      "healthTarget": "Sunucu / adres",
+      "healthTarget": "Ana makine / adres",
       "healthAddCheck": "Kontrol ekle",
+      "healthInterval": "Kontrol sıklığı (dakika)",
       "healthSaved": "Sağlık kontrolleri kaydedildi",
-      "healthMissingFields": "Her kontrol bir ad ve hedef gerektirir",
+      "healthMissingFields": "Her kontrol için bir ad ve hedef gerekli",
       "logFile": "Dosya",
       "logUnit": "Birim",
       "logCustomPath": "/var/log altında özel yol (isteğe bağlı)",
@@ -163,94 +152,73 @@
       "firewallPersist": "Kuralları kalıcı yap",
       "firewallPersisted": "Güvenlik duvarı kuralları kalıcı hale getirildi",
       "wireguard": "WireGuard",
-      "wgNotInstalled": "Bu sunucuda WireGuard yüklü değil",
+      "wgNotInstalled": "WireGuard bu ana makinede yüklü değil",
       "wgNoInterfaces": "Yapılandırılmış WireGuard arayüzü yok",
       "wgInterfaceUp": "Başlat",
       "wgInterfaceDown": "Durdur",
       "wgBringingUp": "{{name}} başlatılıyor...",
       "wgBringingDown": "{{name}} durduruluyor...",
       "wgInterfaceUpDone": "{{name}} çalışıyor",
-      "wgInterfaceDownDone": "{{name}} çalışmıyor",
-      "wgListenPort": "Port",
-      "wgPublicKey": "Açık anahtar",
-      "wgEndpoint": "Uç nokta",
-      "wgAllowedIPs": "İzin verilen IP'ler",
+      "wgInterfaceDownDone": "{{name}} durdu",
       "wgLastHandshake": "Son el sıkışma",
       "wgHandshakeNever": "Hiçbir zaman",
-      "wgTransfer": "Transfer",
-      "wgNoPeers": "Eşi benzeri yok"
+      "wgNoPeers": "Eş yok",
+      "revoke": "İptal et"
     }
   },
   "metricsHistory": {
-    "title": "Metrik Geçmişi",
-    "historySuffix": "Geçmiş",
-    "cpuMemoryDisk": "CPU / Bellek / Disk",
-    "network": "Ağ",
     "download": "RX",
     "upload": "TX",
-    "noData": "Bu zaman aralığı için geçmiş verisi yok.",
-    "custom": "Özel",
-    "to": "ile",
-    "apply": "Uygula",
-    "viewHistory": "Geçmişi Görüntüle"
+    "noData": "Bu zaman aralığı için geçmiş verisi mevcut değil."
   },
   "hosts": {
-    "tabHostMetrics": "Sunucu Metrikleri",
+    "tabHostMetrics": "Ana Makine Metrikleri",
     "metricsCollectionLabel": "Metrik Toplama",
     "enableMetricsLabel": "Metrikleri Etkinleştir",
-    "enableMetricsDesc": "Bu sunucudan CPU, RAM, disk ve diğer metrikleri topla",
-    "useGlobalMetrics": "Genel Aralığı Kullan",
-    "useGlobalMetricsDesc": "Sunucu geneli metrik aralığını geçersiz kıl",
-    "metricsIntervalS": "Metrik Aralığı (sn)",
-    "metricsIntervalDesc2": "Metrik anlık görüntüleri arasındaki saniye",
-    "excludedMountsLabel": "Hariç Tutulan Montajlar",
-    "monitoredMountsLabel": "Özel olarak izlenen yollar",
-    "monitoredMountsDesc": "/config gibi Home Assistant'a bağlanan yollar da dahil olmak üzere, ayrı bağlama noktaları olarak gösterilmeyen yolları ekleyin.",
+    "enableMetricsDesc": "Bu ana makineden CPU, RAM, disk ve diğer metrikleri topla",
+    "useGlobalMetrics": "Global Aralığı Kullan",
+    "useGlobalMetricsDesc": "Sunucu genelindeki metrik aralığıyla geçersiz kıl",
+    "metricsIntervalS": "Metrik Aralığı (s)",
+    "metricsIntervalDesc2": "Metrik anlık görüntüleri arasındaki saniye sayısı",
+    "excludedMountsLabel": "Hariç Tutulan Bağlantı Noktaları",
+    "monitoredMountsLabel": "Özel izlenen yollar",
+    "monitoredMountsDesc": "/config gibi ayrı bağlantı noktaları olarak gösterilmeyen yolları, bağlanmış Home Assistant yollarını da içerecek şekilde ekleyin.",
     "monitoredMountPathPlaceholder": "Yol (/config, /mnt/data)",
     "monitoredMountLabelPlaceholder": "Etiket (isteğe bağlı)",
     "addMonitoredMount": "Yol ekle",
-    "excludedMountsDesc": "Bu sunucu için disk kullanımı ve uyarılarından belirli bağlama noktalarını veya dosya sistemi türlerini (örneğin nfs, cifs) gizleyin.",
-    "excludedMountsPlaceholder": "Bağlama yolu (/mnt/nas) veya dosya sistemi türü (nfs, cifs)",
-    "excludedMountsEmpty": "Hiçbir bağlama noktası hariç tutulmadı. Tespit edilen tüm dosya sistemleri gösteriliyor.",
+    "excludedMountsDesc": "Bu ana makine için disk kullanımı ve uyarılardan belirli bağlantı noktalarını veya dosya sistemi türlerini (örn. nfs, cifs) gizle.",
+    "excludedMountsPlaceholder": "Bağlantı yolu (/mnt/nas) veya dosya sistemi türü (nfs, cifs)",
+    "excludedMountsEmpty": "Hariç tutulan bağlantı noktası yok. Tüm algılanan dosya sistemleri gösteriliyor.",
     "addExcludedMount": "Ekle",
     "visibleWidgets": "Görünür Widget'lar",
-    "widgetsMovedToHostMetrics": "Kartlar artık doğrudan Sunucu Metrikleri sekmesinde eklenir, düzenlenir ve yeniden boyutlandırılır. Bu sunucu için Sunucu Metrikleri'ni açın ve hangi kartların gösterileceğini seçmek için Özelleştir'i kullanın.",
-    "hostNotFound": "Host bulunamadı",
-    "loadingHost": "Host yükleniyor..."
-  },
-  "onboarding": {
-    "feature_metrics": "Ölçümler ve uyarılar",
-    "feature_metrics_desc": "İşlemci, bellek ve disk performansını zaman içinde takip edin ve arızalandıklarında uyarı alın."
-  },
-  "admin": {
-    "metricsHistoryRetention": "Metrik Geçmişi Saklama",
-    "metricsHistoryRetentionRange": "1 ila 90 gün",
-    "days": "gün"
+    "widgetsMovedToHostMetrics": "Kartlar artık doğrudan Ana Makine Metrikleri sekmesinde ekleniyor, düzenleniyor ve yeniden boyutlandırılıyor. Hangi kartların gösterileceğini seçmek için bu ana makinenin Ana Makine Metrikleri sekmesini açın ve Özelleştir'i kullanın.",
+    "hostNotFound": "Ana makine bulunamadı",
+    "loadingHost": "Ana makine yükleniyor..."
   },
   "homepage": {
-    "noData": "Veri yok",
-    "showCurrentValue": "Geçerli Değeri Göster",
+    "noData": "Veri mevcut değil",
+    "showCurrentValue": "Mevcut Değeri Göster",
     "chartMetric": "Metrik",
     "metricRange": "Aralık",
-    "host": "Sunucu",
+    "host": "Ana Bilgisayar",
     "loading": "Yükleniyor...",
     "metricCpu": "CPU",
     "metricDisk": "Disk",
-    "metricHostname": "Ana Bilgisayar Adı",
+    "metricHostname": "Bilgisayar Adı",
     "metricKernel": "Çekirdek",
     "metricMemory": "Bellek",
     "metricNetwork": "Ağ",
     "metricOs": "İşletim Sistemi",
     "metricProcesses": "İşlemler",
-    "metricProcessesRunning": "çalışan",
+    "metricProcessesRunning": "çalışıyor",
     "metricProcessesTotal": "toplam",
     "metricUptime": "Çalışma Süresi",
-    "metricsNotAvailable": "Metrikler kullanılamıyor",
-    "noHostSelected": "Sunucu seçilmedi",
-    "selectHost": "Bir sunucu seçin..."
+    "metricsNotAvailable": "Metrikler mevcut değil",
+    "noHostSelected": "Hiçbir ana bilgisayar seçilmedi",
+    "selectHost": "Bir ana bilgisayar seçin..."
   },
   "terminalStatus": {
-    "unavailable": "Canlı istatistikler mevcut değil."
+    "unavailable": "Canlı istatistikler mevcut değil"
   },
   "dashboard": {
     "cpu": "CPU",
@@ -260,45 +228,45 @@
     "disk": "Disk"
   },
   "terminal": {
-    "connected": "Bağlandı"
+    "connected": "Bağlı"
   },
   "permissions": {
     "use": {
-      "title": "Ana Bilgisayar Metriklerini Kullanın",
-      "description": "Erişebildiğiniz sunuculardaki sunucu ölçümlerini görüntüleyin ve sunucu yöneticilerini (hizmetler, paketler, güvenlik duvarı ve daha fazlası) kullanın."
+      "title": "Ana Bilgisayar Metriklerini Kullan",
+      "description": "Erişebildiğiniz ana bilgisayarlarda ana bilgisayar metriklerini görüntüleyin ve ana bilgisayar yöneticilerini (hizmetler, paketler, güvenlik duvarı ve daha fazlası) kullanın."
     }
   },
   "settings": {
     "admin": {
       "metricsInterval": {
-        "label": "Ölçüm aralığı (saniye)",
-        "description": "Bir sunucunun ne sıklıkla görüntülendiği, sunucu kendi aralığını belirlemediği sürece bu şekilde gösterilir."
+        "label": "Metrik aralığı (saniye)",
+        "description": "Ana bilgisayar kendi aralığını ayarlamadıkça, görüntülenen bir ana bilgisayarın ne sıklıkla örnek alınıp alınmadığı."
       },
       "historyRetentionDays": {
-        "label": "Geçmiş verilerin saklanma süresi (gün)",
-        "description": "Geçmiş grafikler için metrik örneklerinin ne kadar süreyle saklandığı."
+        "label": "Geçmiş saklama süresi (gün)",
+        "description": "Geçmiş grafikleri için metrik örneklerinin ne kadar süreyle tutulacağı."
       }
     },
     "user": {
       "temperatureUnit": {
         "label": "Sıcaklık birimi",
-        "description": "Host Metrics'te sıcaklıklar nasıl gösterilir?",
+        "description": "Sıcaklıkların Ana Bilgisayar Metriklerinde nasıl gösterileceği.",
         "celsius": "Santigrat",
         "fahrenheit": "Fahrenheit"
       }
     },
     "host": {
       "metricsEnabled": {
-        "label": "Ölçümleri toplayın"
+        "label": "Metrikleri topla"
       },
       "metricsInterval": {
-        "label": "Ölçüm aralığı (saniye)"
+        "label": "Metrik aralığı (saniye)"
       },
       "enabledWidgets": {
         "label": "Etkinleştirilmiş widget'lar"
       },
       "excludedMounts": {
-        "label": "Hariç tutulan montajlar"
+        "label": "Hariç tutulan birimler"
       },
       "monitoredMounts": {
         "label": "İzlenen yollar"
@@ -306,6 +274,6 @@
     }
   },
   "plugin": {
-    "name": "Host Metrics"
+    "name": "Ana Bilgisayar Metrikleri"
   }
 }

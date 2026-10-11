@@ -1,68 +1,62 @@
 {
   "nav": {
-    "hostMetrics": "Vertsmålinger"
+    "hostMetrics": "Vertsmetrikker"
   },
   "hostMetrics": {
     "cpu": "CPU",
     "memory": "Minne",
     "disk": "Disk",
-    "network": "Nettverk",
     "uptime": "Oppetid",
     "processes": "Prosesser",
     "available": "Tilgjengelig",
     "free": "Ledig",
     "connecting": "Kobler til...",
     "connectionFailed": "Kunne ikke koble til serveren",
-    "naCpus": "N/A CPU(er)",
-    "cpuCores_one": "{{count}} Kjerne",
-    "cpuCores_other": "{{count}} Kjerner",
+    "cpuCores_one": "{{count}} kjerne",
+    "cpuCores_other": "{{count}} kjerner",
     "cpuUsage": "CPU-bruk",
     "memoryUsage": "Minnebruk",
     "diskUsage": "Diskbruk",
     "selectFilesystem": "Velg filsystem",
     "temperature": "Temperatur",
     "highestTemperature": "Høyeste temperatur",
-    "primaryTemperatureSensor": "Primærsensor",
+    "primaryTemperatureSensor": "Primær sensor",
     "gpu": {
       "title": "GPU",
-      "noDevice": "Ingen NVIDIA GPU funnet. Installer NVIDIA-driveren (den inneholder nvidia-smi) for å se GPU-målinger.",
-      "driver": "Sjåfør {{version}}",
+      "noDevice": "Ingen GPU oppdaget. NVIDIA-kort krever NVIDIA-driveren (som leverer nvidia-smi), AMD-kort krever amdgpu-driveren.",
+      "driver": "Driver {{version}}",
       "utilization": "Utnyttelse",
       "memory": "VRAM",
-      "temperature": "Temp.",
-      "power": "Makt",
-      "fan": "Fan",
+      "temperature": "Temp",
+      "power": "Effekt",
+      "fan": "Vifte",
       "processes": "GPU-prosesser",
       "noProcesses": "Ingen prosesser bruker GPU-en"
     },
-    "failedToFetchHostConfig": "Kunne ikke hente vertskonfigurasjon",
-    "serverOffline": "Server frakoblet",
-    "cannotFetchMetrics": "Kan ikke hente målinger fra frakoblet server",
     "totpFailed": "TOTP-verifisering mislyktes",
-    "noneAuthNotSupported": "Host Metrics støtter ikke autentiseringstypen «ingen».",
+    "noneAuthNotSupported": "Vertsmetrikker støtter ikke autentiseringstypen «none».",
     "noHostSelected": "Ingen vert valgt",
-    "load": "Last",
     "systemInfo": "Systeminformasjon",
     "hostname": "Vertsnavn",
     "operatingSystem": "Operativsystem",
     "kernel": "Kjerne",
     "seconds": "sekunder",
     "networkInterfaces": "Nettverksgrensesnitt",
-    "noInterfacesFound": "Fant ingen nettverksgrensesnitt",
-    "noProcessesFound": "Fant ingen prosesser",
+    "noInterfacesFound": "Ingen nettverksgrensesnitt funnet",
+    "noProcessesFound": "Ingen prosesser funnet",
     "processesTotal": "totalt",
     "processesRunning": "kjører",
-    "loginStats": "SSH-påloggingsstatistikk",
-    "noRecentLoginData": "Ingen nylige påloggingsdata",
+    "loginStats": "SSH-innloggingsstatistikk",
+    "noRecentLoginData": "Ingen nylige innloggingsdata",
     "ports": {
-      "title": "Lytteporter",
+      "title": "Porter som lytter",
       "protocol": "Protokoll",
-      "port": "Havn",
+      "port": "Port",
       "address": "Adresse",
-      "process": "Behandle",
+      "process": "Prosess",
       "search": "Søk etter porter...",
       "allProtocols": "Alle",
-      "noData": "Ingen data om lytteporter"
+      "noData": "Ingen data om porter som lytter"
     },
     "firewall": {
       "title": "Brannmur",
@@ -70,23 +64,19 @@
       "policy": "Politikk",
       "rules": "regler",
       "noRules": "Ingen regler i denne kjeden",
-      "noData": "Ingen brannmurdata tilgjengelig",
+      "noData": "Ingen brannmursdata tilgjengelig",
       "action": "Handling",
       "protocol": "Proto",
-      "port": "Havn",
+      "port": "Port",
       "source": "Kilde",
-      "anywhere": "Hvor som helst",
       "chains": "kjeder"
     },
-    "loadAvg": "Last inn gjennomsnitt",
-    "swap": "Bytte",
     "architecture": "Arkitektur",
     "refresh": "Oppdater",
-    "retry": "Prøv igjen",
-    "customize": "Tilpass oppsettet",
+    "customize": "Tilpass oppsett",
     "reset": "Tilbakestill",
-    "tabLive": "Bo",
-    "editModeInstructions": "Dra kort for å omorganisere, dra i den nederste kanten for å endre størrelsen, og bruk breddeknappen for å endre kortets rekkevidde. Legg til eller fjern kort nedenfor.",
+    "tabLive": "Sanntid",
+    "editModeInstructions": "Dra kortene for å endre rekkefølge, dra i bunnen for å endre størrelse, og bruk breddeknappen for å endre hvor bredt et kort er. Legg til eller fjern kort nedenfor.",
     "managers": {
       "services": "Tjenester",
       "processInspector": "Prosessinspektør",
@@ -96,22 +86,20 @@
       "ssl": "SSL-sertifikater",
       "firewall": "Brannmur",
       "users": "Brukere og tillatelser",
-      "healthCheck": "Helsesjekker",
-      "diskBreakdown": "Disknedbrytning",
-      "systemdTimers": "Tidtakere",
-      "topMemory": "Topp etter minne",
-      "noData": "Ingen data",
-      "sudoHint": "Angi et sudo-passord for denne verten i vertredigeringsprogrammet for å aktivere privilegerte handlinger.",
-      "filter": "Filter...",
+      "healthCheck": "Helsekontroller",
+      "diskBreakdown": "Diskoppdeling",
+      "systemdTimers": "Tidsstyrte oppgaver",
+      "topMemory": "Øverst etter minne",
       "start": "Start",
       "stop": "Stopp",
-      "restart": "Start på nytt",
+      "restart": "Omstart",
       "actionDone": "{{name}} oppdatert",
       "actionFailed": "Handlingen mislyktes",
+      "editRequired": "Du må ha skriveadgang til denne verten for å endre den",
       "signalSent": "Signal sendt til PID {{pid}}",
-      "killHint": "Klikk: avslutt (SIGTERM). Høyreklikk: tvungen avslutning (SIGKILL).",
+      "killHint": "Klikk: avslutt (SIGTERM). Høyreklikk: tving avslutt (SIGKILL).",
       "working": "Arbeider...",
-      "update": "Oppdatering",
+      "update": "Oppdater",
       "upgradeAll": "Oppgrader alle",
       "allUpToDate": "Alt er oppdatert",
       "save": "Lagre",
@@ -119,119 +107,99 @@
       "enabled": "Aktivert",
       "cronSaved": "Crontab oppdatert",
       "clients": "Klienter",
-      "dryRun": "Tørrløp",
-      "renew": "Fornye",
+      "dryRun": "Testkjøring",
+      "renew": "Forny",
       "noAcmeClient": "Ingen ACME-klient (certbot eller acme.sh) funnet på denne verten.",
       "addInputRule": "Legg til INPUT-regel",
-      "firewallWarning": "Endringene gjelder kun for kjøring inntil de lagres. Vær forsiktig så du ikke låser deg ute.",
-      "ruleApplied": "Regel brukt",
+      "firewallWarning": "Endringene gjelder kun i kjøretid inntil de lagres. Vær forsiktig slik at du ikke låser deg selv ute.",
+      "ruleApplied": "Regelen er anvendt",
       "invalidPort": "Skriv inn en gyldig port (1-65535)",
       "newUsername": "Nytt brukernavn",
       "addUser": "Legg til",
       "deleteUser": "Slett bruker",
-      "noHealthChecks": "Ingen helsesjekker er konfigurert ennå.",
-      "follow": "Følge",
-      "noLogData": "Ingen loggutgang.",
+      "noHealthChecks": "Ingen helsekontroller er konfigurert ennå.",
+      "follow": "Følg",
+      "noLogData": "Ingen loggoutput.",
       "tree": "Tre",
       "enableDisable": "Aktiver/deaktiver ved oppstart",
-      "grantSudo": "Gi sudo",
-      "revokeSudo": "Tilbakekalle sudo",
-      "sslIssueCert": "Utsted sertifikat",
+      "grantSudo": "Gi sudo-adgang",
+      "revokeSudo": "Forkast sudo-adgang",
+      "sslIssueCert": "Utfsted sertifikat",
       "sslExpired": "Utløpt",
-      "sslInDays": "i {{days}}d",
-      "sslNeedDomain": "Angi minst ett domene",
-      "sslIssued": "Sertifikat utstedt",
-      "sslDomainsPlaceholder": "eksempel.com, www.eksempel.com",
-      "sslHttpStandalone": "HTTP (frittstående)",
-      "sslHttpWebroot": "HTTP (nettrot)",
+      "sslInDays": "om {{days}}d",
+      "sslNeedDomain": "Skriv inn minst ett domene",
+      "sslIssued": "Sertifikat utfstedet",
+      "sslDomainsPlaceholder": "example.com, www.example.com",
+      "sslHttpStandalone": "HTTP (standalone)",
+      "sslHttpWebroot": "HTTP (webroot)",
       "sslDns": "DNS",
-      "sslDnsProvider": "DNS-leverandør (f.eks. Cloudflare)",
-      "sslIssueHint": "DNS-leverandørens påloggingsinformasjon må allerede være konfigurert på verten.",
-      "sslRevoke": "Tilbakekalle sertifikat",
-      "sslRevoked": "Sertifikatet er tilbakekalt",
-      "sslRevokeConfirm": "Tilbakekalle og fjerne sertifikatet «{{name}}»? Dette kan ikke angres.",
+      "sslDnsProvider": "DNS-leverandør (f.eks. cloudflare)",
+      "sslIssueHint": "DNS-leverandørens legitimasjon må allerede være konfigurert på verten.",
+      "sslRevoke": "Opphev sertifikat",
+      "sslRevoked": "Sertifikat opphevet",
+      "sslRevokeConfirm": "Opphev og fjern sertifikatet «{{name}}»? Dette kan ikke angres.",
       "healthRun": "Kjør",
       "healthName": "Navn",
       "healthTarget": "Vert / adresse",
       "healthAddCheck": "Legg til sjekk",
-      "healthSaved": "Helsesjekker lagret",
+      "healthInterval": "Sjekk hver (minutter)",
+      "healthSaved": "Helsekontroller lagret",
       "healthMissingFields": "Hver sjekk trenger et navn og et mål",
       "logFile": "Fil",
       "logUnit": "Enhet",
-      "logCustomPath": "Tilpasset sti under /var/log (valgfritt)",
+      "logCustomPath": "Egendefinert sti under /var/log (valgfritt)",
       "logGrep": "Filtrer linjer...",
-      "firewallPersist": "Vedvarende regler",
+      "firewallPersist": "Behold regler",
       "firewallPersisted": "Brannmurregler beholdt",
       "wireguard": "WireGuard",
       "wgNotInstalled": "WireGuard er ikke installert på denne verten",
       "wgNoInterfaces": "Ingen WireGuard-grensesnitt konfigurert",
-      "wgInterfaceUp": "Ta opp",
-      "wgInterfaceDown": "Ta ned",
-      "wgBringingUp": "Tar opp {{name}}...",
-      "wgBringingDown": "Å bringe {{name}} ned...",
-      "wgInterfaceUpDone": "{{name}} er oppe",
-      "wgInterfaceDownDone": "{{name}} er nede",
-      "wgListenPort": "Havn",
-      "wgPublicKey": "Offentlig nøkkel",
-      "wgEndpoint": "Endepunkt",
-      "wgAllowedIPs": "Tillatte IP-adresser",
+      "wgInterfaceUp": "Aktiver",
+      "wgInterfaceDown": "Deaktiver",
+      "wgBringingUp": "Aktiverer {{name}}...",
+      "wgBringingDown": "Deaktiverer {{name}}...",
+      "wgInterfaceUpDone": "{{name}} er aktivert",
+      "wgInterfaceDownDone": "{{name}} er deaktivert",
       "wgLastHandshake": "Siste håndtrykk",
       "wgHandshakeNever": "Aldri",
-      "wgTransfer": "Overføre",
-      "wgNoPeers": "Ingen jevnaldrende"
+      "wgNoPeers": "Ingen parter",
+      "revoke": "Opphev"
     }
   },
   "metricsHistory": {
-    "title": "Metrikkhistorikk",
-    "historySuffix": "Historikk",
-    "cpuMemoryDisk": "CPU / Minne / Disk",
-    "network": "Nettverk",
     "download": "RX",
     "upload": "TX",
-    "noData": "Ingen historikkdata tilgjengelig for denne tidsperioden.",
-    "custom": "Skikk",
-    "to": "til",
-    "apply": "Søke",
-    "viewHistory": "Vis historikk"
+    "noData": "Ingen historikkdata tilgjengelig for dette tidsrommet."
   },
   "hosts": {
-    "tabHostMetrics": "Vertsmålinger",
-    "metricsCollectionLabel": "Metrikksamling",
-    "enableMetricsLabel": "Aktiver målinger",
-    "enableMetricsDesc": "Samle inn CPU-, RAM-, disk- og andre målinger fra denne verten",
-    "useGlobalMetrics": "Bruk globalt intervall",
-    "useGlobalMetricsDesc": "Overstyr med det serveromfattende måleintervallet",
-    "metricsIntervalS": "Måleintervall (s)",
-    "metricsIntervalDesc2": "Sekunder mellom målebilder",
-    "excludedMountsLabel": "Ekskluderte fester",
-    "monitoredMountsLabel": "Tilpassede overvåkede stier",
-    "monitoredMountsDesc": "Legg til stier som ikke er eksponert som separate monteringer, inkludert bindingsmonterte Home Assistant-stier som /config.",
+    "tabHostMetrics": "Vertsmetrikker",
+    "metricsCollectionLabel": "Metrikkinnsamling",
+    "enableMetricsLabel": "Aktiver metrikker",
+    "enableMetricsDesc": "Samle inn CPU-, RAM-, disk- og andre metrikker fra denne verten",
+    "useGlobalMetrics": "Bruk global intervall",
+    "useGlobalMetricsDesc": "Overskriv med serverens globale metrikintervall",
+    "metricsIntervalS": "Metrikintervall (s)",
+    "metricsIntervalDesc2": "Sekunder mellom metrikksnapshots",
+    "excludedMountsLabel": "Ekskluderte monteringerpunkter",
+    "monitoredMountsLabel": "Egendefinerte overvåkede stier",
+    "monitoredMountsDesc": "Legg til stier som ikke eksponeres som separate monteringerpunkter, inkludert bind-monterte Home Assistant-stier som /config.",
     "monitoredMountPathPlaceholder": "Sti (/config, /mnt/data)",
     "monitoredMountLabelPlaceholder": "Etikett (valgfritt)",
     "addMonitoredMount": "Legg til sti",
-    "excludedMountsDesc": "Skjul spesifikke monteringspunkter eller filsystemtyper (f.eks. nfs, cifs) fra diskbruk og varsler for denne verten.",
+    "excludedMountsDesc": "Skjul spesifikke monteringerpunkter eller filsystemtyper (f.eks. nfs, cifs) fra diskbruk og varsler for denne verten.",
     "excludedMountsPlaceholder": "Monteringssti (/mnt/nas) eller filsystemtype (nfs, cifs)",
-    "excludedMountsEmpty": "Ingen monteringer er utelukket. Alle oppdagede filsystemer vises.",
+    "excludedMountsEmpty": "Ingen monteringerpunkter ekskludert. Alle oppdagede filsystemer vises.",
     "addExcludedMount": "Legg til",
     "visibleWidgets": "Synlige widgeter",
-    "widgetsMovedToHostMetrics": "Kort legges nå til, arrangeres og endres i størrelse direkte i fanen Vertsmålinger. Åpne Vertsmålinger for denne verten og bruk Tilpass for å velge hvilke kort som vises.",
-    "hostNotFound": "Verten ble ikke funnet",
-    "loadingHost": "Laster inn vert ..."
-  },
-  "onboarding": {
-    "feature_metrics": "Målinger og varsler",
-    "feature_metrics_desc": "Spor CPU, minne og disk over tid, og bli varslet når de blir dårlige."
-  },
-  "admin": {
-    "metricsHistoryRetention": "Oppbevaring av metrikkhistorikk",
-    "metricsHistoryRetentionRange": "1 til 90 dager",
-    "days": "dager"
+    "widgetsMovedToHostMetrics": "Kort legges nå til, arrangeres og endres i størrelse direkte i fanen Vertsmetrikker. Åpne Vertsmetrikker for denne verten og bruk Tilpass for å velge hvilke kort som skal vises.",
+    "hostNotFound": "Vert ikke funnet",
+    "loadingHost": "Laster vert..."
   },
   "homepage": {
     "noData": "Ingen data tilgjengelig",
     "showCurrentValue": "Vis gjeldende verdi",
-    "chartMetric": "Metrisk",
-    "metricRange": "Spekter",
+    "chartMetric": "Metrik",
+    "metricRange": "Område",
     "host": "Vert",
     "loading": "Laster...",
     "metricCpu": "CPU",
@@ -245,16 +213,16 @@
     "metricProcessesRunning": "kjører",
     "metricProcessesTotal": "totalt",
     "metricUptime": "Oppetid",
-    "metricsNotAvailable": "Målinger er ikke tilgjengelige",
+    "metricsNotAvailable": "Metrikker er ikke tilgjengelige",
     "noHostSelected": "Ingen vert valgt",
     "selectHost": "Velg en vert..."
   },
   "terminalStatus": {
-    "unavailable": "Livestatistikk er ikke tilgjengelig"
+    "unavailable": "Sanntidsstatistikk er ikke tilgjengelig"
   },
   "dashboard": {
     "cpu": "CPU",
-    "ram": "VÆR"
+    "ram": "RAM"
   },
   "dashboardTab": {
     "disk": "Disk"
@@ -264,41 +232,41 @@
   },
   "permissions": {
     "use": {
-      "title": "Bruk vertsmålinger",
-      "description": "Se vertsmålinger og bruk vertsadministratorene (tjenester, pakker, brannmur og mer) på verter du kan nå."
+      "title": "Bruk vertsmetrikker",
+      "description": "Vis vertsmetrikker og bruk vertshåndterere (tjenester, pakker, brannmur og mer) på verter du kan nå."
     }
   },
   "settings": {
     "admin": {
       "metricsInterval": {
-        "label": "Måleintervall (sekunder)",
-        "description": "Hvor ofte en vert som vises samples, med mindre verten angir sitt eget intervall."
+        "label": "Metrisk intervall (sekunder)",
+        "description": "Hvor ofte en vert som vises blir prøvetatt, med mindre verten setter sitt eget intervall."
       },
       "historyRetentionDays": {
-        "label": "Historikklagring (dager)",
-        "description": "Hvor lenge metrikkprøver oppbevares for historikkdiagrammene."
+        "label": "Historikkbevaring (dager)",
+        "description": "Hvor lenge metrikkeprøver beholdes for historikkskjemaene."
       }
     },
     "user": {
       "temperatureUnit": {
-        "label": "Temperaturenhet",
-        "description": "Hvordan temperaturer vises i Host Metrics.",
+        "label": "Temperatur-enhet",
+        "description": "Hvordan temperaturer vises i vertsmetrikker.",
         "celsius": "Celsius",
         "fahrenheit": "Fahrenheit"
       }
     },
     "host": {
       "metricsEnabled": {
-        "label": "Samle inn målinger"
+        "label": "Samle metrikker"
       },
       "metricsInterval": {
-        "label": "Måleintervall (sekunder)"
+        "label": "Metrisk intervall (sekunder)"
       },
       "enabledWidgets": {
         "label": "Aktiverte widgeter"
       },
       "excludedMounts": {
-        "label": "Ekskluderte fester"
+        "label": "Ekskluderte monteringer"
       },
       "monitoredMounts": {
         "label": "Overvåkede stier"
@@ -306,6 +274,6 @@
     }
   },
   "plugin": {
-    "name": "Host Metrics"
+    "name": "Vertsmetrikker"
   }
 }
