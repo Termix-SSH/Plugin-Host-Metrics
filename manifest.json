@@ -1,7 +1,7 @@
 {
   "id": "host-metrics",
   "name": "Host Metrics",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Live CPU, memory, disk, network and GPU stats, plus tools to manage your hosts.",
   "author": {
     "name": "Termix"
@@ -12,7 +12,7 @@
   "category": "Monitoring",
   "icon": "Activity",
   "features": [
-    "CPU, memory, disk, network, temperature, NVIDIA GPU, processes, ports and logins",
+    "CPU, memory, disk, network, temperature, NVIDIA and AMD GPUs, processes, ports and logins",
     "History charts for each host",
     "Manage services, packages, cron jobs, firewall rules, users, SSL certificates, logs and WireGuard",
     "Health checks for your hosts and services",
@@ -48,7 +48,10 @@
         "id": "host-metrics",
         "titleKey": "nav.hostMetrics",
         "icon": "Activity",
-        "openFrom": ["host-context-menu", "palette"]
+        "openFrom": [
+          "host-context-menu",
+          "palette"
+        ]
       }
     ],
     "permissions": [
@@ -56,7 +59,10 @@
         "name": "use",
         "titleKey": "permissions.use.title",
         "descriptionKey": "permissions.use.description",
-        "defaultRoles": ["admin", "user"]
+        "defaultRoles": [
+          "admin",
+          "user"
+        ]
       }
     ],
     "settings": {
@@ -140,11 +146,15 @@
     "actionSlots": [
       {
         "id": "host-metrics.managers",
-        "accepts": ["component"]
+        "accepts": [
+          "component"
+        ]
       },
       {
         "id": "host-metrics.toolbar",
-        "accepts": ["component"]
+        "accepts": [
+          "component"
+        ]
       }
     ],
     "uiPresets": {
@@ -165,5 +175,9 @@
     ]
   },
   "locales": "locales",
-  "platforms": ["linux", "win32", "darwin"]
+  "platforms": [
+    "linux",
+    "win32",
+    "darwin"
+  ]
 }

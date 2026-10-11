@@ -32,11 +32,11 @@ function host(id: number): MetricsHost {
   } as MetricsHost;
 }
 
-function setup(hostIds = [7]) {
+function setup(hostIds = [7], sessions: unknown = {}, authType = "password") {
   const fake = createFakeContext({
     pluginId: "host-metrics",
     actor: "user-1",
-    sshHosts: hostIds.map(host),
+    sshHosts: hostIds.map((id) => ({ ...host(id), authType })),
     hostStatuses: Object.fromEntries(
       hostIds.map((id) => [
         id,
@@ -56,7 +56,7 @@ function setup(hostIds = [7]) {
     } as never,
     ssh: fake.ctx.ssh,
     state,
-    sessions: {} as never,
+    sessions: sessions as never,
     collectors: {} as never,
   });
   return { fake, poller, state, samples };
@@ -105,6 +105,30 @@ describe("MetricsPoller", () => {
     });
     const job = fake.scheduled.find((entry) => entry.kind === "every");
     expect(job?.ms).toBe(30_000);
+  });
+
+  it("polls a host without background auth through the tab's session", async () => {
+    collectMetrics.mockResolvedValue(sample);
+    const sessions = {
+      get: (key: string) =>
+        key === "user-1:7" ? { isConnected: true } : undefined,
+    };
+    const { poller } = setup([7], sessions, "opkssh");
+
+    poller.registerViewer(7, "viewer-a", "user-1");
+    await flush();
+
+    expect(collectMetrics).toHaveBeenCalledOnce();
+    expect(poller.getMetrics(7)?.data).toEqual(sample);
+  });
+
+  it("does not poll a host without background auth or a session", async () => {
+    const { poller } = setup([7], { get: () => undefined }, "opkssh");
+
+    poller.registerViewer(7, "viewer-a", "user-1");
+    await flush();
+
+    expect(collectMetrics).not.toHaveBeenCalled();
   });
 
   it("uses the host's own interval over the admin one", async () => {

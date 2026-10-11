@@ -359,7 +359,9 @@ export function registerRoutes(router: Router, deps: RouteDeps): void {
     try {
       const host = await poller.resolve(hostId, userId);
       if (!host) return skipped("host_not_found");
-      if (!supportsMetrics(host, ctx.ssh))
+      const hasSession = () =>
+        !!sessions.get(sessionKey(hostId, userId))?.isConnected;
+      if (!supportsMetrics(host, ctx.ssh, hasSession))
         return skipped("metrics_unsupported");
       if (!(await poller.settingsFor(hostId)).metricsEnabled) {
         return skipped("metrics_disabled");

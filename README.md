@@ -20,7 +20,7 @@ Read the [docs](https://docs.termix.site/plugins/host-metrics) to set it up and 
 
 ## Features
 
-- CPU, memory, disk, network, temperature, NVIDIA GPU, processes, ports and logins
+- CPU, memory, disk, network, temperature, NVIDIA and AMD GPUs, processes, ports and logins
 - History charts for each host
 - Manage services, packages, cron jobs, firewall rules, users, SSL certificates, logs and WireGuard
 - Health checks for your hosts and services

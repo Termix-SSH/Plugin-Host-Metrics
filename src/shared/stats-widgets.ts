@@ -85,7 +85,7 @@ export interface GpuProcess {
 }
 
 export interface GpuMetrics {
-  source: "nvidia-smi" | "none";
+  source: "nvidia-smi" | "amdgpu" | "none";
   gpus: GpuDevice[];
   processes: GpuProcess[];
 }

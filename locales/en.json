@@ -23,7 +23,7 @@
     "primaryTemperatureSensor": "Primary sensor",
     "gpu": {
       "title": "GPU",
-      "noDevice": "No NVIDIA GPU detected. Install the NVIDIA driver (it provides nvidia-smi) to see GPU metrics.",
+      "noDevice": "No GPU detected. NVIDIA cards need the NVIDIA driver (it provides nvidia-smi), AMD cards need the amdgpu driver.",
       "driver": "Driver {{version}}",
       "utilization": "Utilization",
       "memory": "VRAM",

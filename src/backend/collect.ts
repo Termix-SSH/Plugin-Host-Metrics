@@ -14,7 +14,11 @@ import { collectFirewallMetrics } from "./widgets/firewall-collector.js";
 import { collectTemperatureMetrics } from "./widgets/temperature-collector.js";
 import { collectGpuMetrics, type GpuMetrics } from "./widgets/gpu-collector.js";
 import type { FirewallMetrics, PortsMetrics } from "../shared/stats-widgets.js";
-import { supportsMetrics, type MetricsHost } from "./helpers.js";
+import {
+  sudoPasswordOf,
+  supportsMetrics,
+  type MetricsHost,
+} from "./helpers.js";
 import { sessionKey, type MetricsSessions } from "./sessions.js";
 import type { MetricsState } from "./state.js";
 import type { CollectorRegistry } from "./collectors.js";
@@ -74,7 +78,8 @@ export async function collectMetrics(
   onAuthenticated?: () => void,
 ): Promise<CollectedMetrics> {
   const { ssh, state, sessions, collectors } = deps;
-  if (!supportsMetrics(host, ssh)) {
+  const key = sessionKey(host.id, host.userId);
+  if (!supportsMetrics(host, ssh, () => !!sessions.get(key)?.isConnected)) {
     throw new Error("Metrics collection only supported for SSH hosts");
   }
 
@@ -90,7 +95,6 @@ export async function collectMetrics(
   }
 
   return state.requestQueue.queueRequest(host.id, async () => {
-    const key = sessionKey(host.id, host.userId);
     const existing = sessions.get(key);
 
     try {
@@ -130,11 +134,14 @@ export async function collectMetrics(
             source: "none",
             ports: [],
           }),
-          firewall: await optional(() => collectFirewallMetrics(client), {
-            type: "none",
-            status: "unknown",
-            chains: [],
-          }),
+          firewall: await optional(
+            () => collectFirewallMetrics(client, sudoPasswordOf(host)),
+            {
+              type: "none",
+              status: "unknown",
+              chains: [],
+            },
+          ),
           temperature: await optional(() => collectTemperatureMetrics(client), {
             source: "none",
             highestCelsius: null,

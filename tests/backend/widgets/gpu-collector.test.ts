@@ -3,6 +3,8 @@ import {
   parseNvidiaSmiGpus,
   parseNvidiaSmiOutput,
   parseNvidiaSmiProcesses,
+  parseAmdgpuOutput,
+  mergeGpuMetrics,
 } from "../../../src/backend/widgets/gpu-collector.js";
 
 const RTX_UUID = "GPU-3b8f2c1a-5d4e-7f60-8a9b-0c1d2e3f4a5b";
@@ -175,5 +177,88 @@ describe("gpu collector", () => {
         parseNvidiaSmiOutput(`${DRIVER_FAILURE}---\n${DRIVER_FAILURE}`),
       ).toEqual({ source: "none", gpus: [], processes: [] });
     });
+  });
+});
+
+// Values from a Radeon RX 7900 XTX in issue #1, plus an RX 6800 with no lspci.
+const AMDGPU_OUTPUT = [
+  "card=card1",
+  "pci=0000:03:00.0",
+  'lspci=03:00.0 "VGA compatible controller" "Advanced Micro Devices, Inc. [AMD/ATI]" "Navi 31 [Radeon RX 7900 XT/7900 XTX/7900M]" -rc8 "Sapphire" "Device 471e"',
+  "gpu_busy_percent=1",
+  "mem_info_vram_used=2474868736",
+  "mem_info_vram_total=25753026560",
+  "temp1_input=44000",
+  "power1_average=74000000",
+  "power1_input=",
+  "power1_cap=327000000",
+  "fan1_input=547",
+  "pwm1=38",
+  "pwm1_max=255",
+  "card=card2",
+  "pci=0000:0b:00.0",
+  "lspci=",
+  "gpu_busy_percent=",
+  "mem_info_vram_used=0",
+  "mem_info_vram_total=17163091968",
+  "",
+].join("\n");
+
+describe("amdgpu collector", () => {
+  it("reads sysfs values into gpu devices", () => {
+    const [xtx, rx6800] = parseAmdgpuOutput(AMDGPU_OUTPUT);
+    expect(xtx).toEqual({
+      index: 0,
+      uuid: "0000:03:00.0",
+      name: "AMD Radeon RX 7900 XT/7900 XTX/7900M",
+      driverVersion: null,
+      utilizationPercent: 1,
+      memoryUsedMiB: 2360,
+      memoryTotalMiB: 24560,
+      memoryPercent: 9.6,
+      temperatureCelsius: 44,
+      powerDrawWatts: 74,
+      powerLimitWatts: 327,
+      fanPercent: 15,
+    });
+    expect(rx6800).toMatchObject({
+      index: 1,
+      name: "AMD GPU 0000:0b:00.0",
+      utilizationPercent: null,
+      memoryUsedMiB: 0,
+      memoryPercent: 0,
+      temperatureCelsius: null,
+      powerDrawWatts: null,
+      fanPercent: null,
+    });
+  });
+
+  it("falls back to power1_input and keeps a zero fan", () => {
+    const [gpu] = parseAmdgpuOutput(
+      "card=card0\npci=x\npower1_average=\npower1_input=5500000\npwm1=0\n",
+    );
+    expect(gpu.powerDrawWatts).toBe(5.5);
+    expect(gpu.fanPercent).toBe(0);
+  });
+
+  it("returns nothing without AMD cards", () => {
+    expect(parseAmdgpuOutput("")).toEqual([]);
+  });
+
+  it("adds AMD cards after NVIDIA ones", () => {
+    const nvidia = parseNvidiaSmiOutput(
+      `${GPU_QUERY_OUTPUT}---\n${APPS_QUERY_OUTPUT}`,
+    );
+    const merged = mergeGpuMetrics(nvidia, AMDGPU_OUTPUT);
+    expect(merged.source).toBe("nvidia-smi");
+    expect(merged.gpus.map((gpu) => gpu.index)).toEqual([0, 1, 2, 3]);
+    expect(merged.processes).toEqual(nvidia.processes);
+
+    const amdOnly = mergeGpuMetrics(
+      { source: "none", gpus: [], processes: [] },
+      AMDGPU_OUTPUT,
+    );
+    expect(amdOnly.source).toBe("amdgpu");
+    expect(amdOnly.gpus).toHaveLength(2);
   });
 });

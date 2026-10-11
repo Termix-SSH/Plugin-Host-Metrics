@@ -26,7 +26,7 @@ export interface GpuProcess {
 }
 
 export interface GpuMetrics {
-  source: "nvidia-smi" | "none";
+  source: "nvidia-smi" | "amdgpu" | "none";
   gpus: GpuDevice[];
   processes: GpuProcess[];
 }
@@ -175,13 +175,120 @@ export function parseNvidiaSmiOutput(stdout: string): GpuMetrics {
   };
 }
 
+// amdgpu exposes everything in sysfs, readable without root. Prints one
+// key=value block per AMD card, each starting with `card=`.
+const AMDGPU_COMMAND = [
+  "for d in /sys/class/drm/card[0-9]*; do",
+  'case "${d##*/}" in *-*) continue ;; esac;',
+  'dev="$d/device";',
+  '[ "$(cat "$dev/vendor" 2>/dev/null)" = "0x1002" ] || continue;',
+  'pci=$(basename "$(readlink -f "$dev")");',
+  'echo "card=${d##*/}"; echo "pci=$pci";',
+  'echo "lspci=$(lspci -mm -s "$pci" 2>/dev/null | head -n1)";',
+  "for f in gpu_busy_percent mem_info_vram_used mem_info_vram_total; do",
+  'echo "$f=$(cat "$dev/$f" 2>/dev/null)"; done;',
+  'h=$(ls -d "$dev"/hwmon/hwmon* 2>/dev/null | head -n1);',
+  'if [ -n "$h" ]; then',
+  "for f in temp1_input power1_average power1_input power1_cap fan1_input pwm1 pwm1_max; do",
+  'echo "$f=$(cat "$h/$f" 2>/dev/null)"; done; fi;',
+  "done",
+].join(" ");
+
+function readNumber(raw: string | undefined): number | null {
+  const value = raw?.trim();
+  if (!value || !/^-?\d+(\.\d+)?$/.test(value)) return null;
+  return Number(value);
+}
+
+/** Pulls the model out of `lspci -mm`, e.g. "Radeon RX 7900 XT/7900 XTX". */
+function amdName(lspci: string | undefined, pci: string): string {
+  const fields = [...(lspci ?? "").matchAll(/"([^"]*)"/g)].map((m) => m[1]);
+  const device = fields[2]?.trim();
+  if (!device) return `AMD GPU ${pci}`.trim();
+  const bracket = /\[([^\]]+)\]/.exec(device)?.[1];
+  return `AMD ${bracket ?? device}`;
+}
+
+export function parseAmdgpuOutput(stdout: string, firstIndex = 0): GpuDevice[] {
+  const blocks: Array<Record<string, string>> = [];
+  for (const line of stdout.split("\n")) {
+    const eq = line.indexOf("=");
+    if (eq === -1) continue;
+    const key = line.slice(0, eq).trim();
+    const value = line.slice(eq + 1).trim();
+    if (key === "card") blocks.push({});
+    const block = blocks[blocks.length - 1];
+    if (block) block[key] = value;
+  }
+
+  return blocks.map((block, i) => {
+    const toMiB = (raw: string | undefined) => {
+      const bytes = readNumber(raw);
+      return bytes === null ? null : Math.round(bytes / 1024 / 1024);
+    };
+    const toWatts = (raw: string | undefined) => {
+      const micro = readNumber(raw);
+      return micro === null ? null : toFixedNum(micro / 1_000_000, 1);
+    };
+    const memoryUsedMiB = toMiB(block.mem_info_vram_used);
+    const memoryTotalMiB = toMiB(block.mem_info_vram_total);
+    const temp = readNumber(block.temp1_input);
+    const pwm = readNumber(block.pwm1);
+    const pwmMax = readNumber(block.pwm1_max) || 255;
+    const pci = block.pci || block.card || "";
+
+    return {
+      index: firstIndex + i,
+      uuid: pci,
+      name: amdName(block.lspci, pci),
+      driverVersion: null,
+      utilizationPercent: readNumber(block.gpu_busy_percent),
+      memoryUsedMiB,
+      memoryTotalMiB,
+      memoryPercent:
+        memoryUsedMiB !== null && memoryTotalMiB
+          ? toFixedNum((memoryUsedMiB / memoryTotalMiB) * 100, 1)
+          : null,
+      temperatureCelsius: temp === null ? null : toFixedNum(temp / 1000, 1),
+      powerDrawWatts:
+        toWatts(block.power1_average) ?? toWatts(block.power1_input),
+      powerLimitWatts: toWatts(block.power1_cap),
+      fanPercent: pwm === null ? null : toFixedNum((pwm / pwmMax) * 100, 0),
+    };
+  });
+}
+
+/** NVIDIA and AMD cards together, so mixed hosts report every GPU. */
+export function mergeGpuMetrics(
+  nvidia: GpuMetrics,
+  amdStdout: string,
+): GpuMetrics {
+  const firstIndex = nvidia.gpus.reduce(
+    (max, gpu) => Math.max(max, gpu.index + 1),
+    0,
+  );
+  const amd = parseAmdgpuOutput(amdStdout, firstIndex);
+  if (amd.length === 0) return nvidia;
+  return {
+    source: nvidia.gpus.length > 0 ? nvidia.source : "amdgpu",
+    gpus: [...nvidia.gpus, ...amd],
+    processes: nvidia.processes,
+  };
+}
+
 export async function collectGpuMetrics(client: Client): Promise<GpuMetrics> {
+  let nvidia = NO_GPU;
   try {
     // nvidia-smi can take a few seconds on hosts without persistence mode.
     const result = await execCommand(client, NVIDIA_SMI_COMMAND, 15000);
-    return parseNvidiaSmiOutput(result.stdout);
+    nvidia = parseNvidiaSmiOutput(result.stdout);
   } catch {
     // expected when the host has no NVIDIA driver or the query times out
-    return NO_GPU;
+  }
+  try {
+    const result = await execCommand(client, AMDGPU_COMMAND, 10000);
+    return mergeGpuMetrics(nvidia, result.stdout);
+  } catch {
+    return nvidia;
   }
 }

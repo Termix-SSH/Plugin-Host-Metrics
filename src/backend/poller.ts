@@ -12,7 +12,7 @@ import {
 import { supportsMetrics, type MetricsHost } from "./helpers.js";
 import type { MetricsLogger } from "./log.js";
 import type { HostMetricsRepository } from "./repository.js";
-import type { MetricsViewer } from "./sessions.js";
+import { sessionKey, type MetricsViewer } from "./sessions.js";
 import {
   canStartInitialMetrics,
   metricsConcurrencyFor,
@@ -237,7 +237,10 @@ export class MetricsPoller {
   private async start(hostId: number, userId: string): Promise<void> {
     const host = await this.resolve(hostId, userId);
     this.stop(hostId, false);
-    if (!host || !supportsMetrics(host, this.ctx.ssh)) return;
+    if (!host) return;
+    const hasSession = () =>
+      !!this.deps.sessions.get(sessionKey(hostId, userId))?.isConnected;
+    if (!supportsMetrics(host, this.ctx.ssh, hasSession)) return;
 
     const settings = await this.settingsFor(hostId);
     if (!settings.metricsEnabled) {

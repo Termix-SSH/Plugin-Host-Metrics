@@ -43,6 +43,23 @@ describe("supportsMetrics", () => {
       supportsMetrics({ connectionType: "ssh", authType: "opkssh" }, ssh),
     ).toBe(false);
   });
+
+  it("accepts any ssh host with a session opened from the tab", () => {
+    expect(
+      supportsMetrics(
+        { connectionType: "ssh", authType: "opkssh" },
+        ssh,
+        () => true,
+      ),
+    ).toBe(true);
+    expect(
+      supportsMetrics(
+        { connectionType: "rdp", authType: "opkssh" },
+        ssh,
+        () => true,
+      ),
+    ).toBe(false);
+  });
 });
 
 describe("connectionLog", () => {

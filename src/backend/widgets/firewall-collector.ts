@@ -1,4 +1,7 @@
-import { execCommand } from "@termix-ssh/plugin-sdk/host-commands";
+import {
+  execCommand,
+  execElevated,
+} from "@termix-ssh/plugin-sdk/host-commands";
 import type { Client } from "ssh2";
 import type {
   FirewallMetrics,
@@ -247,27 +250,52 @@ export function parseUfwStatus(output: string): FirewallMetrics | null {
   };
 }
 
-// Firewall tools live in sbin, which a normal user's PATH often lacks. When
-// the plain command can't read the rules, try passwordless sudo.
+// Firewall tools live in sbin, which a normal user's PATH often lacks.
 const SBIN_PATH = 'PATH="$PATH:/usr/local/sbin:/usr/sbin:/sbin"';
 
-async function readFirewall(client: Client, command: string): Promise<string> {
-  for (const prefix of ["", "sudo -n "]) {
-    const result = await execCommand(
-      client,
-      `${SBIN_PATH} ${prefix}${command} 2>/dev/null`,
-      15000,
-    );
-    if (result.stdout?.trim()) return result.stdout;
+// Never try `sudo -n` blindly: a failed attempt is logged and mailed to the
+// admin on every poll. Elevate only with the host's saved sudo password.
+async function readFirewall(
+  client: Client,
+  tool: string,
+  args: string,
+  sudoPassword?: string,
+): Promise<string> {
+  const which = await execCommand(
+    client,
+    `${SBIN_PATH} command -v ${tool} 2>/dev/null`,
+    15000,
+  );
+  const path = which.stdout?.trim().split("\n")[0];
+  if (!path?.startsWith("/")) return "";
+
+  const command = `${path} ${args}`;
+  const direct = await execCommand(client, `${command} 2>/dev/null`, 15000);
+  if (direct.stdout?.trim()) return direct.stdout;
+  if (!sudoPassword) return "";
+
+  try {
+    const elevated = await execElevated(client, command, sudoPassword, {
+      forceSudo: true,
+      timeoutMs: 15000,
+    });
+    return elevated.stdout ?? "";
+  } catch {
+    return "";
   }
-  return "";
 }
 
 export async function collectFirewallMetrics(
   client: Client,
+  sudoPassword?: string,
 ): Promise<FirewallMetrics> {
   try {
-    const iptables = await readFirewall(client, "iptables-save");
+    const iptables = await readFirewall(
+      client,
+      "iptables-save",
+      "",
+      sudoPassword,
+    );
     if (iptables.includes("*filter")) {
       const chains = parseIptablesOutput(iptables);
       const hasRules = chains.some((c) => c.rules.length > 0);
@@ -282,7 +310,7 @@ export async function collectFirewallMetrics(
       };
     }
 
-    const nft = await readFirewall(client, "nft list ruleset");
+    const nft = await readFirewall(client, "nft", "list ruleset", sudoPassword);
     if (nft.trim()) {
       const chains = parseNftablesOutput(nft);
       const hasRules = chains.some((c) => c.rules.length > 0);
@@ -295,7 +323,7 @@ export async function collectFirewallMetrics(
     }
 
     const ufw = parseUfwStatus(
-      await readFirewall(client, "ufw status verbose"),
+      await readFirewall(client, "ufw", "status verbose", sudoPassword),
     );
     if (ufw) return ufw;
 
