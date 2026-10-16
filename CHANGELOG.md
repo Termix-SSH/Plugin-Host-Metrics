@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.0.3
+
+### Fixed
+
+- Saving metrics history failed on Postgres and MySQL once a host had moved more than 2 GB of network traffic
+
 ## 1.0.2
 
 ### Fixed

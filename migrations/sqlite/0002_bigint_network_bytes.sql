@@ -1,0 +1,1 @@
+-- SQLite integers already hold 64 bits, so nothing changes here.

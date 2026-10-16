@@ -110,7 +110,10 @@ describe("adopting the host metrics tables", () => {
   it("keeps every row and index when the legacy tables are there", async () => {
     db = await createTestDb(pluginDir, { before: seedLegacy });
 
-    expect(db.applied).toEqual(["0001_adopt_host_metrics_tables"]);
+    expect(db.applied).toEqual([
+      "0001_adopt_host_metrics_tables",
+      "0002_bigint_network_bytes",
+    ]);
     for (const table of LEGACY) {
       expect(tableExists(table)).toBe(false);
       expect(tableExists(`p_host_metrics_${table}`)).toBe(true);
