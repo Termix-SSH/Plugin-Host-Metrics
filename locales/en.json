@@ -274,6 +274,7 @@
     }
   },
   "plugin": {
-    "name": "Host Metrics"
+    "name": "Host Metrics",
+    "description": "Live CPU, memory, disk, network and GPU stats, plus tools to manage your hosts."
   }
 }
