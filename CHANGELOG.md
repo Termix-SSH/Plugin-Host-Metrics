@@ -2,6 +2,10 @@
 
 ## 1.0.3
 
+### Changed
+
+- The plugin name and description show in your language
+
 ### Fixed
 
 - Saving metrics history failed on Postgres and MySQL once a host had moved more than 2 GB of network traffic
