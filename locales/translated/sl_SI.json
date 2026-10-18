@@ -276,6 +276,7 @@
     }
   },
   "plugin": {
-    "name": "Metrike gostitelja"
+    "name": "Metrike gostitelja",
+    "description": "Prikaz trenutnih podatkov o CPU, pomnilniku, disku, omrežju in GPU ter orodja za upravljanje gostiteljev."
   }
 }

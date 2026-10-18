@@ -275,6 +275,7 @@
     }
   },
   "plugin": {
-    "name": "Metrici gazdă"
+    "name": "Metrici gazdă",
+    "description": "Statistici în timp real pentru CPU, memorie, disc, rețea și GPU, plus instrumente pentru gestionarea serverelor."
   }
 }

@@ -274,6 +274,7 @@
     }
   },
   "plugin": {
-    "name": "Värdmätvärden"
+    "name": "Värdmätvärden",
+    "description": "Live-statistik för CPU, minne, disk, nätverk och GPU, samt verktyg för att hantera dina värdar."
   }
 }

@@ -273,6 +273,7 @@
     }
   },
   "plugin": {
-    "name": "Metrik Hos"
+    "name": "Metrik Hos",
+    "description": "Statistik CPU, memori, cakera, rangkaian dan GPU secara langsung, serta alat untuk menguruskan hos anda."
   }
 }

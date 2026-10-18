@@ -274,6 +274,7 @@
     }
   },
   "plugin": {
-    "name": "Værtmålinger"
+    "name": "Værtmålinger",
+    "description": "Live CPU-, hukommelses-, disk-, netværks- og GPU-statistik samt værktøjer til at administrere dine værter."
   }
 }

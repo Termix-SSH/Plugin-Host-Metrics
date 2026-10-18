@@ -275,6 +275,7 @@
     }
   },
   "plugin": {
-    "name": "Métricas do Host"
+    "name": "Métricas do Host",
+    "description": "Estatísticas em tempo real de CPU, memória, disco, rede e GPU, além de ferramentas para gerir os seus hosts."
   }
 }

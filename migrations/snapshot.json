@@ -157,10 +157,10 @@
           "type": "real"
         },
         "netRxBytes": {
-          "type": "integer"
+          "type": "bigint"
         },
         "netTxBytes": {
-          "type": "integer"
+          "type": "bigint"
         }
       },
       "indexes": [

@@ -1,5 +1,6 @@
 import {
   adoptLegacyTable,
+  bigint,
   boolean,
   defineTable,
   id,
@@ -98,8 +99,8 @@ export const hostMetricsHistory = adoptLegacyTable(
       cpuPercent: real(),
       memPercent: real(),
       diskPercent: real(),
-      netRxBytes: integer(),
-      netTxBytes: integer(),
+      netRxBytes: bigint(),
+      netTxBytes: bigint(),
     },
     {
       indexes: [

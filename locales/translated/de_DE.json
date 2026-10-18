@@ -274,6 +274,7 @@
     }
   },
   "plugin": {
-    "name": "Host-Metriken"
+    "name": "Host-Metriken",
+    "description": "Echtzeit-Statistiken für CPU, Arbeitsspeicher, Festplatte, Netzwerk und GPU sowie Tools zur Verwaltung Ihrer Hosts."
   }
 }

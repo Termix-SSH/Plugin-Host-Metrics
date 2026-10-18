@@ -274,6 +274,7 @@
     }
   },
   "plugin": {
-    "name": "Gasheermetrieke"
+    "name": "Gasheermetrieke",
+    "description": "Lewendige CPU-, geheue-, skyf-, netwerk- en GPU-statistieke, plus hulpmiddels om jou gasheerbedieners te bestuur."
   }
 }

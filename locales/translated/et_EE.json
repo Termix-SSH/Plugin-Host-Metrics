@@ -274,6 +274,7 @@
     }
   },
   "plugin": {
-    "name": "Peremeesmasina mõõdikud"
+    "name": "Peremeesmasina mõõdikud",
+    "description": "Reaalajas CPU, mälu, ketta, võrgu ja GPU statistika ning tööriistad oma hostide haldamiseks."
   }
 }

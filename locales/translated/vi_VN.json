@@ -273,6 +273,7 @@
     }
   },
   "plugin": {
-    "name": "Chỉ số máy chủ"
+    "name": "Chỉ số máy chủ",
+    "description": "Thống kê CPU, bộ nhớ, ổ đĩa, mạng và GPU theo thời gian thực, cùng các công cụ để quản lý máy chủ của bạn."
   }
 }

@@ -275,6 +275,7 @@
     }
   },
   "plugin": {
-    "name": "Mètriques de l'amfitrió"
+    "name": "Mètriques de l'amfitrió",
+    "description": "Estadístiques en temps real de CPU, memòria, disc, xarxa i GPU, a més d'eines per gestionar els teus hosts."
   }
 }

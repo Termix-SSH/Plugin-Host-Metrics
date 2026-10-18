@@ -1,5 +1,17 @@
 # Changelog
 
+## 1.0.3
+
+### Changed
+
+- The plugin name and description show in your language
+- The METRICS_POLL_CONCURRENCY environment variable is now listed in the docs
+
+### Fixed
+
+- Saving metrics history failed on Postgres and MySQL once a host had moved more than 2 GB of network traffic
+- Long translated labels like Festplatte made the dashboard's usage bars overlap the host status badge
+
 ## 1.0.2
 
 ### Fixed

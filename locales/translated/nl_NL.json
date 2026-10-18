@@ -274,6 +274,7 @@
     }
   },
   "plugin": {
-    "name": "Hostmetrieken"
+    "name": "Hostmetrieken",
+    "description": "Live CPU-, geheugen-, schijf-, netwerk- en GPU-statistieken, plus hulpmiddelen om uw hosts te beheren."
   }
 }

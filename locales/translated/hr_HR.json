@@ -275,6 +275,7 @@
     }
   },
   "plugin": {
-    "name": "Metrike poslužitelja"
+    "name": "Metrike poslužitelja",
+    "description": "Prikaz statistike CPU-a, memorije, diska, mreže i GPU-a u stvarnom vremenu, uz alate za upravljanje vašim hostovima."
   }
 }

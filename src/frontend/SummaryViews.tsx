@@ -14,8 +14,8 @@ function RowBar({ label, value }: { label: string; value: number }) {
         ? ["bg-warning", "text-warning"]
         : ["bg-accent-brand", "text-accent-brand"];
   return (
-    <div className="flex flex-col gap-0.5 w-16">
-      <div className="flex items-center justify-between">
+    <div className="flex flex-col gap-0.5 min-w-16 shrink-0">
+      <div className="flex items-center justify-between gap-1 whitespace-nowrap">
         <span className="text-[10px] text-muted-foreground">{label}</span>
         <span className={`text-[10px] font-bold ${tone[1]}`}>
           {value.toFixed(0)}%
@@ -47,7 +47,7 @@ export function createDashboardHostMetrics(store: MetricsSummaryStore) {
     if (!allowed || !wanted) return null;
     if (!online || (cpu === null && ram === null && disk === null)) {
       return (
-        <div className="flex items-center gap-3">
+        <div className="flex shrink-0 items-center gap-3">
           {[0, 1, 2].map((slot) => (
             <span
               key={slot}
@@ -60,7 +60,7 @@ export function createDashboardHostMetrics(store: MetricsSummaryStore) {
       );
     }
     return (
-      <div className="flex items-center gap-3">
+      <div className="flex shrink-0 items-center gap-3">
         {cpu !== null && <RowBar label={t("dashboard.cpu")} value={cpu} />}
         {ram !== null && <RowBar label={t("dashboard.ram")} value={ram} />}
         {disk !== null && (

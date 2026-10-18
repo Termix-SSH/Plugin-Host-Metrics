@@ -275,6 +275,7 @@
     }
   },
   "plugin": {
-    "name": "Métriques des hôtes"
+    "name": "Métriques des hôtes",
+    "description": "Statistiques en temps réel du CPU, de la mémoire, du disque, du réseau et du GPU, ainsi que des outils pour gérer vos hôtes."
   }
 }

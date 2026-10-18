@@ -274,6 +274,7 @@
     }
   },
   "plugin": {
-    "name": "Isäntämittarit"
+    "name": "Isäntämittarit",
+    "description": "Reaaliaikaiset CPU-, muisti-, levy-, verkko- ja GPU-tiedot sekä työkalut isäntien hallintaan."
   }
 }

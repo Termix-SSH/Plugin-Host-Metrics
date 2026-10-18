@@ -276,6 +276,7 @@
     }
   },
   "plugin": {
-    "name": "Metriky hostitele"
+    "name": "Metriky hostitele",
+    "description": "Živé statistiky CPU, paměti, disku, sítě a GPU, plus nástroje pro správu vašich hostitelů."
   }
 }
