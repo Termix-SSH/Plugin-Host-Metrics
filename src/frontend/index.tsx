@@ -13,7 +13,11 @@ import { metricsChartWidget } from "./MetricsChartWidget";
 import { TerminalMetricsStatus } from "./TerminalMetricsStatus";
 import { createHostMetricsApi } from "./host-metrics-api";
 import { createMetricsSummaryStore } from "./summary-store";
-import { metricsEnabledFor } from "./host-filter";
+import { metricsEnabledFor, metricsPanelEnabledFor } from "./host-filter";
+import {
+  HostMetricsCompanion,
+  useMetricsCompanionDefaults,
+} from "./HostMetricsCompanion";
 import {
   createDashboardHostMetrics,
   createHomepageHostMetrics,
@@ -67,6 +71,30 @@ export async function activate(app: TermixApp): Promise<void> {
     // Links copied before the rename still open.
     standaloneViews: ["server-stats"],
     preload: () => import("./HostMetricsTab"),
+  });
+
+  app.registerCompanion("metrics", HostMetricsCompanion, {
+    icon: Activity,
+    titleKey: "nav.hostMetrics",
+    order: 20,
+    tabTypes: ["terminal"],
+    when: (_tab, host) =>
+      allowed && !!host?.enableSsh && metricsPanelEnabledFor(host),
+    useDefaults: useMetricsCompanionDefaults,
+  });
+
+  app.registerAction("host-metrics.togglePanel", ((
+    _handle: unknown,
+    tab: unknown,
+  ) => app.toggleCompanion(tab as never, "metrics")) as never);
+  app.registerSlotContribution("tab.menu", {
+    actionId: "host-metrics.togglePanel",
+    titleKey: "nav.togglePanel",
+    icon: Activity,
+    kind: "button",
+    order: 6,
+    when: (context) =>
+      (context.tab as { type?: string } | null)?.type === "terminal",
   });
 
   app.registerHostAction({

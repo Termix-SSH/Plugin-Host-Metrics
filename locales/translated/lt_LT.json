@@ -1,6 +1,7 @@
 {
   "nav": {
-    "hostMetrics": "Serverio metrikos"
+    "hostMetrics": "Serverio metrikos",
+    "togglePanel": "Metrikų skydelis"
   },
   "hostMetrics": {
     "cpu": "CPU",
@@ -166,6 +167,13 @@
       "wgHandshakeNever": "Niekada",
       "wgNoPeers": "Nėra partnerių",
       "revoke": "Atšaukti"
+    },
+    "companion": {
+      "off": "Šiam hostui metrikos išjungtos.",
+      "loading": "Metrikos įkeliamos...",
+      "totp": "Šiam hostui reikia patvirtinimo kodo. Atidarykite Host Metrics, kad jį įvestumėte.",
+      "open": "Atidaryti Host Metrics",
+      "topProcesses": "Pagrindiniai procesai"
     }
   },
   "metricsHistory": {
@@ -195,7 +203,9 @@
     "visibleWidgets": "Matomi valdikliai",
     "widgetsMovedToHostMetrics": "Kortelės dabar pridedamos, išdėstomos ir keičiamos dydžio tiesiogiai skirtuke „Serverio mašinos metrikos“. Atidarykite šios serverio mašinos „Serverio mašinos metrikas“ ir naudokite „Pritaikyti“, kad pasirinktumėte, kurios kortelės rodomos.",
     "hostNotFound": "Serverio mašina nerasta",
-    "loadingHost": "Kraunama serverio mašina..."
+    "loadingHost": "Kraunama serverio mašina...",
+    "showPanelLabel": "Rodyti metrikų skydelį terminaluose",
+    "showPanelDesc": "Leisti metrikų skydeliui atsiverti šalia šio hosto SSH terminalo."
   },
   "homepage": {
     "noData": "Duomenų nėra",
@@ -255,6 +265,25 @@
         "description": "Kaip temperatūros rodomos svečių metrikose.",
         "celsius": "Celsijus",
         "fahrenheit": "Farenheitas"
+      },
+      "companionAutoOpen": {
+        "label": "Atidaryti metrikų skydelį su naujais terminalais",
+        "description": "Rodyti realaus laiko metrikas šalia kiekvieno SSH terminalo. Jį visada galite atidaryti ir uždaryti mygtuku dešiniajame krašte."
+      },
+      "companionSide": {
+        "label": "Metrikų skydelio padėtis",
+        "description": "Kur metrikų skydelis yra šalia terminalo.",
+        "right": "Dešinėje",
+        "left": "Kairėje",
+        "bottom": "Apačioje"
+      },
+      "companionSize": {
+        "label": "Metrikų skydelio dydis",
+        "description": "Plotis pikseliais arba aukštis, kai skydelis yra apačioje. Taip pat galite vilkti jo kraštą."
+      },
+      "companionEdgeButton": {
+        "label": "Rodyti skydelio mygtuką",
+        "description": "Rodyti mažą mygtuką terminalo dešiniajame krašte, kuris atidaro metrikų skydelį."
       }
     },
     "host": {
@@ -272,10 +301,14 @@
       },
       "monitoredMounts": {
         "label": "Stebimi keliai"
+      },
+      "showPanel": {
+        "label": "Rodyti metrikų skydelį terminaluose"
       }
     }
   },
   "plugin": {
-    "name": "Svečių metrikos"
+    "name": "Svečių metrikos",
+    "description": "Realiojo laiko CPU, atminties, disko, tinklo ir GPU statistika, taip pat įrankiai hostams valdyti."
   }
 }

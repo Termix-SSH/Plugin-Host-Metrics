@@ -1,6 +1,7 @@
 {
   "nav": {
-    "hostMetrics": "Værtmetrik"
+    "hostMetrics": "Værtmetrik",
+    "togglePanel": "Målepanel"
   },
   "hostMetrics": {
     "cpu": "CPU",
@@ -164,6 +165,13 @@
       "wgHandshakeNever": "Aldrig",
       "wgNoPeers": "Ingen peers",
       "revoke": "Ophæv"
+    },
+    "companion": {
+      "off": "Målinger er deaktiveret for denne vært.",
+      "loading": "Indlæser målinger...",
+      "totp": "Denne vært kræver en bekræftelseskode. Åbn Værtmålinger for at indtaste den.",
+      "open": "Åbn Værtmålinger",
+      "topProcesses": "Topprocesser"
     }
   },
   "metricsHistory": {
@@ -193,7 +201,9 @@
     "visibleWidgets": "Synlige widgets",
     "widgetsMovedToHostMetrics": "Kort tilføjes, arrangeres og ændres nu i størrelse direkte i fanen Værtmetrik. Åbn Værtmetrik for denne vært og brug Tilpas for at vælge, hvilke kort der skal vises.",
     "hostNotFound": "Vært ikke fundet",
-    "loadingHost": "Indlæser vært..."
+    "loadingHost": "Indlæser vært...",
+    "showPanelLabel": "Vis målepanel i terminaler",
+    "showPanelDesc": "Lad målepanelet åbne ved siden af SSH-terminalen for denne vært."
   },
   "homepage": {
     "noData": "Ingen data tilgængelige",
@@ -253,6 +263,25 @@
         "description": "Hvordan temperaturer vises i Værtmålinger.",
         "celsius": "Celsius",
         "fahrenheit": "Fahrenheit"
+      },
+      "companionAutoOpen": {
+        "label": "Åbn målepanelet med nye terminaler",
+        "description": "Vis live-målinger ved siden af hver SSH-terminal. Du kan stadig åbne og lukke det via knappen på højre kant."
+      },
+      "companionSide": {
+        "label": "Placering af målepænel",
+        "description": "Hvor målepænelet vises ved siden af en terminal.",
+        "right": "Højre",
+        "left": "Venstre",
+        "bottom": "Nederst"
+      },
+      "companionSize": {
+        "label": "Størrelse på målepænel",
+        "description": "Bredde i pixels, eller højde når det er placeret nederst. Du kan også trække i kanten for at ændre størrelsen."
+      },
+      "companionEdgeButton": {
+        "label": "Vis knap til pænel",
+        "description": "Vis en lille knap på højre kant af en terminal, der åbner målepænelet."
       }
     },
     "host": {
@@ -270,6 +299,9 @@
       },
       "monitoredMounts": {
         "label": "Overvågede stier"
+      },
+      "showPanel": {
+        "label": "Vis målepænel i terminaler"
       }
     }
   },

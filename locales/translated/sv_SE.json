@@ -1,6 +1,7 @@
 {
   "nav": {
-    "hostMetrics": "Värdmätningar"
+    "hostMetrics": "Värdmätningar",
+    "togglePanel": "Mätvärdespanel"
   },
   "hostMetrics": {
     "cpu": "CPU",
@@ -164,6 +165,13 @@
       "wgHandshakeNever": "Aldrig",
       "wgNoPeers": "Inga peers",
       "revoke": "Återkalla"
+    },
+    "companion": {
+      "off": "Mätvärden är inaktiverade för denna värd.",
+      "loading": "Laddar mätvärden...",
+      "totp": "Denna värd kräver en verifieringskod. Öppna Värdmätvärden för att ange den.",
+      "open": "Öppna Värdmätvärden",
+      "topProcesses": "Topp-processer"
     }
   },
   "metricsHistory": {
@@ -193,7 +201,9 @@
     "visibleWidgets": "Synliga widgets",
     "widgetsMovedToHostMetrics": "Kort läggs nu till, arrangeras och ändras i storlek direkt i fliken Värdmetriker. Öppna Värdmetriker för detta värd och använd Anpassa för att välja vilka kort som visas.",
     "hostNotFound": "Värdet hittades inte",
-    "loadingHost": "Laddar värd..."
+    "loadingHost": "Laddar värd...",
+    "showPanelLabel": "Visa mätvärdespanel i terminaler",
+    "showPanelDesc": "Låt mätvärdespanelen öppnas bredvid SSH-terminalen för denna värd."
   },
   "homepage": {
     "noData": "Ingen data tillgänglig",
@@ -253,6 +263,25 @@
         "description": "Hur temperaturer visas i värdmätvärden.",
         "celsius": "Celsius",
         "fahrenheit": "Fahrenheit"
+      },
+      "companionAutoOpen": {
+        "label": "Öppna mätvärdespanelen med nya terminaler",
+        "description": "Visa live-mätvärden bredvid varje SSH-terminal. Du kan fortfarande öppna och stänga den via knappen på höger kant."
+      },
+      "companionSide": {
+        "label": "Placering av mätvärdespanel",
+        "description": "Var mätvärdespanelen visas i förhållande till en terminal.",
+        "right": "Höger",
+        "left": "Vänster",
+        "bottom": "Botten"
+      },
+      "companionSize": {
+        "label": "Storlek på mätvärdespanel",
+        "description": "Bredd i pixlar, eller höjd när den visas längst ner. Du kan också dra i kanten för att ändra storlek."
+      },
+      "companionEdgeButton": {
+        "label": "Visa panelknappen",
+        "description": "Visa en liten knapp på höger kant av en terminal som öppnar mätvärdespanelen."
       }
     },
     "host": {
@@ -270,6 +299,9 @@
       },
       "monitoredMounts": {
         "label": "Övervakade sökvägar"
+      },
+      "showPanel": {
+        "label": "Visa mätvärdespanel i terminaler"
       }
     }
   },

@@ -1,7 +1,7 @@
 {
   "id": "host-metrics",
   "name": "Host Metrics",
-  "version": "1.0.3",
+  "version": "1.1.0",
   "description": "Live CPU, memory, disk, network and GPU stats, plus tools to manage your hosts.",
   "author": {
     "name": "Termix"
@@ -18,7 +18,8 @@
     "Manage services, packages, cron jobs, firewall rules, users, SSL certificates, logs and WireGuard",
     "Health checks for your hosts and services",
     "A layout you can rearrange per host",
-    "Live stats in the terminal toolbar"
+    "Live stats in the terminal toolbar",
+    "A live metrics panel beside any SSH terminal"
   ],
   "env": [
     {
@@ -27,8 +28,8 @@
     }
   ],
   "engine": {
-    "termix": ">=26.10.0",
-    "api": "^1.2"
+    "termix": ">=26.10.3",
+    "api": "^1.9"
   },
   "capabilities": [
     "hosts:read",
@@ -104,6 +105,50 @@
               "labelKey": "settings.user.temperatureUnit.fahrenheit"
             }
           ]
+        },
+        {
+          "key": "companionAutoOpen",
+          "type": "boolean",
+          "labelKey": "settings.user.companionAutoOpen.label",
+          "descriptionKey": "settings.user.companionAutoOpen.description",
+          "default": false
+        },
+        {
+          "key": "companionSide",
+          "type": "select",
+          "labelKey": "settings.user.companionSide.label",
+          "descriptionKey": "settings.user.companionSide.description",
+          "default": "right",
+          "options": [
+            {
+              "value": "right",
+              "labelKey": "settings.user.companionSide.right"
+            },
+            {
+              "value": "left",
+              "labelKey": "settings.user.companionSide.left"
+            },
+            {
+              "value": "bottom",
+              "labelKey": "settings.user.companionSide.bottom"
+            }
+          ]
+        },
+        {
+          "key": "companionSize",
+          "type": "number",
+          "labelKey": "settings.user.companionSize.label",
+          "descriptionKey": "settings.user.companionSize.description",
+          "min": 240,
+          "max": 900,
+          "default": 300
+        },
+        {
+          "key": "companionEdgeButton",
+          "type": "boolean",
+          "labelKey": "settings.user.companionEdgeButton.label",
+          "descriptionKey": "settings.user.companionEdgeButton.description",
+          "default": true
         }
       ],
       "host": {
@@ -139,6 +184,13 @@
             "key": "monitoredMounts",
             "type": "json",
             "labelKey": "settings.host.monitoredMounts.label",
+            "hidden": true
+          },
+          {
+            "key": "showPanel",
+            "type": "boolean",
+            "labelKey": "settings.host.showPanel.label",
+            "default": true,
             "hidden": true
           }
         ]

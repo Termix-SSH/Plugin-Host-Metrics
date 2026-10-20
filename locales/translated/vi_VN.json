@@ -1,6 +1,7 @@
 {
   "nav": {
-    "hostMetrics": "Chỉ số máy chủ"
+    "hostMetrics": "Chỉ số máy chủ",
+    "togglePanel": "Bảng chỉ số"
   },
   "hostMetrics": {
     "cpu": "CPU",
@@ -163,6 +164,13 @@
       "wgHandshakeNever": "Chưa bao giờ",
       "wgNoPeers": "Không có đối tác",
       "revoke": "Thu hồi"
+    },
+    "companion": {
+      "off": "Chỉ số đã tắt cho máy chủ này.",
+      "loading": "Đang tải chỉ số...",
+      "totp": "Máy chủ này cần mã xác minh. Mở Chỉ số máy chủ để nhập mã.",
+      "open": "Mở Chỉ số máy chủ",
+      "topProcesses": "Các tiến trình hàng đầu"
     }
   },
   "metricsHistory": {
@@ -192,7 +200,9 @@
     "visibleWidgets": "Widget hiển thị",
     "widgetsMovedToHostMetrics": "Các thẻ giờ được thêm, sắp xếp và thay đổi kích thước trực tiếp trong tab Chỉ số máy chủ. Mở Chỉ số máy chủ cho máy chủ này và sử dụng Tùy chỉnh để chọn thẻ nào được hiển thị.",
     "hostNotFound": "Không tìm thấy máy chủ",
-    "loadingHost": "Đang tải máy chủ..."
+    "loadingHost": "Đang tải máy chủ...",
+    "showPanelLabel": "Hiển thị bảng chỉ số trong terminal",
+    "showPanelDesc": "Cho phép bảng chỉ số mở bên cạnh terminal SSH của máy chủ này."
   },
   "homepage": {
     "noData": "Không có dữ liệu",
@@ -252,6 +262,25 @@
         "description": "Cách hiển thị nhiệt độ trong Chỉ số máy chủ.",
         "celsius": "Celsius",
         "fahrenheit": "Fahrenheit"
+      },
+      "companionAutoOpen": {
+        "label": "Mở bảng chỉ số cùng với terminal mới",
+        "description": "Hiển thị chỉ số trực tiếp bên cạnh mọi terminal SSH. Bạn vẫn có thể mở và đóng nó từ nút ở cạnh phải."
+      },
+      "companionSide": {
+        "label": "Vị trí bảng chỉ số",
+        "description": "Vị trí của bảng chỉ số bên cạnh terminal.",
+        "right": "Phải",
+        "left": "Trái",
+        "bottom": "Dưới"
+      },
+      "companionSize": {
+        "label": "Kích thước bảng chỉ số",
+        "description": "Chiều rộng tính bằng pixel, hoặc chiều cao khi đặt ở dưới cùng. Bạn cũng có thể kéo cạnh của nó."
+      },
+      "companionEdgeButton": {
+        "label": "Hiển thị nút bảng",
+        "description": "Hiển thị một nút nhỏ ở cạnh phải của terminal để mở bảng chỉ số."
       }
     },
     "host": {
@@ -269,6 +298,9 @@
       },
       "monitoredMounts": {
         "label": "Đường dẫn được giám sát"
+      },
+      "showPanel": {
+        "label": "Hiển thị bảng chỉ số trong terminal"
       }
     }
   },

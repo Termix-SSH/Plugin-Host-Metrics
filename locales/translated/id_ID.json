@@ -1,6 +1,7 @@
 {
   "nav": {
-    "hostMetrics": "Metrik Host"
+    "hostMetrics": "Metrik Host",
+    "togglePanel": "Panel metrik"
   },
   "hostMetrics": {
     "cpu": "CPU",
@@ -163,6 +164,13 @@
       "wgHandshakeNever": "Tidak pernah",
       "wgNoPeers": "Tidak ada peer",
       "revoke": "Cabut"
+    },
+    "companion": {
+      "off": "Metrik dinonaktifkan untuk host ini.",
+      "loading": "Memuat metrik...",
+      "totp": "Host ini memerlukan kode verifikasi. Buka Host Metrics untuk memasukkannya.",
+      "open": "Buka Host Metrics",
+      "topProcesses": "Proses teratas"
     }
   },
   "metricsHistory": {
@@ -192,7 +200,9 @@
     "visibleWidgets": "Widget yang Tampil",
     "widgetsMovedToHostMetrics": "Kartu sekarang ditambahkan, diatur, dan diubah ukurannya langsung di tab Metrik Host. Buka Metrik Host untuk host ini dan gunakan Sesuaikan untuk memilih kartu mana yang ditampilkan.",
     "hostNotFound": "Host tidak ditemukan",
-    "loadingHost": "Memuat host..."
+    "loadingHost": "Memuat host...",
+    "showPanelLabel": "Tampilkan panel metrik di terminal",
+    "showPanelDesc": "Biarkan panel metrik terbuka di sebelah terminal SSH host ini."
   },
   "homepage": {
     "noData": "Tidak ada data yang tersedia",
@@ -252,6 +262,25 @@
         "description": "Bagaimana suhu ditampilkan di Metrik Host.",
         "celsius": "Celsius",
         "fahrenheit": "Fahrenheit"
+      },
+      "companionAutoOpen": {
+        "label": "Buka panel metrik bersama terminal baru",
+        "description": "Tampilkan metrik langsung di sebelah setiap terminal SSH. Anda masih bisa membukanya dan menutupnya dari tombol di tepi kanan."
+      },
+      "companionSide": {
+        "label": "Posisi panel metrik",
+        "description": "Di mana panel metrik berada di sebelah terminal.",
+        "right": "Kanan",
+        "left": "Kiri",
+        "bottom": "Bawah"
+      },
+      "companionSize": {
+        "label": "Ukuran panel metrik",
+        "description": "Lebar dalam piksel, atau tinggi saat berada di bagian bawah. Anda juga bisa menyeret tepinya."
+      },
+      "companionEdgeButton": {
+        "label": "Tampilkan tombol panel",
+        "description": "Tampilkan tombol kecil di tepi kanan terminal yang membuka panel metrik."
       }
     },
     "host": {
@@ -269,10 +298,14 @@
       },
       "monitoredMounts": {
         "label": "Path yang dipantau"
+      },
+      "showPanel": {
+        "label": "Tampilkan panel metrik di terminal"
       }
     }
   },
   "plugin": {
-    "name": "Metrik Host"
+    "name": "Metrik Host",
+    "description": "Statistik CPU, memori, disk, jaringan, dan GPU secara langsung, plus alat untuk mengelola host Anda."
   }
 }

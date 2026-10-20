@@ -1,6 +1,7 @@
 {
   "nav": {
-    "hostMetrics": "Metriche Host"
+    "hostMetrics": "Metriche Host",
+    "togglePanel": "Pannello metriche"
   },
   "hostMetrics": {
     "cpu": "CPU",
@@ -165,6 +166,13 @@
       "wgHandshakeNever": "Mai",
       "wgNoPeers": "Nessun peer",
       "revoke": "Revoca"
+    },
+    "companion": {
+      "off": "Le metriche sono disattivate per questo host.",
+      "loading": "Caricamento metriche...",
+      "totp": "Questo host richiede un codice di verifica. Apri Host Metrics per inserirlo.",
+      "open": "Apri Host Metrics",
+      "topProcesses": "Processi principali"
     }
   },
   "metricsHistory": {
@@ -194,7 +202,9 @@
     "visibleWidgets": "Widget Visibili",
     "widgetsMovedToHostMetrics": "Le card vengono ora aggiunte, disposte e ridimensionate direttamente nella scheda Metriche Host. Apri Metriche Host per questo host e usa Personalizza per scegliere quali card mostrare.",
     "hostNotFound": "Host non trovato",
-    "loadingHost": "Caricamento host..."
+    "loadingHost": "Caricamento host...",
+    "showPanelLabel": "Mostra pannello metriche nei terminal",
+    "showPanelDesc": "Consenti al pannello metriche di aprirsi accanto al terminale SSH di questo host."
   },
   "homepage": {
     "noData": "Nessun dato disponibile",
@@ -254,6 +264,25 @@
         "description": "Come vengono visualizzate le temperature nelle metriche dell'host.",
         "celsius": "Celsius",
         "fahrenheit": "Fahrenheit"
+      },
+      "companionAutoOpen": {
+        "label": "Apri il pannello metriche con i nuovi terminal",
+        "description": "Mostra le metriche in tempo reale accanto a ogni terminale SSH. Puoi comunque aprirlo e chiuderlo dal pulsante sul bordo destro."
+      },
+      "companionSide": {
+        "label": "Posizione pannello metriche",
+        "description": "Dove si trova il pannello metriche rispetto a un terminale.",
+        "right": "Destra",
+        "left": "Sinistra",
+        "bottom": "In basso"
+      },
+      "companionSize": {
+        "label": "Dimensione pannello metriche",
+        "description": "Larghezza in pixel, o altezza quando è in basso. Puoi anche trascinare il suo bordo."
+      },
+      "companionEdgeButton": {
+        "label": "Mostra il pulsante del pannello",
+        "description": "Mostra un piccolo pulsante sul bordo destro di un terminale che apre il pannello metriche."
       }
     },
     "host": {
@@ -271,10 +300,14 @@
       },
       "monitoredMounts": {
         "label": "Percorsi monitorati"
+      },
+      "showPanel": {
+        "label": "Mostra pannello metriche nei terminal"
       }
     }
   },
   "plugin": {
-    "name": "Metriche host"
+    "name": "Metriche host",
+    "description": "Statistiche in tempo reale su CPU, memoria, disco, rete e GPU, oltre a strumenti per gestire i tuoi host."
   }
 }

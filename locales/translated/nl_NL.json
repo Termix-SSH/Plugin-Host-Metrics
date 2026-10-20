@@ -1,6 +1,7 @@
 {
   "nav": {
-    "hostMetrics": "Hostmetrieken"
+    "hostMetrics": "Hostmetrieken",
+    "togglePanel": "Metriekenpaneel"
   },
   "hostMetrics": {
     "cpu": "CPU",
@@ -164,6 +165,13 @@
       "wgHandshakeNever": "Nooit",
       "wgNoPeers": "Geen peers",
       "revoke": "Intrekken"
+    },
+    "companion": {
+      "off": "Metrieken zijn uitgeschakeld voor deze host.",
+      "loading": "Metrieken laden...",
+      "totp": "Voor deze host is een verificatiecode nodig. Open Host Metrics om deze in te voeren.",
+      "open": "Host Metrics openen",
+      "topProcesses": "Belangrijkste processen"
     }
   },
   "metricsHistory": {
@@ -193,7 +201,9 @@
     "visibleWidgets": "Zichtbare widgets",
     "widgetsMovedToHostMetrics": "Kaarten worden nu direct in het tabblad Hostmetrieken toegevoegd, gerangschikt en van formaat veranderd. Open Hostmetrieken voor deze host en gebruik Aanpassen om te kiezen welke kaarten worden weergegeven.",
     "hostNotFound": "Host niet gevonden",
-    "loadingHost": "Host laden..."
+    "loadingHost": "Host laden...",
+    "showPanelLabel": "Metriekenpaneel tonen in terminals",
+    "showPanelDesc": "Laat het metriekenpaneel open naast de SSH-terminal van deze host."
   },
   "homepage": {
     "noData": "Geen gegevens beschikbaar",
@@ -253,6 +263,25 @@
         "description": "Hoe temperaturen worden weergegeven in Hostmetrieken.",
         "celsius": "Celsius",
         "fahrenheit": "Fahrenheit"
+      },
+      "companionAutoOpen": {
+        "label": "Metriekenpaneel openen bij nieuwe terminals",
+        "description": "Toon live metrieken naast elke SSH-terminal. Je kunt het paneel nog steeds openen en sluiten via de knop aan de rechterkant."
+      },
+      "companionSide": {
+        "label": "Zijde van het metriekevenementenpaneel",
+        "description": "Waar het metriekevenementenpaneel naast een terminal staat.",
+        "right": "Rechts",
+        "left": "Links",
+        "bottom": "Onderaan"
+      },
+      "companionSize": {
+        "label": "Grootte van het metriekevenementenpaneel",
+        "description": "Breedte in pixels, of hoogte wanneer het onderaan staat. Je kunt ook de rand slepen."
+      },
+      "companionEdgeButton": {
+        "label": "Toon de paneelknop",
+        "description": "Toon een kleine knop aan de rechterkant van een terminal die het metriekevenementenpaneel opent."
       }
     },
     "host": {
@@ -270,6 +299,9 @@
       },
       "monitoredMounts": {
         "label": "Gemonitorde paden"
+      },
+      "showPanel": {
+        "label": "Toon het metriekevenementenpaneel in terminals"
       }
     }
   },

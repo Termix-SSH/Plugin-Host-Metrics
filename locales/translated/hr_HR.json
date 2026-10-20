@@ -1,6 +1,7 @@
 {
   "nav": {
-    "hostMetrics": "Metrike poslužitelja"
+    "hostMetrics": "Metrike poslužitelja",
+    "togglePanel": "Panel metrika"
   },
   "hostMetrics": {
     "cpu": "CPU",
@@ -165,6 +166,13 @@
       "wgHandshakeNever": "Nikad",
       "wgNoPeers": "Nema vršnjaka",
       "revoke": "Poništi"
+    },
+    "companion": {
+      "off": "Metrike su isključene za ovog hosta.",
+      "loading": "Učitavanje metrika...",
+      "totp": "Ovaj host zahtijeva kod za provjeru. Otvorite Host Metrics za unos.",
+      "open": "Otvori Host Metrics",
+      "topProcesses": "Vodeći procesi"
     }
   },
   "metricsHistory": {
@@ -194,7 +202,9 @@
     "visibleWidgets": "Vidžeti",
     "widgetsMovedToHostMetrics": "Kartice se sada dodaju, raspoređuju i mijenjaju veličine izravno na kartici Metrike hosta. Otvorite Metrike hosta za ovaj host i koristite Prilagodi za odabir kartica koje se prikazuju.",
     "hostNotFound": "Host nije pronađen",
-    "loadingHost": "Učitavanje hosta..."
+    "loadingHost": "Učitavanje hosta...",
+    "showPanelLabel": "Prikaži panel metrika u terminalima",
+    "showPanelDesc": "Dopusti da se panel metrika otvori pored SSH terminala ovog hosta."
   },
   "homepage": {
     "noData": "Nema dostupnih podataka",
@@ -254,6 +264,25 @@
         "description": "Kako se temperature prikazuju u metrikama poslužitelja.",
         "celsius": "Celsius",
         "fahrenheit": "Fahrenheit"
+      },
+      "companionAutoOpen": {
+        "label": "Otvori panel metrika s novim terminalima",
+        "description": "Prikaži metrike u stvarnom vremenu pored svakog SSH terminala. I dalje ga možete otvoriti i zatvoriti putem gumba na desnoj rubnoj strani."
+      },
+      "companionSide": {
+        "label": "Stranica ploče metrika",
+        "description": "Gdje se ploča metrika nalazi pored terminala.",
+        "right": "Desno",
+        "left": "Lijevo",
+        "bottom": "Dolje"
+      },
+      "companionSize": {
+        "label": "Veličina ploče metrika",
+        "description": "Širina u pikselima, ili visina kada je na dnu. Možete je također povući za rub."
+      },
+      "companionEdgeButton": {
+        "label": "Prikaži gumb ploče",
+        "description": "Prikaži mali gumb na desnom rubu terminala koji otvara ploču metrika."
       }
     },
     "host": {
@@ -271,6 +300,9 @@
       },
       "monitoredMounts": {
         "label": "Praćene putanje"
+      },
+      "showPanel": {
+        "label": "Prikaži ploču metrika u terminalima"
       }
     }
   },

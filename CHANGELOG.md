@@ -1,5 +1,13 @@
 # Changelog
 
+## 1.1.0
+
+### Added
+
+- A metrics panel beside any SSH terminal with live CPU, memory, disk, temperature, uptime and the busiest processes, so you can watch a host while you work on it
+- Settings for the panel: open it with new terminals, which side it sits on, its size and the edge button
+- Show metrics panel in terminals, per host, in the host's Host Metrics section
+
 ## 1.0.3
 
 ### Changed

@@ -1,6 +1,7 @@
 {
   "nav": {
-    "hostMetrics": "ホストメトリクス"
+    "hostMetrics": "ホストメトリクス",
+    "togglePanel": "メトリクスパネル"
   },
   "hostMetrics": {
     "cpu": "CPU",
@@ -163,6 +164,13 @@
       "wgHandshakeNever": "なし",
       "wgNoPeers": "ピアなし",
       "revoke": "失効"
+    },
+    "companion": {
+      "off": "このホストではメトリクスが無効です。",
+      "loading": "メトリクスを読み込み中...",
+      "totp": "このホストには認証コードが必要です。ホストメトリクスを開いて入力してください。",
+      "open": "ホストメトリクスを開く",
+      "topProcesses": "上位プロセス"
     }
   },
   "metricsHistory": {
@@ -192,7 +200,9 @@
     "visibleWidgets": "表示するウィジェット",
     "widgetsMovedToHostMetrics": "カードは、ホストメトリクスタブで直接追加、配置、サイズ変更できるようになりました。このホストのホストメトリクスを開き、カスタマイズを使用して表示するカードを選択してください。",
     "hostNotFound": "ホストが見つかりません",
-    "loadingHost": "ホストを読み込んでいます..."
+    "loadingHost": "ホストを読み込んでいます...",
+    "showPanelLabel": "ターミナルでメトリクスパネルを表示",
+    "showPanelDesc": "このホストのSSHターミナルの横にメトリクスパネルを開きます。"
   },
   "homepage": {
     "noData": "データがありません",
@@ -252,6 +262,25 @@
         "description": "ホストメトリックで温度を表示する方法です。",
         "celsius": "摂氏",
         "fahrenheit": "華氏"
+      },
+      "companionAutoOpen": {
+        "label": "新しいターミナルでメトリクスパネルを開く",
+        "description": "すべてのSSHターミナルの横にリアルタイムメトリクスを表示します。右端のボタンからいつでも開閉できます。"
+      },
+      "companionSide": {
+        "label": "メトリクスパネルの配置",
+        "description": "ターミナルの横にメトリクスパネルを配置する位置です。",
+        "right": "右",
+        "left": "左",
+        "bottom": "下"
+      },
+      "companionSize": {
+        "label": "メトリクスパネルのサイズ",
+        "description": "ピクセル単位の幅、または下部に配置する場合の高さです。端をドラッグして調整することもできます。"
+      },
+      "companionEdgeButton": {
+        "label": "パネルボタンを表示",
+        "description": "ターミナルの右端に、メトリクスパネルを開く小さなボタンを表示します。"
       }
     },
     "host": {
@@ -269,10 +298,14 @@
       },
       "monitoredMounts": {
         "label": "監視対象パス"
+      },
+      "showPanel": {
+        "label": "ターミナルでメトリクスパネルを表示"
       }
     }
   },
   "plugin": {
-    "name": "ホストメトリック"
+    "name": "ホストメトリック",
+    "description": "CPU、メモリ、ディスク、ネットワーク、GPUのリアルタイム統計情報と、ホスト管理ツールを提供します。"
   }
 }

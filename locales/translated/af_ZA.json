@@ -1,6 +1,7 @@
 {
   "nav": {
-    "hostMetrics": "Gasheermetrieke"
+    "hostMetrics": "Gasheermetrieke",
+    "togglePanel": "Metriekepaneel"
   },
   "hostMetrics": {
     "cpu": "CPU",
@@ -164,6 +165,13 @@
       "wgHandshakeNever": "Nooit",
       "wgNoPeers": "Geen gelykwaardiges nie",
       "revoke": "Herroep"
+    },
+    "companion": {
+      "off": "Metrieke is afgeskakel vir hierdie gasheer.",
+      "loading": "Laai metrieke...",
+      "totp": "Hierdie gasheer benodig 'n verifikasiekode. Maak Gasheer Metrieke oop om dit in te voer.",
+      "open": "Maak Gasheer Metrieke oop",
+      "topProcesses": "Bo-prosesse"
     }
   },
   "metricsHistory": {
@@ -193,7 +201,9 @@
     "visibleWidgets": "Sigbare widgets",
     "widgetsMovedToHostMetrics": "Kaarte word nou direk in die Gasheermetrieke-oortjie bygevoeg, gerangskik en herskaal. Open Gasheermetrieke vir hierdie gasheer en gebruik Aanpas om te kies watter kaarte vertoon word.",
     "hostNotFound": "Gasheer nie gevind nie",
-    "loadingHost": "Laai gasheer..."
+    "loadingHost": "Laai gasheer...",
+    "showPanelLabel": "Wys metriekepaneel in terminale",
+    "showPanelDesc": "Laat die metriekepaneel oopmaak langs hierdie gasheer se SSH-terminal."
   },
   "homepage": {
     "noData": "Geen data beskikbaar nie",
@@ -253,6 +263,25 @@
         "description": "Hoe temperature in Gasheermetrieke getoon word.",
         "celsius": "Celsius",
         "fahrenheit": "Fahrenheit"
+      },
+      "companionAutoOpen": {
+        "label": "Maak die metriekepaneel oop met nuwe terminale",
+        "description": "Wys lewende metrieke langs elke SSH-terminal. Jy kan dit steeds oopmaak en sluit vanaf die knoppie aan die regterkant."
+      },
+      "companionSide": {
+        "label": "Metriekepaneel se kant",
+        "description": "Waar die metriekepaneel langs 'n terminaal verskyn.",
+        "right": "Regs",
+        "left": "Links",
+        "bottom": "Onder"
+      },
+      "companionSize": {
+        "label": "Metriekepaneel se grootte",
+        "description": "Wydte in pixels, of hoogte wanneer dit onder is. Jy kan ook die rand sleep."
+      },
+      "companionEdgeButton": {
+        "label": "Wys die paneelknoppie",
+        "description": "Wys 'n klein knoppie aan die regterrand van 'n terminaal wat die metriekepaneel oopmaak."
       }
     },
     "host": {
@@ -270,6 +299,9 @@
       },
       "monitoredMounts": {
         "label": "Gemonitorde paaie"
+      },
+      "showPanel": {
+        "label": "Wys metriekepaneel in terminale"
       }
     }
   },

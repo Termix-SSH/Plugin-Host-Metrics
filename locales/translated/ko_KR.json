@@ -1,6 +1,7 @@
 {
   "nav": {
-    "hostMetrics": "호스트 메트릭스"
+    "hostMetrics": "호스트 메트릭스",
+    "togglePanel": "메트릭 패널"
   },
   "hostMetrics": {
     "cpu": "CPU",
@@ -163,6 +164,13 @@
       "wgHandshakeNever": "없음",
       "wgNoPeers": "피어 없음",
       "revoke": "취소"
+    },
+    "companion": {
+      "off": "이 호스트의 메트릭이 꺼져 있습니다.",
+      "loading": "메트릭을 불러오는 중...",
+      "totp": "이 호스트에는 인증 코드가 필요합니다. 호스트 메트릭을 열어 입력하세요.",
+      "open": "호스트 메트릭 열기",
+      "topProcesses": "상위 프로세스"
     }
   },
   "metricsHistory": {
@@ -192,7 +200,9 @@
     "visibleWidgets": "표시되는 위젯",
     "widgetsMovedToHostMetrics": "이제 호스트 메트릭스 탭에서 직접 카드를 추가하고 배치하며 크기를 조정할 수 있습니다. 이 호스트의 호스트 메트릭스를 열고 사용자 정의하여 표시할 카드를 선택하세요.",
     "hostNotFound": "호스트를 찾을 수 없습니다",
-    "loadingHost": "호스트 로드 중..."
+    "loadingHost": "호스트 로드 중...",
+    "showPanelLabel": "터미널에서 메트릭 패널 표시",
+    "showPanelDesc": "이 호스트의 SSH 터미널 옆에 메트릭 패널을 열 수 있습니다."
   },
   "homepage": {
     "noData": "사용 가능한 데이터가 없습니다",
@@ -252,6 +262,25 @@
         "description": "호스트 지표에서 온도를 표시하는 방식입니다.",
         "celsius": "섭씨",
         "fahrenheit": "화씨"
+      },
+      "companionAutoOpen": {
+        "label": "새 터미널과 함께 메트릭 패널 열기",
+        "description": "모든 SSH 터미널 옆에 실시간 메트릭을 표시합니다. 오른쪽 가장자리의 버튼에서 언제든지 열거나 닫을 수 있습니다."
+      },
+      "companionSide": {
+        "label": "메트릭 패널 위치",
+        "description": "터미널 옆에 메트릭 패널이 표시되는 위치입니다.",
+        "right": "오른쪽",
+        "left": "왼쪽",
+        "bottom": "아래쪽"
+      },
+      "companionSize": {
+        "label": "메트릭 패널 크기",
+        "description": "픽셀 단위의 너비 또는 아래쪽 위치일 때의 높이입니다. 가장자리를 드래그하여 조정할 수도 있습니다."
+      },
+      "companionEdgeButton": {
+        "label": "패널 버튼 표시",
+        "description": "터미널 오른쪽 가장자리에 메트릭 패널을 여는 작은 버튼을 표시합니다."
       }
     },
     "host": {
@@ -269,6 +298,9 @@
       },
       "monitoredMounts": {
         "label": "모니터링 경로"
+      },
+      "showPanel": {
+        "label": "터미널에서 메트릭 패널 표시"
       }
     }
   },

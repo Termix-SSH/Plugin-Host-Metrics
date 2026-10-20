@@ -101,6 +101,17 @@ export function HostStatsTab({ form, updateForm }: HostEditorSectionProps) {
               />
             </SettingRow>
           )}
+          {settings.metricsEnabled && (
+            <SettingRow
+              label={t("hosts.showPanelLabel")}
+              description={t("hosts.showPanelDesc")}
+            >
+              <FakeSwitch
+                checked={bag?.showPanel !== false}
+                onChange={(v) => patch({ showPanel: v })}
+              />
+            </SettingRow>
+          )}
           {settings.metricsEnabled && settings.metricsInterval !== null && (
             <SettingRow
               label={t("hosts.metricsIntervalS")}

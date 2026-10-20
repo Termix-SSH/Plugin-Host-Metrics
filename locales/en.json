@@ -1,6 +1,7 @@
 {
   "nav": {
-    "hostMetrics": "Host Metrics"
+    "hostMetrics": "Host Metrics",
+    "togglePanel": "Metrics panel"
   },
   "hostMetrics": {
     "cpu": "CPU",
@@ -164,6 +165,13 @@
       "wgHandshakeNever": "Never",
       "wgNoPeers": "No peers",
       "revoke": "Revoke"
+    },
+    "companion": {
+      "off": "Metrics are off for this host.",
+      "loading": "Loading metrics...",
+      "totp": "This host needs a verification code. Open Host Metrics to enter it.",
+      "open": "Open Host Metrics",
+      "topProcesses": "Top processes"
     }
   },
   "metricsHistory": {
@@ -193,7 +201,9 @@
     "visibleWidgets": "Visible Widgets",
     "widgetsMovedToHostMetrics": "Cards are now added, arranged, and resized directly in the Host Metrics tab. Open Host Metrics for this host and use Customize to choose which cards are shown.",
     "hostNotFound": "Host not found",
-    "loadingHost": "Loading host..."
+    "loadingHost": "Loading host...",
+    "showPanelLabel": "Show metrics panel in terminals",
+    "showPanelDesc": "Let the metrics panel open beside this host's SSH terminal."
   },
   "homepage": {
     "noData": "No data available",
@@ -253,6 +263,25 @@
         "description": "How temperatures are shown in Host Metrics.",
         "celsius": "Celsius",
         "fahrenheit": "Fahrenheit"
+      },
+      "companionAutoOpen": {
+        "label": "Open the metrics panel with new terminals",
+        "description": "Show live metrics beside every SSH terminal. You can still open and close it from the button on the right edge."
+      },
+      "companionSide": {
+        "label": "Metrics panel side",
+        "description": "Where the metrics panel sits next to a terminal.",
+        "right": "Right",
+        "left": "Left",
+        "bottom": "Bottom"
+      },
+      "companionSize": {
+        "label": "Metrics panel size",
+        "description": "Width in pixels, or height when it is at the bottom. You can also drag its edge."
+      },
+      "companionEdgeButton": {
+        "label": "Show the panel button",
+        "description": "Show a small button on the right edge of a terminal that opens the metrics panel."
       }
     },
     "host": {
@@ -270,6 +299,9 @@
       },
       "monitoredMounts": {
         "label": "Monitored paths"
+      },
+      "showPanel": {
+        "label": "Show metrics panel in terminals"
       }
     }
   },

@@ -1,6 +1,7 @@
 {
   "nav": {
-    "hostMetrics": "Servera rādītāji"
+    "hostMetrics": "Servera rādītāji",
+    "togglePanel": "Metriku panelis"
   },
   "hostMetrics": {
     "cpu": "CPU",
@@ -165,6 +166,13 @@
       "wgHandshakeNever": "Nekad",
       "wgNoPeers": "Nav partneru",
       "revoke": "Atsaukt"
+    },
+    "companion": {
+      "off": "Šī hosta metriku vākšana ir izslēgta.",
+      "loading": "Metriku ielāde...",
+      "totp": "Šim hostam ir nepieciešams verifikācijas kods. Atveriet Host Metrics, lai to ievadītu.",
+      "open": "Atvērt Host Metrics",
+      "topProcesses": "Galvenie procesi"
     }
   },
   "metricsHistory": {
@@ -194,7 +202,9 @@
     "visibleWidgets": "Redzamie logrīki",
     "widgetsMovedToHostMetrics": "Kartes tagad tiek pievienotas, sakārtotas un izmēra mainītas tieši cilnē Servera metriķes. Atveriet šī servera Servera metriķes un izmantojiet pielāgošanu, lai izvēlētos, kuras kartes tiek rādītas.",
     "hostNotFound": "Serveris nav atrasts",
-    "loadingHost": "Ielādē serveri..."
+    "loadingHost": "Ielādē serveri...",
+    "showPanelLabel": "Rādīt metriku paneli termināļos",
+    "showPanelDesc": "Ļaut metriku panelim atvērties blakus šī hosta SSH terminālim."
   },
   "homepage": {
     "noData": "Nav pieejamu datu",
@@ -254,6 +264,25 @@
         "description": "Kā temperatūra tiek rādīta resursdatora mērījumos.",
         "celsius": "Celsija",
         "fahrenheit": "Farenheita"
+      },
+      "companionAutoOpen": {
+        "label": "Atvērt metriku paneli kopā ar jauniem termināļiem",
+        "description": "Rādīt reāllaika metrikas blakus katram SSH terminālim. To joprojām varat atvērt un aizvērt, izmantojot pogu labajā malā."
+      },
+      "companionSide": {
+        "label": "Metriku paneļa atrašanās vieta",
+        "description": "Kur metriku panelis atrodas blakus terminālim.",
+        "right": "Labajā pusē",
+        "left": "Kreisajā pusē",
+        "bottom": "Apakšā"
+      },
+      "companionSize": {
+        "label": "Metriku paneļa izmērs",
+        "description": "Platums pikseļos vai augstums, ja tas atrodas apakšā. Varat arī vilkt tā malu."
+      },
+      "companionEdgeButton": {
+        "label": "Rādīt paneļa pogu",
+        "description": "Rādīt mazu pogu termināļa labajā malā, kas atver metriku paneli."
       }
     },
     "host": {
@@ -271,10 +300,14 @@
       },
       "monitoredMounts": {
         "label": "Pārraugāmie ceļi"
+      },
+      "showPanel": {
+        "label": "Rādīt metriku paneli termināļos"
       }
     }
   },
   "plugin": {
-    "name": "Resursdatora mērījumi"
+    "name": "Resursdatora mērījumi",
+    "description": "Reāllaika CPU, atmiņas, diska, tīkla un GPU statistika, kā arī rīki hostu pārvaldībai."
   }
 }

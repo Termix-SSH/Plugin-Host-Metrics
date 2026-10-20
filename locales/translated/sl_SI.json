@@ -1,6 +1,7 @@
 {
   "nav": {
-    "hostMetrics": "Metrike strežnika"
+    "hostMetrics": "Metrike strežnika",
+    "togglePanel": "Plošča z metriko"
   },
   "hostMetrics": {
     "cpu": "CPU",
@@ -166,6 +167,13 @@
       "wgHandshakeNever": "Nikoli",
       "wgNoPeers": "Ni vrstnikov",
       "revoke": "Razveljavi"
+    },
+    "companion": {
+      "off": "Metrika za tega gostitelja je onemogočena.",
+      "loading": "Nalaganje metrike...",
+      "totp": "Ta gostitelj zahteva verifikacijsko kodo. Odprite Metriko gostitelja za vnos.",
+      "open": "Odpri Metriko gostitelja",
+      "topProcesses": "Najpomembnejši procesi"
     }
   },
   "metricsHistory": {
@@ -195,7 +203,9 @@
     "visibleWidgets": "Vidžeti",
     "widgetsMovedToHostMetrics": "Kartice se zdaj dodajajo, razporejajo in spreminjajo velikost neposredno na zavihku Metrike gostitelja. Odprite Metrike gostitelja za tega gostitelja in uporabite Prilagodi za izbiro prikazanih kartic.",
     "hostNotFound": "Gostitelj ni najden",
-    "loadingHost": "Nalaganje gostitelja..."
+    "loadingHost": "Nalaganje gostitelja...",
+    "showPanelLabel": "Prikaži ploščo z metriko v terminalih",
+    "showPanelDesc": "Dovoli odpiranje plošče z metriko ob SSH terminalu tega gostitelja."
   },
   "homepage": {
     "noData": "Podatki niso na voljo",
@@ -255,6 +265,25 @@
         "description": "Kako so temperature prikazane v metriki gostitelja.",
         "celsius": "Celzij",
         "fahrenheit": "Fahrenheit"
+      },
+      "companionAutoOpen": {
+        "label": "Odpri ploščo z metriko ob novih terminalih",
+        "description": "Prikaži živo metriko ob vsakem SSH terminalu. Ploščo lahko še vedno odpirate in zapirate s tipko na desnem robu."
+      },
+      "companionSide": {
+        "label": "Stran plošče z metriko",
+        "description": "Kje se plošča z metriko nahaja ob terminalu.",
+        "right": "Desno",
+        "left": "Levo",
+        "bottom": "Spodaj"
+      },
+      "companionSize": {
+        "label": "Velikost plošče z metriko",
+        "description": "Širina v slikovnih točkah ali višina, ko je na dnu. Rob lahko tudi povlečete."
+      },
+      "companionEdgeButton": {
+        "label": "Prikaži tipko za ploščo",
+        "description": "Prikaži majhno tipko na desnem robu terminala, ki odpre ploščo z metriko."
       }
     },
     "host": {
@@ -272,6 +301,9 @@
       },
       "monitoredMounts": {
         "label": "Nadzirane poti"
+      },
+      "showPanel": {
+        "label": "Prikaži ploščo z metriko v terminalih"
       }
     }
   },

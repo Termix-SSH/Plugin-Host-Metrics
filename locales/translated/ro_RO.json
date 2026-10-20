@@ -1,6 +1,7 @@
 {
   "nav": {
-    "hostMetrics": "Metrici gazdă"
+    "hostMetrics": "Metrici gazdă",
+    "togglePanel": "Panoul de metrici"
   },
   "hostMetrics": {
     "cpu": "CPU",
@@ -165,6 +166,13 @@
       "wgHandshakeNever": "Niciodată",
       "wgNoPeers": "Niciun peer",
       "revoke": "Revocă"
+    },
+    "companion": {
+      "off": "Metricile sunt dezactivate pentru acest gazdă.",
+      "loading": "Se încarcă metricile...",
+      "totp": "Această gazdă necesită un cod de verificare. Deschideți Metricile gazdei pentru a-l introduce.",
+      "open": "Deschideți Metricile gazdei",
+      "topProcesses": "Procese principale"
     }
   },
   "metricsHistory": {
@@ -194,7 +202,9 @@
     "visibleWidgets": "Widget-uri vizibile",
     "widgetsMovedToHostMetrics": "Cardurile sunt acum adăugate, aranjate și redimensionate direct în fila Metrici Gazdă. Deschideți Metrici Gazdă pentru această gazdă și folosiți Personalizare pentru a alege ce carduri sunt afișate.",
     "hostNotFound": "Gazdă negăsită",
-    "loadingHost": "Se încarcă gazda..."
+    "loadingHost": "Se încarcă gazda...",
+    "showPanelLabel": "Afișează panoul de metrici în terminale",
+    "showPanelDesc": "Permite panoului de metrici să se deschidă lângă terminalul SSH al acestei gazde."
   },
   "homepage": {
     "noData": "Nu sunt date disponibile",
@@ -254,6 +264,25 @@
         "description": "Cum sunt afișate temperaturile în Metricile gazdei.",
         "celsius": "Celsius",
         "fahrenheit": "Fahrenheit"
+      },
+      "companionAutoOpen": {
+        "label": "Deschide panoul de metrici cu terminalele noi",
+        "description": "Afișează metricile în timp real lângă fiecare terminal SSH. Îl poți deschide și închide în continuare din butonul de pe marginea dreaptă."
+      },
+      "companionSide": {
+        "label": "Poziția panoului de metrici",
+        "description": "Unde se află panoul de metrici lângă un terminal.",
+        "right": "Dreapta",
+        "left": "Stânga",
+        "bottom": "Jos"
+      },
+      "companionSize": {
+        "label": "Dimensiunea panoului de metrici",
+        "description": "Lățimea în pixeli, sau înălțimea când este plasat jos. Poți trage și de marginea sa pentru a redimensiona."
+      },
+      "companionEdgeButton": {
+        "label": "Afișează butonul panoului",
+        "description": "Afișează un buton mic pe marginea dreaptă a unui terminal care deschide panoul de metrici."
       }
     },
     "host": {
@@ -271,6 +300,9 @@
       },
       "monitoredMounts": {
         "label": "Căi monitorizate"
+      },
+      "showPanel": {
+        "label": "Afișează panoul de metrici în terminale"
       }
     }
   },

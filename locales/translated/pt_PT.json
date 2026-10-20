@@ -1,6 +1,7 @@
 {
   "nav": {
-    "hostMetrics": "Métricas do Servidor"
+    "hostMetrics": "Métricas do Servidor",
+    "togglePanel": "Painel de métricas"
   },
   "hostMetrics": {
     "cpu": "CPU",
@@ -165,6 +166,13 @@
       "wgHandshakeNever": "Nunca",
       "wgNoPeers": "Sem pares",
       "revoke": "Revogar"
+    },
+    "companion": {
+      "off": "As métricas estão desativadas para este host.",
+      "loading": "A carregar métricas...",
+      "totp": "Este host necessita de um código de verificação. Abra as Métricas do Host para o introduzir.",
+      "open": "Abrir Métricas do Host",
+      "topProcesses": "Principais processos"
     }
   },
   "metricsHistory": {
@@ -194,7 +202,9 @@
     "visibleWidgets": "Widgets Visíveis",
     "widgetsMovedToHostMetrics": "Os cartões são agora adicionados, organizados e redimensionados diretamente na aba Métricas do Host. Abra Métricas do Host para este host e use Personalizar para escolher quais os cartões a mostrar.",
     "hostNotFound": "Host não encontrado",
-    "loadingHost": "A carregar host..."
+    "loadingHost": "A carregar host...",
+    "showPanelLabel": "Mostrar painel de métricas nos terminais",
+    "showPanelDesc": "Permitir que o painel de métricas abra ao lado do terminal SSH deste host."
   },
   "homepage": {
     "noData": "Sem dados disponíveis",
@@ -254,6 +264,25 @@
         "description": "Como as temperaturas são exibidas nas Métricas do Host.",
         "celsius": "Celsius",
         "fahrenheit": "Fahrenheit"
+      },
+      "companionAutoOpen": {
+        "label": "Abrir o painel de métricas com novos terminais",
+        "description": "Mostrar métricas em tempo real ao lado de cada terminal SSH. Pode ainda abrir e fechar o painel através do botão na borda direita."
+      },
+      "companionSide": {
+        "label": "Lado do painel de métricas",
+        "description": "Onde o painel de métricas fica posicionado ao lado de um terminal.",
+        "right": "Direita",
+        "left": "Esquerda",
+        "bottom": "Inferior"
+      },
+      "companionSize": {
+        "label": "Tamanho do painel de métricas",
+        "description": "Largura em pixels, ou altura quando está na parte inferior. Também pode arrastar a sua borda."
+      },
+      "companionEdgeButton": {
+        "label": "Mostrar o botão do painel",
+        "description": "Mostrar um pequeno botão na borda direita de um terminal que abre o painel de métricas."
       }
     },
     "host": {
@@ -271,6 +300,9 @@
       },
       "monitoredMounts": {
         "label": "Caminhos monitorizados"
+      },
+      "showPanel": {
+        "label": "Mostrar painel de métricas nos terminais"
       }
     }
   },

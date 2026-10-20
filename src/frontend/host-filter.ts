@@ -6,6 +6,14 @@ export function metricsEnabledFor(host: unknown): boolean {
   return bag?.["host-metrics"]?.metricsEnabled !== false;
 }
 
+/** Whether the side panel may open beside this host's terminal. */
+export function metricsPanelEnabledFor(host: unknown): boolean {
+  const bag = (
+    host as { pluginSettings?: Record<string, Record<string, unknown>> }
+  )?.pluginSettings;
+  return metricsEnabledFor(host) && bag?.["host-metrics"]?.showPanel !== false;
+}
+
 /** Metrics come over SSH, so a host without it has none to show. */
 export function hostHasMetrics(host: unknown): boolean {
   if (!host) return true;

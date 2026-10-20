@@ -1,6 +1,7 @@
 {
   "nav": {
-    "hostMetrics": "Metriky hostitele"
+    "hostMetrics": "Metriky hostitele",
+    "togglePanel": "Panel metrik"
   },
   "hostMetrics": {
     "cpu": "CPU",
@@ -166,6 +167,13 @@
       "wgHandshakeNever": "Nikdy",
       "wgNoPeers": "Žádní partneři",
       "revoke": "Zrušit"
+    },
+    "companion": {
+      "off": "Metriky pro tohoto hostitele jsou vypnuté.",
+      "loading": "Načítání metrik...",
+      "totp": "Tento hostitel vyžaduje ověřovací kód. Otevřete Metriky hostitele pro jeho zadání.",
+      "open": "Otevřít Metriky hostitele",
+      "topProcesses": "Nejvýznamnější procesy"
     }
   },
   "metricsHistory": {
@@ -195,7 +203,9 @@
     "visibleWidgets": "Zobrazované widgety",
     "widgetsMovedToHostMetrics": "Karty se nyní přidávají, řadí a mění velikost přímo na kartě Metriky hostitele. Otevřete Metriky hostitele pro tohoto hostitele a použijte Přizpůsobit pro výběr zobrazených karet.",
     "hostNotFound": "Hostitel nenalezen",
-    "loadingHost": "Načítání hostitele..."
+    "loadingHost": "Načítání hostitele...",
+    "showPanelLabel": "Zobrazit panel metrik v terminálech",
+    "showPanelDesc": "Nechat panel metrik otevřený vedle SSH terminálu tohoto hostitele."
   },
   "homepage": {
     "noData": "Žádná data nejsou k dispozici",
@@ -255,6 +265,25 @@
         "description": "Jak se zobrazují teploty v Metrikách hostitele.",
         "celsius": "Celsia",
         "fahrenheit": "Fahrenheita"
+      },
+      "companionAutoOpen": {
+        "label": "Otevírat panel metrik s novými terminály",
+        "description": "Zobrazovat živé metriky vedle každého SSH terminálu. Panel můžete stále otevírat a zavírat pomocí tlačítka na pravém okraji."
+      },
+      "companionSide": {
+        "label": "Umístění panelu metrik",
+        "description": "Umístění panelu metrik vedle terminálu.",
+        "right": "Vpravo",
+        "left": "Vlevo",
+        "bottom": "Dole"
+      },
+      "companionSize": {
+        "label": "Velikost panelu metrik",
+        "description": "Šířka v pixelech, nebo výška, pokud je panel umístěn dole. Velikost můžete také upravit přetažením okraje."
+      },
+      "companionEdgeButton": {
+        "label": "Zobrazit tlačítko panelu",
+        "description": "Zobrazí malé tlačítko na pravém okraji terminálu, které otevře panel metrik."
       }
     },
     "host": {
@@ -272,6 +301,9 @@
       },
       "monitoredMounts": {
         "label": "Sledované cesty"
+      },
+      "showPanel": {
+        "label": "Zobrazit panel metrik v terminálech"
       }
     }
   },
