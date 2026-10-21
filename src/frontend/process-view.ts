@@ -64,3 +64,11 @@ export const loadColor = (pct: number | null) =>
     : pct < 80
       ? "bg-amber-500"
       : "bg-red-500";
+
+/** Same thresholds as loadColor, as a text colour for the gauge arc. */
+export const loadTextColor = (pct: number | null) =>
+  pct == null || pct < 50
+    ? "text-emerald-500"
+    : pct < 80
+      ? "text-amber-500"
+      : "text-red-500";

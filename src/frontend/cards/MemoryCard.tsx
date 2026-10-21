@@ -1,5 +1,4 @@
 import {
-  RadialGauge,
   Sparkline,
   MiniStat,
   MetricCard,
@@ -13,6 +12,8 @@ import { useTranslation } from "@termix-ssh/plugin-sdk/frontend";
 import { type MetricsHistoryRow, useHostMetricsApi } from "../host-metrics-api";
 import { CardTimeTabs, type HistoryTab } from "./CardTimeTabs";
 import { memParts } from "../live-metrics";
+import { loadTextColor } from "../process-view";
+import { AnimatedGauge } from "./AnimatedGauge";
 
 export function MemoryCard({
   metrics,
@@ -86,7 +87,10 @@ export function MemoryCard({
       <div className="flex flex-col gap-3">
         {activeTab === "live" && (
           <div className="flex items-center gap-4">
-            <RadialGauge value={percent} />
+            <AnimatedGauge
+              value={percent}
+              colorClassName={loadTextColor(percent)}
+            />
             <div className="flex min-w-0 flex-1 flex-col gap-2">
               <div className="grid grid-cols-2 gap-2">
                 <MiniStat

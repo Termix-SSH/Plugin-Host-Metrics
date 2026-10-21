@@ -1,5 +1,4 @@
 import {
-  RadialGauge,
   Sparkline,
   MiniStat,
   MetricCard,
@@ -9,7 +8,8 @@ import {
 import { type ServerMetrics } from "../../shared/metrics.js";
 import { useState, useEffect } from "react";
 import { Cpu } from "lucide-react";
-import { loadColor } from "../process-view";
+import { loadColor, loadTextColor } from "../process-view";
+import { AnimatedGauge } from "./AnimatedGauge";
 import { useTranslation } from "@termix-ssh/plugin-sdk/frontend";
 import { type MetricsHistoryRow, useHostMetricsApi } from "../host-metrics-api";
 import { CardTimeTabs, type HistoryTab } from "./CardTimeTabs";
@@ -76,8 +76,9 @@ export function CpuCard({
       <div className="flex flex-col gap-3">
         {activeTab === "live" && (
           <div className="flex items-center gap-4">
-            <RadialGauge
+            <AnimatedGauge
               value={percent}
+              colorClassName={loadTextColor(percent)}
               caption={
                 cores !== null
                   ? t("hostMetrics.cpuCores", { count: cores })
