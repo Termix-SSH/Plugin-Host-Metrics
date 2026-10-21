@@ -1,6 +1,7 @@
 {
   "nav": {
-    "hostMetrics": "Mõõdikud"
+    "hostMetrics": "Mõõdikud",
+    "togglePanel": "Mõõdikute paneel"
   },
   "hostMetrics": {
     "cpu": "CPU",
@@ -164,6 +165,13 @@
       "wgHandshakeNever": "Mitte kunagi",
       "wgNoPeers": "Ühtegi partnerit",
       "revoke": "Tõmba tagasi"
+    },
+    "companion": {
+      "off": "Mõõdikud on selle hosti jaoks väljas lülitatud.",
+      "loading": "Mõõdikute laadimine...",
+      "totp": "See host nõuab kinnituskoodi. Sisestamiseks avage Host Metrics.",
+      "open": "Ava Host Metrics",
+      "topProcesses": "Peamised protsessid"
     }
   },
   "metricsHistory": {
@@ -193,7 +201,9 @@
     "visibleWidgets": "Nähtavad vidinad",
     "widgetsMovedToHostMetrics": "Kaardid lisatakse, paigutatakse ja suurustatakse nüüd otse hosti meetrikate vahelehel. Ava selle hosti hosti meetrikad ja kasuta kohandamist, et valida, millised kaardid kuvatakse.",
     "hostNotFound": "Hosti ei leitud",
-    "loadingHost": "Laadin hosti..."
+    "loadingHost": "Laadin hosti...",
+    "showPanelLabel": "Kuva mõõdikute paneel terminalides",
+    "showPanelDesc": "Luba mõõdikute paneelil avada selle hosti SSH terminali kõrval."
   },
   "homepage": {
     "noData": "Andmeid pole saadaval",
@@ -253,6 +263,25 @@
         "description": "Kuidas temperatuure Peremeesmasina mõõdikutes kuvatakse.",
         "celsius": "Celsius",
         "fahrenheit": "Fahrenheit"
+      },
+      "companionAutoOpen": {
+        "label": "Ava mõõdikute paneel koos uute terminalidega",
+        "description": "Kuva reaalajas mõõdikud iga SSH terminali kõrval. Saate seda ikka avada ja sulgeda paremal serval olevast nupust."
+      },
+      "companionSide": {
+        "label": "Mõõdikute paneeli külg",
+        "description": "Kus mõõdikute paneel asub terminali kõrval.",
+        "right": "Parem",
+        "left": "Vasak",
+        "bottom": "Alumine"
+      },
+      "companionSize": {
+        "label": "Mõõdikute paneeli suurus",
+        "description": "Laius pikslites või kõrgus, kui see on all. Saad ka selle serva lohisedades muuta."
+      },
+      "companionEdgeButton": {
+        "label": "Kuva paneeli nupp",
+        "description": "Kuva terminali paremal serval väike nupp, mis avab mõõdikute paneeli."
       }
     },
     "host": {
@@ -270,6 +299,9 @@
       },
       "monitoredMounts": {
         "label": "Monitooritavad asukohad"
+      },
+      "showPanel": {
+        "label": "Kuva mõõdikute paneel terminalides"
       }
     }
   },

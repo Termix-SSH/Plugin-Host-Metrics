@@ -1,6 +1,7 @@
 {
   "nav": {
-    "hostMetrics": "Isäntämittarit"
+    "hostMetrics": "Isäntämittarit",
+    "togglePanel": "Mittaripaneeli"
   },
   "hostMetrics": {
     "cpu": "CPU",
@@ -164,6 +165,13 @@
       "wgHandshakeNever": "Ei koskaan",
       "wgNoPeers": "Ei vertaisverkkoja",
       "revoke": "Peruuta"
+    },
+    "companion": {
+      "off": "Tämän isäntäpalvelimen mittarit ovat pois päältä.",
+      "loading": "Ladataan mittareita...",
+      "totp": "Tämä isäntäpalvelin vaatii vahvistuskoodin. Avaa Isäntäpalvelimen mittarit syöttääksesi sen.",
+      "open": "Avaa Isäntäpalvelimen mittarit",
+      "topProcesses": "Tärkeimmät prosessit"
     }
   },
   "metricsHistory": {
@@ -193,7 +201,9 @@
     "visibleWidgets": "Näkyvät widgetit",
     "widgetsMovedToHostMetrics": "Kortit lisätään, järjestetään ja kooltaan muutetaan nyt suoraan Palvelinmetriikat-välilehdellä. Avaa tämän palvelimen Palvelinmetriikat ja käytä Mukauta-toimintoa valitaksesi näytettävät kortit.",
     "hostNotFound": "Palvelinta ei löydy",
-    "loadingHost": "Ladataan palvelinta..."
+    "loadingHost": "Ladataan palvelinta...",
+    "showPanelLabel": "Näytä mittaripaneeli terminaaleissa",
+    "showPanelDesc": "Salli mittaripaneelin avautuminen tämän isäntäpalvelimen SSH-terminaalista vieressä."
   },
   "homepage": {
     "noData": "Tietoja ei saatavilla",
@@ -253,6 +263,25 @@
         "description": "Kuinka lämpötilat näytetään isäntämittareissa.",
         "celsius": "Celsius",
         "fahrenheit": "Fahrenheit"
+      },
+      "companionAutoOpen": {
+        "label": "Avaa mittaripaneeli uusien terminaaleiden kanssa",
+        "description": "Näytä reaaliaikaiset mittarit jokaisen SSH-terminaalin vieressä. Voit silti avata ja sulkea sen oikean reunan painikkeesta."
+      },
+      "companionSide": {
+        "label": "Mittaripaneelin sijainti",
+        "description": "Missä mittaripaneeli sijaitsee terminaalin vieressä.",
+        "right": "Oikealla",
+        "left": "Vasemmalla",
+        "bottom": "Alareunassa"
+      },
+      "companionSize": {
+        "label": "Mittaripaneelin koko",
+        "description": "Leveys pikseleinä tai korkeus, kun paneeli on alareunassa. Voit myös vetää paneelin reunaa."
+      },
+      "companionEdgeButton": {
+        "label": "Näytä paneelin painike",
+        "description": "Näytä pieni painike terminaalin oikeassa reunassa, joka avaa mittaripaneelin."
       }
     },
     "host": {
@@ -270,6 +299,9 @@
       },
       "monitoredMounts": {
         "label": "Valvotut polut"
+      },
+      "showPanel": {
+        "label": "Näytä mittaripaneeli terminaaleissa"
       }
     }
   },

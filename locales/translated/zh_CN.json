@@ -1,6 +1,7 @@
 {
   "nav": {
-    "hostMetrics": "主机指标"
+    "hostMetrics": "主机指标",
+    "togglePanel": "指标面板"
   },
   "hostMetrics": {
     "cpu": "CPU",
@@ -163,6 +164,13 @@
       "wgHandshakeNever": "从未",
       "wgNoPeers": "无对等节点",
       "revoke": "吊销"
+    },
+    "companion": {
+      "off": "此主机的指标已关闭。",
+      "loading": "正在加载指标...",
+      "totp": "此主机需要验证码。请打开主机指标面板输入。",
+      "open": "打开主机指标",
+      "topProcesses": "主要进程"
     }
   },
   "metricsHistory": {
@@ -192,7 +200,9 @@
     "visibleWidgets": "可见的小部件",
     "widgetsMovedToHostMetrics": "卡片现在直接在“主机指标”选项卡中添加、排列和调整大小。打开此主机的“主机指标”，使用“自定义”来选择显示哪些卡片。",
     "hostNotFound": "未找到主机",
-    "loadingHost": "正在加载主机..."
+    "loadingHost": "正在加载主机...",
+    "showPanelLabel": "在终端中显示指标面板",
+    "showPanelDesc": "允许指标面板在此主机的 SSH 终端旁打开。"
   },
   "homepage": {
     "noData": "无可用数据",
@@ -252,6 +262,25 @@
         "description": "在主机指标中显示温度的方式。",
         "celsius": "摄氏度",
         "fahrenheit": "华氏度"
+      },
+      "companionAutoOpen": {
+        "label": "随新终端打开指标面板",
+        "description": "在每个 SSH 终端旁显示实时指标。您仍可以通过右侧边缘的按钮打开或关闭它。"
+      },
+      "companionSide": {
+        "label": "指标面板位置",
+        "description": "指标面板在终端旁边的显示位置。",
+        "right": "右侧",
+        "left": "左侧",
+        "bottom": "底部"
+      },
+      "companionSize": {
+        "label": "指标面板大小",
+        "description": "宽度（像素），若位于底部则为高度。您也可以拖动边缘调整大小。"
+      },
+      "companionEdgeButton": {
+        "label": "显示面板按钮",
+        "description": "在终端右侧边缘显示一个小按钮，点击可打开指标面板。"
       }
     },
     "host": {
@@ -269,6 +298,9 @@
       },
       "monitoredMounts": {
         "label": "监控路径"
+      },
+      "showPanel": {
+        "label": "在终端中显示指标面板"
       }
     }
   },

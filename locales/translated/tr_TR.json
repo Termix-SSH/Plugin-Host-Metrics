@@ -1,6 +1,7 @@
 {
   "nav": {
-    "hostMetrics": "Ana Bilgisayar Metrikleri"
+    "hostMetrics": "Ana Bilgisayar Metrikleri",
+    "togglePanel": "Metrikler paneli"
   },
   "hostMetrics": {
     "cpu": "CPU",
@@ -164,6 +165,13 @@
       "wgHandshakeNever": "Hiçbir zaman",
       "wgNoPeers": "Eş yok",
       "revoke": "İptal et"
+    },
+    "companion": {
+      "off": "Bu ana bilgisayar için metrikler kapalı.",
+      "loading": "Metrikler yükleniyor...",
+      "totp": "Bu ana bilgisayar için doğrulama kodu gerekiyor. Girmek için Ana Bilgisayar Metrikleri'ni açın.",
+      "open": "Ana Bilgisayar Metrikleri'ni Aç",
+      "topProcesses": "En üstteki işlemler"
     }
   },
   "metricsHistory": {
@@ -193,7 +201,9 @@
     "visibleWidgets": "Görünür Widget'lar",
     "widgetsMovedToHostMetrics": "Kartlar artık doğrudan Ana Makine Metrikleri sekmesinde ekleniyor, düzenleniyor ve yeniden boyutlandırılıyor. Hangi kartların gösterileceğini seçmek için bu ana makinenin Ana Makine Metrikleri sekmesini açın ve Özelleştir'i kullanın.",
     "hostNotFound": "Ana makine bulunamadı",
-    "loadingHost": "Ana makine yükleniyor..."
+    "loadingHost": "Ana makine yükleniyor...",
+    "showPanelLabel": "Terminalde metrikler panelini göster",
+    "showPanelDesc": "Metrikler panelinin bu ana bilgisayarın SSH terminalinin yanında açılmasına izin verin."
   },
   "homepage": {
     "noData": "Veri mevcut değil",
@@ -253,6 +263,25 @@
         "description": "Sıcaklıkların Ana Bilgisayar Metriklerinde nasıl gösterileceği.",
         "celsius": "Santigrat",
         "fahrenheit": "Fahrenheit"
+      },
+      "companionAutoOpen": {
+        "label": "Metrikler panelini yeni terminallerle aç",
+        "description": "Her SSH terminalinin yanında canlı metrikleri gösterin. Sağ kenardaki düğmeden açıp kapatabilirsiniz."
+      },
+      "companionSide": {
+        "label": "Metrikler paneli konumu",
+        "description": "Metrikler panelinin terminalin yanında nerede duracağı.",
+        "right": "Sağ",
+        "left": "Sol",
+        "bottom": "Alt"
+      },
+      "companionSize": {
+        "label": "Metrikler paneli boyutu",
+        "description": "Piksel cinsinden genişlik veya altta olduğunda yükseklik. Ayrıca kenarını sürükleyebilirsiniz."
+      },
+      "companionEdgeButton": {
+        "label": "Panel düğmesini göster",
+        "description": "Terminalin sağ kenarında metrikler panelini açan küçük bir düğme gösterin."
       }
     },
     "host": {
@@ -270,10 +299,14 @@
       },
       "monitoredMounts": {
         "label": "İzlenen yollar"
+      },
+      "showPanel": {
+        "label": "Terminalde metrikler panelini göster"
       }
     }
   },
   "plugin": {
-    "name": "Ana Bilgisayar Metrikleri"
+    "name": "Ana Bilgisayar Metrikleri",
+    "description": "Canlı CPU, bellek, disk, ağ ve GPU istatistikleri ve ana bilgisayarlarınızı yönetmek için araçlar."
   }
 }

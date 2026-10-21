@@ -1,6 +1,7 @@
 {
   "nav": {
-    "hostMetrics": "Mètriques de l'amfitrió"
+    "hostMetrics": "Mètriques de l'amfitrió",
+    "togglePanel": "Panell de mètriques"
   },
   "hostMetrics": {
     "cpu": "CPU",
@@ -165,6 +166,13 @@
       "wgHandshakeNever": "Mai",
       "wgNoPeers": "Sense iguals",
       "revoke": "Revocar"
+    },
+    "companion": {
+      "off": "Les mètriques estan desactivades per a aquest host.",
+      "loading": "S'estan carregant les mètriques...",
+      "totp": "Aquest host necessita un codi de verificació. Obre Mètriques de l'host per introduir-lo.",
+      "open": "Obre Mètriques de l'host",
+      "topProcesses": "Principals processos"
     }
   },
   "metricsHistory": {
@@ -194,7 +202,9 @@
     "visibleWidgets": "Gadgets visibles",
     "widgetsMovedToHostMetrics": "Les targetes ara s'afegeixen, s'ordenen i es redimensionen directament a la pestanya Mètriques de l'amfitrió. Obriu Mètriques de l'amfitrió per a aquest amfitrió i utilitzeu Personalitza per triar quines targetes es mostren.",
     "hostNotFound": "Amfitrió no trobat",
-    "loadingHost": "Carregant amfitrió..."
+    "loadingHost": "Carregant amfitrió...",
+    "showPanelLabel": "Mostra el panell de mètriques als terminals",
+    "showPanelDesc": "Permet que el panell de mètriques s'obri al costat del terminal SSH d'aquest host."
   },
   "homepage": {
     "noData": "No hi ha dades disponibles",
@@ -254,6 +264,25 @@
         "description": "Com es mostren les temperatures a les Mètriques de l'amfitrió.",
         "celsius": "Celsius",
         "fahrenheit": "Fahrenheit"
+      },
+      "companionAutoOpen": {
+        "label": "Obre el panell de mètriques amb els nous terminals",
+        "description": "Mostra les mètriques en directe al costat de cada terminal SSH. Sempre pots obrir-lo i tancar-lo des del botó del costat dret."
+      },
+      "companionSide": {
+        "label": "Costat del panell de mètriques",
+        "description": "On es troba el panell de mètriques al costat d'un terminal.",
+        "right": "Dreta",
+        "left": "Esquerra",
+        "bottom": "Inferior"
+      },
+      "companionSize": {
+        "label": "Mida del panell de mètriques",
+        "description": "Amplada en píxels, o alçada quan està a la part inferior. També podeu arrossegar la seva vora."
+      },
+      "companionEdgeButton": {
+        "label": "Mostrar el botó del panell",
+        "description": "Mostra un botó petit a la vora dreta d'un terminal que obre el panell de mètriques."
       }
     },
     "host": {
@@ -271,6 +300,9 @@
       },
       "monitoredMounts": {
         "label": "Rutes supervisades"
+      },
+      "showPanel": {
+        "label": "Mostrar el panell de mètriques als terminals"
       }
     }
   },

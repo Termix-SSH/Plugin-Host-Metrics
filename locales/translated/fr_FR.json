@@ -1,6 +1,7 @@
 {
   "nav": {
-    "hostMetrics": "Métriques du serveur"
+    "hostMetrics": "Métriques du serveur",
+    "togglePanel": "Panneau des métriques"
   },
   "hostMetrics": {
     "cpu": "CPU",
@@ -165,6 +166,13 @@
       "wgHandshakeNever": "Jamais",
       "wgNoPeers": "Aucun pair",
       "revoke": "Révoquer"
+    },
+    "companion": {
+      "off": "Les métriques sont désactivées pour cet hôte.",
+      "loading": "Chargement des métriques...",
+      "totp": "Cet hôte nécessite un code de vérification. Ouvrez les métriques de l'hôte pour le saisir.",
+      "open": "Ouvrir les métriques de l'hôte",
+      "topProcesses": "Principaux processus"
     }
   },
   "metricsHistory": {
@@ -194,7 +202,9 @@
     "visibleWidgets": "Widgets visibles",
     "widgetsMovedToHostMetrics": "Les cartes sont désormais ajoutées, organisées et redimensionnées directement dans l'onglet Métriques de l'hôte. Ouvrez les Métriques de l'hôte pour cet hôte et utilisez Personnaliser pour choisir quelles cartes sont affichées.",
     "hostNotFound": "Hôte introuvable",
-    "loadingHost": "Chargement de l'hôte..."
+    "loadingHost": "Chargement de l'hôte...",
+    "showPanelLabel": "Afficher le panneau des métriques dans les terminaux",
+    "showPanelDesc": "Laissez le panneau des métriques s'ouvrir à côté du terminal SSH de cet hôte."
   },
   "homepage": {
     "noData": "Aucune donnée disponible",
@@ -254,6 +264,25 @@
         "description": "Affichage des températures dans les métriques des hôtes.",
         "celsius": "Celsius",
         "fahrenheit": "Fahrenheit"
+      },
+      "companionAutoOpen": {
+        "label": "Ouvrir le panneau des métriques avec les nouveaux terminaux",
+        "description": "Afficher les métriques en temps réel à côté de chaque terminal SSH. Vous pouvez toujours l'ouvrir et le fermer via le bouton sur le bord droit."
+      },
+      "companionSide": {
+        "label": "Côté du panneau de métriques",
+        "description": "Emplacement du panneau de métriques par rapport au terminal.",
+        "right": "Droite",
+        "left": "Gauche",
+        "bottom": "Bas"
+      },
+      "companionSize": {
+        "label": "Taille du panneau de métriques",
+        "description": "Largeur en pixels, ou hauteur lorsqu'il est en bas. Vous pouvez également redimensionner en faisant glisser son bord."
+      },
+      "companionEdgeButton": {
+        "label": "Afficher le bouton du panneau",
+        "description": "Affiche un petit bouton sur le bord droit du terminal pour ouvrir le panneau de métriques."
       }
     },
     "host": {
@@ -271,6 +300,9 @@
       },
       "monitoredMounts": {
         "label": "Chemins surveillés"
+      },
+      "showPanel": {
+        "label": "Afficher le panneau de métriques dans les terminaux"
       }
     }
   },

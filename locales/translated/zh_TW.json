@@ -1,6 +1,7 @@
 {
   "nav": {
-    "hostMetrics": "主機指標"
+    "hostMetrics": "主機指標",
+    "togglePanel": "效能指標面板"
   },
   "hostMetrics": {
     "cpu": "CPU",
@@ -163,6 +164,13 @@
       "wgHandshakeNever": "從未",
       "wgNoPeers": "無同儕節點",
       "revoke": "撤銷"
+    },
+    "companion": {
+      "off": "此主機的效能指標已關閉。",
+      "loading": "正在載入效能指標...",
+      "totp": "此主機需要驗證碼。請開啟「主機效能指標」以輸入。",
+      "open": "開啟主機效能指標",
+      "topProcesses": "主要程序"
     }
   },
   "metricsHistory": {
@@ -192,7 +200,9 @@
     "visibleWidgets": "顯示的小工具",
     "widgetsMovedToHostMetrics": "卡片現在可直接在「主機指標」分頁中新增、排列與調整大小。請開啟此主機的「主機指標」，並使用「自訂」功能選擇要顯示的卡片。",
     "hostNotFound": "找不到主機",
-    "loadingHost": "正在載入主機..."
+    "loadingHost": "正在載入主機...",
+    "showPanelLabel": "在終端機中顯示效能指標面板",
+    "showPanelDesc": "讓效能指標面板顯示在此主機的 SSH 終端機旁邊。"
   },
   "homepage": {
     "noData": "無可用資料",
@@ -252,6 +262,25 @@
         "description": "主機指標中溫度的顯示方式。",
         "celsius": "攝氏",
         "fahrenheit": "華氏"
+      },
+      "companionAutoOpen": {
+        "label": "開啟新終端機時自動顯示效能指標面板",
+        "description": "在每個 SSH 終端機旁邊顯示即時效能指標。您仍可以透過右側邊緣的按鈕開啟或關閉它。"
+      },
+      "companionSide": {
+        "label": "效能面板位置",
+        "description": "效能面板相對於終端機的位置。",
+        "right": "右側",
+        "left": "左側",
+        "bottom": "底部"
+      },
+      "companionSize": {
+        "label": "效能面板大小",
+        "description": "以像素為單位的寬度，若位於底部則為高度。您也可以拖曳邊緣來調整。"
+      },
+      "companionEdgeButton": {
+        "label": "顯示面板按鈕",
+        "description": "在終端機右側邊緣顯示一個小按鈕，用於開啟效能面板。"
       }
     },
     "host": {
@@ -269,6 +298,9 @@
       },
       "monitoredMounts": {
         "label": "監控路徑"
+      },
+      "showPanel": {
+        "label": "在終端機中顯示效能面板"
       }
     }
   },

@@ -1,6 +1,7 @@
 {
   "nav": {
-    "hostMetrics": "Metryki hosta"
+    "hostMetrics": "Metryki hosta",
+    "togglePanel": "Panel metryk"
   },
   "hostMetrics": {
     "cpu": "CPU",
@@ -166,6 +167,13 @@
       "wgHandshakeNever": "Nigdy",
       "wgNoPeers": "Brak peerów",
       "revoke": "Unieważnij"
+    },
+    "companion": {
+      "off": "Metryki są wyłączone dla tego hosta.",
+      "loading": "Ładowanie metryk...",
+      "totp": "Ten host wymaga kodu weryfikacyjnego. Otwórz Metryki hosta, aby go wpisać.",
+      "open": "Otwórz Metryki hosta",
+      "topProcesses": "Najbardziej obciążające procesy"
     }
   },
   "metricsHistory": {
@@ -195,7 +203,9 @@
     "visibleWidgets": "Widoczne widżety",
     "widgetsMovedToHostMetrics": "Karty są teraz dodawane, układane i zmieniane rozmiarem bezpośrednio w zakładce Metryki hosta. Otwórz Metryki hosta dla tego hosta i użyj opcji Dostosuj, aby wybrać, które karty mają być wyświetlane.",
     "hostNotFound": "Host nie znaleziony",
-    "loadingHost": "Ładowanie hosta..."
+    "loadingHost": "Ładowanie hosta...",
+    "showPanelLabel": "Pokaż panel metryk w terminalach",
+    "showPanelDesc": "Pozwól, aby panel metryk otwierał się obok terminala SSH tego hosta."
   },
   "homepage": {
     "noData": "Brak dostępnych danych",
@@ -255,6 +265,25 @@
         "description": "Jak temperatura jest wyświetlana w metrykach hosta.",
         "celsius": "Celsjusz",
         "fahrenheit": "Fahrenheit"
+      },
+      "companionAutoOpen": {
+        "label": "Otwieraj panel metryk wraz z nowymi terminalami",
+        "description": "Wyświetlaj aktualne metryki obok każdego terminala SSH. Możesz nadal otwierać i zamykać panel za pomocą przycisku na prawej krawędzi."
+      },
+      "companionSide": {
+        "label": "Pozycja panelu metryk",
+        "description": "Gdzie panel metryk znajduje się względem terminala.",
+        "right": "Prawa",
+        "left": "Lewa",
+        "bottom": "Dolna"
+      },
+      "companionSize": {
+        "label": "Rozmiar panelu metryk",
+        "description": "Szerokość w pikselach lub wysokość, gdy panel jest na dole. Możesz również przeciągnąć jego krawędź."
+      },
+      "companionEdgeButton": {
+        "label": "Pokaż przycisk panelu",
+        "description": "Wyświetlaj mały przycisk na prawej krawędzi terminala, który otwiera panel metryk."
       }
     },
     "host": {
@@ -272,10 +301,14 @@
       },
       "monitoredMounts": {
         "label": "Monitorowane ścieżki"
+      },
+      "showPanel": {
+        "label": "Pokaż panel metryk w terminalach"
       }
     }
   },
   "plugin": {
-    "name": "Metryki hosta"
+    "name": "Metryki hosta",
+    "description": "Aktualne statystyki CPU, pamięci, dysku, sieci i GPU oraz narzędzia do zarządzania hostami."
   }
 }

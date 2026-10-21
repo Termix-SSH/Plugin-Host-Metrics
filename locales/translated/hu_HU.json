@@ -1,6 +1,7 @@
 {
   "nav": {
-    "hostMetrics": "Host metrikák"
+    "hostMetrics": "Host metrikák",
+    "togglePanel": "Mérőpanel"
   },
   "hostMetrics": {
     "cpu": "CPU",
@@ -164,6 +165,13 @@
       "wgHandshakeNever": "Soha",
       "wgNoPeers": "Nincsenek csomópontok",
       "revoke": "Visszavonás"
+    },
+    "companion": {
+      "off": "A metrikák kikapcsolva vannak ezen a hoszton.",
+      "loading": "Metrikák betöltése...",
+      "totp": "Ez a hoszt egy ellenőrző kódot igényel. Nyisd meg a Hoszt Metrikákat a megadásához.",
+      "open": "Hoszt Metrikák megnyitása",
+      "topProcesses": "Legfontosabb folyamatok"
     }
   },
   "metricsHistory": {
@@ -193,7 +201,9 @@
     "visibleWidgets": "Látható widgetek",
     "widgetsMovedToHostMetrics": "A kártyák mostantól közvetlenül a Hoszt metrikák fülön adhatók hozzá, rendezhetők és méretezhetők. Nyissa meg a Hoszt metrikákat ehhez a hoszthoz, és használja a Testreszabás lehetőséget a megjelenítendő kártyák kiválasztásához.",
     "hostNotFound": "A hoszt nem található",
-    "loadingHost": "Hoszt betöltése..."
+    "loadingHost": "Hoszt betöltése...",
+    "showPanelLabel": "Mérőpanel megjelenítése a terminálokban",
+    "showPanelDesc": "Hagyd, hogy a mérőpanel a hoszt SSH termináljának mellett nyíljon meg."
   },
   "homepage": {
     "noData": "Nincs elérhető adat",
@@ -253,6 +263,25 @@
         "description": "Hogyan jelennek meg a hőmérsékletek a Host mérőszámokban.",
         "celsius": "Celsius",
         "fahrenheit": "Fahrenheit"
+      },
+      "companionAutoOpen": {
+        "label": "Mérőpanel megnyitása az új terminálokkal",
+        "description": "Élő metrikák megjelenítése minden SSH terminál mellett. A jobb szélen lévő gombbal továbbra is megnyithatod és bezárhatod."
+      },
+      "companionSide": {
+        "label": "Mérőpanel oldala",
+        "description": "Ahol a mérőpanel a terminál mellett helyezkedik el.",
+        "right": "Jobb",
+        "left": "Bal",
+        "bottom": "Alsó"
+      },
+      "companionSize": {
+        "label": "Mérőpanel mérete",
+        "description": "Szélesség pixelben, vagy magasság, ha alul van. A szélét húzva is módosíthatod."
+      },
+      "companionEdgeButton": {
+        "label": "Panel gomb megjelenítése",
+        "description": "Egy kis gomb megjelenítése a terminál jobb szélén, amely megnyitja a mérőpanelt."
       }
     },
     "host": {
@@ -270,10 +299,14 @@
       },
       "monitoredMounts": {
         "label": "Figyelt elérési utak"
+      },
+      "showPanel": {
+        "label": "Mérőpanel megjelenítése a terminálokban"
       }
     }
   },
   "plugin": {
-    "name": "Host mérőszámok"
+    "name": "Host mérőszámok",
+    "description": "Élő CPU, memória, lemez, hálózati és GPU statisztikák, valamint eszközök a hosztok kezeléséhez."
   }
 }

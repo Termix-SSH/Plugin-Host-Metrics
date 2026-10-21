@@ -1,6 +1,7 @@
 {
   "nav": {
-    "hostMetrics": "Host-Metriken"
+    "hostMetrics": "Host-Metriken",
+    "togglePanel": "Metriken-Panel"
   },
   "hostMetrics": {
     "cpu": "CPU",
@@ -164,6 +165,13 @@
       "wgHandshakeNever": "Nie",
       "wgNoPeers": "Keine Peers",
       "revoke": "Widerrufen"
+    },
+    "companion": {
+      "off": "Die Metriken sind für diesen Host deaktiviert.",
+      "loading": "Metriken werden geladen...",
+      "totp": "Dieser Host benötigt einen Bestätigungscode. Öffnen Sie Host-Metriken, um ihn einzugeben.",
+      "open": "Host-Metriken öffnen",
+      "topProcesses": "Top-Prozesse"
     }
   },
   "metricsHistory": {
@@ -193,7 +201,9 @@
     "visibleWidgets": "Sichtbare Widgets",
     "widgetsMovedToHostMetrics": "Karten werden jetzt direkt im Tab „Host-Metriken“ hinzugefügt, angeordnet und in der Größe verändert. Öffnen Sie die Host-Metriken für diesen Host und verwenden Sie „Anpassen“, um auszuwählen, welche Karten angezeigt werden.",
     "hostNotFound": "Host nicht gefunden",
-    "loadingHost": "Host wird geladen..."
+    "loadingHost": "Host wird geladen...",
+    "showPanelLabel": "Metriken-Panel in Terminals anzeigen",
+    "showPanelDesc": "Lassen Sie das Metriken-Panel neben dem SSH-Terminal dieses Hosts öffnen."
   },
   "homepage": {
     "noData": "Keine Daten verfügbar",
@@ -253,6 +263,25 @@
         "description": "Wie Temperaturen in den Host-Metriken angezeigt werden.",
         "celsius": "Celsius",
         "fahrenheit": "Fahrenheit"
+      },
+      "companionAutoOpen": {
+        "label": "Metriken-Panel mit neuen Terminals öffnen",
+        "description": "Zeigen Sie Live-Metriken neben jedem SSH-Terminal an. Sie können es weiterhin über die Schaltfläche am rechten Rand öffnen und schließen."
+      },
+      "companionSide": {
+        "label": "Seite des Metriken-panels",
+        "description": "Wo das Metriken-Panel neben einem Terminal angezeigt wird.",
+        "right": "Rechts",
+        "left": "Links",
+        "bottom": "Unten"
+      },
+      "companionSize": {
+        "label": "Größe des Metriken-panels",
+        "description": "Breite in Pixeln oder Höhe, wenn es unten angezeigt wird. Sie können auch den Rand ziehen."
+      },
+      "companionEdgeButton": {
+        "label": "Panel-Schaltfläche anzeigen",
+        "description": "Zeigt eine kleine Schaltfläche am rechten Rand eines Terminals an, die das Metriken-Panel öffnet."
       }
     },
     "host": {
@@ -270,6 +299,9 @@
       },
       "monitoredMounts": {
         "label": "Überwachte Pfade"
+      },
+      "showPanel": {
+        "label": "Metriken-Panel in Terminals anzeigen"
       }
     }
   },

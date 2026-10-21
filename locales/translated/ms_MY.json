@@ -1,6 +1,7 @@
 {
   "nav": {
-    "hostMetrics": "Metrik Host"
+    "hostMetrics": "Metrik Host",
+    "togglePanel": "Panel metrik"
   },
   "hostMetrics": {
     "cpu": "CPU",
@@ -163,6 +164,13 @@
       "wgHandshakeNever": "Tidak pernah",
       "wgNoPeers": "Tiada rakan",
       "revoke": "Batalkan"
+    },
+    "companion": {
+      "off": "Metrik dimatikan untuk hos ini.",
+      "loading": "Memuatkan metrik...",
+      "totp": "Hos ini memerlukan kod pengesahan. Buka Metrik Hos untuk memasukkannya.",
+      "open": "Buka Metrik Hos",
+      "topProcesses": "Proses teratas"
     }
   },
   "metricsHistory": {
@@ -192,7 +200,9 @@
     "visibleWidgets": "Widget Terlihat",
     "widgetsMovedToHostMetrics": "Kad kini ditambah, disusun, dan diubah saiz terus dalam tab Metrik Hos. Buka Metrik Hos untuk hos ini dan gunakan Sesuaikan untuk memilih kad mana yang dipaparkan.",
     "hostNotFound": "Hos tidak dijumpai",
-    "loadingHost": "Memuatkan hos..."
+    "loadingHost": "Memuatkan hos...",
+    "showPanelLabel": "Paparkan panel metrik dalam terminal",
+    "showPanelDesc": "Biarkan panel metrik dibuka di sebelah terminal SSH hos ini."
   },
   "homepage": {
     "noData": "Tiada data tersedia",
@@ -252,6 +262,25 @@
         "description": "Bagaimana suhu dipaparkan dalam Metrik Hos.",
         "celsius": "Celsius",
         "fahrenheit": "Fahrenheit"
+      },
+      "companionAutoOpen": {
+        "label": "Buka panel metrik bersama terminal baharu",
+        "description": "Paparkan metrik langsung di sebelah setiap terminal SSH. Anda masih boleh membukanya dan menutupnya daripada butang di tepi kanan."
+      },
+      "companionSide": {
+        "label": "Sisi panel metrik",
+        "description": "Di mana panel metrik diletakkan di sebelah terminal.",
+        "right": "Kanan",
+        "left": "Kiri",
+        "bottom": "Bawah"
+      },
+      "companionSize": {
+        "label": "Saiz panel metrik",
+        "description": "Lebar dalam piksel, atau tinggi apabila ia berada di bahagian bawah. Anda juga boleh menyeret tepinya."
+      },
+      "companionEdgeButton": {
+        "label": "Paparkan butang panel",
+        "description": "Paparkan butang kecil di tepi kanan terminal yang membuka panel metrik."
       }
     },
     "host": {
@@ -269,6 +298,9 @@
       },
       "monitoredMounts": {
         "label": "Laluan yang dipantau"
+      },
+      "showPanel": {
+        "label": "Paparkan panel metrik dalam terminal"
       }
     }
   },

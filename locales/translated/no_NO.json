@@ -1,6 +1,7 @@
 {
   "nav": {
-    "hostMetrics": "Vertsmetrikker"
+    "hostMetrics": "Vertsmetrikker",
+    "togglePanel": "Målepunktspanel"
   },
   "hostMetrics": {
     "cpu": "CPU",
@@ -164,6 +165,13 @@
       "wgHandshakeNever": "Aldri",
       "wgNoPeers": "Ingen parter",
       "revoke": "Opphev"
+    },
+    "companion": {
+      "off": "Målepunkter er deaktivert for denne verten.",
+      "loading": "Laster målepunkter...",
+      "totp": "Denne verten krever en verifiseringskode. Åpne Vertmålepunkter for å taste den inn.",
+      "open": "Åpne Vertmålepunkter",
+      "topProcesses": "Topp prosesser"
     }
   },
   "metricsHistory": {
@@ -193,7 +201,9 @@
     "visibleWidgets": "Synlige widgeter",
     "widgetsMovedToHostMetrics": "Kort legges nå til, arrangeres og endres i størrelse direkte i fanen Vertsmetrikker. Åpne Vertsmetrikker for denne verten og bruk Tilpass for å velge hvilke kort som skal vises.",
     "hostNotFound": "Vert ikke funnet",
-    "loadingHost": "Laster vert..."
+    "loadingHost": "Laster vert...",
+    "showPanelLabel": "Vis målepunktspanel i terminaler",
+    "showPanelDesc": "La målepunktspanelet åpnes ved siden av SSH-terminalen for denne verten."
   },
   "homepage": {
     "noData": "Ingen data tilgjengelig",
@@ -253,6 +263,25 @@
         "description": "Hvordan temperaturer vises i vertsmetrikker.",
         "celsius": "Celsius",
         "fahrenheit": "Fahrenheit"
+      },
+      "companionAutoOpen": {
+        "label": "Åpne målepunktspanel med nye terminaler",
+        "description": "Vis sanntidsmålepunkter ved siden av hver SSH-terminal. Du kan fortsatt åpne og lukke det fra knappen på høyre kant."
+      },
+      "companionSide": {
+        "label": "Plassering av målepunktspanel",
+        "description": "Hvor målepunktspanelet vises ved siden av en terminal.",
+        "right": "Høyre",
+        "left": "Venstre",
+        "bottom": "Bunn"
+      },
+      "companionSize": {
+        "label": "Størrelse på målepunktspanel",
+        "description": "Bredde i piksler, eller høyde når det er plassert nederst. Du kan også dra i kanten."
+      },
+      "companionEdgeButton": {
+        "label": "Vis panelknapp",
+        "description": "Vis en liten knapp på høyre kant av en terminal som åpner målepunktspanelet."
       }
     },
     "host": {
@@ -270,10 +299,14 @@
       },
       "monitoredMounts": {
         "label": "Overvåkede stier"
+      },
+      "showPanel": {
+        "label": "Vis målepunktspanel i terminaler"
       }
     }
   },
   "plugin": {
-    "name": "Vertsmetrikker"
+    "name": "Vertsmetrikker",
+    "description": "Sanntidsstatistikk for CPU, minne, disk, nettverk og GPU, samt verktøy for å administrere vertene dine."
   }
 }
