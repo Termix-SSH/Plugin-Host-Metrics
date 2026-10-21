@@ -3,6 +3,9 @@ import type { MetricsSummaryStore } from "./summary-store";
 import { useMetricsSummary } from "./summary-store";
 import { hostHasMetrics } from "./host-filter";
 
+/** The widget fields the live sample can refresh; the rest keep the regular value. */
+const LIVE_METRICS = ["cpu", "memory", "network", "processes"];
+
 type MetricKey =
   "cpu" | "memory" | "disk" | "uptime" | "system" | "network" | "processes";
 
@@ -142,7 +145,11 @@ export function createHomepageHostMetrics(store: MetricsSummaryStore) {
       Array.isArray(props.shownMetrics) ? props.shownMetrics : []
     ) as MetricKey[];
     const online = props.online === true;
-    const metrics = useMetricsSummary(store, allowed ? hostId : null);
+    const metrics = useMetricsSummary(
+      store,
+      allowed ? hostId : null,
+      online && shown.some((m) => LIVE_METRICS.includes(m)),
+    );
     if (!allowed || shown.length === 0) return null;
 
     const interfaces = metrics?.network?.interfaces ?? [];

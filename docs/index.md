@@ -22,6 +22,10 @@ The clock button on a card opens its history chart: the last 1 hour, 6 hours, 24
 
 Samples are taken while someone is looking at a host, every 30 seconds by default. Admins set Metrics interval and History retention, 7 days by default, in Settings, Host Metrics. A host can set its own interval.
 
+## Live updates
+
+While a Host Metrics tab is open and visible, CPU, memory, network and the process list refresh every 2 seconds, and the CPU card shows a bar for each core. Pick Off, 1, 2 or 5 seconds under Live update rate in your Host Metrics settings. Admins control this with Live updates (on or off) and Live update minimum (default 2 seconds). Each host is sampled at most once per minimum, however many users or tabs are watching, and a faster user choice is slowed to it. This is separate from the Metrics interval, which only applies to regular sampling and history. Live updates also stop for hosts with Collect metrics turned off. Live updates read /proc on the host over SSH, so they only work on Linux. Each update runs one short awk command on the host, and updates pause while the tab is hidden. The CPU and memory bars in the terminal toolbar follow the same updates, and dashboard rows and homepage widgets use them too, but never faster than every 5 seconds and only while a host is online and shows a live field. Process search, sort and tree cover the busiest 60 processes. Other cards, such as disk, ports and the firewall, keep the regular sampling.
+
 ## Managers
 
 Manager cards let you change a host, not just watch it:

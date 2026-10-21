@@ -13,6 +13,7 @@ import { registerUserRoutes } from "./users.js";
 import { registerHealthRoutes } from "./health.js";
 import { registerLogRoutes } from "./logs.js";
 import { registerWireGuardRoutes } from "./wireguard.js";
+import { registerLiveRoutes } from "./live.js";
 
 /**
  * Registers the platform probe and every manager route under
@@ -60,4 +61,5 @@ export function registerManagerRoutes(
   registerHealthRoutes(app, deps);
   registerLogRoutes(app, deps);
   registerWireGuardRoutes(app, deps);
+  registerLiveRoutes(app, deps);
 }

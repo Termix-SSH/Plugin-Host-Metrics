@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import {
   usePluginApi,
   usePluginApiFor,
+  useSettings,
   useTranslation,
 } from "@termix-ssh/plugin-sdk/frontend";
 import {
@@ -11,6 +12,7 @@ import {
   resolveRemoteHostId,
   runAdaptivePolling,
 } from "@termix-ssh/plugin-sdk/ui";
+import { liveIntervalMs, useLiveMetrics } from "./live-metrics";
 
 /** What the ssh-terminal plugin hands a "terminal.toolbarStatus" component. */
 interface TerminalToolbarStatusProps {
@@ -73,7 +75,16 @@ export function TerminalMetricsStatus(props: Record<string, unknown>) {
   const remoteApi = usePluginApiFor("remote");
   const [metrics, setMetrics] = useState<Sample | null>(null);
   const [available, setAvailable] = useState(true);
+  // The live endpoint only exists on this server, so it waits until the host is
+  // known to be local rather than assuming it while the origin is resolved.
+  // Keyed by host id, so switching hosts never inherits the previous host's answer.
+  const [localHostId, setLocalHostId] = useState<number | null>(null);
   const hostId = host?.id ? Number(host.id) : null;
+  const live = useLiveMetrics(
+    hostId,
+    active && available && hostId !== null && localHostId === hostId,
+    liveIntervalMs(useSettings("user").values.liveInterval),
+  );
 
   useEffect(() => {
     if (!active || !hostId) {
@@ -88,6 +99,7 @@ export function TerminalMetricsStatus(props: Record<string, unknown>) {
     let api = localApi;
     let targetId: number = hostId;
     setAvailable(true);
+    setLocalHostId(null);
 
     const poll = async () => {
       try {
@@ -132,6 +144,8 @@ export function TerminalMetricsStatus(props: Record<string, unknown>) {
           }
           api = remoteApi;
           targetId = remoteId;
+        } else if (!cancelled) {
+          setLocalHostId(hostId);
         }
         const { data } = await api.post<{
           requires_totp?: boolean;
@@ -185,13 +199,16 @@ export function TerminalMetricsStatus(props: Record<string, unknown>) {
     );
   }
 
+  // The live sample overrides CPU and memory; disk is not in it and keeps the regular value.
+  const cpu = live?.cpu ?? metrics?.cpu ?? null;
+  const memory = live?.memTotalKb
+    ? (live.memUsedKb / live.memTotalKb) * 100
+    : (metrics?.memory ?? null);
+
   return (
     <>
-      <StatBar label={t("hostMetrics.cpu")} percent={metrics?.cpu ?? null} />
-      <StatBar
-        label={t("hostMetrics.memory")}
-        percent={metrics?.memory ?? null}
-      />
+      <StatBar label={t("hostMetrics.cpu")} percent={cpu} />
+      <StatBar label={t("hostMetrics.memory")} percent={memory} />
       <StatBar label={t("hostMetrics.disk")} percent={metrics?.disk ?? null} />
     </>
   );

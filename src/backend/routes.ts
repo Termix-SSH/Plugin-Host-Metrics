@@ -643,6 +643,19 @@ export function registerRoutes(router: Router, deps: RouteDeps): void {
     log,
     repository,
     recordHealth: deps.recordHealth,
+    liveConfig: async (hostId) => {
+      const [enabled, min, host] = await Promise.all([
+        ctx.settings.get<boolean>("liveEnabled"),
+        ctx.settings.get<number>("liveMinInterval"),
+        ctx.settings.getAll("host", hostId),
+      ]);
+      const minSeconds = Number(min);
+      return {
+        enabled: enabled !== false && host.metricsEnabled !== false,
+        minSeconds:
+          Number.isFinite(minSeconds) && minSeconds >= 1 ? minSeconds : 2,
+      };
+    },
     runOnHost: async (hostId, level, fn) => {
       const userId = ctx.currentActor();
       if (!userId) throw new AccessDeniedError("Authentication required");

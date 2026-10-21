@@ -1,8 +1,12 @@
 import { useCallback, useSyncExternalStore } from "react";
+import { useSettings } from "@termix-ssh/plugin-sdk/frontend";
 import type { ServerMetrics } from "../shared/metrics.js";
 import type { HostMetricsApi } from "./host-metrics-api";
+import { liveIntervalMs, mergeLive, useLiveMetrics } from "./live-metrics";
 
 const REFRESH_MS = 30_000;
+// A dashboard can list many hosts, so its rows follow the live sample more slowly than the tab does.
+const SUMMARY_LIVE_MIN_MS = 5_000;
 
 interface Entry {
   refs: number;
@@ -100,6 +104,8 @@ export type MetricsSummaryStore = ReturnType<typeof createMetricsSummaryStore>;
 export function useMetricsSummary(
   store: MetricsSummaryStore,
   hostId: number | null | undefined,
+  /** False when nothing shown needs live values (offline host, slow-only fields). */
+  wantLive = true,
 ): ServerMetrics | null {
   // Stable per host, or every render would drop and re-add the viewer.
   const subscribe = useCallback(
@@ -107,9 +113,16 @@ export function useMetricsSummary(
       hostId ? store.watch(hostId, onChange) : () => {},
     [store, hostId],
   );
-  return useSyncExternalStore(
+  const slow = useSyncExternalStore(
     subscribe,
     () => (hostId ? store.get(hostId) : null),
     () => null,
   );
+  const chosen = liveIntervalMs(useSettings("user").values.liveInterval);
+  const live = useLiveMetrics(
+    hostId ?? null,
+    !!hostId && !!slow && wantLive,
+    chosen == null ? null : Math.max(chosen, SUMMARY_LIVE_MIN_MS),
+  );
+  return mergeLive(slow, live);
 }

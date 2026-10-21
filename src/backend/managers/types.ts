@@ -41,4 +41,8 @@ export interface ManagerRoutesDeps {
   log: MetricsLogger;
   repository: HostMetricsRepository;
   recordHealth: HealthRecorder;
+  /** Live-update policy for a host. Disabled by the admin or by the host's metricsEnabled. */
+  liveConfig: (
+    hostId: number,
+  ) => Promise<{ enabled: boolean; minSeconds: number }>;
 }

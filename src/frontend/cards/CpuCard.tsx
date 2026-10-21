@@ -9,6 +9,7 @@ import {
 import { type ServerMetrics } from "../../shared/metrics.js";
 import { useState, useEffect } from "react";
 import { Cpu } from "lucide-react";
+import { loadColor } from "../process-view";
 import { useTranslation } from "@termix-ssh/plugin-sdk/frontend";
 import { type MetricsHistoryRow, useHostMetricsApi } from "../host-metrics-api";
 import { CardTimeTabs, type HistoryTab } from "./CardTimeTabs";
@@ -96,6 +97,59 @@ export function CpuCard({
                 domain={[0, 100]}
                 height={48}
               />
+              {metrics?.cpu?.mix && (
+                <div className="flex flex-col gap-0.5">
+                  <div className="flex h-1.5 w-full bg-muted">
+                    <div
+                      className="bg-emerald-500"
+                      style={{ width: `${metrics.cpu.mix.user}%` }}
+                    />
+                    <div
+                      className="bg-red-500"
+                      style={{ width: `${metrics.cpu.mix.system}%` }}
+                    />
+                    <div
+                      className="bg-sky-500"
+                      style={{ width: `${metrics.cpu.mix.iowait}%` }}
+                    />
+                    <div
+                      className="bg-purple-500"
+                      style={{ width: `${metrics.cpu.mix.steal}%` }}
+                    />
+                  </div>
+                  <div className="font-mono text-[10px] text-muted-foreground">
+                    {t("hostMetrics.cpuMix", {
+                      user: metrics.cpu.mix.user.toFixed(0),
+                      system: metrics.cpu.mix.system.toFixed(0),
+                      iowait: metrics.cpu.mix.iowait.toFixed(0),
+                      steal: metrics.cpu.mix.steal.toFixed(0),
+                    })}
+                  </div>
+                </div>
+              )}
+              {metrics?.cpu?.perCore && metrics.cpu.perCore.length > 0 && (
+                <div className="flex flex-col gap-0.5">
+                  {metrics.cpu.perCore.map((c, i) => (
+                    <div
+                      key={i}
+                      className="flex items-center gap-1.5 font-mono text-[10px] text-muted-foreground"
+                    >
+                      <span className="w-5 shrink-0">
+                        #{metrics.cpu.coreIds?.[i] ?? i}
+                      </span>
+                      <div className="h-1.5 flex-1 bg-muted">
+                        <div
+                          className={"h-full " + loadColor(c)}
+                          style={{ width: `${c ?? 0}%` }}
+                        />
+                      </div>
+                      <span className="w-7 shrink-0 text-right">
+                        {c == null ? "-" : `${c.toFixed(0)}%`}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              )}
             </div>
           </div>
         )}

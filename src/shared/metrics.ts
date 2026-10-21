@@ -5,12 +5,22 @@ interface CpuMetrics {
   percent: number | null;
   cores: number | null;
   load: [number, number, number] | null;
+  /** Per-core percent, from the 1s live sample. */
+  perCore?: Array<number | null>;
+  /** Kernel CPU numbers for perCore, which skip offline cores. */
+  coreIds?: string[];
+  /** Percent of CPU time by kind since the last live sample. */
+  mix?: { user: number; system: number; iowait: number; steal: number };
 }
 
 interface MemoryMetrics {
   percent: number | null;
   usedGiB: number | null;
   totalGiB: number | null;
+  /** Buffers plus page cache, from the live sample. */
+  cachedGiB?: number;
+  /** Completely unused memory, from the live sample. */
+  freeGiB?: number;
 }
 
 export interface DiskFilesystem {
@@ -54,6 +64,8 @@ interface ProcessInfo {
   cpu: string;
   mem: string;
   command: string;
+  state?: string;
+  ppid?: string;
 }
 
 interface LoginRecord {
@@ -89,6 +101,34 @@ export interface FirewallChain {
   name: string;
   policy: string;
   rules: FirewallRule[];
+}
+
+/** One 1s /proc sample from GET /host-metrics/managers/live/:id. */
+export interface LiveSample {
+  /** The admin minimum between samples; the client never polls faster. */
+  minIntervalS?: number;
+  cpu: number | null;
+  cpuMix?: { user: number; system: number; iowait: number; steal: number };
+  cores: Array<number | null>;
+  coreIds: string[];
+  memTotalKb: number;
+  memCachedKb: number;
+  memFreeKb: number;
+  memUsedKb: number;
+  swapTotalKb: number;
+  swapUsedKb: number;
+  load: [number, number, number];
+  net: Array<{ name: string; rxBps: number | null; txBps: number | null }>;
+  count: number;
+  running: number;
+  procs: Array<{
+    pid: number;
+    name: string;
+    cpu: number;
+    memKb: number;
+    state: string;
+    ppid: number;
+  }>;
 }
 
 export type ServerMetrics = {

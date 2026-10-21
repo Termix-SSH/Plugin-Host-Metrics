@@ -12,6 +12,7 @@ import { MemoryStick } from "lucide-react";
 import { useTranslation } from "@termix-ssh/plugin-sdk/frontend";
 import { type MetricsHistoryRow, useHostMetricsApi } from "../host-metrics-api";
 import { CardTimeTabs, type HistoryTab } from "./CardTimeTabs";
+import { memParts } from "../live-metrics";
 
 export function MemoryCard({
   metrics,
@@ -53,6 +54,14 @@ export function MemoryCard({
   const totalGiB = metrics?.memory?.totalGiB ?? null;
   const freeGiB =
     usedGiB !== null && totalGiB !== null ? totalGiB - usedGiB : null;
+  const parts =
+    totalGiB && metrics?.memory?.freeGiB != null
+      ? memParts(
+          totalGiB,
+          metrics.memory.freeGiB,
+          metrics.memory.cachedGiB ?? 0,
+        )
+      : null;
 
   const series: LineChartSeries[] = [
     {
@@ -93,6 +102,25 @@ export function MemoryCard({
                   value={freeGiB !== null ? `${freeGiB.toFixed(1)}G` : "N/A"}
                 />
               </div>
+              {parts && metrics?.memory?.cachedGiB != null && (
+                <div className="flex flex-col gap-0.5">
+                  <div className="flex h-1.5 w-full bg-muted">
+                    <div
+                      className="bg-emerald-500"
+                      style={{ width: `${parts.used}%` }}
+                    />
+                    <div
+                      className="bg-amber-500"
+                      style={{ width: `${parts.cache}%` }}
+                    />
+                  </div>
+                  <div className="font-mono text-[10px] text-muted-foreground">
+                    {t("hostMetrics.memoryMix", {
+                      cache: metrics.memory.cachedGiB.toFixed(1),
+                    })}
+                  </div>
+                </div>
+              )}
               <Sparkline
                 data={[...history, percent ?? 0]}
                 domain={[0, 100]}

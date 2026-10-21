@@ -46,6 +46,13 @@
     "noProcessesFound": "No processes found",
     "processesTotal": "total",
     "processesRunning": "running",
+    "processesLoad": "load",
+    "processesSearch": "Search processes",
+    "processesTree": "Tree",
+    "processesCommand": "Command",
+    "processesNoMatch": "No matching processes",
+    "cpuMix": "user {{user}}% sys {{system}}% io {{iowait}}% steal {{steal}}%",
+    "memoryMix": "cache {{cache}}G",
     "loginStats": "SSH Login Statistics",
     "noRecentLoginData": "No recent login data",
     "ports": {
@@ -239,12 +246,20 @@
   "settings": {
     "admin": {
       "metricsInterval": {
-        "label": "Metrics interval (seconds)",
-        "description": "How often a host being viewed is sampled, unless the host sets its own interval."
+        "label": "History sampling interval (seconds)",
+        "description": "How often samples are stored for the history charts, unless the host sets its own interval. Live views are controlled by the live settings below."
       },
       "historyRetentionDays": {
         "label": "History retention (days)",
         "description": "How long metrics samples are kept for the history charts."
+      },
+      "liveEnabled": {
+        "label": "Live updates",
+        "description": "Lets users open the lightweight live view of CPU, memory, network and processes. Separate from the history sampling interval."
+      },
+      "liveMinInterval": {
+        "label": "Live update minimum (seconds)",
+        "description": "The fastest a host is sampled for live updates, however many users or tabs are watching. Users can pick slower rates; a faster choice is raised to this minimum."
       }
     },
     "user": {
@@ -253,6 +268,14 @@
         "description": "How temperatures are shown in Host Metrics.",
         "celsius": "Celsius",
         "fahrenheit": "Fahrenheit"
+      },
+      "liveInterval": {
+        "label": "Live update rate",
+        "description": "How often CPU, memory, network and processes refresh in the Host Metrics tab, the terminal toolbar, and dashboard and homepage widgets (those never go faster than every 5 seconds). Each update reads /proc on the host. Never faster than the server's live update minimum. Off keeps the slower regular sampling.",
+        "off": "Off",
+        "s1": "Every second",
+        "s2": "Every 2 seconds",
+        "s5": "Every 5 seconds"
       }
     },
     "host": {
@@ -260,7 +283,7 @@
         "label": "Collect metrics"
       },
       "metricsInterval": {
-        "label": "Metrics interval (seconds)"
+        "label": "History sampling interval (seconds)"
       },
       "enabledWidgets": {
         "label": "Enabled widgets"
