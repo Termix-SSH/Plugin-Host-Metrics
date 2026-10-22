@@ -12,6 +12,10 @@ Host Metrics is built for Linux. It reads `/proc` and standard tools, so Debian,
 
 The page is made of cards. Drag them to rearrange, resize them, and turn cards on or off. The layout is saved per host.
 
+Choose **Customise** to resize cards by their right edge, bottom edge or bottom-right corner (arrow keys give 1px steps, Shift gives 10px), change each card's presentation settings, and undo or redo changes with Ctrl+Z and Ctrl+Y.
+
+In the dashboard's edit mode, **Dashboard Templates** saves your current layout as one of up to 50 private templates and copies it once to up to 100 hosts you can access. It replaces only your own layouts on those hosts; later template changes or deletion do not affect them. On hosts you own, applying a template also updates the enabled widgets used by the mobile view; shared-host settings and sampling intervals stay unchanged.
+
 The cards: CPU, memory, disk, network, temperature, GPU, uptime, system info, top processes, listening ports, recent logins and firewall status.
 
 The terminal toolbar shows small CPU, memory and disk bars for the host you are in.

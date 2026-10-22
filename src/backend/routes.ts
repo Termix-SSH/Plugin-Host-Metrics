@@ -9,7 +9,7 @@ import type { PluginContext } from "@termix-ssh/plugin-sdk/backend";
 import {
   defaultLayoutFromWidgets,
   deriveEnabledWidgets,
-  type HostMetricsLayout,
+  sanitizeLayout,
 } from "../shared/host-metrics.js";
 import { newSessionId, supportsMetrics } from "./helpers.js";
 import {
@@ -28,6 +28,7 @@ import type { MetricsPoller } from "./poller.js";
 import { sqlTimestamp, type HostMetricsRepository } from "./repository.js";
 import { sessionKey, type MetricsSessions } from "./sessions.js";
 import { MANAGER_CONNECTION, sudoPasswordOf } from "./helpers.js";
+import { registerLayoutTemplateRoutes } from "./layout-templates.js";
 
 export interface RouteDeps {
   ctx: PluginContext;
@@ -52,30 +53,6 @@ function validateHostId(req: Request, res: Response, next: NextFunction) {
     return res.status(400).json({ error: "Invalid host ID" });
   }
   next();
-}
-
-function sanitizeLayout(input: unknown): HostMetricsLayout | null {
-  if (!input || typeof input !== "object") return null;
-  const obj = input as Record<string, unknown>;
-  if (!Array.isArray(obj.slots)) return null;
-  const columns =
-    typeof obj.columns === "number" && obj.columns >= 1 && obj.columns <= 4
-      ? Math.round(obj.columns)
-      : 3;
-  const slots = obj.slots
-    .filter((s): s is Record<string, unknown> => !!s && typeof s === "object")
-    .map((s, i) => ({
-      id: String(s.id),
-      order: typeof s.order === "number" ? s.order : i,
-      colSpan:
-        s.colSpan === 1 || s.colSpan === 2 || s.colSpan === 3 ? s.colSpan : 1,
-      height:
-        typeof s.height === "number" && s.height > 0
-          ? Math.round(s.height)
-          : null,
-    }))
-    .filter((s) => s.id && s.id !== "undefined");
-  return { slots, columns } as HostMetricsLayout;
 }
 
 /** Everything under /plugin-api/host-metrics. Core authenticates first. */
@@ -671,6 +648,8 @@ export function registerRoutes(router: Router, deps: RouteDeps): void {
       }
     },
   );
+
+  registerLayoutTemplateRoutes(router, deps);
 
   registerManagerRoutes(router, {
     validateHostId,

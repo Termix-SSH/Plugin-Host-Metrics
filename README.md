@@ -35,6 +35,22 @@ Read the [docs](https://docs.termix.site/plugins/host-metrics) to set it up and 
 
 <br />
 
+### Customise the layout
+
+Select **Customise** in Host Metrics to rearrange, add or remove cards. Drag a card's right edge to change its width, its bottom edge to change its height, or its bottom-right corner to change both together. The active card is highlighted and a grey rectangle previews its proposed footprint; the size applies on release. The dense grid places cards automatically, so resizing does not move a card's left edge freely. Width adjusts in pixels, not whole columns. Focus either edge and use arrow keys for 1px steps, Shift for 10px steps, or Home/End for the limits. Press Escape to cancel a drag. Fixed-height cards use the available body space and scroll when needed.
+
+While customising the visible tab, use **Undo/Redo**, **Ctrl+Z** and **Ctrl+Y** (or **Ctrl+Shift+Z**) for resizing, rearranging, adding/removing cards, column changes and resets. Text inputs and editors keep their own shortcuts. Layout shortcuts are ignored during a resize; release or cancel the drag first. Undo history resets when switching hosts; loading saved preferences is not an undo step.
+
+Layouts save per host through the existing preferences. Narrow screens stack cards without rewriting their saved widths.
+
+### Dashboard layout templates
+
+In the **Host Metrics dashboard**, enter edit mode and open **Dashboard Templates** in the toolbar. Name and save your current layout, including cards, order, width, height, columns and presentation settings. Templates are private to your Termix user, with up to 50 saved templates per user.
+
+Choose a template and review its card preview, then select accessible hosts by name or folder (up to 100 at once). **Apply to selected hosts** asks for confirmation before replacing **your** dashboard layouts on those hosts. Other users' layouts, ordinary health checks and their history, and host sampling settings are not changed. For hosts you own, the enabled widget list stays in sync with the layout for mobile clients. Failed hosts remain selected for retry; successful hosts are not reapplied on retry.
+
+Application is a one-time copy, not inheritance. Deleting a template leaves applied layouts intact. Contributed cards appear only when their providing plugin is available. Applying to the open host replaces the active layout and edit-session baseline; Discard will not roll back that confirmed replacement.
+
 ## Sponsors
 
 For a paid sponsor spot, email [mail@termix.site](mailto:mail@termix.site).

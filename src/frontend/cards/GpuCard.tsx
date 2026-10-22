@@ -1,3 +1,4 @@
+import { useCardSettings, chartHeight } from "../card-settings";
 import {
   MiniStat,
   RadialGauge,
@@ -57,6 +58,7 @@ function TrendSparkline({
   colorClassName?: string;
 }) {
   const captionId = useId();
+  const settings = useCardSettings();
 
   return (
     <figure aria-labelledby={captionId} className="flex min-w-0 flex-col gap-1">
@@ -69,7 +71,7 @@ function TrendSparkline({
       <Sparkline
         data={data}
         domain={[0, 100]}
-        height={36}
+        height={chartHeight(settings, 36)}
         colorClassName={colorClassName}
       />
     </figure>
@@ -84,6 +86,7 @@ function GpuDeviceRow({
   history: GpuHistory;
 }) {
   const { t } = useTranslation();
+  const settings = useCardSettings();
 
   return (
     <div className="flex flex-col gap-2">
@@ -98,24 +101,26 @@ function GpuDeviceRow({
           caption={t("hostMetrics.gpu.utilization")}
         />
         <div className="flex min-w-0 flex-1 flex-col gap-2">
-          <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
-            <MiniStat
-              caption={t("hostMetrics.gpu.memory")}
-              value={formatVram(gpu)}
-            />
-            <MiniStat
-              caption={t("hostMetrics.gpu.temperature")}
-              value={formatWhole(gpu.temperatureCelsius, "°C")}
-            />
-            <MiniStat
-              caption={t("hostMetrics.gpu.power")}
-              value={formatPower(gpu)}
-            />
-            <MiniStat
-              caption={t("hostMetrics.gpu.fan")}
-              value={formatWhole(gpu.fanPercent, "%")}
-            />
-          </div>
+          {settings.showDetails !== false && (
+            <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
+              <MiniStat
+                caption={t("hostMetrics.gpu.memory")}
+                value={formatVram(gpu)}
+              />
+              <MiniStat
+                caption={t("hostMetrics.gpu.temperature")}
+                value={formatWhole(gpu.temperatureCelsius, "°C")}
+              />
+              <MiniStat
+                caption={t("hostMetrics.gpu.power")}
+                value={formatPower(gpu)}
+              />
+              <MiniStat
+                caption={t("hostMetrics.gpu.fan")}
+                value={formatWhole(gpu.fanPercent, "%")}
+              />
+            </div>
+          )}
           <div className="grid grid-cols-2 gap-2">
             <TrendSparkline
               caption={t("hostMetrics.gpu.utilization")}
@@ -141,6 +146,7 @@ export function GpuCard({
   gpuHistories: GpuHistories;
 }) {
   const { t } = useTranslation();
+  const settings = useCardSettings();
   const gpus = metrics?.gpu?.gpus ?? [];
   const processes = metrics?.gpu?.processes ?? [];
   const driverVersion = gpus[0]?.driverVersion;
@@ -173,36 +179,41 @@ export function GpuCard({
             />
           ))}
 
-          <div className="flex flex-col">
-            <span className="mb-1 text-[10px] font-bold uppercase tracking-widest text-muted-foreground">
-              {t("hostMetrics.gpu.processes")}
-            </span>
-            {processes.length === 0 ? (
-              <span className="text-xs text-muted-foreground">
-                {t("hostMetrics.gpu.noProcesses")}
+          {settings.showProcesses !== false && (
+            <div className="flex flex-col">
+              <span className="mb-1 text-[10px] font-bold uppercase tracking-widest text-muted-foreground">
+                {t("hostMetrics.gpu.processes")}
               </span>
-            ) : (
-              <div className="flex flex-col divide-y divide-border">
-                {processes.map((process) => (
-                  <StatRow
-                    key={`${process.gpuIndex}-${process.pid}`}
-                    label={
-                      <span className="flex items-baseline gap-1.5">
-                        <span title={process.name} className="text-foreground">
-                          {executableName(process.name)}
+              {processes.length === 0 ? (
+                <span className="text-xs text-muted-foreground">
+                  {t("hostMetrics.gpu.noProcesses")}
+                </span>
+              ) : (
+                <div className="flex flex-col divide-y divide-border">
+                  {processes.map((process) => (
+                    <StatRow
+                      key={`${process.gpuIndex}-${process.pid}`}
+                      label={
+                        <span className="flex items-baseline gap-1.5">
+                          <span
+                            title={process.name}
+                            className="text-foreground"
+                          >
+                            {executableName(process.name)}
+                          </span>
+                          <span className="font-mono text-[10px]">
+                            {process.pid}
+                          </span>
                         </span>
-                        <span className="font-mono text-[10px]">
-                          {process.pid}
-                        </span>
-                      </span>
-                    }
-                    value={processVram(process)}
-                    mono
-                  />
-                ))}
-              </div>
-            )}
-          </div>
+                      }
+                      value={processVram(process)}
+                      mono
+                    />
+                  ))}
+                </div>
+              )}
+            </div>
+          )}
         </div>
       )}
     </MetricCard>

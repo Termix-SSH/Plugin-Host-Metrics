@@ -1,3 +1,4 @@
+import { CardSettingsContext } from "./card-settings";
 import {
   Button,
   ComponentSlot,
@@ -7,7 +8,6 @@ import {
   useConnectionLog,
   ConnectionScreen,
   runAdaptivePolling,
-  CardGridCanvas,
   ColumnCountStepper,
   type GridCardCatalogEntry,
 } from "@termix-ssh/plugin-sdk/ui";
@@ -32,8 +32,11 @@ import {
   useSettings,
 } from "@termix-ssh/plugin-sdk/frontend";
 import { toast } from "sonner";
-import { RefreshCw, Server, LayoutDashboard } from "lucide-react";
+import { RefreshCw, Server, LayoutDashboard, Undo2, Redo2 } from "lucide-react";
 import { useHostMetricsPreferences } from "./hooks/useHostMetricsPreferences.ts";
+import { HostMetricsGrid } from "./HostMetricsGrid";
+import { LayoutTemplates } from "./LayoutTemplates";
+import { handleLayoutHistoryKeyDown } from "./layout-history-shortcuts";
 import {
   CARD_DEFINITIONS,
   IMPLEMENTED_CARD_IDS,
@@ -108,7 +111,6 @@ function HostMetricsInner({
   const [viewerSessionId, setViewerSessionId] = React.useState<string | null>(
     null,
   );
-  const [editMode, setEditMode] = React.useState(false);
 
   const activityLoggedRef = React.useRef(false);
   const activityLoggingRef = React.useRef(false);
@@ -123,21 +125,34 @@ function HostMetricsInner({
   const statusCheckEnabled = currentHostConfig?.statusCheckEnabled !== false;
 
   const hostId = currentHostConfig?.id ?? null;
-  const { layout, setLayout } = useHostMetricsPreferences(hostId);
 
   const { values: metricsPrefs } = usePluginUiPreferences<{
     columns: number;
   }>();
 
-  const effectiveLayout: HostMetricsLayout = React.useMemo(() => {
-    // A saved layout is user-authored, so the preset never rewrites it, it
-    // only decides the shape of the first layout a host gets.
-    if (layout) return layout;
-    return defaultLayoutFromWidgets(
-      statsConfig.enabledWidgets ?? [],
-      metricsPrefs.columns,
-    );
-  }, [layout, statsConfig.enabledWidgets, metricsPrefs.columns]);
+  const defaultLayout: HostMetricsLayout = React.useMemo(
+    () =>
+      defaultLayoutFromWidgets(
+        statsConfig.enabledWidgets ?? [],
+        metricsPrefs.columns,
+      ),
+    [statsConfig.enabledWidgets, metricsPrefs.columns],
+  );
+  const preferences = useHostMetricsPreferences(hostId, defaultLayout);
+  const [templatesOpen, setTemplatesOpen] = React.useState(false);
+  React.useEffect(() => setTemplatesOpen(false), [hostId]);
+  const {
+    layout: effectiveLayout,
+    setLayout,
+    undo,
+    redo,
+    canUndo,
+    canRedo,
+    isEditing: editMode,
+    beginEditing,
+    finishEditing,
+    discardChanges,
+  } = preferences;
 
   // Manager cards other plugins contribute (tailscale's, say), merged in next
   // to the ones this plugin ships. A contribution for a slot that never
@@ -197,9 +212,17 @@ function HostMetricsInner({
     (id: string) => {
       const def = getCardDefinition(id, pluginManagerDefs);
       if (!def) return null;
-      return def.render({ metrics: liveMetrics, histories, hostId });
+      return (
+        <CardSettingsContext.Provider
+          value={
+            effectiveLayout.slots.find((slot) => slot.id === id)?.settings ?? {}
+          }
+        >
+          {def.render({ metrics: liveMetrics, histories, hostId })}
+        </CardSettingsContext.Provider>
+      );
     },
-    [liveMetrics, histories, hostId, pluginManagerDefs],
+    [liveMetrics, histories, hostId, pluginManagerDefs, effectiveLayout.slots],
   );
 
   React.useEffect(() => {
@@ -518,6 +541,17 @@ function HostMetricsInner({
     <div
       style={wrapperStyle}
       className="relative flex flex-col overflow-hidden"
+      tabIndex={-1}
+      onKeyDown={(event) =>
+        handleLayoutHistoryKeyDown(event, {
+          editMode,
+          isVisible,
+          canUndo,
+          canRedo,
+          undo,
+          redo,
+        })
+      }
     >
       <div className="flex min-h-0 flex-1 flex-col overflow-hidden">
         <div className="flex flex-1 flex-col overflow-x-hidden overflow-y-auto">
@@ -552,6 +586,42 @@ function HostMetricsInner({
                   />
                   {editMode && (
                     <>
+                      <Button
+                        variant="ghost"
+                        size="xs"
+                        onClick={() => setTemplatesOpen(true)}
+                      >
+                        {t("hostMetrics.layoutTemplates.open")}
+                      </Button>
+                      <Button
+                        variant="ghost"
+                        size="icon-sm"
+                        title={t("hostMetrics.undoLayout")}
+                        aria-label={t("hostMetrics.undoLayout")}
+                        aria-keyshortcuts="Control+Z Meta+Z"
+                        disabled={!canUndo}
+                        onClick={undo}
+                      >
+                        <Undo2 className="size-4" />
+                      </Button>
+                      <Button
+                        variant="ghost"
+                        size="icon-sm"
+                        title={t("hostMetrics.redoLayout")}
+                        aria-label={t("hostMetrics.redoLayout")}
+                        aria-keyshortcuts="Control+Y Control+Shift+Z Meta+Shift+Z"
+                        disabled={!canRedo}
+                        onClick={redo}
+                      >
+                        <Redo2 className="size-4" />
+                      </Button>
+                      <Button
+                        variant="ghost"
+                        size="xs"
+                        onClick={discardChanges}
+                      >
+                        {t("hostMetrics.discardChanges")}
+                      </Button>
                       <ColumnCountStepper
                         columns={effectiveLayout.columns}
                         onChange={(columns) =>
@@ -581,7 +651,7 @@ function HostMetricsInner({
                     title={t("hostMetrics.customize")}
                     aria-label={t("hostMetrics.customize")}
                     aria-pressed={editMode}
-                    onClick={() => setEditMode((v) => !v)}
+                    onClick={editMode ? finishEditing : beginEditing}
                   >
                     <LayoutDashboard className="size-4" />
                   </Button>
@@ -613,19 +683,14 @@ function HostMetricsInner({
 
           {showCards && (
             <div className="p-2.5">
-              <CardGridCanvas
-                slots={visibleSlots}
-                columns={effectiveLayout.columns}
-                editMode={editMode}
+              <HostMetricsGrid
+                key={hostId}
+                layout={{ ...effectiveLayout, slots: visibleSlots }}
+                editMode={editMode && isVisible}
                 renderCard={renderCard}
                 cardCatalog={cardCatalog}
                 cardLabel={cardLabel}
-                onChange={(slots, columns) =>
-                  setLayout({
-                    slots: slots as HostMetricsLayout["slots"],
-                    columns,
-                  })
-                }
+                onChange={setLayout}
               />
             </div>
           )}
@@ -654,6 +719,16 @@ function HostMetricsInner({
           />
         )}
       </div>
+
+      {templatesOpen && hostId != null && (
+        <LayoutTemplates
+          key={hostId}
+          layout={effectiveLayout}
+          cardLabel={cardLabel}
+          onClose={() => setTemplatesOpen(false)}
+          onApply={preferences.applyTemplate}
+        />
+      )}
 
       <TOTPDialog
         isOpen={totpRequired}
