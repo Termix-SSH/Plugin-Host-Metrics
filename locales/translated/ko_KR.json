@@ -46,6 +46,13 @@
     "noProcessesFound": "프로세스를 찾을 수 없습니다",
     "processesTotal": "전체",
     "processesRunning": "실행 중",
+    "processesLoad": "로드",
+    "processesSearch": "프로세스 검색",
+    "processesTree": "트리",
+    "processesCommand": "명령어",
+    "processesNoMatch": "일치하는 프로세스가 없습니다",
+    "cpuMix": "사용자 {{user}}% 시스템 {{system}}% IO {{iowait}}% 스틸 {{steal}}%",
+    "memoryMix": "캐시 {{cache}}G",
     "loginStats": "SSH 로그인 통계",
     "noRecentLoginData": "최근 로그인 데이터가 없습니다",
     "ports": {
@@ -111,7 +118,28 @@
       "renew": "갱신",
       "noAcmeClient": "이 호스트에서 ACME 클라이언트(certbot 또는 acme.sh)를 찾을 수 없습니다.",
       "addInputRule": "INPUT 규칙 추가",
-      "firewallWarning": "변경 사항은 영구 저장 전까지 런타임에서만 적용됩니다. 실수로 잠겨버리지 않도록 주의하세요.",
+      "firewallWarning": "방화벽 변경으로 인해 SSH 연결이 끊기거나 서비스가 노출될 수 있습니다. 복구용 접근 경로를 반드시 유지하세요.",
+      "firewallConfirm": "방화벽 변경 사항 검토",
+      "firewallRecoveryWarning": "트래픽 허용은 서비스를 노출시킬 수 있으며, 트래픽 차단 또는 기본 정책 변경은 SSH 및 기타 세션 연결을 끊을 수 있습니다. 독립적인 콘솔 또는 복구 경로를 유지하세요. SSH 포트는 가정되지 않으며 접근이 보장되지 않습니다.",
+      "firewallNonAtomic": "UFW 편집은 원자적(atomic)이지 않습니다. 동작만 변경하는 경우 일치하는 흐름을 현장에서 업데이트하며, 기타 편집은 원래 규칙을 삭제하기 전에 대체 규칙을 삽입하고 검증합니다. 실패 또는 시간 초과 시 부분적인 변경이나 두 규칙이 모두 남을 수 있으므로, 재시도 전에 새로고침하고 확인하세요.",
+      "firewallApply": "적용",
+      "firewallCancel": "취소",
+      "firewallEdit": "편집",
+      "firewallDelete": "삭제",
+      "firewallEditPolicy": "기본 정책 편집",
+      "firewallReadOnly": "읽기 전용",
+      "firewallPreserved": "패밀리, 방향, 프로필 및 주석 보존됨",
+      "firewallStale": "방화벽이 변경되었습니다. 이 편집기를 닫고 현재 규칙을 다시 열어주세요.",
+      "firewallField_action": "동작",
+      "firewallField_protocol": "프로토콜",
+      "firewallField_source": "소스 주소/CIDR",
+      "firewallField_destination": "대상 주소/CIDR",
+      "firewallField_port": "대상 포트 (또는 모든 포트)",
+      "firewallField_sourcePort": "소스 포트 (또는 모든 포트)",
+      "firewallUfwPersistence": "UFW 변경 사항은 즉시 영구적으로 적용됩니다. 별도의 저장 작업은 필요하지 않습니다.",
+      "firewallNftPersistence": "네이티브 nftables 변경 사항은 런타임에서만 적용됩니다. 호스트의 구성된 서비스를 사용하여 저장하세요. 이 플러그인은 nftables.conf를 덮어쓰지 않습니다.",
+      "firewallNativePersistence": "네이티브 iptables 변경 사항은 호스트 지속성 서비스로 저장할 때까지 런타임에서만 적용됩니다.",
+      "firewallPersistConfirm": "이 편집기 외부의 규칙을 포함하여, 감지된 호스트 지속성 서비스를 사용하여 전체 네이티브 iptables 규칙 세트를 저장합니다.",
       "ruleApplied": "규칙 적용됨",
       "invalidPort": "유효한 포트(1-65535)를 입력하세요",
       "newUsername": "새 사용자 이름",
@@ -248,12 +276,20 @@
   "settings": {
     "admin": {
       "metricsInterval": {
-        "label": "지표 간격(초)",
-        "description": "호스트가 자체 간격을 설정하지 않은 경우, 표시 중인 호스트의 샘플링 빈도입니다."
+        "label": "이력 샘플링 간격 (초)",
+        "description": "호스트가 자체 간격을 설정하지 않는 한, 이력 차트에 샘플이 저장되는 빈도입니다. 실시간 뷰는 아래 실시간 설정으로 제어됩니다."
       },
       "historyRetentionDays": {
         "label": "기록 보관 기간(일)",
         "description": "이력 차트를 위해 지표 샘플을 보관하는 기간입니다."
+      },
+      "liveEnabled": {
+        "label": "실시간 업데이트",
+        "description": "사용자가 CPU, 메모리, 네트워크 및 프로세스의 경량 실시간 뷰를 열 수 있게 합니다. 이력 샘플링 간격과는 별개입니다."
+      },
+      "liveMinInterval": {
+        "label": "실시간 업데이트 최소 간격 (초)",
+        "description": "사용자나 탭의 수와 관계없이 호스트가 실시간 업데이트를 위해 샘플링되는 최대 속도입니다. 사용자는 더 느린 속도를 선택할 수 있으며, 더 빠른 선택은 이 최소값으로 조정됩니다."
       }
     },
     "user": {
@@ -262,6 +298,14 @@
         "description": "호스트 지표에서 온도를 표시하는 방식입니다.",
         "celsius": "섭씨",
         "fahrenheit": "화씨"
+      },
+      "liveInterval": {
+        "label": "실시간 업데이트 속도",
+        "description": "호스트 메트릭 탭, 터미널 도구 모음, 대시보드 및 홈페이지 위젯에서 CPU, 메모리, 네트워크 및 프로세스가 새로고침되는 빈도입니다 (위젯은 5초보다 빠르게 업데이트되지 않음). 각 업데이트는 호스트의 /proc을 읽습니다. 서버의 실시간 업데이트 최소 간격보다 빠를 수 없습니다. 꺼짐 상태에서는 더 느린 일반 샘플링이 유지됩니다.",
+        "off": "꺼짐",
+        "s1": "매초",
+        "s2": "2초마다",
+        "s5": "5초마다"
       },
       "companionAutoOpen": {
         "label": "새 터미널과 함께 메트릭 패널 열기",
@@ -288,7 +332,7 @@
         "label": "지표 수집"
       },
       "metricsInterval": {
-        "label": "지표 간격(초)"
+        "label": "이력 샘플링 간격 (초)"
       },
       "enabledWidgets": {
         "label": "활성화된 위젯"
@@ -307,5 +351,10 @@
   "plugin": {
     "name": "호스트 지표",
     "description": "실시간 CPU, 메모리, 디스크, 네트워크 및 GPU 통계와 호스트 관리 도구를 제공합니다."
+  },
+  "card": {
+    "title": "가장 바쁜 호스트",
+    "loading": "로딩 중...",
+    "empty": "최근 샘플이 아직 없습니다. 호스트 상태 카드가 열려 있는 동안과 같이 메트릭이 수집되면 여기에 호스트가 표시됩니다."
   }
 }

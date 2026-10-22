@@ -48,6 +48,13 @@
     "noProcessesFound": "Aucun processus trouvé",
     "processesTotal": "total",
     "processesRunning": "en cours",
+    "processesLoad": "charge",
+    "processesSearch": "Rechercher des processus",
+    "processesTree": "Arborescence",
+    "processesCommand": "Commande",
+    "processesNoMatch": "Aucun processus correspondant",
+    "cpuMix": "utilisateur {{user}}% sys {{system}}% io {{iowait}}% volé {{steal}}%",
+    "memoryMix": "cache {{cache}} Go",
     "loginStats": "Statistiques de connexion SSH",
     "noRecentLoginData": "Aucune donnée de connexion récente",
     "ports": {
@@ -113,7 +120,28 @@
       "renew": "Renouveler",
       "noAcmeClient": "Aucun client ACME (certbot ou acme.sh) trouvé sur cet hôte.",
       "addInputRule": "Ajouter une règle INPUT",
-      "firewallWarning": "Les modifications ne sont effectives que pendant l'exécution jusqu'à ce qu'elles soient persistées. Attention à ne pas vous verrouiller.",
+      "firewallWarning": "Les modifications du pare-feu peuvent interrompre SSH ou exposer des services. Gardez un accès de récupération disponible.",
+      "firewallConfirm": "Vérifier la modification du pare-feu",
+      "firewallRecoveryWarning": "Autoriser le trafic peut exposer des services ; refuser le trafic ou modifier une politique par défaut peut déconnecter SSH et d'autres sessions. Gardez une console ou un chemin de récupération indépendant disponible. Aucun port SSH n'est supposé et l'accès ne peut être garanti.",
+      "firewallNonAtomic": "Les modifications UFW ne sont PAS atomiques. Les changements d'action uniquement mettent à jour un flux correspondant unique sur place ; les autres modifications insèrent et vérifient le remplacement avant de supprimer l'original. Une erreur ou un dépassement de délai peut laisser un changement partiel ou les deux règles ; actualisez et inspectez avant de réessayer.",
+      "firewallApply": "Appliquer",
+      "firewallCancel": "Annuler",
+      "firewallEdit": "Modifier",
+      "firewallDelete": "Supprimer",
+      "firewallEditPolicy": "Modifier la politique par défaut",
+      "firewallReadOnly": "Lecture seule",
+      "firewallPreserved": "Famille, direction, profil et commentaire conservés",
+      "firewallStale": "Le pare-feu a changé. Fermez cet éditeur et rouvrez la règle actuelle.",
+      "firewallField_action": "Action",
+      "firewallField_protocol": "Protocole",
+      "firewallField_source": "Adresse/CIDR source",
+      "firewallField_destination": "Adresse/CIDR de destination",
+      "firewallField_port": "Port de destination (ou tous)",
+      "firewallField_sourcePort": "Port source (ou tous)",
+      "firewallUfwPersistence": "Les modifications UFW sont persistantes immédiatement. Aucune sauvegarde séparée n'est nécessaire.",
+      "firewallNftPersistence": "Les modifications natives nftables sont uniquement en cours d'exécution. Sauvegardez en utilisant le service configuré de l'hôte ; ce plugin ne remplace pas nftables.conf.",
+      "firewallNativePersistence": "Les modifications natives iptables sont uniquement en cours d'exécution jusqu'à ce qu'elles soient sauvegardées avec un service de persistance d'hôte pris en charge.",
+      "firewallPersistConfirm": "Sauvegarder l'ensemble complet des règles iptables natives en utilisant le service de persistance d'hôte détecté, y compris les règles en dehors de cet éditeur.",
       "ruleApplied": "Règle appliquée",
       "invalidPort": "Entrez un port valide (1-65535)",
       "newUsername": "Nouveau nom d'utilisateur",
@@ -250,12 +278,20 @@
   "settings": {
     "admin": {
       "metricsInterval": {
-        "label": "Intervalle des métriques (secondes)",
-        "description": "Fréquence d'échantillonnage d'un hôte affiché, sauf si l'hôte définit son propre intervalle."
+        "label": "Intervalle d'échantillonnage de l'historique (secondes)",
+        "description": "Fréquence de stockage des échantillons pour les graphiques d'historique, sauf si l'hôte définit son propre intervalle. Les vues en direct sont contrôlées par les paramètres en direct ci-dessous."
       },
       "historyRetentionDays": {
         "label": "Conservation de l'historique (jours)",
         "description": "Durée de conservation des échantillons de métriques pour les graphiques historiques."
+      },
+      "liveEnabled": {
+        "label": "Mises à jour en direct",
+        "description": "Permet aux utilisateurs d'ouvrir la vue en direct légère du CPU, de la mémoire, du réseau et des processus. Séparé de l'intervalle d'échantillonnage de l'historique."
+      },
+      "liveMinInterval": {
+        "label": "Minimum de mise à jour en direct (secondes)",
+        "description": "La fréquence maximale à laquelle un hôte est échantillonné pour les mises à jour en direct, quel que soit le nombre d'utilisateurs ou d'onglets qui regardent. Les utilisateurs peuvent choisir des fréquences plus lentes ; un choix plus rapide est augmenté à ce minimum."
       }
     },
     "user": {
@@ -264,6 +300,14 @@
         "description": "Affichage des températures dans les métriques des hôtes.",
         "celsius": "Celsius",
         "fahrenheit": "Fahrenheit"
+      },
+      "liveInterval": {
+        "label": "Fréquence de mise à jour en direct",
+        "description": "Fréquence de rafraîchissement du CPU, de la mémoire, du réseau et des processus dans l'onglet Métriques de l'hôte, la barre d'outils du terminal, et les widgets du tableau de bord et de la page d'accueil (ceux-ci ne vont jamais plus vite que toutes les 5 secondes). Chaque mise à jour lit /proc sur l'hôte. Jamais plus rapide que le minimum de mise à jour en direct du serveur. Désactivé maintient l'échantillonnage régulier plus lent.",
+        "off": "Désactivé",
+        "s1": "Toutes les secondes",
+        "s2": "Toutes les 2 secondes",
+        "s5": "Toutes les 5 secondes"
       },
       "companionAutoOpen": {
         "label": "Ouvrir le panneau des métriques avec les nouveaux terminaux",
@@ -290,7 +334,7 @@
         "label": "Collecter les métriques"
       },
       "metricsInterval": {
-        "label": "Intervalle des métriques (secondes)"
+        "label": "Intervalle d'échantillonnage de l'historique (secondes)"
       },
       "enabledWidgets": {
         "label": "Widgets activés"
@@ -309,5 +353,10 @@
   "plugin": {
     "name": "Métriques des hôtes",
     "description": "Statistiques en temps réel du CPU, de la mémoire, du disque, du réseau et du GPU, ainsi que des outils pour gérer vos hôtes."
+  },
+  "card": {
+    "title": "Hôtes les plus sollicités",
+    "loading": "Chargement...",
+    "empty": "Aucun échantillon récent pour le moment. Les hôtes apparaissent ici une fois que leurs métriques sont collectées, comme lorsque la carte d'état de l'hôte est ouverte."
   }
 }

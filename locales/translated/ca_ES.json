@@ -48,6 +48,13 @@
     "noProcessesFound": "No s'han trobat processos",
     "processesTotal": "total",
     "processesRunning": "en execució",
+    "processesLoad": "càrrega",
+    "processesSearch": "Cerca processos",
+    "processesTree": "Arbre",
+    "processesCommand": "Comanda",
+    "processesNoMatch": "Cap procés coincideix",
+    "cpuMix": "usuari {{user}}% sist {{system}}% e/s {{iowait}}% robat {{steal}}%",
+    "memoryMix": "mem. cau {{cache}}G",
     "loginStats": "Estadístiques d'inici de sessió SSH",
     "noRecentLoginData": "No hi ha dades recents d'inici de sessió",
     "ports": {
@@ -113,7 +120,28 @@
       "renew": "Renova",
       "noAcmeClient": "No s'ha trobat cap client ACME (certbot o acme.sh) en aquest host.",
       "addInputRule": "Afegeix regla INPUT",
-      "firewallWarning": "Els canvis són només temporals fins que es persisteixen. Tingueu cura de no bloquejar-vos l'accés.",
+      "firewallWarning": "Els canvis al tallafocs poden interrompre SSH o exposar serveis. Manteniu disponible l'accés de recuperació.",
+      "firewallConfirm": "Revisa el canvi al tallafocs",
+      "firewallRecoveryWarning": "Permetre el trànsit pot exposar serveis; denegar el trànsit o canviar una política predeterminada pot desconnectar SSH i altres sessions. Manteniu disponible una consola o ruta de recuperació independent. No s'assumeix cap port SSH i l'accés no es pot garantir.",
+      "firewallNonAtomic": "Les edicions d'UFW NO són atòmiques. Els canvis només d'acció actualitzen un flux coincident únic al seu lloc; altres edicions insereixen i verifiquen la substitució abans de suprimir l'original. Un error o un temps d'espera esgotat pot deixar un canvi parcial o ambdues regles; actualitzeu i inspeccioneu abans de tornar-ho a provar.",
+      "firewallApply": "Aplica",
+      "firewallCancel": "Cancel·la",
+      "firewallEdit": "Edita",
+      "firewallDelete": "Suprimeix",
+      "firewallEditPolicy": "Edita la política predeterminada",
+      "firewallReadOnly": "Només lectura",
+      "firewallPreserved": "S'ha conservat la família, la direcció, el perfil i el comentari",
+      "firewallStale": "El tallafocs ha canviat. Tanqueu aquest editor i torneu a obrir la regla actual.",
+      "firewallField_action": "Acció",
+      "firewallField_protocol": "Protocol",
+      "firewallField_source": "Adreça CIDR d'origen",
+      "firewallField_destination": "Adreça CIDR de destí",
+      "firewallField_port": "Port de destí (o qualsevol)",
+      "firewallField_sourcePort": "Port d'origen (o qualsevol)",
+      "firewallUfwPersistence": "Els canvis d'UFW són persistents immediatament. No cal desar-los per separat.",
+      "firewallNftPersistence": "Els canvis natius de nftables són només en temps d'execució. Deseu-los mitjançant el servei configurat de l'amfitrió; aquest connector no sobreescriu nftables.conf.",
+      "firewallNativePersistence": "Els canvis natius d'iptables són només en temps d'execució fins que es desin amb un servei de persistència de l'amfitrió compatible.",
+      "firewallPersistConfirm": "Desa el conjunt complet de regles natives d'iptables mitjançant el servei de persistència de l'amfitrió detectat, incloses les regles fora d'aquest editor.",
       "ruleApplied": "Regla aplicada",
       "invalidPort": "Introduïu un port vàlid (1-65535)",
       "newUsername": "Nom d'usuari nou",
@@ -250,12 +278,20 @@
   "settings": {
     "admin": {
       "metricsInterval": {
-        "label": "Interval de mètriques (segons)",
-        "description": "La freqüència amb què es mostreja un amfitrió que s'està visualitzant, llevat que l'amfitrió estableixi el seu propi interval."
+        "label": "Interval de mostreig de l'historial (segons)",
+        "description": "Amb quina freqüència s'emmagatzemen mostres per als gràfics d'historial, llevat que l'amfitrió estableixi el seu propi interval. Les vistes en directe es controlen amb la configuració en directe que es mostra a continuació."
       },
       "historyRetentionDays": {
         "label": "Retenció de l'historial (dies)",
         "description": "El temps durant el qual es conserven les mostres de mètriques per als gràfics d'historial."
+      },
+      "liveEnabled": {
+        "label": "Actualitzacions en directe",
+        "description": "Permet als usuaris obrir la vista en directe lleugera de la CPU, la memòria, la xarxa i els processos. Independent de l'interval de mostreig de l'historial."
+      },
+      "liveMinInterval": {
+        "label": "Actualització en directe mínima (segons)",
+        "description": "La velocitat màxima amb què es mostra un amfitrió per a actualitzacions en directe, independentment del nombre d'usuaris o pestanyes que l'estiguin observant. Els usuaris poden triar velocitats més lentes; una opció més ràpida s'ajusta a aquest mínim."
       }
     },
     "user": {
@@ -264,6 +300,14 @@
         "description": "Com es mostren les temperatures a les Mètriques de l'amfitrió.",
         "celsius": "Celsius",
         "fahrenheit": "Fahrenheit"
+      },
+      "liveInterval": {
+        "label": "Velocitat d'actualització en directe",
+        "description": "Amb quina freqüència es refresquen la CPU, la memòria, la xarxa i els processos a la pestanya Mètriques de l'amfitrió, la barra d'eines del terminal i els ginyos del tauler de control i la pàgina d'inici (aquests mai van més ràpid que cada 5 segons). Cada actualització llegeix /proc a l'amfitrió. Mai més ràpid que el mínim d'actualització en directe del servidor. Desactivat manté el mostreig regular més lent.",
+        "off": "Desactivat",
+        "s1": "Cada segon",
+        "s2": "Cada 2 segons",
+        "s5": "Cada 5 segons"
       },
       "companionAutoOpen": {
         "label": "Obre el panell de mètriques amb els nous terminals",
@@ -290,7 +334,7 @@
         "label": "Recollir mètriques"
       },
       "metricsInterval": {
-        "label": "Interval de mètriques (segons)"
+        "label": "Interval de mostreig de l'historial (segons)"
       },
       "enabledWidgets": {
         "label": "Gadgets habilitats"
@@ -309,5 +353,10 @@
   "plugin": {
     "name": "Mètriques de l'amfitrió",
     "description": "Estadístiques en temps real de CPU, memòria, disc, xarxa i GPU, a més d'eines per gestionar els teus hosts."
+  },
+  "card": {
+    "title": "Amfitrions més ocupats",
+    "loading": "S'està carregant...",
+    "empty": "Encara no hi ha mostres recents. Els amfitrions s'hi mostren un cop recollides les seves mètriques, com ara quan la targeta d'estat de l'amfitrió està oberta."
   }
 }

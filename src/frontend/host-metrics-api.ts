@@ -59,9 +59,22 @@ function bodyOf(error: unknown): Record<string, unknown> | undefined {
     ?.data;
 }
 
+export interface MetricsSummaryRow {
+  hostId: number;
+  cpu: number | null;
+  memory: number | null;
+  disk: number | null;
+  lastChecked: string;
+}
+
 /** The plugin's routes, relative to /plugin-api/host-metrics/. */
 export function createHostMetricsApi(api: PluginApiClient) {
   return {
+    /** The newest sample already collected for every reachable host. */
+    async summary(): Promise<MetricsSummaryRow[]> {
+      return (await api.get<MetricsSummaryRow[]>("/metrics/summary")).data;
+    },
+
     async getMetrics(hostId: number): Promise<ServerMetrics | null> {
       try {
         return (await api.get<ServerMetrics>(`/metrics/${hostId}`)).data;

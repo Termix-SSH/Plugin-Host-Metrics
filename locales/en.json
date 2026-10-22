@@ -47,6 +47,13 @@
     "noProcessesFound": "No processes found",
     "processesTotal": "total",
     "processesRunning": "running",
+    "processesLoad": "load",
+    "processesSearch": "Search processes",
+    "processesTree": "Tree",
+    "processesCommand": "Command",
+    "processesNoMatch": "No matching processes",
+    "cpuMix": "user {{user}}% sys {{system}}% io {{iowait}}% steal {{steal}}%",
+    "memoryMix": "cache {{cache}}G",
     "loginStats": "SSH Login Statistics",
     "noRecentLoginData": "No recent login data",
     "ports": {
@@ -112,7 +119,28 @@
       "renew": "Renew",
       "noAcmeClient": "No ACME client (certbot or acme.sh) found on this host.",
       "addInputRule": "Add INPUT rule",
-      "firewallWarning": "Changes are runtime-only until persisted. Be careful not to lock yourself out.",
+      "firewallWarning": "Firewall changes can interrupt SSH or expose services. Keep recovery access available.",
+      "firewallConfirm": "Review firewall change",
+      "firewallRecoveryWarning": "Allowing traffic can expose services; denying traffic or changing a default policy can disconnect SSH and other sessions. Keep an independent console/recovery path available. No SSH port is assumed and access cannot be guaranteed.",
+      "firewallNonAtomic": "UFW edits are NOT atomic. Action-only changes update a unique matching flow in place; other edits insert and verify the replacement before deleting the original. A failure or timeout may leave a partial change or both rules; refresh and inspect before retrying.",
+      "firewallApply": "Apply",
+      "firewallCancel": "Cancel",
+      "firewallEdit": "Edit",
+      "firewallDelete": "Delete",
+      "firewallEditPolicy": "Edit default policy",
+      "firewallReadOnly": "Read-only",
+      "firewallPreserved": "Preserved family, direction, profile and comment",
+      "firewallStale": "The firewall changed. Close this editor and reopen the current rule.",
+      "firewallField_action": "Action",
+      "firewallField_protocol": "Protocol",
+      "firewallField_source": "Source address/CIDR",
+      "firewallField_destination": "Destination address/CIDR",
+      "firewallField_port": "Destination port (or any)",
+      "firewallField_sourcePort": "Source port (or any)",
+      "firewallUfwPersistence": "UFW changes are persistent immediately. No separate save is needed.",
+      "firewallNftPersistence": "Native nftables changes are runtime-only. Save using the host's configured service; this plugin does not overwrite nftables.conf.",
+      "firewallNativePersistence": "Native iptables changes are runtime-only until saved with a supported host persistence service.",
+      "firewallPersistConfirm": "Save the complete native iptables ruleset using the detected host persistence service, including rules outside this editor.",
       "ruleApplied": "Rule applied",
       "invalidPort": "Enter a valid port (1-65535)",
       "newUsername": "New username",
@@ -249,12 +277,20 @@
   "settings": {
     "admin": {
       "metricsInterval": {
-        "label": "Metrics interval (seconds)",
-        "description": "How often a host being viewed is sampled, unless the host sets its own interval."
+        "label": "History sampling interval (seconds)",
+        "description": "How often samples are stored for the history charts, unless the host sets its own interval. Live views are controlled by the live settings below."
       },
       "historyRetentionDays": {
         "label": "History retention (days)",
         "description": "How long metrics samples are kept for the history charts."
+      },
+      "liveEnabled": {
+        "label": "Live updates",
+        "description": "Lets users open the lightweight live view of CPU, memory, network and processes. Separate from the history sampling interval."
+      },
+      "liveMinInterval": {
+        "label": "Live update minimum (seconds)",
+        "description": "The fastest a host is sampled for live updates, however many users or tabs are watching. Users can pick slower rates; a faster choice is raised to this minimum."
       }
     },
     "user": {
@@ -263,6 +299,14 @@
         "description": "How temperatures are shown in Host Metrics.",
         "celsius": "Celsius",
         "fahrenheit": "Fahrenheit"
+      },
+      "liveInterval": {
+        "label": "Live update rate",
+        "description": "How often CPU, memory, network and processes refresh in the Host Metrics tab, the terminal toolbar, and dashboard and homepage widgets (those never go faster than every 5 seconds). Each update reads /proc on the host. Never faster than the server's live update minimum. Off keeps the slower regular sampling.",
+        "off": "Off",
+        "s1": "Every second",
+        "s2": "Every 2 seconds",
+        "s5": "Every 5 seconds"
       },
       "companionAutoOpen": {
         "label": "Open the metrics panel with new terminals",
@@ -289,7 +333,7 @@
         "label": "Collect metrics"
       },
       "metricsInterval": {
-        "label": "Metrics interval (seconds)"
+        "label": "History sampling interval (seconds)"
       },
       "enabledWidgets": {
         "label": "Enabled widgets"
@@ -308,5 +352,10 @@
   "plugin": {
     "name": "Host Metrics",
     "description": "Live CPU, memory, disk, network and GPU stats, plus tools to manage your hosts."
+  },
+  "card": {
+    "title": "Busiest hosts",
+    "loading": "Loading...",
+    "empty": "No recent samples yet. Hosts show here once their metrics are collected, like while the host status card is open."
   }
 }

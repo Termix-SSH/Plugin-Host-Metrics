@@ -13,6 +13,7 @@ import { metricsChartWidget } from "./MetricsChartWidget";
 import { TerminalMetricsStatus } from "./TerminalMetricsStatus";
 import { createHostMetricsApi } from "./host-metrics-api";
 import { createMetricsSummaryStore } from "./summary-store";
+import { createBusiestHostsCard } from "./BusiestHostsCard";
 import { metricsEnabledFor, metricsPanelEnabledFor } from "./host-filter";
 import {
   HostMetricsCompanion,
@@ -137,6 +138,15 @@ export async function activate(app: TermixApp): Promise<void> {
     titleKey: "nav.hostMetrics",
     kind: "component",
     component: createDashboardHostMetrics(summaries),
+  });
+
+  app.registerDashboardCard({
+    id: "busiest-hosts",
+    titleKey: "card.title",
+    defaultPanel: "side",
+    defaultHeight: 240,
+    frame: "framed",
+    component: createBusiestHostsCard(metricsApi),
   });
 
   // The numbers in the homepage's host status widget.

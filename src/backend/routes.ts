@@ -107,6 +107,40 @@ export function registerRoutes(router: Router, deps: RouteDeps): void {
 
   /**
    * @openapi
+   * /plugin-api/host-metrics/metrics/summary:
+   *   get:
+   *     summary: Latest CPU, memory and disk for every host
+   *     description: The newest sample already collected for each host the caller can connect to. It never starts collection, so hosts nobody looked at lately are missing. Feeds the dashboard card.
+   *     tags:
+   *       - Host Metrics
+   *     responses:
+   *       200:
+   *         description: One entry per host with a recent sample.
+   */
+  router.get("/metrics/summary", async (_req, res) => {
+    if (!actor(res)) return;
+    const out: Array<{
+      hostId: number;
+      cpu: number | null;
+      memory: number | null;
+      disk: number | null;
+      lastChecked: string;
+    }> = [];
+    for (const sample of poller.latestSamples()) {
+      if (!(await canConnect(sample.hostId))) continue;
+      out.push({
+        hostId: sample.hostId,
+        cpu: sample.data.cpu?.percent ?? null,
+        memory: sample.data.memory?.percent ?? null,
+        disk: sample.data.disk?.percent ?? null,
+        lastChecked: new Date(sample.timestamp).toISOString(),
+      });
+    }
+    res.json(out);
+  });
+
+  /**
+   * @openapi
    * /plugin-api/host-metrics/metrics/{id}:
    *   get:
    *     summary: Get host metrics
@@ -643,6 +677,19 @@ export function registerRoutes(router: Router, deps: RouteDeps): void {
     log,
     repository,
     recordHealth: deps.recordHealth,
+    liveConfig: async (hostId) => {
+      const [enabled, min, host] = await Promise.all([
+        ctx.settings.get<boolean>("liveEnabled"),
+        ctx.settings.get<number>("liveMinInterval"),
+        ctx.settings.getAll("host", hostId),
+      ]);
+      const minSeconds = Number(min);
+      return {
+        enabled: enabled !== false && host.metricsEnabled !== false,
+        minSeconds:
+          Number.isFinite(minSeconds) && minSeconds >= 1 ? minSeconds : 2,
+      };
+    },
     runOnHost: async (hostId, level, fn) => {
       const userId = ctx.currentActor();
       if (!userId) throw new AccessDeniedError("Authentication required");

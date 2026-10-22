@@ -46,6 +46,13 @@
     "noProcessesFound": "Tidak ada proses ditemukan",
     "processesTotal": "total",
     "processesRunning": "berjalan",
+    "processesLoad": "beban",
+    "processesSearch": "Cari proses",
+    "processesTree": "Pohon",
+    "processesCommand": "Perintah",
+    "processesNoMatch": "Tidak ada proses yang cocok",
+    "cpuMix": "pengguna {{user}}% sistem {{system}}% io {{iowait}}% curi {{steal}}%",
+    "memoryMix": "cache {{cache}}G",
     "loginStats": "Statistik Login SSH",
     "noRecentLoginData": "Tidak ada data login terbaru",
     "ports": {
@@ -111,7 +118,28 @@
       "renew": "Perpanjang",
       "noAcmeClient": "Tidak ditemukan klien ACME (certbot atau acme.sh) di host ini.",
       "addInputRule": "Tambahkan aturan INPUT",
-      "firewallWarning": "Perubahan hanya berlaku saat runtime hingga disimpan. Hati-hati agar tidak terkunci keluar.",
+      "firewallWarning": "Perubahan firewall dapat mengganggu SSH atau mengekspos layanan. Pastikan akses pemulihan tetap tersedia.",
+      "firewallConfirm": "Tinjau perubahan firewall",
+      "firewallRecoveryWarning": "Mengizinkan lalu lintas dapat mengekspos layanan; menolak lalu lintas atau mengubah kebijakan default dapat memutuskan SSH dan sesi lainnya. Pastikan konsol/jalur pemulihan independen tersedia. Tidak ada asumsi port SSH dan akses tidak dapat dijamin.",
+      "firewallNonAtomic": "Edit UFW TIDAK atomik. Perubahan aksi-saja memperbarui aliran pencocokan unik di tempat; edit lainnya menyisipkan dan memverifikasi penggantian sebelum menghapus aturan asli. Kegagalan atau waktu habis dapat meninggalkan perubahan parsial atau kedua aturan; muat ulang dan periksa sebelum mencoba lagi.",
+      "firewallApply": "Terapkan",
+      "firewallCancel": "Batal",
+      "firewallEdit": "Edit",
+      "firewallDelete": "Hapus",
+      "firewallEditPolicy": "Edit kebijakan default",
+      "firewallReadOnly": "Baca-saja",
+      "firewallPreserved": "Keluarga, arah, profil, dan komentar dipertahankan",
+      "firewallStale": "Firewall telah berubah. Tutup editor ini dan buka kembali aturan saat ini.",
+      "firewallField_action": "Aksi",
+      "firewallField_protocol": "Protokol",
+      "firewallField_source": "Alamat sumber/CIDR",
+      "firewallField_destination": "Alamat tujuan/CIDR",
+      "firewallField_port": "Port tujuan (atau sembarang)",
+      "firewallField_sourcePort": "Port sumber (atau sembarang)",
+      "firewallUfwPersistence": "Perubahan UFW bersifat persisten secara langsung. Tidak perlu menyimpan terpisah.",
+      "firewallNftPersistence": "Perubahan nftables asli hanya berlaku saat runtime. Simpan menggunakan layanan yang dikonfigurasi pada host; plugin ini tidak menimpa nftables.conf.",
+      "firewallNativePersistence": "Perubahan iptables asli hanya berlaku saat runtime hingga disimpan dengan layanan persistensi host yang didukung.",
+      "firewallPersistConfirm": "Simpan set aturan iptables asli lengkap menggunakan layanan persistensi host yang terdeteksi, termasuk aturan di luar editor ini.",
       "ruleApplied": "Aturan diterapkan",
       "invalidPort": "Masukkan port yang valid (1-65535)",
       "newUsername": "Nama pengguna baru",
@@ -248,12 +276,20 @@
   "settings": {
     "admin": {
       "metricsInterval": {
-        "label": "Interval metrik (detik)",
-        "description": "Seberapa sering host yang sedang dilihat diambil sampelnya, kecuali host mengatur intervalnya sendiri."
+        "label": "Interval pengambilan sampel riwayat (detik)",
+        "description": "Seberapa sering sampel disimpan untuk grafik riwayat, kecuali host mengatur intervalnya sendiri. Tampilan langsung dikontrol oleh pengaturan langsung di bawah."
       },
       "historyRetentionDays": {
         "label": "Retensi riwayat (hari)",
         "description": "Seberapa lama sampel metrik disimpan untuk grafik riwayat."
+      },
+      "liveEnabled": {
+        "label": "Pembaruan langsung",
+        "description": "Memungkinkan pengguna membuka tampilan langsung ringan untuk CPU, memori, jaringan, dan proses. Terpisah dari interval pengambilan sampel riwayat."
+      },
+      "liveMinInterval": {
+        "label": "Minimum pembaruan langsung (detik)",
+        "description": "Kecepatan maksimum host disampling untuk pembaruan langsung, berapa pun jumlah pengguna atau tab yang menonton. Pengguna dapat memilih laju yang lebih lambat; pilihan yang lebih cepat dinaikkan ke minimum ini."
       }
     },
     "user": {
@@ -262,6 +298,14 @@
         "description": "Bagaimana suhu ditampilkan di Metrik Host.",
         "celsius": "Celsius",
         "fahrenheit": "Fahrenheit"
+      },
+      "liveInterval": {
+        "label": "Laju pembaruan langsung",
+        "description": "Seberapa sering CPU, memori, jaringan, dan proses diperbarui di tab Metrik Host, bilah alat terminal, dan widget dasbor serta beranda (yang tidak pernah lebih cepat dari setiap 5 detik). Setiap pembaruan membaca /proc pada host. Tidak pernah lebih cepat dari minimum pembaruan langsung server. Nonaktif mempertahankan pengambilan sampel reguler yang lebih lambat.",
+        "off": "Nonaktif",
+        "s1": "Setiap detik",
+        "s2": "Setiap 2 detik",
+        "s5": "Setiap 5 detik"
       },
       "companionAutoOpen": {
         "label": "Buka panel metrik bersama terminal baru",
@@ -288,7 +332,7 @@
         "label": "Kumpulkan metrik"
       },
       "metricsInterval": {
-        "label": "Interval metrik (detik)"
+        "label": "Interval pengambilan sampel riwayat (detik)"
       },
       "enabledWidgets": {
         "label": "Widget yang diaktifkan"
@@ -307,5 +351,10 @@
   "plugin": {
     "name": "Metrik Host",
     "description": "Statistik CPU, memori, disk, jaringan, dan GPU secara langsung, plus alat untuk mengelola host Anda."
+  },
+  "card": {
+    "title": "Host tersibuk",
+    "loading": "Memuat...",
+    "empty": "Belum ada sampel terbaru. Host muncul di sini setelah metriknya dikumpulkan, seperti saat kartu status host terbuka."
   }
 }

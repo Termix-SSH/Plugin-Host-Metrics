@@ -1,5 +1,4 @@
 import {
-  RadialGauge,
   Sparkline,
   MiniStat,
   MetricCard,
@@ -12,6 +11,9 @@ import { MemoryStick } from "lucide-react";
 import { useTranslation } from "@termix-ssh/plugin-sdk/frontend";
 import { type MetricsHistoryRow, useHostMetricsApi } from "../host-metrics-api";
 import { CardTimeTabs, type HistoryTab } from "./CardTimeTabs";
+import { memParts } from "../live-metrics";
+import { loadTextColor } from "../process-view";
+import { AnimatedGauge } from "./AnimatedGauge";
 
 export function MemoryCard({
   metrics,
@@ -53,6 +55,14 @@ export function MemoryCard({
   const totalGiB = metrics?.memory?.totalGiB ?? null;
   const freeGiB =
     usedGiB !== null && totalGiB !== null ? totalGiB - usedGiB : null;
+  const parts =
+    totalGiB && metrics?.memory?.freeGiB != null
+      ? memParts(
+          totalGiB,
+          metrics.memory.freeGiB,
+          metrics.memory.cachedGiB ?? 0,
+        )
+      : null;
 
   const series: LineChartSeries[] = [
     {
@@ -77,7 +87,10 @@ export function MemoryCard({
       <div className="flex flex-col gap-3">
         {activeTab === "live" && (
           <div className="flex items-center gap-4">
-            <RadialGauge value={percent} />
+            <AnimatedGauge
+              value={percent}
+              colorClassName={loadTextColor(percent)}
+            />
             <div className="flex min-w-0 flex-1 flex-col gap-2">
               <div className="grid grid-cols-2 gap-2">
                 <MiniStat
@@ -93,6 +106,25 @@ export function MemoryCard({
                   value={freeGiB !== null ? `${freeGiB.toFixed(1)}G` : "N/A"}
                 />
               </div>
+              {parts && metrics?.memory?.cachedGiB != null && (
+                <div className="flex flex-col gap-0.5">
+                  <div className="flex h-1.5 w-full bg-muted">
+                    <div
+                      className="bg-accent-brand"
+                      style={{ width: `${parts.used}%` }}
+                    />
+                    <div
+                      className="bg-accent-brand/40"
+                      style={{ width: `${parts.cache}%` }}
+                    />
+                  </div>
+                  <div className="font-mono text-[10px] text-muted-foreground">
+                    {t("hostMetrics.memoryMix", {
+                      cache: metrics.memory.cachedGiB.toFixed(1),
+                    })}
+                  </div>
+                </div>
+              )}
               <Sparkline
                 data={[...history, percent ?? 0]}
                 domain={[0, 100]}

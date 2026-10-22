@@ -46,6 +46,13 @@
     "noProcessesFound": "Không tìm thấy quá trình",
     "processesTotal": "tổng cộng",
     "processesRunning": "đang chạy",
+    "processesLoad": "tải",
+    "processesSearch": "Tìm kiếm tiến trình",
+    "processesTree": "Cây",
+    "processesCommand": "Lệnh",
+    "processesNoMatch": "Không có tiến trình phù hợp",
+    "cpuMix": "người dùng {{user}}% hệ thống {{system}}% io {{iowait}}% chiếm {{steal}}%",
+    "memoryMix": "bộ nhớ đệm {{cache}}G",
     "loginStats": "Thống kê đăng nhập SSH",
     "noRecentLoginData": "Không có dữ liệu đăng nhập gần đây",
     "ports": {
@@ -111,7 +118,28 @@
       "renew": "Gia hạn",
       "noAcmeClient": "Không tìm thấy máy khách ACME (certbot hoặc acme.sh) trên host này.",
       "addInputRule": "Thêm quy tắc INPUT",
-      "firewallWarning": "Thay đổi chỉ có hiệu lực tạm thời cho đến khi được lưu. Hãy cẩn thận để không khóa chính mình.",
+      "firewallWarning": "Thay đổi tường lửa có thể làm gián đoạn SSH hoặc phơi bày các dịch vụ. Hãy đảm bảo luôn có cách truy cập khôi phục.",
+      "firewallConfirm": "Xem lại thay đổi tường lửa",
+      "firewallRecoveryWarning": "Cho phép lưu lượng truy cập có thể phơi bày các dịch vụ; từ chối lưu lượng hoặc thay đổi chính sách mặc định có thể ngắt kết nối SSH và các phiên khác. Hãy giữ sẵn một đường dẫn console/khôi phục độc lập. Không có cổng SSH nào được giả định và quyền truy cập không thể được đảm bảo.",
+      "firewallNonAtomic": "Các chỉnh sửa UFW KHÔNG mang tính nguyên tử. Những thay đổi chỉ liên quan đến hành động sẽ cập nhật luồng khớp duy nhất tại chỗ; các chỉnh sửa khác sẽ chèn và xác minh bản thay thế trước khi xóa quy tắc gốc. Một lỗi hoặc thời gian chờ có thể để lại một thay đổi không hoàn chỉnh hoặc cả hai quy tắc; hãy làm mới và kiểm tra trước khi thử lại.",
+      "firewallApply": "Áp dụng",
+      "firewallCancel": "Hủy",
+      "firewallEdit": "Chỉnh sửa",
+      "firewallDelete": "Xóa",
+      "firewallEditPolicy": "Chỉnh sửa chính sách mặc định",
+      "firewallReadOnly": "Chỉ đọc",
+      "firewallPreserved": "Đã giữ nguyên họ, hướng, hồ sơ và chú thích",
+      "firewallStale": "Tường lửa đã thay đổi. Đóng trình soạn thảo này và mở lại quy tắc hiện tại.",
+      "firewallField_action": "Hành động",
+      "firewallField_protocol": "Giao thức",
+      "firewallField_source": "Địa chỉ/CIDR nguồn",
+      "firewallField_destination": "Địa chỉ/CIDR đích",
+      "firewallField_port": "Cổng đích (hoặc bất kỳ)",
+      "firewallField_sourcePort": "Cổng nguồn (hoặc bất kỳ)",
+      "firewallUfwPersistence": "Các thay đổi UFW sẽ được lưu ngay lập tức. Không cần lưu riêng.",
+      "firewallNftPersistence": "Các thay đổi nftables gốc chỉ có hiệu lực trong phiên chạy hiện tại. Hãy lưu bằng dịch vụ được cấu hình trên máy chủ; plugin này không ghi đè lên nftables.conf.",
+      "firewallNativePersistence": "Các thay đổi iptables gốc chỉ có hiệu lực trong phiên chạy hiện tại cho đến khi được lưu bằng dịch vụ lưu trữ bền vững được hỗ trợ trên máy chủ.",
+      "firewallPersistConfirm": "Lưu toàn bộ bộ quy tắc iptables gốc bằng dịch vụ lưu trữ bền vững được phát hiện trên máy chủ, bao gồm cả các quy tắc bên ngoài trình chỉnh sửa này.",
       "ruleApplied": "Quy tắc đã áp dụng",
       "invalidPort": "Nhập cổng hợp lệ (1-65535)",
       "newUsername": "Tên người dùng mới",
@@ -248,12 +276,20 @@
   "settings": {
     "admin": {
       "metricsInterval": {
-        "label": "Khoảng thời gian thu thập chỉ số (giây)",
-        "description": "Tần suất lấy mẫu từ máy chủ đang được xem, trừ khi máy chủ đó tự đặt khoảng thời gian riêng."
+        "label": "Khoảng thời gian lấy mẫu lịch sử (giây)",
+        "description": "Tần suất lưu trữ các mẫu dữ liệu cho biểu đồ lịch sử, trừ khi máy chủ tự đặt khoảng thời gian riêng. Các chế độ xem trực tiếp được điều khiển bởi cài đặt trực tiếp bên dưới."
       },
       "historyRetentionDays": {
         "label": "Thời gian lưu trữ lịch sử (ngày)",
         "description": "Thời gian lưu giữ các mẫu chỉ số cho biểu đồ lịch sử."
+      },
+      "liveEnabled": {
+        "label": "Cập nhật trực tiếp",
+        "description": "Cho phép người dùng mở chế độ xem trực tiếp nhẹ nhàng cho CPU, bộ nhớ, mạng và tiến trình. Tách biệt với khoảng thời gian lấy mẫu lịch sử."
+      },
+      "liveMinInterval": {
+        "label": "Khoảng thời gian tối thiểu cập nhật trực tiếp (giây)",
+        "description": "Tốc độ nhanh nhất mà một máy chủ được lấy mẫu cho các cập nhật trực tiếp, bất kể có bao nhiêu người dùng hoặc tab đang theo dõi. Người dùng có thể chọn tốc độ chậm hơn; tùy chọn nhanh hơn sẽ được điều chỉnh lên mức tối thiểu này."
       }
     },
     "user": {
@@ -262,6 +298,14 @@
         "description": "Cách hiển thị nhiệt độ trong Chỉ số máy chủ.",
         "celsius": "Celsius",
         "fahrenheit": "Fahrenheit"
+      },
+      "liveInterval": {
+        "label": "Tốc độ cập nhật trực tiếp",
+        "description": "Tần suất làm mới CPU, bộ nhớ, mạng và tiến trình trong tab Chỉ số Máy chủ, thanh công cụ terminal, và các widget trên bảng điều khiển và trang chủ (không bao giờ nhanh hơn mỗi 5 giây). Mỗi lần cập nhật đọc /proc trên máy chủ. Không bao giờ nhanh hơn khoảng thời gian tối thiểu cập nhật trực tiếp của máy chủ. Tắt giữ nguyên việc lấy mẫu thông thường chậm hơn.",
+        "off": "Tắt",
+        "s1": "Mỗi giây",
+        "s2": "Mỗi 2 giây",
+        "s5": "Mỗi 5 giây"
       },
       "companionAutoOpen": {
         "label": "Mở bảng chỉ số cùng với terminal mới",
@@ -288,7 +332,7 @@
         "label": "Thu thập chỉ số"
       },
       "metricsInterval": {
-        "label": "Khoảng thời gian thu thập chỉ số (giây)"
+        "label": "Khoảng thời gian lấy mẫu lịch sử (giây)"
       },
       "enabledWidgets": {
         "label": "Widget đã bật"
@@ -307,5 +351,10 @@
   "plugin": {
     "name": "Chỉ số máy chủ",
     "description": "Thống kê CPU, bộ nhớ, ổ đĩa, mạng và GPU theo thời gian thực, cùng các công cụ để quản lý máy chủ của bạn."
+  },
+  "card": {
+    "title": "Các host bận nhất",
+    "loading": "Đang tải...",
+    "empty": "Chưa có dữ liệu mẫu gần đây. Các host sẽ hiển thị ở đây sau khi thông số hiệu năng được thu thập, ví dụ khi thẻ trạng thái host đang mở."
   }
 }

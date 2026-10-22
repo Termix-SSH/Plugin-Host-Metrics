@@ -46,6 +46,13 @@
     "noProcessesFound": "未找到进程",
     "processesTotal": "总计",
     "processesRunning": "运行中",
+    "processesLoad": "负载",
+    "processesSearch": "搜索进程",
+    "processesTree": "树状视图",
+    "processesCommand": "命令",
+    "processesNoMatch": "未找到匹配的进程",
+    "cpuMix": "用户 {{user}}% 系统 {{system}}% IO 等待 {{iowait}}% 窃取 {{steal}}%",
+    "memoryMix": "缓存 {{cache}}G",
     "loginStats": "SSH 登录统计",
     "noRecentLoginData": "无近期登录数据",
     "ports": {
@@ -111,7 +118,28 @@
       "renew": "续期",
       "noAcmeClient": "此主机上未找到 ACME 客户端 (certbot 或 acme.sh)。",
       "addInputRule": "添加 INPUT 规则",
-      "firewallWarning": "更改仅在运行时生效，直到持久化保存。请小心操作，以免将自己锁定在外。",
+      "firewallWarning": "防火墙更改可能会中断 SSH 连接或暴露服务。请确保保留恢复访问途径。",
+      "firewallConfirm": "检查防火墙更改",
+      "firewallRecoveryWarning": "允许流量可能会暴露服务；拒绝流量或更改默认策略可能会断开 SSH 和其他会话。请保留独立的控制台/恢复路径。不假设任何 SSH 端口，且无法保证访问权限。",
+      "firewallNonAtomic": "UFW 编辑操作并非原子操作。仅涉及动作的更改会就地更新唯一匹配的流程；其他编辑会在删除原始规则之前插入并验证替换规则。失败或超时可能会导致部分更改或同时存在两条规则；重试前请刷新并检查。",
+      "firewallApply": "应用",
+      "firewallCancel": "取消",
+      "firewallEdit": "编辑",
+      "firewallDelete": "删除",
+      "firewallEditPolicy": "编辑默认策略",
+      "firewallReadOnly": "只读",
+      "firewallPreserved": "保留族、方向、配置文件和注释",
+      "firewallStale": "防火墙已更改。请关闭此编辑器并重新打开当前规则。",
+      "firewallField_action": "动作",
+      "firewallField_protocol": "协议",
+      "firewallField_source": "源地址/CIDR",
+      "firewallField_destination": "目标地址/CIDR",
+      "firewallField_port": "目标端口（或任意）",
+      "firewallField_sourcePort": "源端口（或任意）",
+      "firewallUfwPersistence": "UFW 更改立即持久化。无需单独保存。",
+      "firewallNftPersistence": "原生 nftables 更改仅对运行时有效。请使用主机配置的服务进行保存；此插件不会覆盖 nftables.conf。",
+      "firewallNativePersistence": "原生 iptables 更改在通过受支持的主机持久化服务保存之前，仅对运行时有效。",
+      "firewallPersistConfirm": "使用检测到的主机持久化服务保存完整的原生 iptables 规则集，包括此编辑器之外的规则。",
       "ruleApplied": "规则已应用",
       "invalidPort": "请输入有效的端口号 (1-65535)",
       "newUsername": "新用户名",
@@ -248,12 +276,20 @@
   "settings": {
     "admin": {
       "metricsInterval": {
-        "label": "指标间隔（秒）",
-        "description": "查看主机时的采样频率，除非主机设置了自定义间隔。"
+        "label": "历史记录采样间隔（秒）",
+        "description": "历史记录图表存储采样的频率，除非主机设置了其自身的间隔。实时视图由下方的实时设置控制。"
       },
       "historyRetentionDays": {
         "label": "历史记录保留时间（天）",
         "description": "历史记录图表中保留指标采样的时长。"
+      },
+      "liveEnabled": {
+        "label": "实时更新",
+        "description": "允许用户打开 CPU、内存、网络和进程的轻量级实时视图。与历史记录采样间隔分开。"
+      },
+      "liveMinInterval": {
+        "label": "实时更新最小间隔（秒）",
+        "description": "主机进行实时更新采样的最快频率，无论有多少用户或标签页在观看。用户可以选择较慢的频率；更快的选择将提升至此最小值。"
       }
     },
     "user": {
@@ -262,6 +298,14 @@
         "description": "在主机指标中显示温度的方式。",
         "celsius": "摄氏度",
         "fahrenheit": "华氏度"
+      },
+      "liveInterval": {
+        "label": "实时更新频率",
+        "description": "主机指标选项卡、终端工具栏以及仪表板和主页小部件中 CPU、内存、网络和进程刷新的频率（这些永远不会快于每 5 秒一次）。每次更新都会读取主机上的 /proc。永远不会快于服务器的实时更新最小值。关闭则保持较慢的常规采样。",
+        "off": "关闭",
+        "s1": "每秒",
+        "s2": "每 2 秒",
+        "s5": "每 5 秒"
       },
       "companionAutoOpen": {
         "label": "随新终端打开指标面板",
@@ -288,7 +332,7 @@
         "label": "收集指标"
       },
       "metricsInterval": {
-        "label": "指标间隔（秒）"
+        "label": "历史记录采样间隔（秒）"
       },
       "enabledWidgets": {
         "label": "启用的组件"
@@ -307,5 +351,10 @@
   "plugin": {
     "name": "主机指标",
     "description": "实时 CPU、内存、磁盘、网络和 GPU 统计，以及管理主机的工具。"
+  },
+  "card": {
+    "title": "最繁忙的主机",
+    "loading": "加载中...",
+    "empty": "暂无近期采样数据。一旦收集到主机的指标（例如在主机状态卡片打开时），主机将显示在此处。"
   }
 }

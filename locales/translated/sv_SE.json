@@ -47,6 +47,13 @@
     "noProcessesFound": "Inga processer hittades",
     "processesTotal": "totalt",
     "processesRunning": "körande",
+    "processesLoad": "last",
+    "processesSearch": "Sök processer",
+    "processesTree": "Träd",
+    "processesCommand": "Kommando",
+    "processesNoMatch": "Inga matchande processer",
+    "cpuMix": "användare {{user}}% sys {{system}}% io {{iowait}}% stjälnad {{steal}}%",
+    "memoryMix": "cache {{cache}}G",
     "loginStats": "SSH-inloggningsstatistik",
     "noRecentLoginData": "Ingen nylig inloggningsdata",
     "ports": {
@@ -112,7 +119,28 @@
       "renew": "Förnya",
       "noAcmeClient": "Ingen ACME-klient (certbot eller acme.sh) hittades på denna värd.",
       "addInputRule": "Lägg till INPUT-regel",
-      "firewallWarning": "Ändringar gäller endast under körningen tills de sparas permanent. Var försiktig så att du inte låser ut dig själv.",
+      "firewallWarning": "Ändringar i brandväggen kan avbryta SSH eller exponera tjänster. Se till att återställningsåtkomst finns tillgänglig.",
+      "firewallConfirm": "Granska brandväggsändring",
+      "firewallRecoveryWarning": "Tillåten trafik kan exponera tjänster; blockerad trafik eller ändrad standardpolicy kan koppla bort SSH och andra sessioner. Ha en oberoende konsol/återställningsväg tillgänglig. Ingen SSH-port antas och åtkomst kan inte garanteras.",
+      "firewallNonAtomic": "UFW-redigeringar är INTE atomära. Ändringar som endast rör åtgärden uppdaterar en unik matchande flödesregel på plats; andra redigeringar infogar och verifierar ersättningen innan den ursprungliga regeln tas bort. Ett misslyckande eller timeout kan lämna kvar en delvis ändring eller båda reglerna; uppdatera och inspektera innan du försöker igen.",
+      "firewallApply": "Verkställ",
+      "firewallCancel": "Avbryt",
+      "firewallEdit": "Redigera",
+      "firewallDelete": "Ta bort",
+      "firewallEditPolicy": "Redigera standardpolicy",
+      "firewallReadOnly": "Skrivskyddad",
+      "firewallPreserved": "Familj, riktning, profil och kommentar har bevarats",
+      "firewallStale": "Brandväggen har ändrats. Stäng denna redigerare och öppna den aktuella regeln igen.",
+      "firewallField_action": "Åtgärd",
+      "firewallField_protocol": "Protokoll",
+      "firewallField_source": "Källadress/CIDR",
+      "firewallField_destination": "Måladress/CIDR",
+      "firewallField_port": "Målport (eller alla)",
+      "firewallField_sourcePort": "Källport (eller alla)",
+      "firewallUfwPersistence": "UFW-ändringar är bestående omedelbart. Ingen separat sparoperation behövs.",
+      "firewallNftPersistence": "Inga ändringar i nftables är bestående. Spara med värdens konfigurerade tjänst; denna plugin skriver inte över nftables.conf.",
+      "firewallNativePersistence": "Inga ändringar i iptables är bestående förrän de sparas med en stödd tjänst för bestående konfiguration på värden.",
+      "firewallPersistConfirm": "Spara hela den inbyggda iptables-regeluppsättningen med den upptäckta tjänsten för bestående konfiguration på värden, inklusive regler utanför denna redigerare.",
       "ruleApplied": "Regel tillämpad",
       "invalidPort": "Ange en giltig port (1-65535)",
       "newUsername": "Nytt användarnamn",
@@ -249,12 +277,20 @@
   "settings": {
     "admin": {
       "metricsInterval": {
-        "label": "Mätintervall (sekunder)",
-        "description": "Hur ofta en visad värd mäts, om inte värdens egna intervall används."
+        "label": "Intervall för historikprovtagning (sekunder)",
+        "description": "Hur ofta prover lagras för historikdiagrammen, om inte värdens egna intervall är inställt. Livevyer styrs av liveinställningarna nedan."
       },
       "historyRetentionDays": {
         "label": "Historiklagring (dagar)",
         "description": "Hur länge mätdata sparas för historikdiagrammen."
+      },
+      "liveEnabled": {
+        "label": "Liveuppdateringar",
+        "description": "Tillåter användare att öppna den lätta livevyen för CPU, minne, nätverk och processer. Separat från historikprovtagningens intervall."
+      },
+      "liveMinInterval": {
+        "label": "Minsta liveuppdateringsintervall (sekunder)",
+        "description": "Det snabbaste intervall en värd provtas för liveuppdateringar, oavsett hur många användare eller flikar som tittar. Användare kan välja långsammare intervall; ett snabbare val höjs till detta minimum."
       }
     },
     "user": {
@@ -263,6 +299,14 @@
         "description": "Hur temperaturer visas i värdmätvärden.",
         "celsius": "Celsius",
         "fahrenheit": "Fahrenheit"
+      },
+      "liveInterval": {
+        "label": "Liveuppdateringsfrekvens",
+        "description": "Hur ofta CPU, minne, nätverk och processer uppdateras i fliken Värdmetriker, terminalverktygsfältet samt widgetar på instrumentpanelen och startsidan (dessa uppdateras aldrig snabbare än var 5:e sekund). Varje uppdatering läser /proc på värden. Aldrig snabbare än serverns minsta liveuppdateringsintervall. Avstängt behåller den långsammare regelbundna provtagningen.",
+        "off": "Av",
+        "s1": "Varje sekund",
+        "s2": "Var 2:a sekund",
+        "s5": "Varje 5:e sekund"
       },
       "companionAutoOpen": {
         "label": "Öppna mätvärdespanelen med nya terminaler",
@@ -289,7 +333,7 @@
         "label": "Samla in mätvärden"
       },
       "metricsInterval": {
-        "label": "Mätintervall (sekunder)"
+        "label": "Historikprovtagning (sekunder)"
       },
       "enabledWidgets": {
         "label": "Aktiverade widgets"
@@ -308,5 +352,10 @@
   "plugin": {
     "name": "Värdmätvärden",
     "description": "Live-statistik för CPU, minne, disk, nätverk och GPU, samt verktyg för att hantera dina värdar."
+  },
+  "card": {
+    "title": "Bastigaste värdarna",
+    "loading": "Laddar...",
+    "empty": "Inga senaste prover ännu. Värdar visas här när deras metrik har samlats in, till exempel medan värdstatuskortet är öppet."
   }
 }

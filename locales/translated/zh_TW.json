@@ -46,6 +46,13 @@
     "noProcessesFound": "未找到程序",
     "processesTotal": "總計",
     "processesRunning": "執行中",
+    "processesLoad": "負載",
+    "processesSearch": "搜尋程序",
+    "processesTree": "樹狀圖",
+    "processesCommand": "指令",
+    "processesNoMatch": "沒有符合的程序",
+    "cpuMix": "使用者 {{user}}% 系統 {{system}}% I/O {{iowait}}% 搶佔 {{steal}}%",
+    "memoryMix": "快取 {{cache}}G",
     "loginStats": "SSH 登入統計",
     "noRecentLoginData": "沒有近期的登入資料",
     "ports": {
@@ -111,7 +118,28 @@
       "renew": "續期",
       "noAcmeClient": "此主機上未找到 ACME 用戶端 (certbot 或 acme.sh)。",
       "addInputRule": "新增 INPUT 規則",
-      "firewallWarning": "變更僅在執行階段生效，直到被永久儲存。請小心操作，以免將自己鎖在系統外。",
+      "firewallWarning": "防火牆變更可能會中斷 SSH 連線或暴露服務。請確保保留恢復存取途徑。",
+      "firewallConfirm": "檢視防火牆變更",
+      "firewallRecoveryWarning": "允許流量可能會暴露服務；拒絕流量或變更預設政策可能會中斷 SSH 及其他連線。請確保保留獨立的控制台或恢復途徑。系統不會假設任何 SSH 埠，且無法保證存取。",
+      "firewallNonAtomic": "UFW 編輯並非原子操作。僅限動作（Action-only）的變更會就地更新唯一的匹配流量；其他編輯會在刪除原始規則前插入並驗證替換規則。失敗或逾時可能會留下部分變更或同時存在兩條規則；請重新整理並檢查後再重試。",
+      "firewallApply": "套用",
+      "firewallCancel": "取消",
+      "firewallEdit": "編輯",
+      "firewallDelete": "刪除",
+      "firewallEditPolicy": "編輯預設政策",
+      "firewallReadOnly": "唯讀",
+      "firewallPreserved": "保留家族、方向、設定檔與註解",
+      "firewallStale": "防火牆已變更。請關閉此編輯器並重新開啟目前的規則。",
+      "firewallField_action": "動作",
+      "firewallField_protocol": "通訊協定",
+      "firewallField_source": "來源位址/CIDR",
+      "firewallField_destination": "目的位址/CIDR",
+      "firewallField_port": "目的埠（或任意）",
+      "firewallField_sourcePort": "來源埠（或任意）",
+      "firewallUfwPersistence": "UFW 變更會立即生效且具持久性。無需單獨儲存。",
+      "firewallNftPersistence": "原生 nftables 變更僅在執行階段生效。請使用主機設定的服務進行儲存；此外掛程式不會覆蓋 nftables.conf。",
+      "firewallNativePersistence": "原生 iptables 變更僅在執行階段生效，直到使用支援的主機持久化服務儲存為止。",
+      "firewallPersistConfirm": "使用偵測到的主機持久化服務儲存完整的原生 iptables 規則集，包括此編輯器之外的規則。",
       "ruleApplied": "規則已套用",
       "invalidPort": "請輸入有效的連接埠 (1-65535)",
       "newUsername": "新使用者名稱",
@@ -248,12 +276,20 @@
   "settings": {
     "admin": {
       "metricsInterval": {
-        "label": "指標間隔（秒）",
-        "description": "查看中的主機採樣頻率，除非該主機設定了自己的間隔。"
+        "label": "歷史採樣間隔（秒）",
+        "description": "歷史圖表儲存樣本的頻率，除非主機設定了自己的間隔。即時檢視由下方的即時設定控制。"
       },
       "historyRetentionDays": {
         "label": "歷史記錄保留天數",
         "description": "歷史圖表保留指標採樣資料的時間長度。"
+      },
+      "liveEnabled": {
+        "label": "即時更新",
+        "description": "允許使用者開啟 CPU、記憶體、網路與程序的輕量級即時檢視。與歷史採樣間隔分開。"
+      },
+      "liveMinInterval": {
+        "label": "即時更新最小間隔（秒）",
+        "description": "無論有多少使用者或分頁正在觀看，主機進行即時更新採樣的最快速度。使用者可以選擇較慢的頻率；較快的選擇會提高至此最小值。"
       }
     },
     "user": {
@@ -262,6 +298,14 @@
         "description": "主機指標中溫度的顯示方式。",
         "celsius": "攝氏",
         "fahrenheit": "華氏"
+      },
+      "liveInterval": {
+        "label": "即時更新頻率",
+        "description": "主機指標分頁、終端機工具列、儀表板與首頁小工具中 CPU、記憶體、網路與程序更新的頻率（這些永遠不會快於每 5 秒一次）。每次更新都會讀取主機上的 /proc。永遠不會快於伺服器的即時更新最小值。關閉則保持較慢的常規採樣。",
+        "off": "關閉",
+        "s1": "每秒",
+        "s2": "每 2 秒",
+        "s5": "每 5 秒"
       },
       "companionAutoOpen": {
         "label": "開啟新終端機時自動顯示效能指標面板",
@@ -288,7 +332,7 @@
         "label": "收集指標"
       },
       "metricsInterval": {
-        "label": "指標間隔（秒）"
+        "label": "歷史採樣間隔（秒）"
       },
       "enabledWidgets": {
         "label": "已啟用的小工具"
@@ -307,5 +351,10 @@
   "plugin": {
     "name": "主機指標",
     "description": "即時 CPU、記憶體、磁碟、網路和 GPU 統計，以及管理主機的工具。"
+  },
+  "card": {
+    "title": "最忙碌的主機",
+    "loading": "載入中...",
+    "empty": "尚無近期樣本。主機在收集指標後會顯示在此處，例如當主機狀態卡片開啟時。"
   }
 }

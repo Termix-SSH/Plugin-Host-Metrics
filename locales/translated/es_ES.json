@@ -48,6 +48,13 @@
     "noProcessesFound": "No se han encontrado procesos",
     "processesTotal": "total",
     "processesRunning": "en ejecución",
+    "processesLoad": "carga",
+    "processesSearch": "Buscar procesos",
+    "processesTree": "Árbol",
+    "processesCommand": "Comando",
+    "processesNoMatch": "No hay procesos coincidentes",
+    "cpuMix": "usuario {{user}}% sys {{system}}% io {{iowait}}% steal {{steal}}%",
+    "memoryMix": "caché {{cache}}G",
     "loginStats": "Estadísticas de inicio de sesión SSH",
     "noRecentLoginData": "No hay datos de inicio de sesión recientes",
     "ports": {
@@ -113,7 +120,28 @@
       "renew": "Renovar",
       "noAcmeClient": "No se ha encontrado ningún cliente ACME (certbot o acme.sh) en este host.",
       "addInputRule": "Añadir regla de ENTRADA",
-      "firewallWarning": "Los cambios solo son válidos en tiempo de ejecución hasta que se guarden. Ten cuidado de no bloquearte el acceso.",
+      "firewallWarning": "Los cambios en el firewall pueden interrumpir SSH o exponer servicios. Mantén disponible un acceso de recuperación.",
+      "firewallConfirm": "Revisar cambio de firewall",
+      "firewallRecoveryWarning": "Permitir tráfico puede exponer servicios; denegar tráfico o cambiar una política predeterminada puede desconectar SSH y otras sesiones. Mantén disponible una consola independiente o una ruta de recuperación. No se asume ningún puerto SSH y no se puede garantizar el acceso.",
+      "firewallNonAtomic": "Las ediciones de UFW NO son atómicas. Los cambios solo de acción actualizan un flujo coincidente único en su lugar; otras ediciones insertan y verifican el reemplazo antes de eliminar la regla original. Un fallo o tiempo de espera puede dejar un cambio parcial o ambas reglas; actualiza e inspecciona antes de reintentar.",
+      "firewallApply": "Aplicar",
+      "firewallCancel": "Cancelar",
+      "firewallEdit": "Editar",
+      "firewallDelete": "Eliminar",
+      "firewallEditPolicy": "Editar política predeterminada",
+      "firewallReadOnly": "Solo lectura",
+      "firewallPreserved": "Familia, dirección, perfil y comentario conservados",
+      "firewallStale": "El firewall ha cambiado. Cierra este editor y vuelve a abrir la regla actual.",
+      "firewallField_action": "Acción",
+      "firewallField_protocol": "Protocolo",
+      "firewallField_source": "Dirección/CIDR de origen",
+      "firewallField_destination": "Dirección/CIDR de destino",
+      "firewallField_port": "Puerto de destino (o cualquiera)",
+      "firewallField_sourcePort": "Puerto de origen (o cualquiera)",
+      "firewallUfwPersistence": "Los cambios de UFW son persistentes de inmediato. No es necesario guardar por separado.",
+      "firewallNftPersistence": "Los cambios nativos de nftables son solo en tiempo de ejecución. Guarda usando el servicio configurado del host; este complemento no sobrescribe nftables.conf.",
+      "firewallNativePersistence": "Los cambios nativos de iptables son solo en tiempo de ejecución hasta que se guardan con un servicio de persistencia del host compatible.",
+      "firewallPersistConfirm": "Guardar el conjunto completo de reglas nativas de iptables usando el servicio de persistencia del host detectado, incluidas las reglas fuera de este editor.",
       "ruleApplied": "Regla aplicada",
       "invalidPort": "Introduce un puerto válido (1-65535)",
       "newUsername": "Nuevo nombre de usuario",
@@ -250,12 +278,20 @@
   "settings": {
     "admin": {
       "metricsInterval": {
-        "label": "Intervalo de métricas (segundos)",
-        "description": "Frecuencia con la que se muestrea un host que se está visualizando, a menos que el host defina su propio intervalo."
+        "label": "Intervalo de muestreo de historial (segundos)",
+        "description": "Con qué frecuencia se almacenan las muestras para los gráficos de historial, a menos que el host establezca su propio intervalo. Las vistas en vivo se controlan con la configuración en vivo de abajo."
       },
       "historyRetentionDays": {
         "label": "Retención del historial (días)",
         "description": "Duración durante la cual se conservan las muestras de métricas para los gráficos de historial."
+      },
+      "liveEnabled": {
+        "label": "Actualizaciones en vivo",
+        "description": "Permite a los usuarios abrir la vista en vivo ligera de CPU, memoria, red y procesos. Independiente del intervalo de muestreo de historial."
+      },
+      "liveMinInterval": {
+        "label": "Mínimo de actualización en vivo (segundos)",
+        "description": "La velocidad máxima con la que se muestrea un host para actualizaciones en vivo, sin importar cuántos usuarios o pestañas estén observando. Los usuarios pueden elegir tasas más lentas; una opción más rápida se ajusta a este mínimo."
       }
     },
     "user": {
@@ -264,6 +300,14 @@
         "description": "Cómo se muestran las temperaturas en Métricas de host.",
         "celsius": "Celsius",
         "fahrenheit": "Fahrenheit"
+      },
+      "liveInterval": {
+        "label": "Frecuencia de actualización en vivo",
+        "description": "Con qué frecuencia se actualizan la CPU, la memoria, la red y los procesos en la pestaña Métricas del host, la barra de herramientas del terminal y los widgets del panel y la página de inicio (estos nunca van más rápido que cada 5 segundos). Cada actualización lee /proc en el host. Nunca más rápido que el mínimo de actualización en vivo del servidor. Desactivado mantiene el muestreo regular más lento.",
+        "off": "Desactivado",
+        "s1": "Cada segundo",
+        "s2": "Cada 2 segundos",
+        "s5": "Cada 5 segundos"
       },
       "companionAutoOpen": {
         "label": "Abrir el panel de métricas con nuevas terminales",
@@ -290,7 +334,7 @@
         "label": "Recopilar métricas"
       },
       "metricsInterval": {
-        "label": "Intervalo de métricas (segundos)"
+        "label": "Intervalo de muestreo de historial (segundos)"
       },
       "enabledWidgets": {
         "label": "Widgets habilitados"
@@ -309,5 +353,10 @@
   "plugin": {
     "name": "Métricas de host",
     "description": "Estadísticas en tiempo real de CPU, memoria, disco, red y GPU, además de herramientas para gestionar tus hosts."
+  },
+  "card": {
+    "title": "Hosts más ocupados",
+    "loading": "Cargando...",
+    "empty": "Aún no hay muestras recientes. Los hosts aparecerán aquí una vez que se recopilen sus métricas, como cuando está abierta la tarjeta de estado del host."
   }
 }

@@ -88,6 +88,18 @@ export class MetricsPoller {
     return this.metrics.get(hostId);
   }
 
+  /** Every host with a sample in memory. Starts nothing. */
+  latestSamples(): Array<{
+    hostId: number;
+    data: CollectedMetrics;
+    timestamp: number;
+  }> {
+    return [...this.metrics.entries()].map(([hostId, sample]) => ({
+      hostId,
+      ...sample,
+    }));
+  }
+
   isPolling(hostId: number): boolean {
     return this.polled.has(hostId);
   }

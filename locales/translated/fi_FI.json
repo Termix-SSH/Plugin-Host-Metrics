@@ -47,6 +47,13 @@
     "noProcessesFound": "Prosesseja ei löydy",
     "processesTotal": "yhteensä",
     "processesRunning": "kävymässä",
+    "processesLoad": "kuorma",
+    "processesSearch": "Hae prosesseja",
+    "processesTree": "Puu",
+    "processesCommand": "Komento",
+    "processesNoMatch": "Ei vastaavia prosesseja",
+    "cpuMix": "käyttäjä {{user}}% järjestelmä {{system}}% io {{iowait}}% varastettu {{steal}}%",
+    "memoryMix": "välimuisti {{cache}}G",
     "loginStats": "SSH-kirjautumisstatistiikka",
     "noRecentLoginData": "Viimeaikaisia kirjautumistietoja ei ole",
     "ports": {
@@ -112,7 +119,28 @@
       "renew": "Uusi",
       "noAcmeClient": "Tältä isännältä ei löydy ACME-asiakasta (certbot tai acme.sh).",
       "addInputRule": "Lisää INPUT-sääntö",
-      "firewallWarning": "Muutokset ovat vain ajonaikaisia, kunnes ne tallennetaan pysyvästi. Ole varovainen, ettei pääsy isäntään lukkiudu.",
+      "firewallWarning": "Palomuurin muutokset voivat katkaista SSH-yhteyden tai altistaa palveluita. Pidä palautusyhteys käytettävissä.",
+      "firewallConfirm": "Tarkista palomuurin muutos",
+      "firewallRecoveryWarning": "Liikenteen salliminen voi altistaa palveluita; liikenteen estäminen tai oletuspolitiikan muuttaminen voi katkaista SSH- ja muut istunnot. Pidä riippumaton konsoli- tai palautusreitti käytettävissä. SSH-porttia ei oleteta, ja yhteyttä ei voida taata.",
+      "firewallNonAtomic": "UFW-muokkaukset eivät ole atomisia. Vain toimintaan liittyvät muutokset päivittävät yksittäisen vastaavan virran paikan päällä; muut muokkaukset lisäävät ja vahvistavat korvaavan säännön ennen alkuperäisen poistamista. Virhe tai aikakatkaisu voi jättää osittaisen muutoksen tai molemmat säännöt; päivitä ja tarkista ennen uudelleenyritystä.",
+      "firewallApply": "Käytä",
+      "firewallCancel": "Peruuta",
+      "firewallEdit": "Muokkaa",
+      "firewallDelete": "Poista",
+      "firewallEditPolicy": "Muokkaa oletuspolitiikkaa",
+      "firewallReadOnly": "Vain luku",
+      "firewallPreserved": "Perhe, suunta, profiili ja kommentti säilytettiin",
+      "firewallStale": "Palomuuri on muuttunut. Sulje tämä muokkain ja avaa nykyinen sääntö uudelleen.",
+      "firewallField_action": "Toiminto",
+      "firewallField_protocol": "Protokolla",
+      "firewallField_source": "Lähdeosoite/CIDR",
+      "firewallField_destination": "Kohdeosoite/CIDR",
+      "firewallField_port": "Kohdeportti (tai mikä tahansa)",
+      "firewallField_sourcePort": "Lähdeportti (tai mikä tahansa)",
+      "firewallUfwPersistence": "UFW-muutokset ovat pysyviä välittömästi. Eri erillistä tallennusta ei tarvita.",
+      "firewallNftPersistence": "Natiivit nftables-muutokset ovat vain ajonaikaisia. Tallenna isäntälaitteen määrittämä palvelu käyttäen; tämä lisäosa ei korvaa nftables.conf-tiedostoa.",
+      "firewallNativePersistence": "Natiivit iptables-muutokset ovat vain ajonaikaisia, kunnes ne tallennetaan tuetulla isäntälaitteen pysyvyydenhallintapalvelulla.",
+      "firewallPersistConfirm": "Tallenna koko natiivi iptables-säännöstö havaitulla isäntälaitteen pysyvyydenhallintapalvelulla, mukaan lukien säännöt, jotka eivät ole tässä muokkaimessa.",
       "ruleApplied": "Sääntö sovellettu",
       "invalidPort": "Syötä kelvollinen portti (1-65535)",
       "newUsername": "Uusi käyttäjänimi",
@@ -249,12 +277,20 @@
   "settings": {
     "admin": {
       "metricsInterval": {
-        "label": "Mittariväli (sekuntia)",
-        "description": "Kuinka usein katsottavasta isännästä otetaan näyte, ellei isäntä aseta omaa väliään."
+        "label": "Historian näytteenottoväli (sekuntia)",
+        "description": "Kuinka usein näytteet tallennetaan historian kaavioita varten, ellei isäntä aseta omaa väliään. Reaaliaikaisia näkymiä hallitaan alla olevilla asetuksilla."
       },
       "historyRetentionDays": {
         "label": "Historian säilytys (päiviä)",
         "description": "Kuinka kauan mittarinäytteitä säilytetään historian kaavioita varten."
+      },
+      "liveEnabled": {
+        "label": "Reaaliaikaiset päivitykset",
+        "description": "Mahdollistaa käyttäjille kevyen reaaliaikaisen näkymän CPU:lle, muistille, verkkoon ja prosesseille. Erottuu historian näytteenottovälistä."
+      },
+      "liveMinInterval": {
+        "label": "Reaaliaikaisten päivitysten minimi (sekuntia)",
+        "description": "Nopein isännän näytteenottotaajuus reaaliaikaisiin päivityksiin, riippumatta siitä, kuinka monta käyttäjää tai välilehteä seuraa sitä. Käyttäjät voivat valita hitaampia taajuuksia; nopeampi valinta nostetaan tähän minimiin."
       }
     },
     "user": {
@@ -263,6 +299,14 @@
         "description": "Kuinka lämpötilat näytetään isäntämittareissa.",
         "celsius": "Celsius",
         "fahrenheit": "Fahrenheit"
+      },
+      "liveInterval": {
+        "label": "Reaaliaikaisten päivitysten taajuus",
+        "description": "Kuinka usein CPU, muisti, verkko ja prosessit päivittyvät Isännän mittarointi -välilehdellä, terminin työkalurivillä sekä koontinäkymän ja etusivun widgeteissä (nämä eivät koskaan päivity nopeammin kuin 5 sekunnin välein). Jokainen päivitys lukee /proc-tiedoston isännältä. Ei koskaan nopeampi kuin palvelimen reaaliaikaisten päivitysten minimi. Pois päältä säilyttää hitaamman säännöllisen näytteenoton.",
+        "off": "Pois päältä",
+        "s1": "Joka sekunti",
+        "s2": "Joka 2. sekunti",
+        "s5": "Jokainen 5 sekuntia"
       },
       "companionAutoOpen": {
         "label": "Avaa mittaripaneeli uusien terminaaleiden kanssa",
@@ -289,7 +333,7 @@
         "label": "Kerää mittarit"
       },
       "metricsInterval": {
-        "label": "Mittariväli (sekuntia)"
+        "label": "Historian näytteenottoväli (sekunteina)"
       },
       "enabledWidgets": {
         "label": "Oheiset widgetit"
@@ -308,5 +352,10 @@
   "plugin": {
     "name": "Isäntämittarit",
     "description": "Reaaliaikaiset CPU-, muisti-, levy-, verkko- ja GPU-tiedot sekä työkalut isäntien hallintaan."
+  },
+  "card": {
+    "title": "Kiireisimmät isäntäpalvelimet",
+    "loading": "Ladataan...",
+    "empty": "Ei viimeaikaisia näytteitä vielä. Isäntäpalvelimet näkyvät täällä, kun niiden mittareita kerätään, esimerkiksi kun isäntäpalvelimen tilakortti on auki."
   }
 }

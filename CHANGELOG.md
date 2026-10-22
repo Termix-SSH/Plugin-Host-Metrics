@@ -1,5 +1,22 @@
 # Changelog
 
+## 1.2.0
+
+### Added
+
+- Busiest hosts dashboard card: the hosts with the highest CPU or memory, from samples already collected
+- Live CPU, memory, network and process updates every few seconds on Linux hosts, with per-core CPU bars, a memory split and a sortable, searchable process table with a tree view
+- Edit, delete and default policy management in the Firewall card for UFW, iptables and nftables
+
+### Changed
+
+- The metrics interval setting is now called History sampling interval
+- Low CPU and memory load shows in the accent colour instead of green
+
+### Fixed
+
+- Firewall detection picks the firewall that really owns the rules, and nftables commands use names nft accepts
+
 ## 1.1.0
 
 ### Added

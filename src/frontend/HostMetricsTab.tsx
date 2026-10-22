@@ -29,6 +29,7 @@ import {
   useHostStatus,
   logActivity,
   usePluginUiPreferences,
+  useSettings,
 } from "@termix-ssh/plugin-sdk/frontend";
 import { toast } from "sonner";
 import { RefreshCw, Server, LayoutDashboard } from "lucide-react";
@@ -44,6 +45,7 @@ import {
 } from "./cards";
 import { appendGpuHistories } from "./cards/gpu-history";
 import { metricsChangeKey } from "./metrics-change-key";
+import { liveIntervalMs, mergeLive, useLiveMetrics } from "./live-metrics";
 
 const HISTORY_LEN = 30;
 
@@ -181,13 +183,23 @@ function HostMetricsInner({
     [t, pluginManagerDefs],
   );
 
+  const live = useLiveMetrics(
+    hostId,
+    isVisible && isPageVisible && serverStatus === "online" && !!metrics,
+    liveIntervalMs(useSettings("user").values.liveInterval),
+  );
+  const liveMetrics = React.useMemo(
+    () => mergeLive(metrics, live),
+    [metrics, live],
+  );
+
   const renderCard = React.useCallback(
     (id: string) => {
       const def = getCardDefinition(id, pluginManagerDefs);
       if (!def) return null;
-      return def.render({ metrics, histories, hostId });
+      return def.render({ metrics: liveMetrics, histories, hostId });
     },
-    [metrics, histories, hostId, pluginManagerDefs],
+    [liveMetrics, histories, hostId, pluginManagerDefs],
   );
 
   React.useEffect(() => {

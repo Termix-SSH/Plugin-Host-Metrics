@@ -49,6 +49,13 @@
     "noProcessesFound": "Nebyly nalezeny žádné procesy",
     "processesTotal": "celkem",
     "processesRunning": "běží",
+    "processesLoad": "zátěž",
+    "processesSearch": "Hledat procesy",
+    "processesTree": "Strom",
+    "processesCommand": "Příkaz",
+    "processesNoMatch": "Žádné odpovídající procesy",
+    "cpuMix": "uživatel {{user}} % systém {{system}} % I/O {{iowait}} % steal {{steal}} %",
+    "memoryMix": "mezipaměť {{cache}} G",
     "loginStats": "Statistiky přihlášení SSH",
     "noRecentLoginData": "Žádná nedávná data přihlášení",
     "ports": {
@@ -114,7 +121,28 @@
       "renew": "Obnovit",
       "noAcmeClient": "Na tomto hostiteli nebyl nalezen žádný ACME klient (certbot nebo acme.sh).",
       "addInputRule": "Přidat pravidlo INPUT",
-      "firewallWarning": "Změny jsou pouze dočasně, dokud nejsou uloženy. Pozor, abyste se neuzamkli.",
+      "firewallWarning": "Změny v bráně firewallu mohou přerušit SSH nebo vystavit služby. Ujistěte se, že máte k dispozici přístup pro obnovení přístupu.",
+      "firewallConfirm": "Zkontrolovat změnu v bráně firewallu",
+      "firewallRecoveryWarning": "Povolení provozu může vystavit služby; odepření provozu nebo změna výchozí politiky může odpojit SSH a další relace. Ujistěte se, že máte k dispozici nezávislou konzoli nebo cestu pro obnovení přístupu. Neexistuje žádný předpokládaný port SSH a přístup nelze zaručit.",
+      "firewallNonAtomic": "Úpravy UFW nejsou atomické. Změny pouze akce aktualizují jedinečný odpovídající tok přímo na místě; jiné úpravy vloží a ověří náhradu před smazáním původního pravidla. Selhání nebo časový limit mohou ponechat částečnou změnu nebo obě pravidla; před opakováním obnovte a zkontrolujte stav.",
+      "firewallApply": "Použít",
+      "firewallCancel": "Zrušit",
+      "firewallEdit": "Upravit",
+      "firewallDelete": "Smazat",
+      "firewallEditPolicy": "Upravit výchozí politiku",
+      "firewallReadOnly": "Pouze pro čtení",
+      "firewallPreserved": "Zachována rodina, směr, profil a komentář",
+      "firewallStale": "Firewall se změnil. Zavřete tento editor a znovu otevřete aktuální pravidlo.",
+      "firewallField_action": "Akce",
+      "firewallField_protocol": "Protokol",
+      "firewallField_source": "Zdrojová adresa/CIDR",
+      "firewallField_destination": "Cílová adresa/CIDR",
+      "firewallField_port": "Cílový port (nebo libovolný)",
+      "firewallField_sourcePort": "Zdrojový port (nebo libovolný)",
+      "firewallUfwPersistence": "Změny v UFW jsou okamžitě trvalé. Není třeba je zvlášť ukládat.",
+      "firewallNftPersistence": "Nativní změny v nftables platí pouze do restartu. Uložte je pomocí služby nakonfigurované na hostiteli; tento plugin nepřepisuje soubor nftables.conf.",
+      "firewallNativePersistence": "Nativní změny v iptables platí pouze do restartu, dokud nejsou uloženy pomocí podporované služby pro trvalé uložení na hostiteli.",
+      "firewallPersistConfirm": "Uložit kompletní sadu pravidel nativního iptables pomocí zjištěné služby pro trvalé uložení na hostiteli, včetně pravidel mimo tento editor.",
       "ruleApplied": "Pravidlo aplikováno",
       "invalidPort": "Zadejte platný port (1-65535)",
       "newUsername": "Nové uživatelské jméno",
@@ -251,12 +279,20 @@
   "settings": {
     "admin": {
       "metricsInterval": {
-        "label": "Interval sběru metrik (sekundy)",
-        "description": "Jak často se sbírají vzorky z hostitele, který je právě zobrazen, pokud hostitel nenastaví vlastní interval."
+        "label": "Interval vzorkování historie (sekundy)",
+        "description": "Jak často jsou ukládána vzorkování pro historické grafy, pokud hostitel nenastaví vlastní interval. Živé zobrazení je řízeno níže uvedenými nastaveními."
       },
       "historyRetentionDays": {
         "label": "Ukládání historie (dny)",
         "description": "Jak dlouho se uchovávají vzorky metrik pro grafy historie."
+      },
+      "liveEnabled": {
+        "label": "Živé aktualizace",
+        "description": "Umožňuje uživatelům otevřít lehké živé zobrazení CPU, paměti, sítě a procesů. Nezávislé na intervalu vzorkování historie."
+      },
+      "liveMinInterval": {
+        "label": "Minimální interval živých aktualizací (sekundy)",
+        "description": "Nejrychlejší frekvence, s jakou je hostitel vzorkován pro živé aktualizace, bez ohledu na počet sledujících uživatelů nebo záložek. Uživatelé mohou zvolit pomalejší frekvence; rychlejší volba se zvýší na toto minimum."
       }
     },
     "user": {
@@ -265,6 +301,14 @@
         "description": "Jak se zobrazují teploty v Metrikách hostitele.",
         "celsius": "Celsia",
         "fahrenheit": "Fahrenheita"
+      },
+      "liveInterval": {
+        "label": "Frekvence živých aktualizací",
+        "description": "Jak často se obnovují CPU, paměť, síť a procesy na kartě Metriky hostitele, v panelu nástrojů terminálu a ve widgetech na nástěnky a domovské stránce (ty nikdy neobnovují rychleji než každých 5 sekund). Každá aktualizace čte /proc na hostiteli. Nikdy rychleji než minimální interval živých aktualizací serveru. Vypnuto ponechává pomalejší pravidelné vzorkování.",
+        "off": "Vypnuto",
+        "s1": "Každou sekundu",
+        "s2": "Každé 2 sekundy",
+        "s5": "Každých 5 sekund"
       },
       "companionAutoOpen": {
         "label": "Otevírat panel metrik s novými terminály",
@@ -291,7 +335,7 @@
         "label": "Sbírat metriky"
       },
       "metricsInterval": {
-        "label": "Interval sběru metrik (sekundy)"
+        "label": "Interval vzorkování historie (sekundy)"
       },
       "enabledWidgets": {
         "label": "Povolené widgety"
@@ -310,5 +354,10 @@
   "plugin": {
     "name": "Metriky hostitele",
     "description": "Živé statistiky CPU, paměti, disku, sítě a GPU, plus nástroje pro správu vašich hostitelů."
+  },
+  "card": {
+    "title": "Nejvytíženější servery",
+    "loading": "Načítání...",
+    "empty": "Zatím žádné nedávné vzorky. Servery se zobrazí zde, jakmile budou shromážděny jejich metriky, například když je otevřená karta stavu serveru."
   }
 }

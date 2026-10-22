@@ -47,6 +47,13 @@
     "noProcessesFound": "İşlem bulunamadı",
     "processesTotal": "toplam",
     "processesRunning": "çalışıyor",
+    "processesLoad": "yük",
+    "processesSearch": "İşlemleri ara",
+    "processesTree": "Ağaç",
+    "processesCommand": "Komut",
+    "processesNoMatch": "Eşleşen işlem yok",
+    "cpuMix": "kullanıcı {{user}}% sistem {{system}}% g/ç {{iowait}}% çalınan {{steal}}%",
+    "memoryMix": "önbellek {{cache}}G",
     "loginStats": "SSH Giriş İstatistikleri",
     "noRecentLoginData": "Son giriş verisi yok",
     "ports": {
@@ -112,7 +119,28 @@
       "renew": "Yenile",
       "noAcmeClient": "Bu ana bilgisayarda ACME istemcisi (certbot veya acme.sh) bulunamadı.",
       "addInputRule": "GİRİŞ kuralı ekle",
-      "firewallWarning": "Değişiklikler kalıcı hale getirilene kadar yalnızca çalışma zamanı içindir. Kendinizi kilitlememeye dikkat edin.",
+      "firewallWarning": "Güvenlik duvarı değişiklikleri SSH bağlantısını kesebilir veya hizmetleri açıkta bırakabilir. Kurtarma erişiminin mevcut olduğundan emin olun.",
+      "firewallConfirm": "Güvenlik duvarı değişikliğini gözden geçir",
+      "firewallRecoveryWarning": "Trafik izin verilirse hizmetler açıkta kalabilir; trafik reddedilirse veya varsayılan politika değiştirilirse SSH ve diğer oturumlar kesilebilir. Bağımsız bir konsol/kurtarma yolunun mevcut olduğundan emin olun. Hiçbir SSH bağlantı noktası varsayılmaz ve erişim garanti edilemez.",
+      "firewallNonAtomic": "UFW düzenlemeleri atomik DEĞİLDİR. Sadece işlem değişiklikleri eşleşen akışı yerinde günceller; diğer düzenlemeler, orijinal kuralı silmeden önce yenisini ekler ve doğrular. Bir hata veya zaman aşımı, kısmi bir değişiklik veya her iki kuralın da kalmasına neden olabilir. Yeniden denemeden önce sayfayı yenileyin ve kuralları inceleyin.",
+      "firewallApply": "Uygula",
+      "firewallCancel": "İptal",
+      "firewallEdit": "Düzenle",
+      "firewallDelete": "Sil",
+      "firewallEditPolicy": "Varsayılan ilkeyi düzenle",
+      "firewallReadOnly": "Salt okunur",
+      "firewallPreserved": "Aile, yön, profil ve yorum korundu",
+      "firewallStale": "Güvenlik duvarı değişti. Bu düzenleyiciyi kapatın ve geçerli kuralı yeniden açın.",
+      "firewallField_action": "İşlem",
+      "firewallField_protocol": "Protokol",
+      "firewallField_source": "Kaynak adresi/CIDR",
+      "firewallField_destination": "Hedef adresi/CIDR",
+      "firewallField_port": "Hedef bağlantı noktası (veya herhangi biri)",
+      "firewallField_sourcePort": "Kaynak bağlantı noktası (veya herhangi biri)",
+      "firewallUfwPersistence": "UFW değişiklikleri hemen kalıcı hale gelir. Ayrı bir kaydetme işlemi gerekmez.",
+      "firewallNftPersistence": "Yerel nftables değişiklikleri yalnızca çalışma zamanı içindir. Kaydetmek için ana bilgisayarın yapılandırılmış hizmetini kullanın; bu eklenti nftables.conf dosyasını geçersiz kılmaz.",
+      "firewallNativePersistence": "Yerel iptables değişiklikleri, desteklenen bir ana bilgisayar kalıcılık hizmetiyle kaydedilene kadar yalnızca çalışma zamanı içindir.",
+      "firewallPersistConfirm": "Bu düzenleyicinin dışında kalan kurallar da dahil olmak üzere, algılanan ana bilgisayar kalıcılık hizmetini kullanarak tam yerel iptables kural setini kaydedin.",
       "ruleApplied": "Kural uygulandı",
       "invalidPort": "Geçerli bir bağlantı noktası girin (1-65535)",
       "newUsername": "Yeni kullanıcı adı",
@@ -249,12 +277,20 @@
   "settings": {
     "admin": {
       "metricsInterval": {
-        "label": "Metrik aralığı (saniye)",
-        "description": "Ana bilgisayar kendi aralığını ayarlamadıkça, görüntülenen bir ana bilgisayarın ne sıklıkla örnek alınıp alınmadığı."
+        "label": "Geçmiş örnekleme aralığı (saniye)",
+        "description": "Sunucu kendi aralığını ayarlamadıkça, geçmiş grafikleri için örneklerin ne sıklıkla kaydedileceğini belirler. Canlı görünümler aşağıdaki canlı ayarlar tarafından kontrol edilir."
       },
       "historyRetentionDays": {
         "label": "Geçmiş saklama süresi (gün)",
         "description": "Geçmiş grafikleri için metrik örneklerinin ne kadar süreyle tutulacağı."
+      },
+      "liveEnabled": {
+        "label": "Canlı güncellemeler",
+        "description": "Kullanıcıların CPU, bellek, ağ ve işlemlerin hafif canlı görünümünü açmasına olanak tanır. Geçmiş örnek alma aralığından bağımsızdır."
+      },
+      "liveMinInterval": {
+        "label": "Canlı güncelleme minimumu (saniye)",
+        "description": "Kaç kullanıcı veya sekme izlerse izlesin, canlı güncellemeler için bir sunucudan örnek alınabilen en hızlı hız. Kullanıcılar daha yavaş hızlar seçebilir; daha hızlı bir seçim bu minimuma yükseltilir."
       }
     },
     "user": {
@@ -263,6 +299,14 @@
         "description": "Sıcaklıkların Ana Bilgisayar Metriklerinde nasıl gösterileceği.",
         "celsius": "Santigrat",
         "fahrenheit": "Fahrenheit"
+      },
+      "liveInterval": {
+        "label": "Canlı güncelleme hızı",
+        "description": "Sunucu Metrikleri sekmesinde, terminal araç çubuğunda ve gösterge paneli ile ana sayfa widget'larında CPU, bellek, ağ ve işlemlerin ne sıklıkla yenileneceğini belirler (bu widget'lar asla 5 saniyeden daha hızlı yenilenmez). Her güncelleme sunucudaki /proc dosyasını okur. Sunucunun canlı güncelleme minimumundan asla daha hızlı olmaz. Kapalı, daha yavaş düzenli örneklemeyi korur.",
+        "off": "Kapalı",
+        "s1": "Her saniye",
+        "s2": "Her 2 saniyede bir",
+        "s5": "Her 5 saniyede bir"
       },
       "companionAutoOpen": {
         "label": "Metrikler panelini yeni terminallerle aç",
@@ -289,7 +333,7 @@
         "label": "Metrikleri topla"
       },
       "metricsInterval": {
-        "label": "Metrik aralığı (saniye)"
+        "label": "Geçmiş örnekleme aralığı (saniye)"
       },
       "enabledWidgets": {
         "label": "Etkinleştirilmiş widget'lar"
@@ -308,5 +352,10 @@
   "plugin": {
     "name": "Ana Bilgisayar Metrikleri",
     "description": "Canlı CPU, bellek, disk, ağ ve GPU istatistikleri ve ana bilgisayarlarınızı yönetmek için araçlar."
+  },
+  "card": {
+    "title": "En yoğun sunucular",
+    "loading": "Yükleniyor...",
+    "empty": "Henüz yakın geçmişte örnek yok. Sunucu durumu kartı açıkken gibi, metrikleri toplandıktan sonra sunucular burada görünür."
   }
 }

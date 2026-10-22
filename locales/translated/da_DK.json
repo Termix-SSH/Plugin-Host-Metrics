@@ -47,6 +47,13 @@
     "noProcessesFound": "Ingen processer fundet",
     "processesTotal": "i alt",
     "processesRunning": "kører",
+    "processesLoad": "belastning",
+    "processesSearch": "Søg efter processer",
+    "processesTree": "Træ",
+    "processesCommand": "Kommando",
+    "processesNoMatch": "Ingen matchende processer",
+    "cpuMix": "bruger {{user}}% sys {{system}}% io {{iowait}}% steal {{steal}}%",
+    "memoryMix": "cache {{cache}}G",
     "loginStats": "SSH-loginstatistik",
     "noRecentLoginData": "Ingen seneste logindata",
     "ports": {
@@ -112,7 +119,28 @@
       "renew": "Forny",
       "noAcmeClient": "Ingen ACME-klient (certbot eller acme.sh) fundet på denne vært.",
       "addInputRule": "Tilføj INPUT-regel",
-      "firewallWarning": "Ændringer er kun midlertidige, indtil de gemmes. Vær forsigtig for ikke at låse dig selv ude.",
+      "firewallWarning": "Ændringer i firewallen kan afbryde SSH eller udsætte tjenester. Sørg for, at du har adgang til gendannelse.",
+      "firewallConfirm": "Gennemse firewallændring",
+      "firewallRecoveryWarning": "Tilladelse af trafik kan udsætte tjenester; blokering af trafik eller ændring af en standardpolitik kan afbryde SSH og andre sessioner. Sørg for, at du har en uafhængig konsol/gendannelsesvej tilgængelig. Der antages ikke nogen SSH-port, og adgang kan ikke garanteres.",
+      "firewallNonAtomic": "UFW-redigeringer er IKKE atomare. Ændringer, der kun handler om handling, opdaterer en unik matchende flow på plads; andre redigeringer indsætter og verificerer erstatningen, før den oprindelige slettes. En fejl eller timeout kan efterlade en delvis ændring eller begge regler; opdater og inspicer, før du prøver igen.",
+      "firewallApply": "Anvend",
+      "firewallCancel": "Annuller",
+      "firewallEdit": "Rediger",
+      "firewallDelete": "Slet",
+      "firewallEditPolicy": "Rediger standardpolitik",
+      "firewallReadOnly": "Skrivebeskyttet",
+      "firewallPreserved": "Familie, retning, profil og kommentar er bevaret",
+      "firewallStale": "Firewallen er ændret. Luk denne editor og åbn den aktuelle regel igen.",
+      "firewallField_action": "Handling",
+      "firewallField_protocol": "Protokol",
+      "firewallField_source": "Kildeadresse/CIDR",
+      "firewallField_destination": "Destinationsadresse/CIDR",
+      "firewallField_port": "Destinationsport (eller enhver)",
+      "firewallField_sourcePort": "Kildeport (eller enhver)",
+      "firewallUfwPersistence": "UFW-ændringer er vedvarende med det samme. Der er ikke behov for en separat gemning.",
+      "firewallNftPersistence": "Native nftables-ændringer er kun aktive i kørselstid. Gem ved hjælp af værtens konfigurerede tjeneste; denne plugin overskriver ikke nftables.conf.",
+      "firewallNativePersistence": "Native iptables-ændringer er kun aktive i kørselstid, indtil de gemmes med en understøttet værtens vedvarighedstjeneste.",
+      "firewallPersistConfirm": "Gem det komplette native iptables-regelsæt ved hjælp af den opdagede værtens vedvarighedstjeneste, inklusive regler uden for denne editor.",
       "ruleApplied": "Regel anvendt",
       "invalidPort": "Indtast en gyldig port (1-65535)",
       "newUsername": "Nyt brugernavn",
@@ -249,12 +277,20 @@
   "settings": {
     "admin": {
       "metricsInterval": {
-        "label": "Måleinterval (sekunder)",
-        "description": "Hvor ofte en vist vært måles, medmindre værten angiver sit eget interval."
+        "label": "Historikprøveinterval (sekunder)",
+        "description": "Hvor ofte prøver gemmes til historikdiagrammerne, medmindre værten indstiller sit eget interval. Live-visninger styres af live-indstillingerne nedenfor."
       },
       "historyRetentionDays": {
         "label": "Historikbevaring (dage)",
         "description": "Hvor længe måledata gemmes til historikdiagrammerne."
+      },
+      "liveEnabled": {
+        "label": "Live-opdateringer",
+        "description": "Gør det muligt for brugere at åbne den letvægts live-visning af CPU, hukommelse, netværk og processer. Adskilt fra historikprøveintervallet."
+      },
+      "liveMinInterval": {
+        "label": "Live-opdatering minimum (sekunder)",
+        "description": "Den hurtigste hastighed, hvormed en værte prøves for live-opdateringer, uanset hvor mange brugere eller faner der kigger. Brugere kan vælge langsommere hastigheder; en hurtigere valgmulighed hæves til dette minimum."
       }
     },
     "user": {
@@ -263,6 +299,14 @@
         "description": "Hvordan temperaturer vises i Værtmålinger.",
         "celsius": "Celsius",
         "fahrenheit": "Fahrenheit"
+      },
+      "liveInterval": {
+        "label": "Live-opdateringshastighed",
+        "description": "Hvor ofte CPU, hukommelse, netværk og processer opdateres i fanen Værtmetrikker, terminalværktøjslinjen og widgets på dashboardet og startside (disse går aldrig hurtigere end hvert 5. sekund). Hver opdatering læser /proc på værten. Aldrig hurtigere end serverens minimum for live-opdateringer. Slukket beholder den langsommere regelmæssige prøvetagning.",
+        "off": "Slukket",
+        "s1": "Hvert sekund",
+        "s2": "Hvert 2. sekund",
+        "s5": "Hvert 5. sekund"
       },
       "companionAutoOpen": {
         "label": "Åbn målepanelet med nye terminaler",
@@ -289,7 +333,7 @@
         "label": "Indsamle målinger"
       },
       "metricsInterval": {
-        "label": "Måleinterval (sekunder)"
+        "label": "Historikprøveinterval (sekunder)"
       },
       "enabledWidgets": {
         "label": "Aktiverede widgets"
@@ -308,5 +352,10 @@
   "plugin": {
     "name": "Værtmålinger",
     "description": "Live CPU-, hukommelses-, disk-, netværks- og GPU-statistik samt værktøjer til at administrere dine værter."
+  },
+  "card": {
+    "title": "Mest travle værter",
+    "loading": "Indlæser...",
+    "empty": "Ingen recente prøver endnu. Værter vises her, når deres metrikker er indsamlet, f.eks. mens statuskortet for værten er åbent."
   }
 }

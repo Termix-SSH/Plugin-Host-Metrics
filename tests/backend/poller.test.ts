@@ -107,6 +107,19 @@ describe("MetricsPoller", () => {
     expect(job?.ms).toBe(30_000);
   });
 
+  it("lists the samples it holds without starting anything", async () => {
+    collectMetrics.mockResolvedValue(sample);
+    const { poller } = setup();
+    expect(poller.latestSamples()).toEqual([]);
+
+    poller.registerViewer(7, "viewer-a", "user-1");
+    await flush();
+
+    expect(poller.latestSamples()).toEqual([
+      expect.objectContaining({ hostId: 7, data: sample }),
+    ]);
+  });
+
   it("polls a host without background auth through the tab's session", async () => {
     collectMetrics.mockResolvedValue(sample);
     const sessions = {

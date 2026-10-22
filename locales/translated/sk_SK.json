@@ -49,6 +49,13 @@
     "noProcessesFound": "Neboli nájdené žiadne procesy",
     "processesTotal": "celkom",
     "processesRunning": "bežiacich",
+    "processesLoad": "zaťaženie",
+    "processesSearch": "Vyhľadať procesy",
+    "processesTree": "Strom",
+    "processesCommand": "Príkaz",
+    "processesNoMatch": "Žiadne zhodné procesy",
+    "cpuMix": "užívateľ {{user}}% systém {{system}}% vst./vyst. {{iowait}}% odcudzené {{steal}}%",
+    "memoryMix": "keš {{cache}}G",
     "loginStats": "Štatistiky prihlásení SSH",
     "noRecentLoginData": "Žiadne nedávne údaje o prihláseniach",
     "ports": {
@@ -114,7 +121,28 @@
       "renew": "Obnoviť",
       "noAcmeClient": "Na tomto hostiteľovi nebol nájdený žiadny ACME klient (certbot alebo acme.sh).",
       "addInputRule": "Pridať pravidlo INPUT",
-      "firewallWarning": "Zmeny sú iba dočasné, kým nie sú uložené. Buďte opatrní, aby ste sa neuzamkli.",
+      "firewallWarning": "Zmeny v bráne firewallu môžu prerušiť pripojenie SSH alebo vystaviť služby. Uistite sa, že máte k dispozícii spôsob obnovy prístupu.",
+      "firewallConfirm": "Skontrolovať zmenu v bráne firewallu",
+      "firewallRecoveryWarning": "Povolenie premávky môže vystaviť služby; zamietnutie premávky alebo zmena predvolenej politiky môže odpojiť SSH a iné relácie. Uistite sa, že máte k dispozícii nezávislú konzolu alebo cestu pre obnovu. Nezakladajte sa na predpoklade, že port SSH bude dostupný, a prístup nie je možné zaručiť.",
+      "firewallNonAtomic": "Úpravy UFW nie sú atomické. Zmeny iba akcie aktualizujú jedinečný zhodný tok na mieste; ostatné úpravy vloženie a overenie náhrady pred vymazaním pôvodného pravidla. Zlyhanie alebo časový limit môže ponechať čiastočnú zmenu alebo obe pravidlá; obnovte a skontrolujte pred opätovným pokusom.",
+      "firewallApply": "Použiť",
+      "firewallCancel": "Zrušiť",
+      "firewallEdit": "Upraviť",
+      "firewallDelete": "Odstrániť",
+      "firewallEditPolicy": "Upraviť predvolenú politiku",
+      "firewallReadOnly": "Len na čítanie",
+      "firewallPreserved": "Zachovaná rodina, smer, profil a komentár",
+      "firewallStale": "Firewall sa zmenil. Zatvorte tento editor a znova otvorte aktuálne pravidlo.",
+      "firewallField_action": "Akcia",
+      "firewallField_protocol": "Protokol",
+      "firewallField_source": "Zdrojová adresa/CIDR",
+      "firewallField_destination": "Cieľová adresa/CIDR",
+      "firewallField_port": "Cieľový port (alebo ľubovoľný)",
+      "firewallField_sourcePort": "Zdrojový port (alebo ľubovoľný)",
+      "firewallUfwPersistence": "Zmeny v UFW sú okamžite trvalé. Nie je potrebné ich samostatne ukladať.",
+      "firewallNftPersistence": "Nativné zmeny v nftables sú iba dočasné (runtime). Uložte ich pomocou služby nakonfigurovanej na hostiteľovi; tento plugin neprepisuje súbor nftables.conf.",
+      "firewallNativePersistence": "Nativné zmeny v iptables sú iba dočasné (runtime), kým sa neuložia pomocou podporovanej služby pre trvalé uloženie na hostiteľovi.",
+      "firewallPersistConfirm": "Uložiť kompletnú sadu natívnych pravidiel iptables pomocou zistenej služby pre trvalé uloženie na hostiteľovi, vrátane pravidiel mimo tohto editora.",
       "ruleApplied": "Pravidlo aplikované",
       "invalidPort": "Zadajte platný port (1-65535)",
       "newUsername": "Nové používateľské meno",
@@ -251,12 +279,20 @@
   "settings": {
     "admin": {
       "metricsInterval": {
-        "label": "Interval merania (sekundy)",
-        "description": "Ako často sa odoberajú vzorky z hostiteľa, ktorý sa práve zobrazuje, pokiaľ hostiteľ nenastaví vlastný interval."
+        "label": "Interval vzorkovania histórie (sekundy)",
+        "description": "Ako často sa ukladajú vzorky pre historické grafy, pokiaľ hostiteľ nenastaví vlastný interval. Živé zobrazenia riadia nižšie uvedené nastavenia."
       },
       "historyRetentionDays": {
         "label": "Ukladanie histórie (dni)",
         "description": "Ako dlho sa ukladajú vzorky metrík pre grafy histórie."
+      },
+      "liveEnabled": {
+        "label": "Živé aktualizácie",
+        "description": "Umožňuje používateľom otvoriť ľahké živé zobrazenie CPU, pamäte, siete a procesov. Nezávislé od intervalu vzorkovania histórie."
+      },
+      "liveMinInterval": {
+        "label": "Minimálna hodnota živých aktualizácií (sekundy)",
+        "description": "Najrýchlejšia frekvencia vzorkovania hostiteľa pre živé aktualizácie, bez ohľadu na to, koľko používateľov alebo kariet sleduje. Používatelia si môžu vybrať pomalšie frekvencie; rýchlejšia voľba sa zvýši na toto minimum."
       }
     },
     "user": {
@@ -265,6 +301,14 @@
         "description": "Ako sa zobrazujú teploty v Metrikách hostiteľa.",
         "celsius": "Celsius",
         "fahrenheit": "Fahrenheit"
+      },
+      "liveInterval": {
+        "label": "Frekvencia živých aktualizácií",
+        "description": "Ako často sa obnovujú CPU, pamäť, sieť a procesy v karte Metriky hostiteľa, paneli nástrojov terminálu a widgetoch na dashboardi a domovskej stránke (tieto nikdy nesledujú rýchlejšie ako každých 5 sekúnd). Každá aktualizácia číta /proc na hostiteľovi. Nikdy nie rýchlejšie ako minimálna hodnota živých aktualizácií servera. Vypnuté ponecháva pomalšie bežné vzorkovanie.",
+        "off": "Vypnuté",
+        "s1": "Každú sekundu",
+        "s2": "Každé 2 sekundy",
+        "s5": "Každých 5 sekúnd"
       },
       "companionAutoOpen": {
         "label": "Otvoriť panel metrík s novými terminálmi",
@@ -291,7 +335,7 @@
         "label": "Zbierať metriky"
       },
       "metricsInterval": {
-        "label": "Interval merania (sekundy)"
+        "label": "Interval vzorkovania histórie (sekundy)"
       },
       "enabledWidgets": {
         "label": "Povolené widgety"
@@ -310,5 +354,10 @@
   "plugin": {
     "name": "Metriky hostiteľa",
     "description": "Živé štatistiky CPU, pamäte, disku, siete a GPU, plus nástroje na správu vašich hostiteľov."
+  },
+  "card": {
+    "title": "Najvyťaženejšie hosty",
+    "loading": "Načítava sa...",
+    "empty": "Zatiaľ žiadne nedávne vzorky. Hosty sa zobrazia po zbere metrík, napríklad keď je otvorená karta stavu hosta."
   }
 }

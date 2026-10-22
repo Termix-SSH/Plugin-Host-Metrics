@@ -48,6 +48,13 @@
     "noProcessesFound": "Niciun proces găsit",
     "processesTotal": "total",
     "processesRunning": "în execuție",
+    "processesLoad": "încărcare",
+    "processesSearch": "Caută procese",
+    "processesTree": "Arbore",
+    "processesCommand": "Comandă",
+    "processesNoMatch": "Niciun proces corespunzător",
+    "cpuMix": "utilizator {{user}}% sistem {{system}}% E/S {{iowait}}% furat {{steal}}%",
+    "memoryMix": "cache {{cache}}G",
     "loginStats": "Statistici autentificare SSH",
     "noRecentLoginData": "Nicio date recente de autentificare",
     "ports": {
@@ -113,7 +120,28 @@
       "renew": "Înnoire",
       "noAcmeClient": "Niciun client ACME (certbot sau acme.sh) găsit pe această gazdă.",
       "addInputRule": "Adaugă regulă INPUT",
-      "firewallWarning": "Modificările sunt doar temporare până sunt salvate. Fii atent să nu te blochezi.",
+      "firewallWarning": "Modificările firewall-ului pot întrerupe conexiunile SSH sau pot expune servicii. Asigurați-vă că aveți acces de recuperare disponibil.",
+      "firewallConfirm": "Verificați modificarea firewall-ului",
+      "firewallRecoveryWarning": "Permiterea traficului poate expune servicii; refuzarea traficului sau modificarea unei politici implicite poate deconecta sesiunile SSH și altele. Mențineți disponibilă o consolă independentă sau o cale de recuperare. Nu se presupune nicio portă SSH și accesul nu poate fi garantat.",
+      "firewallNonAtomic": "Modificările UFW NU sunt atomice. Modificările care afectează doar acțiunea actualizează un flux de potrivire unic pe loc; alte modificări inserează și verifică înlocuirea înainte de a șterge regula originală. O eroare sau o depășire a timpului de așteptare poate lăsa o modificare parțială sau ambele reguli; reîmprospătați și inspectați înainte de a reîncerca.",
+      "firewallApply": "Aplică",
+      "firewallCancel": "Anulează",
+      "firewallEdit": "Editează",
+      "firewallDelete": "Șterge",
+      "firewallEditPolicy": "Editează politica implicită",
+      "firewallReadOnly": "Doar citire",
+      "firewallPreserved": "Familia, direcția, profilul și comentariul au fost păstrate",
+      "firewallStale": "Zidul de protecție s-a modificat. Închideți acest editor și redeschideți regula curentă.",
+      "firewallField_action": "Acțiune",
+      "firewallField_protocol": "Protocol",
+      "firewallField_source": "Adresă/CIDR sursă",
+      "firewallField_destination": "Adresă/CIDR destinație",
+      "firewallField_port": "Port destinație (sau orice)",
+      "firewallField_sourcePort": "Port sursă (sau orice)",
+      "firewallUfwPersistence": "Modificările UFW sunt persistente imediat. Nu este necesară o salvare separată.",
+      "firewallNftPersistence": "Modificările native nftables sunt doar pentru sesiunea curentă. Salvați folosind serviciul configurat pe gazdă; acest plugin nu suprascrie nftables.conf.",
+      "firewallNativePersistence": "Modificările native iptables sunt doar pentru sesiunea curentă până sunt salvate cu un serviciu de persistență suportat pe gazdă.",
+      "firewallPersistConfirm": "Salvați setul complet de reguli native iptables folosind serviciul de persistență detectat pe gazdă, inclusiv regulile din afara acestui editor.",
       "ruleApplied": "Regulă aplicată",
       "invalidPort": "Introdu un port valid (1-65535)",
       "newUsername": "Nume de utilizator nou",
@@ -250,12 +278,20 @@
   "settings": {
     "admin": {
       "metricsInterval": {
-        "label": "Interval metrici (secunde)",
-        "description": "Frecvența cu care este eșantionată o gazdă vizualizată, cu excepția cazului în care gazda își setează propriul interval."
+        "label": "Interval de eșantionare istoric (secunde)",
+        "description": "Frecvența cu care sunt stocate eșantioanele pentru graficele istorice, cu excepția cazului în care gazda își setează propria interval. Vizuările în timp real sunt controlate de setările live de mai jos."
       },
       "historyRetentionDays": {
         "label": "Păstrare istoric (zile)",
         "description": "Cât timp sunt păstrate eșantioanele de metrici pentru graficele de istoric."
+      },
+      "liveEnabled": {
+        "label": "Actualizări în timp real",
+        "description": "Permite utilizatorilor să deschidă vizualizarea ușoară în timp real a CPU, memoriei, rețelei și proceselor. Separat de intervalul de eșantionare istorică."
+      },
+      "liveMinInterval": {
+        "label": "Interval minim actualizare live (secunde)",
+        "description": "Cea mai rapidă frecvență cu care o gazdă este eșantionată pentru actualizările live, indiferent de numărul de utilizatori sau file care urmăresc. Utilizatorii pot alege rate mai lente; o alegere mai rapidă este ridicată la acest minim."
       }
     },
     "user": {
@@ -264,6 +300,14 @@
         "description": "Cum sunt afișate temperaturile în Metricile gazdei.",
         "celsius": "Celsius",
         "fahrenheit": "Fahrenheit"
+      },
+      "liveInterval": {
+        "label": "Rată actualizare live",
+        "description": "Frecvența cu care se reîmprospătează CPU, memoria, rețeaua și procesele în fila Host Metrics, bara de instrumente a terminalului și widget-urile de pe tabloul de bord și pagina principală (acestea nu merg niciodată mai repede decât la fiecare 5 secunde). Fiecare actualizare citește /proc pe gazdă. Niciodată mai rapid decât intervalul minim de actualizare live al serverului. Dezactivat menține eșantionarea regulată mai lentă.",
+        "off": "Oprit",
+        "s1": "La fiecare secundă",
+        "s2": "La fiecare 2 secunde",
+        "s5": "La fiecare 5 secunde"
       },
       "companionAutoOpen": {
         "label": "Deschide panoul de metrici cu terminalele noi",
@@ -290,7 +334,7 @@
         "label": "Colectează metrici"
       },
       "metricsInterval": {
-        "label": "Interval metrici (secunde)"
+        "label": "Intervalul de eșantionare a istoricului (secunde)"
       },
       "enabledWidgets": {
         "label": "Widget-uri activate"
@@ -309,5 +353,10 @@
   "plugin": {
     "name": "Metrici gazdă",
     "description": "Statistici în timp real pentru CPU, memorie, disc, rețea și GPU, plus instrumente pentru gestionarea serverelor."
+  },
+  "card": {
+    "title": "Gazdele cele mai încărcate",
+    "loading": "Se încarcă...",
+    "empty": "Încă nu există eșantioane recente. Gazdele apar aici odată ce metricile lor sunt colectate, de exemplu când cardul de stare al gazdei este deschis."
   }
 }

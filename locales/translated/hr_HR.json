@@ -48,6 +48,13 @@
     "noProcessesFound": "Nisu pronađeni procesi",
     "processesTotal": "ukupno",
     "processesRunning": "u izvršavanju",
+    "processesLoad": "opterećenje",
+    "processesSearch": "Pretraži procese",
+    "processesTree": "Stablo",
+    "processesCommand": "Naredba",
+    "processesNoMatch": "Nema odgovarajućih procesa",
+    "cpuMix": "korisnik {{user}}% sustav {{system}}% ul/iz {{iowait}}% oduzeto {{steal}}%",
+    "memoryMix": "predmemorija {{cache}}G",
     "loginStats": "Statistika SSH prijave",
     "noRecentLoginData": "Nema nedavnih podataka o prijavama",
     "ports": {
@@ -113,7 +120,28 @@
       "renew": "Obnovi",
       "noAcmeClient": "Na ovom hostu nije pronađen ACME klijent (certbot ili acme.sh).",
       "addInputRule": "Dodaj INPUT pravilo",
-      "firewallWarning": "Promjene vrijede samo tijekom rada dok se ne sačuvaju. Pazite da se ne zaključate.",
+      "firewallWarning": "Promjene na zidnom zidu mogu prekinuti SSH ili izložiti usluge. Osigurajte dostupnost pristupa za oporavak.",
+      "firewallConfirm": "Pregledaj promjenu zidnog zida",
+      "firewallRecoveryWarning": "Dopuštanje prometa može izložiti usluge; odbijanje prometa ili promjena zadane politike može prekinuti SSH i druge sesije. Osigurajte neovisnu konzolu ili put oporavka. Nema pretpostavke o SSH portu, a pristup se ne može garantirati.",
+      "firewallNonAtomic": "UFW izmjene NISU atomarne. Promjene samo akcije ažuriraju jedinstveni odgovarajući tok na licu mjesta; druge izmjene umetnu i provjere zamjenu prije brisanja originala. Neuspjeh ili istek vremena mogu ostaviti djelomičnu promjenu ili oba pravila; osvježite i pregledajte prije ponovnog pokušaja.",
+      "firewallApply": "Primijeni",
+      "firewallCancel": "Otkaži",
+      "firewallEdit": "Uredi",
+      "firewallDelete": "Izbriši",
+      "firewallEditPolicy": "Uredi zadanu politiku",
+      "firewallReadOnly": "Samo za čitanje",
+      "firewallPreserved": "Sačuvana obitelj, smjer, profil i komentar",
+      "firewallStale": "Zidni zid se promijenio. Zatvorite ovaj uređivač i ponovno otvorite trenutno pravilo.",
+      "firewallField_action": "Akcija",
+      "firewallField_protocol": "Protokol",
+      "firewallField_source": "Adresa izvora/CIDR",
+      "firewallField_destination": "Adresa odredišta/CIDR",
+      "firewallField_port": "Port odredišta (ili bilo koji)",
+      "firewallField_sourcePort": "Port izvora (ili bilo koji)",
+      "firewallUfwPersistence": "UFW promjene su odmah trajne. Nije potreban zaseban spremanje.",
+      "firewallNftPersistence": "Promjene u nativnim nftablesima su samo za vrijeme izvođenja. Spremite koristeći konfiguriranu uslugu domaćina; ovaj dodatak ne prepiše nftables.conf.",
+      "firewallNativePersistence": "Promjene u nativnim iptablesima su samo za vrijeme izvođenja dok se ne spremaju podržanom uslugom trajnosti domaćina.",
+      "firewallPersistConfirm": "Spremite kompletan skup nativnih iptables pravila koristeći otkrivenu uslugu trajnosti domaćina, uključujući pravila izvan ovog uređivača.",
       "ruleApplied": "Pravilo primijenjeno",
       "invalidPort": "Unesite valjanu portnu brojku (1-65535)",
       "newUsername": "Novo korisničko ime",
@@ -250,12 +278,20 @@
   "settings": {
     "admin": {
       "metricsInterval": {
-        "label": "Interval metrika (sekunde)",
-        "description": "Koliko često se uzorkuje poslužitelj koji se pregledava, osim ako poslužitelj ne postavi vlastiti interval."
+        "label": "Interval uzorkovanja povijesti (sekunde)",
+        "description": "Koliko često se uzorci spremaju za grafikone povijesti, osim ako domaćin ne postavi vlastiti interval. Živi prikazi kontroliraju se postavkama uživo ispod."
       },
       "historyRetentionDays": {
         "label": "Zadržavanje povijesti (dani)",
         "description": "Koliko dugo se uzorci metrika zadržavaju za grafikone povijesti."
+      },
+      "liveEnabled": {
+        "label": "Ažuriranja uživo",
+        "description": "Omogućuje korisnicima otvaranje lagane živog prikaza CPU-a, memorije, mreže i procesa. Odvojeno od intervala uzorkovanja povijesti."
+      },
+      "liveMinInterval": {
+        "label": "Minimum ažuriranja uživo (sekunde)",
+        "description": "Najbrže što se domaćin uzorkuje za ažuriranja uživo, bez obzira na broj korisnika ili kartica. Korisnici mogu odabrati sporije stope; brži izbor se podiže na ovaj minimum."
       }
     },
     "user": {
@@ -264,6 +300,14 @@
         "description": "Kako se temperature prikazuju u metrikama poslužitelja.",
         "celsius": "Celsius",
         "fahrenheit": "Fahrenheit"
+      },
+      "liveInterval": {
+        "label": "Stopa ažuriranja uživo",
+        "description": "Koliko često se CPU, memorija, mreža i procesi osvježavaju u kartici Metrike domaćina, alatnoj traci terminala i widgetima na nadzornoj ploči i početnoj stranici (oni nikada ne idu brže od svakih 5 sekundi). Svako ažuriranje čita /proc na domaćinu. Nikada brže od minimuma ažuriranja uživo poslužitelja. Isključeno zadržava sporije redovito uzorkovanje.",
+        "off": "Isključeno",
+        "s1": "Svake sekunde",
+        "s2": "Svake 2 sekunde",
+        "s5": "Svake 5 sekundi"
       },
       "companionAutoOpen": {
         "label": "Otvori panel metrika s novim terminalima",
@@ -290,7 +334,7 @@
         "label": "Prikupljaj metrike"
       },
       "metricsInterval": {
-        "label": "Interval metrika (sekunde)"
+        "label": "Interval uzorkovanja povijesti (sekunde)"
       },
       "enabledWidgets": {
         "label": "Omogućeni widgeti"
@@ -309,5 +353,10 @@
   "plugin": {
     "name": "Metrike poslužitelja",
     "description": "Prikaz statistike CPU-a, memorije, diska, mreže i GPU-a u stvarnom vremenu, uz alate za upravljanje vašim hostovima."
+  },
+  "card": {
+    "title": "Najopterećeniji domaćini",
+    "loading": "Učitavanje...",
+    "empty": "Još nema nedavnih uzoraka. Domaćini se prikazuju ovdje čim se njihove metrike prikupljaju, poput kada je kartica statusa domaćina otvorena."
   }
 }

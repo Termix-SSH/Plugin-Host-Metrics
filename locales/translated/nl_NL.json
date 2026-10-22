@@ -47,6 +47,13 @@
     "noProcessesFound": "Geen processen gevonden",
     "processesTotal": "totaal",
     "processesRunning": "actief",
+    "processesLoad": "belasting",
+    "processesSearch": "Zoek processen",
+    "processesTree": "Boomstructuur",
+    "processesCommand": "Opdracht",
+    "processesNoMatch": "Geen overeenkomende processen",
+    "cpuMix": "gebruiker {{user}}% sys {{system}}% io {{iowait}}% steal {{steal}}%",
+    "memoryMix": "cache {{cache}}G",
     "loginStats": "SSH-aanmeldstatistieken",
     "noRecentLoginData": "Geen recente aanmeldgegevens",
     "ports": {
@@ -112,7 +119,28 @@
       "renew": "Vernieuwen",
       "noAcmeClient": "Geen ACME-client (certbot of acme.sh) gevonden op deze host.",
       "addInputRule": "INPUT-regel toevoegen",
-      "firewallWarning": "Wijzigingen zijn alleen actief tijdens de sessie totdat ze worden opgeslagen. Pas op dat je jezelf niet uitsluit.",
+      "firewallWarning": "Firewallwijzigingen kunnen SSH onderbreken of diensten blootstellen. Zorg dat hersteltoegang beschikbaar blijft.",
+      "firewallConfirm": "Firewallwijziging controleren",
+      "firewallRecoveryWarning": "Verkeer toestaan kan diensten blootstellen; verkeer weigeren of een standaardbeleid wijzigen kan SSH en andere sessies verbreken. Zorg voor een onafhankelijke console/herstelpad. Er wordt geen SSH-poort aangenomen en toegang kan niet worden gegarandeerd.",
+      "firewallNonAtomic": "UFW-bewerkingen zijn NIET atoom. Wijzigingen die alleen de actie betreffen, werken een unieke overeenkomende flow ter plaatse bij; andere bewerkingen voegen de vervanging in en verifiëren deze voordat de originele regel wordt verwijderd. Een fout of time-out kan leiden tot een gedeeltelijke wijziging of beide regels; vernieuw en inspecteer voordat je het opnieuw probeert.",
+      "firewallApply": "Toepassen",
+      "firewallCancel": "Annuleren",
+      "firewallEdit": "Bewerken",
+      "firewallDelete": "Verwijderen",
+      "firewallEditPolicy": "Standaardbeleid bewerken",
+      "firewallReadOnly": "Alleen-lezen",
+      "firewallPreserved": "Familie, richting, profiel en opmerking behouden",
+      "firewallStale": "De firewall is gewijzigd. Sluit deze editor en open de huidige regel opnieuw.",
+      "firewallField_action": "Actie",
+      "firewallField_protocol": "Protocol",
+      "firewallField_source": "Bronadres/CIDR",
+      "firewallField_destination": "Bestemmingsadres/CIDR",
+      "firewallField_port": "Bestemmingspoort (of alle)",
+      "firewallField_sourcePort": "Bronpoort (of alle)",
+      "firewallUfwPersistence": "UFW-wijzigingen zijn onmiddellijk persistent. Een aparte opslag is niet nodig.",
+      "firewallNftPersistence": "Inheemse nftables-wijzigingen zijn alleen actief tijdens runtime. Sla op met de geconfigureerde service van de host; deze plugin overschrijft nftables.conf niet.",
+      "firewallNativePersistence": "Inheemse iptables-wijzigingen zijn alleen actief tijdens runtime totdat ze zijn opgeslagen met een ondersteunde host-persistentservice.",
+      "firewallPersistConfirm": "Sla de volledige inheemse iptables-regelset op met de gedetecteerde host-persistentservice, inclusief regels buiten deze editor.",
       "ruleApplied": "Regel toegepast",
       "invalidPort": "Voer een geldige poort in (1-65535)",
       "newUsername": "Nieuwe gebruikersnaam",
@@ -249,12 +277,20 @@
   "settings": {
     "admin": {
       "metricsInterval": {
-        "label": "Metriekeninterval (seconden)",
-        "description": "Hoe vaak een host die wordt bekeken wordt bemonsterd, tenzij de host zijn eigen interval instelt."
+        "label": "Interval voor geschiedenisbemonstering (seconden)",
+        "description": "Hoe vaak monsters worden opgeslagen voor de geschiedenisgrafieken, tenzij de host zijn eigen interval instelt. Live-weergaven worden beheerd door de live-instellingen hieronder."
       },
       "historyRetentionDays": {
         "label": "Geschiedenisbehoud (dagen)",
         "description": "Hoe lang metriekenmonsters worden bewaard voor de geschiedenisgrafieken."
+      },
+      "liveEnabled": {
+        "label": "Live-updates",
+        "description": "Staat gebruikers toe om de lichtgewicht live-weergave van CPU, geheugen, netwerk en processen te openen. Afzonderlijk van het interval voor geschiedenisbemonstering."
+      },
+      "liveMinInterval": {
+        "label": "Minimale live-update (seconden)",
+        "description": "De snelste frequentie waarmee een host wordt bemonsterd voor live-updates, ongeacht het aantal gebruikers of tabbladen. Gebruikers kunnen langzamere frequenties kiezen; een snellere keuze wordt verhoogd naar dit minimum."
       }
     },
     "user": {
@@ -263,6 +299,14 @@
         "description": "Hoe temperaturen worden weergegeven in Hostmetrieken.",
         "celsius": "Celsius",
         "fahrenheit": "Fahrenheit"
+      },
+      "liveInterval": {
+        "label": "Live-updatefrequentie",
+        "description": "Hoe vaak CPU, geheugen, netwerk en processen worden vernieuwd in het tabblad Host Metrics, de terminalwerkbalk en widgets op het dashboard en de startpagina (die nooit sneller dan elke 5 seconden gaan). Elke update leest /proc op de host. Nooit sneller dan het minimum voor live-updates van de server. Uit houdt de langzamere reguliere bemonstering aan.",
+        "off": "Uit",
+        "s1": "Elke seconde",
+        "s2": "Elke 2 seconden",
+        "s5": "Elke 5 seconden"
       },
       "companionAutoOpen": {
         "label": "Metriekenpaneel openen bij nieuwe terminals",
@@ -289,7 +333,7 @@
         "label": "Metrieken verzamelen"
       },
       "metricsInterval": {
-        "label": "Metriekeninterval (seconden)"
+        "label": "Interval voor geschiedenisbemonstering (seconden)"
       },
       "enabledWidgets": {
         "label": "Ingeschakelde widgets"
@@ -308,5 +352,10 @@
   "plugin": {
     "name": "Hostmetrieken",
     "description": "Live CPU-, geheugen-, schijf-, netwerk- en GPU-statistieken, plus hulpmiddelen om uw hosts te beheren."
+  },
+  "card": {
+    "title": "Drukste hosts",
+    "loading": "Laden...",
+    "empty": "Nog geen recente monsters. Hosts worden hier getoond zodra hun metingen zijn verzameld, bijvoorbeeld terwijl de hoststatuskaart open staat."
   }
 }

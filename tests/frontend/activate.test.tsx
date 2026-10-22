@@ -1,4 +1,5 @@
-import { afterEach, describe, expect, it } from "vitest";
+import { afterEach, describe, expect, it, vi } from "vitest";
+import { screen } from "@testing-library/react";
 import {
   renderWithApp,
   type RenderedPluginApp,
@@ -61,5 +62,32 @@ describe(`${manifest.id} activate`, () => {
     expect(app.registered.dashboardCards()).toEqual([]);
     expect(app.registered.settingsComponents()).toEqual([]);
     expect(app.registered.actions()).toEqual([]);
+  });
+});
+
+describe("busiest hosts card", () => {
+  it("orders hosts by their highest load", async () => {
+    rendered = await renderWithApp(plugin, {
+      manifest,
+      locales,
+      permissions: ["host-metrics.use"],
+      hosts: [
+        { id: "1", name: "quiet", ip: "10.0.0.1", port: 22 },
+        { id: "2", name: "busy", ip: "10.0.0.2", port: 22 },
+      ],
+      api: {
+        get: vi.fn(async () => ({
+          data: [
+            { hostId: 1, cpu: 5, memory: 20, disk: 30, lastChecked: "" },
+            { hostId: 2, cpu: 95, memory: 40, disk: 50, lastChecked: "" },
+          ],
+        })),
+      } as never,
+    });
+    expect(rendered.registered.dashboardCards()).toEqual(["busiest-hosts"]);
+    const card = rendered.renderDashboardCard("busiest-hosts");
+    await screen.findByText("busy");
+    const text = card.textContent ?? "";
+    expect(text.indexOf("busy")).toBeLessThan(text.indexOf("quiet"));
   });
 });

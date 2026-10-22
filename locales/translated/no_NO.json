@@ -47,6 +47,13 @@
     "noProcessesFound": "Ingen prosesser funnet",
     "processesTotal": "totalt",
     "processesRunning": "kjører",
+    "processesLoad": "last",
+    "processesSearch": "Søk etter prosesser",
+    "processesTree": "Tre",
+    "processesCommand": "Kommando",
+    "processesNoMatch": "Ingen matchende prosesser",
+    "cpuMix": "bruker {{user}}% sys {{system}}% io {{iowait}}% steal {{steal}}%",
+    "memoryMix": "cache {{cache}}G",
     "loginStats": "SSH-innloggingsstatistikk",
     "noRecentLoginData": "Ingen nylige innloggingsdata",
     "ports": {
@@ -112,7 +119,28 @@
       "renew": "Forny",
       "noAcmeClient": "Ingen ACME-klient (certbot eller acme.sh) funnet på denne verten.",
       "addInputRule": "Legg til INPUT-regel",
-      "firewallWarning": "Endringene gjelder kun i kjøretid inntil de lagres. Vær forsiktig slik at du ikke låser deg selv ute.",
+      "firewallWarning": "Endringer i brannmuren kan avbryte SSH eller eksponere tjenester. Sørg for at du har tilgang til gjenoppretting.",
+      "firewallConfirm": "Se over brannmur-endring",
+      "firewallRecoveryWarning": "Å tillate trafikk kan eksponere tjenester; å nekte trafikk eller endre en standardpolicy kan koble fra SSH og andre økter. Sørg for at du har en uavhengig konsoll/gjenopprettingsmetode tilgjengelig. Ingen SSH-port antas, og tilgang kan ikke garanteres.",
+      "firewallNonAtomic": "UFW-redigeringer er IKKE atomare. Endringer som kun gjelder handling oppdaterer en unik matchende flyt på plass; andre redigeringer setter inn og bekrefter erstatningen før den opprinnelige regelen slettes. En feil eller tidsavbrudd kan etterlate en delvis endring eller begge reglene; oppdater og inspiser før du prøver igjen.",
+      "firewallApply": "Bruk",
+      "firewallCancel": "Avbryt",
+      "firewallEdit": "Rediger",
+      "firewallDelete": "Slett",
+      "firewallEditPolicy": "Rediger standardpolicy",
+      "firewallReadOnly": "Skrivebeskyttet",
+      "firewallPreserved": "Familie, retning, profil og kommentar er bevart",
+      "firewallStale": "Brannmuren har endret seg. Lukk denne redigereren og åpne den gjeldende regelen på nytt.",
+      "firewallField_action": "Handling",
+      "firewallField_protocol": "Protokoll",
+      "firewallField_source": "Kildeadresse/CIDR",
+      "firewallField_destination": "Destinasjonsadresse/CIDR",
+      "firewallField_port": "Destinasjonsport (eller alle)",
+      "firewallField_sourcePort": "Kildeport (eller alle)",
+      "firewallUfwPersistence": "UFW-endringer er vedvarende umiddelbart. Ingen separat lagring er nødvendig.",
+      "firewallNftPersistence": "Endringer i native nftables er kun for kjøretid. Lagre ved hjelp av vertens konfigurerte tjeneste; denne utvidelsen skriver ikke over nftables.conf.",
+      "firewallNativePersistence": "Endringer i native iptables er kun for kjøretid inntil de lagres med en støttet vedvarhetstjeneste på verten.",
+      "firewallPersistConfirm": "Lagre hele det native iptables-regelsettet ved hjelp av den oppdagede vedvarhetstjenesten på verten, inkludert regler utenfor denne redigereren.",
       "ruleApplied": "Regelen er anvendt",
       "invalidPort": "Skriv inn en gyldig port (1-65535)",
       "newUsername": "Nytt brukernavn",
@@ -249,12 +277,20 @@
   "settings": {
     "admin": {
       "metricsInterval": {
-        "label": "Metrisk intervall (sekunder)",
-        "description": "Hvor ofte en vert som vises blir prøvetatt, med mindre verten setter sitt eget intervall."
+        "label": "Innstillingsintervall for historikk (sekunder)",
+        "description": "Hvor ofte prøver lagres for historikdiagrammene, med mindre verten setter sitt eget intervall. Sanntidsvisninger styres av sanntidsinnstillingene nedenfor."
       },
       "historyRetentionDays": {
         "label": "Historikkbevaring (dager)",
         "description": "Hvor lenge metrikkeprøver beholdes for historikkskjemaene."
+      },
+      "liveEnabled": {
+        "label": "Sanntidsoppdateringer",
+        "description": "Lar brukere åpne den lette sanntidsvisningen for CPU, minne, nettverk og prosesser. Uavhengig av historikprøveintervallet."
+      },
+      "liveMinInterval": {
+        "label": "Sanntidsoppdatering minimum (sekunder)",
+        "description": "Den raskeste hastigheten en vert prøves for sanntidsoppdateringer, uansett hvor mange brukere eller faner som ser på. Brukere kan velge tregere hastigheter; en raskere valg heves til dette minimumet."
       }
     },
     "user": {
@@ -263,6 +299,14 @@
         "description": "Hvordan temperaturer vises i vertsmetrikker.",
         "celsius": "Celsius",
         "fahrenheit": "Fahrenheit"
+      },
+      "liveInterval": {
+        "label": "Sanntidsoppdateringshastighet",
+        "description": "Hvor ofte CPU, minne, nettverk og prosesser oppdateres i fanen Vertmetrikker, terminalverktøylinjen, og widgeter på dashbordet og startsiden (disse går aldri raskere enn hvert 5. sekund). Hver oppdatering leser /proc på verten. Aldri raskere enn serverens minimum for sanntidsoppdateringer. Av holder den tregere vanlige prøvetakingen.",
+        "off": "Av",
+        "s1": "Hvert sekund",
+        "s2": "Hvert 2. sekund",
+        "s5": "Hvert 5. sekund"
       },
       "companionAutoOpen": {
         "label": "Åpne målepunktspanel med nye terminaler",
@@ -289,7 +333,7 @@
         "label": "Samle metrikker"
       },
       "metricsInterval": {
-        "label": "Metrisk intervall (sekunder)"
+        "label": "Innstillingsintervall for historikk (sekunder)"
       },
       "enabledWidgets": {
         "label": "Aktiverte widgeter"
@@ -308,5 +352,10 @@
   "plugin": {
     "name": "Vertsmetrikker",
     "description": "Sanntidsstatistikk for CPU, minne, disk, nettverk og GPU, samt verktøy for å administrere vertene dine."
+  },
+  "card": {
+    "title": "Mest aktive vertsmaskiner",
+    "loading": "Laster...",
+    "empty": "Ingen nylige prøver ennå. Vertsmaskiner vises her når metrikker er samlet inn, for eksempel når statuskortet for vertsmaskinen er åpent."
   }
 }

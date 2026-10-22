@@ -49,6 +49,13 @@
     "noProcessesFound": "Nie znaleziono procesów",
     "processesTotal": "łącznie",
     "processesRunning": "aktywne",
+    "processesLoad": "obciążenie",
+    "processesSearch": "Szukaj procesów",
+    "processesTree": "Drzewo",
+    "processesCommand": "Polecenie",
+    "processesNoMatch": "Brak pasujących procesów",
+    "cpuMix": "użytkownik {{user}}% system {{system}}% io {{iowait}}% steal {{steal}}%",
+    "memoryMix": "pamięć podręczna {{cache}}G",
     "loginStats": "Statystyki logowania SSH",
     "noRecentLoginData": "Brak ostatnich danych logowania",
     "ports": {
@@ -114,7 +121,28 @@
       "renew": "Odnow",
       "noAcmeClient": "Nie znaleziono klienta ACME (certbot lub acme.sh) na tym hoście.",
       "addInputRule": "Dodaj regułę INPUT",
-      "firewallWarning": "Zmiany są tymczasowe, dopóki nie zostaną zapisane. Uważaj, aby nie zablokować sobie dostępu.",
+      "firewallWarning": "Zmiany w zaporze mogą przerwać połączenia SSH lub narażać usługi. Upewnij się, że masz dostęp do odzyskiwania.",
+      "firewallConfirm": "Przeglądaj zmianę zapory",
+      "firewallRecoveryWarning": "Zezwalanie na ruch może narażać usługi; blokowanie ruchu lub zmiana domyślnej polityki może rozłączyć SSH i inne sesje. Upewnij się, że masz niezależny dostęp konsoli/odzyskiwania. Nie zakłada się żadnego portu SSH, a dostęp nie może być zagwarantowany.",
+      "firewallNonAtomic": "Edycje UFW NIE są atomowe. Zmiany dotyczące tylko akcji aktualizują pasujący przepływ w miejscu; inne edycje wstawiają i weryfikują zastępczą regułę przed usunięciem oryginalnej. Awaria lub przekroczenie limitu czasu może pozostawić częściową zmianę lub obie reguły; odśwież i sprawdź przed ponowną próbą.",
+      "firewallApply": "Zastosuj",
+      "firewallCancel": "Anuluj",
+      "firewallEdit": "Edytuj",
+      "firewallDelete": "Usuń",
+      "firewallEditPolicy": "Edytuj domyślną politykę",
+      "firewallReadOnly": "Tylko do odczytu",
+      "firewallPreserved": "Zachowano rodzinę, kierunek, profil i komentarz",
+      "firewallStale": "Zmieniły się ustawienia zapory sieciowej. Zamknij ten edytor i otwórz ponownie aktualną regułę.",
+      "firewallField_action": "Akcja",
+      "firewallField_protocol": "Protokół",
+      "firewallField_source": "Adres źródłowy/CIDR",
+      "firewallField_destination": "Adres docelowy/CIDR",
+      "firewallField_port": "Port docelowy (lub dowolny)",
+      "firewallField_sourcePort": "Port źródłowy (lub dowolny)",
+      "firewallUfwPersistence": "Zmiany w UFW są natychmiastowo trwałe. Nie jest konieczne osobowe zapisywanie.",
+      "firewallNftPersistence": "Natywne zmiany w nftables mają charakter tymczasowy. Zapisz je za pomocą skonfigurowanej usługi hosta; ten wtyczka nie nadpisuje pliku nftables.conf.",
+      "firewallNativePersistence": "Natywne zmiany w iptables mają charakter tymczasowy, dopóki nie zostaną zapisane za pomocą obsługiwaną usługi utrwalania na hoście.",
+      "firewallPersistConfirm": "Zapisz kompletny zestaw reguł natywnego iptables za pomocą wykrytej usługi utrwalania na hoście, w tym reguł spoza tego edytora.",
       "ruleApplied": "Reguła zastosowana",
       "invalidPort": "Wprowadź poprawny port (1-65535)",
       "newUsername": "Nowa nazwa użytkownika",
@@ -251,12 +279,20 @@
   "settings": {
     "admin": {
       "metricsInterval": {
-        "label": "Interwał metryk (sekundy)",
-        "description": "Jak często pobierane są próby z hosta, który jest wyświetlany, chyba że host ustawia własny interwał."
+        "label": "Interwał próbkowania historii (sekundy)",
+        "description": "Jak często próbki są przechowywane dla wykresów historii, chyba że host ustawia własny interwał. Widoki na żywo są kontrolowane przez poniższe ustawienia na żywo."
       },
       "historyRetentionDays": {
         "label": "Czas przechowywania historii (dni)",
         "description": "Jak długo przechowywane są próby metryk dla wykresów historycznych."
+      },
+      "liveEnabled": {
+        "label": "Aktualizacje na żywo",
+        "description": "Pozwala użytkownikom otworzyć lekkie widoki na żywo dla CPU, pamięci, sieci i procesów. Oddzielne od interwału próbkowania historii."
+      },
+      "liveMinInterval": {
+        "label": "Minimalny interwał aktualizacji na żywo (sekundy)",
+        "description": "Najszybsza częstotliwość próbkowania hosta dla aktualizacji na żywo, niezależnie od liczby użytkowników lub kart. Użytkownicy mogą wybrać wolniejsze tempo; szybszy wybór zostanie podniesiony do tego minimum."
       }
     },
     "user": {
@@ -265,6 +301,14 @@
         "description": "Jak temperatura jest wyświetlana w metrykach hosta.",
         "celsius": "Celsjusz",
         "fahrenheit": "Fahrenheit"
+      },
+      "liveInterval": {
+        "label": "Częstotliwość aktualizacji na żywo",
+        "description": "Jak często CPU, pamięć, sieć i procesy odświeżają się w zakładce Metryki Hosta, pasku narzędzi terminala oraz widżetach na pulpicie i stronie głównej (te nigdy nie odświeżają się szybciej niż co 5 sekund). Każda aktualizacja odczytuje /proc na hoście. Nigdy szybciej niż minimalny interwał aktualizacji na żywo serwera. Wyłączenie utrzymuje wolniejsze regularne próbkowanie.",
+        "off": "Wyłączone",
+        "s1": "Co sekundę",
+        "s2": "Co 2 sekundy",
+        "s5": "Co 5 sekund"
       },
       "companionAutoOpen": {
         "label": "Otwieraj panel metryk wraz z nowymi terminalami",
@@ -291,7 +335,7 @@
         "label": "Zbieraj metryki"
       },
       "metricsInterval": {
-        "label": "Interwał metryk (sekundy)"
+        "label": "Interwał próbkowania historii (sekundy)"
       },
       "enabledWidgets": {
         "label": "Włączone widżety"
@@ -310,5 +354,10 @@
   "plugin": {
     "name": "Metryki hosta",
     "description": "Aktualne statystyki CPU, pamięci, dysku, sieci i GPU oraz narzędzia do zarządzania hostami."
+  },
+  "card": {
+    "title": "Najbardziej obciążone hosty",
+    "loading": "Ładowanie...",
+    "empty": "Brak ostatnich próbek. Hosty pojawią się tutaj po zebraniu ich metryk, np. gdy karta statusu hosta jest otwarta."
   }
 }

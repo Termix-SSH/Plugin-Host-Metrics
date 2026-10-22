@@ -47,6 +47,13 @@
     "noProcessesFound": "Keine Prozesse gefunden",
     "processesTotal": "insgesamt",
     "processesRunning": "laufend",
+    "processesLoad": "Last",
+    "processesSearch": "Prozesse durchsuchen",
+    "processesTree": "Baumansicht",
+    "processesCommand": "Befehl",
+    "processesNoMatch": "Keine passenden Prozesse",
+    "cpuMix": "User {{user}}% Sys {{system}}% IO {{iowait}}% Steal {{steal}}%",
+    "memoryMix": "Cache {{cache}}G",
     "loginStats": "SSH-Anmeldestatistiken",
     "noRecentLoginData": "Keine aktuellen Anmeldeinformationen",
     "ports": {
@@ -112,7 +119,28 @@
       "renew": "Erneuern",
       "noAcmeClient": "Kein ACME-Client (certbot oder acme.sh) auf diesem Host gefunden.",
       "addInputRule": "INPUT-Regel hinzufügen",
-      "firewallWarning": "Änderungen sind nur temporär, bis sie gespeichert werden. Achten Sie darauf, sich nicht selbst auszuschließen.",
+      "firewallWarning": "Firewall-Änderungen können SSH unterbrechen oder Dienste exponieren. Halten Sie einen Wiederherstellungs-Zugriff bereit.",
+      "firewallConfirm": "Firewall-Änderung prüfen",
+      "firewallRecoveryWarning": "Erlaubter Verkehr kann Dienste exponieren; blockierter Verkehr oder eine geänderte Standardrichtlinie kann SSH und andere Sitzungen trennen. Halten Sie einen unabhängigen Konsolen-/Wiederherstellungsweg bereit. Es wird kein SSH-Port angenommen und der Zugriff kann nicht garantiert werden.",
+      "firewallNonAtomic": "UFW-Änderungen sind NICHT atomar. Nur-Aktions-Änderungen aktualisieren einen eindeutigen, passenden Flow an Ort und Stelle; andere Änderungen fügen die Ersetzung ein und verifizieren sie, bevor die ursprüngliche Regel gelöscht wird. Ein Fehler oder Timeout kann zu einer teilweisen Änderung oder beiden Regeln führen. Aktualisieren und prüfen Sie vor einem erneuten Versuch.",
+      "firewallApply": "Anwenden",
+      "firewallCancel": "Abbrechen",
+      "firewallEdit": "Bearbeiten",
+      "firewallDelete": "Löschen",
+      "firewallEditPolicy": "Standardrichtlinie bearbeiten",
+      "firewallReadOnly": "Schreibgeschützt",
+      "firewallPreserved": "Familie, Richtung, Profil und Kommentar beibehalten",
+      "firewallStale": "Die Firewall hat sich geändert. Schließen Sie diesen Editor und öffnen Sie die aktuelle Regel erneut.",
+      "firewallField_action": "Aktion",
+      "firewallField_protocol": "Protokoll",
+      "firewallField_source": "Quelladresse/CIDR",
+      "firewallField_destination": "Zieladresse/CIDR",
+      "firewallField_port": "Zielport (oder beliebig)",
+      "firewallField_sourcePort": "Quellport (oder beliebig)",
+      "firewallUfwPersistence": "UFW-Änderungen sind sofort persistent. Ein separates Speichern ist nicht erforderlich.",
+      "firewallNftPersistence": "Native nftables-Änderungen gelten nur zur Laufzeit. Speichern Sie sie mit dem konfigurierten Dienst des Hosts; dieses Plugin überschreibt nftables.conf nicht.",
+      "firewallNativePersistence": "Native iptables-Änderungen gelten nur zur Laufzeit, bis sie mit einem unterstützten Persistenzdienst des Hosts gespeichert werden.",
+      "firewallPersistConfirm": "Speichern Sie den vollständigen nativen iptables-Regelsatz mit dem erkannten Persistenzdienst des Hosts, einschließlich Regeln außerhalb dieses Editors.",
       "ruleApplied": "Regel angewendet",
       "invalidPort": "Geben Sie einen gültigen Port ein (1-65535)",
       "newUsername": "Neuer Benutzername",
@@ -249,12 +277,20 @@
   "settings": {
     "admin": {
       "metricsInterval": {
-        "label": "Metrik-Intervall (Sekunden)",
-        "description": "Wie oft ein angezeigter Host abgetastet wird, es sei denn, der Host legt sein eigenes Intervall fest."
+        "label": "Intervall für die Historienerfassung (Sekunden)",
+        "description": "Wie oft Proben für die Historiendiagramme gespeichert werden, es sei denn, der Host legt sein eigenes Intervall fest. Live-Ansichten werden durch die untenstehenden Live-Einstellungen gesteuert."
       },
       "historyRetentionDays": {
         "label": "Verlaufsspeicherung (Tage)",
         "description": "Wie lange Metrik-Proben für die Verlaufsdarstellungen aufbewahrt werden."
+      },
+      "liveEnabled": {
+        "label": "Live-Updates",
+        "description": "Ermöglicht Benutzern, die leichte Live-Ansicht für CPU, Speicher, Netzwerk und Prozesse zu öffnen. Unabhängig vom Intervall der Historienerfassung."
+      },
+      "liveMinInterval": {
+        "label": "Mindestintervall für Live-Updates (Sekunden)",
+        "description": "Die schnellste Abtastrate eines Hosts für Live-Updates, unabhängig davon, wie viele Benutzer oder Tabs zugreifen. Benutzer können langsamere Raten wählen; eine schnellere Wahl wird auf dieses Minimum angehoben."
       }
     },
     "user": {
@@ -263,6 +299,14 @@
         "description": "Wie Temperaturen in den Host-Metriken angezeigt werden.",
         "celsius": "Celsius",
         "fahrenheit": "Fahrenheit"
+      },
+      "liveInterval": {
+        "label": "Aktualisierungsrate für Live-Updates",
+        "description": "Wie oft CPU, Speicher, Netzwerk und Prozesse im Tab Host-Metriken, der Terminal-Symbolleiste sowie in Dashboard- und Homepage-Widgets aktualisiert werden (diese aktualisieren sich nie schneller als alle 5 Sekunden). Jede Aktualisierung liest /proc auf dem Host. Nie schneller als das Mindestintervall für Live-Updates des Servers. Deaktiviert behält die langsamere reguläre Erfassung bei.",
+        "off": "Aus",
+        "s1": "Jede Sekunde",
+        "s2": "Alle 2 Sekunden",
+        "s5": "Alle 5 Sekunden"
       },
       "companionAutoOpen": {
         "label": "Metriken-Panel mit neuen Terminals öffnen",
@@ -289,7 +333,7 @@
         "label": "Metriken erfassen"
       },
       "metricsInterval": {
-        "label": "Metrik-Intervall (Sekunden)"
+        "label": "Intervall für die Historienerfassung (Sekunden)"
       },
       "enabledWidgets": {
         "label": "Aktivierte Widgets"
@@ -308,5 +352,10 @@
   "plugin": {
     "name": "Host-Metriken",
     "description": "Echtzeit-Statistiken für CPU, Arbeitsspeicher, Festplatte, Netzwerk und GPU sowie Tools zur Verwaltung Ihrer Hosts."
+  },
+  "card": {
+    "title": "Am meisten ausgelastete Hosts",
+    "loading": "Wird geladen...",
+    "empty": "Noch keine aktuellen Proben. Hosts werden hier angezeigt, sobald ihre Metriken erfasst werden, z. B. wenn die Host-Statuskarte geöffnet ist."
   }
 }

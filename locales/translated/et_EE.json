@@ -47,6 +47,13 @@
     "noProcessesFound": "Ühtegi protsessi ei leitud",
     "processesTotal": "kokku",
     "processesRunning": "töötav",
+    "processesLoad": "koormus",
+    "processesSearch": "Otsi protsesse",
+    "processesTree": "Puuvaade",
+    "processesCommand": "Käsk",
+    "processesNoMatch": "Ühtegi sobivat protsessi ei leitud",
+    "cpuMix": "kasutaja {{user}}% süsteem {{system}}% io {{iowait}}% varastatud {{steal}}%",
+    "memoryMix": "vahemälu {{cache}}G",
     "loginStats": "SSH sisselogimise statistika",
     "noRecentLoginData": "Viimaseid sisselogimise andmeid pole",
     "ports": {
@@ -112,7 +119,28 @@
       "renew": "Pikenda",
       "noAcmeClient": "Sellel hostil ei leitud ACME-klienti (certbot või acme.sh).",
       "addInputRule": "Lisa INPUT-reegel",
-      "firewallWarning": "Muudatused kehtivad ainult käivitusaegselt, kuni need on salvestatud. Olge ettevaatlik, et end lukku ei jätaks.",
+      "firewallWarning": "Tulemüüri muudatused võivad katkestada SSH-ühenduse või paljastada teenuseid. Veenduge, et taastamisjuurdepääs oleks saadaval.",
+      "firewallConfirm": "Kontrolli tulemüüri muudatust",
+      "firewallRecoveryWarning": "Liikluse lubamine võib paljastada teenuseid; liikluse keelamine või vaikimisi poliitika muutmine võib katkestada SSH- ja muud seansid. Hoidke sõltumatu konsooli/taastamisjuurdepääs saadaval. SSH-porti ei eeldata ja juurdepääsu ei saa garanteerida.",
+      "firewallNonAtomic": "UFW-redaktioonid EI ole aatomilised. Ainult tegevust muutvad muudatused värskendavad vastavat voogu kohapeal; teised muudatused sisestavad ja kinnitavad asenduse enne algse reegli kustutamist. Nõrkus või aegumine võib jätta osalise muudatuse või mõlemad reeglid; värskenda ja kontrolli enne uuesti proovimist.",
+      "firewallApply": "Rakenda",
+      "firewallCancel": "Tühista",
+      "firewallEdit": "Muuda",
+      "firewallDelete": "Kustuta",
+      "firewallEditPolicy": "Muuda vaikimisi poliitikat",
+      "firewallReadOnly": "Kirjutuskaitsega",
+      "firewallPreserved": "Pärandatud perekond, suund, profiil ja kommentaar",
+      "firewallStale": "Tulemüür on muutunud. Sulge see redaktor ja ava uuesti praegune reegel.",
+      "firewallField_action": "Tegevus",
+      "firewallField_protocol": "Protokoll",
+      "firewallField_source": "Allikas aadress/CIDR",
+      "firewallField_destination": "Siht aadress/CIDR",
+      "firewallField_port": "Sihtport (või kõik)",
+      "firewallField_sourcePort": "Allikport (või kõik)",
+      "firewallUfwPersistence": "UFW muudatused on kohe püsivad. Eraldi salvestamine pole vajalik.",
+      "firewallNftPersistence": "Natiivsed nftables muudatused kehtivad ainult käivitamise ajal. Salvestage hosti konfigureeritud teenuse kaudu; see plugin ei kirjuta üle nftables.conf faili.",
+      "firewallNativePersistence": "Natiivsed iptables muudatused kehtivad ainult käivitamise ajal, kuni need on salvestatud hosti toetatud püsivusteenusega.",
+      "firewallPersistConfirm": "Salvestage kogu natiivne iptables reeglistik tuvastatud hosti püsivusteenuse kaudu, sealhulgas reeglid, mis ei ole selle redaktoris.",
       "ruleApplied": "Reegel rakendatud",
       "invalidPort": "Sisesta kehtiv port (1-65535)",
       "newUsername": "Uus kasutajanimi",
@@ -249,12 +277,20 @@
   "settings": {
     "admin": {
       "metricsInterval": {
-        "label": "Mõõdikute intervall (sekundites)",
-        "description": "Kui sageli vaadatavat peremeesmasinat mõõdetakse, kui peremeesmasin ei määra oma intervalli."
+        "label": "Ajaloo proovivõtu intervall (sekundites)",
+        "description": "Kui sageli salvestatakse proove ajaloo graafikute jaoks, kui peremeesmasin ei määra oma intervalli. Otsevaateid haldavad allolevad otsevaate seaded."
       },
       "historyRetentionDays": {
         "label": "Ajaloo säilitamine (päevi)",
         "description": "Kui kaua hoitakse ajaloo graafikute jaoks mõõdikute näidiseid."
+      },
+      "liveEnabled": {
+        "label": "Otseuuendused",
+        "description": "Võimaldab kasutajatel avada kerge otsevaade protsessori, mälu, võrgu ja protsesside kohta. Erineb ajaloo proovivõtust."
+      },
+      "liveMinInterval": {
+        "label": "Otseuuenduse miinimum (sekundites)",
+        "description": "Kiireim sagedus, millega peremeesmasinat proovitakse otseuuenduste jaoks, sõltumata sellest, kui palju kasutajaid või kahte jälgib. Kasutajad saavad valida aeglasemad sagedused; kiirem valik tõstetakse selle miinimumini."
       }
     },
     "user": {
@@ -263,6 +299,14 @@
         "description": "Kuidas temperatuure Peremeesmasina mõõdikutes kuvatakse.",
         "celsius": "Celsius",
         "fahrenheit": "Fahrenheit"
+      },
+      "liveInterval": {
+        "label": "Otseuuenduse sagedus",
+        "description": "Kui sageli uuendatakse protsessori, mälu, võrgu ja protsesside andmeid peremeesmasina meetrikate kaardil, terminali tööriistaribal ning juhtpaneeli ja avalehe vidinates (need ei uuendu kunagi sagedamini kui iga 5 sekundi tagant). Iga uuendus loeb peremeesmasinas /proc-i. Ei saa olla kiirem kui serveri otseuuenduse miinimum. Välja lülitamisel jätkub aeglasem tavaline proovivõtt.",
+        "off": "Välja",
+        "s1": "Iga sekund",
+        "s2": "Iga 2 sekundi tagant",
+        "s5": "Iga 5 sekundi tagant"
       },
       "companionAutoOpen": {
         "label": "Ava mõõdikute paneel koos uute terminalidega",
@@ -289,7 +333,7 @@
         "label": "Kogu mõõdikuid"
       },
       "metricsInterval": {
-        "label": "Mõõdikute intervall (sekundites)"
+        "label": "Ajaloo proovivõtu sagedus (sekundites)"
       },
       "enabledWidgets": {
         "label": "Lubatud vidinad"
@@ -308,5 +352,10 @@
   "plugin": {
     "name": "Peremeesmasina mõõdikud",
     "description": "Reaalajas CPU, mälu, ketta, võrgu ja GPU statistika ning tööriistad oma hostide haldamiseks."
+  },
+  "card": {
+    "title": "Kõige koormatumad hostid",
+    "loading": "Laadimine...",
+    "empty": "Viimaseid proove veel ei ole. Hostid ilmuvad siia, kui nende meetrikaid kogutakse, näiteks kui hosti olekukaart on avatud."
   }
 }

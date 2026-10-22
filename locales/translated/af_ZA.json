@@ -47,6 +47,13 @@
     "noProcessesFound": "Geen prosesse gevind nie",
     "processesTotal": "totaal",
     "processesRunning": "aktief",
+    "processesLoad": "las",
+    "processesSearch": "Soek prosesse",
+    "processesTree": "Boom",
+    "processesCommand": "Opdrag",
+    "processesNoMatch": "Geen ooreenstemmende prosesse nie",
+    "cpuMix": "gebruiker {{user}}% stelsel {{system}}% io {{iowait}}% steel {{steal}}%",
+    "memoryMix": "kas {{cache}}G",
     "loginStats": "SSH-aanmeldstatistieke",
     "noRecentLoginData": "Geen onlangse aanmelddata nie",
     "ports": {
@@ -112,7 +119,28 @@
       "renew": "Verleng",
       "noAcmeClient": "Geen ACME-kliënt (certbot of acme.sh) op hierdie gasheer gevind nie.",
       "addInputRule": "Voeg INPUT-reël by",
-      "firewallWarning": "Veranderinge is slegs tydelik totdat hulle gestoor is. Wees versigtig om jouself nie uit te sluit nie.",
+      "firewallWarning": "Vuurmuurveranderinge kan SSH onderbreek of dienste blootstel. Hou hersteltoegang beskikbaar.",
+      "firewallConfirm": "Herseien vuurmuurverandering",
+      "firewallRecoveryWarning": "Verkeer toelaat kan dienste blootstel; verkeer weier of 'n standaardbeleid verander kan SSH en ander sessies ontkoppel. Hou 'n onafhanklike konsol/herstelpad beskikbaar. Geen SSH-poort word aanvaar nie en toegang kan nie gewaarborg word nie.",
+      "firewallNonAtomic": "UFW-redigeringe is NIE atoom nie. Aksie-slegs veranderinge werk 'n unieke ooreenstemmende stroom op sy plek op; ander redigeringe voeg die vervanging in en verifieer dit voordat die oorspronklike verwyder word. 'n Mislukking of tydsverstryking kan 'n gedeeltelike verandering of beide reëls agterlaat; ververs en ondersoek voordat jy weer probeer.",
+      "firewallApply": "Pas toe",
+      "firewallCancel": "Kanselleer",
+      "firewallEdit": "Redigeer",
+      "firewallDelete": "Vee uit",
+      "firewallEditPolicy": "Redigeer standaardbeleid",
+      "firewallReadOnly": "Slegs-lees",
+      "firewallPreserved": "Gesinsrigting, rigting, profiel en kommentaar bewaar",
+      "firewallStale": "Die vuurmuur het verander. Maak hierdie redigeerder toe en heropen die huidige reël.",
+      "firewallField_action": "Aksie",
+      "firewallField_protocol": "Protokol",
+      "firewallField_source": "Bronadres/CIDR",
+      "firewallField_destination": "Bestemmingsadres/CIDR",
+      "firewallField_port": "Bestemmingspoort (of enige)",
+      "firewallField_sourcePort": "Bronpoort (of enige)",
+      "firewallUfwPersistence": "UFW-veranderinge is onmiddellik volhardend. 'n Afsonderlike stoor is nie nodig nie.",
+      "firewallNftPersistence": "Inheemse nftables-veranderinge is slegs tydens uitvoering. Stoor deur die gasheer se geconfigureerde diens te gebruik; hierdie invoegprogram skryf nie nftables.conf oor nie.",
+      "firewallNativePersistence": "Inheemse iptables-veranderinge is slegs tydens uitvoering totdat dit gestoor word met 'n ondersteunde gasheer-volhardingsdiens.",
+      "firewallPersistConfirm": "Stoor die volledige inheemse iptables-reëlsatelliet deur die opgespoorde gasheer-volhardingsdiens te gebruik, insluitend reëls buite hierdie redigeerder.",
       "ruleApplied": "Reël toegepas",
       "invalidPort": "Voer 'n geldige poort in (1-65535)",
       "newUsername": "Nuwe gebruikersnaam",
@@ -249,12 +277,20 @@
   "settings": {
     "admin": {
       "metricsInterval": {
-        "label": "Metriekinterval (sekondes)",
-        "description": "Hoe dikwels 'n gasheer wat beskou word, bemonster word, tensy die gasheer sy eie interval stel."
+        "label": "Geskiedenismonsterneemtydperk (sekondes)",
+        "description": "Hoe gereeld monsters gestoor word vir die geskiedenisgrafieke, tensy die gasheer sy eie tydperk stel. Lewe-aansigte word beheer deur die lewe-instellings hieronder."
       },
       "historyRetentionDays": {
         "label": "Geskiedenisbehoud (dae)",
         "description": "Hoe lank metriekmonsters vir die geskiedenisgrafieke gehou word."
+      },
+      "liveEnabled": {
+        "label": "Lewe-opdaterings",
+        "description": "Laat gebruikers die ligte lewe-aansig van CPU, geheue, netwerk en prosesse oopmaak. Afsonderlik van die geskiedenismonsterneemtydperk."
+      },
+      "liveMinInterval": {
+        "label": "Lewe-opdatering minimum (sekondes)",
+        "description": "Die vinnigste 'n gasheer vir lewe-opdaterings monsterneem, ongeag hoeveel gebruikers of tabblae kyk. Gebruikers kan stadiger tempo's kies; 'n vinniger keuse word tot hierdie minimum verhoog."
       }
     },
     "user": {
@@ -263,6 +299,14 @@
         "description": "Hoe temperature in Gasheermetrieke getoon word.",
         "celsius": "Celsius",
         "fahrenheit": "Fahrenheit"
+      },
+      "liveInterval": {
+        "label": "Lewe-opdateringstempo",
+        "description": "Hoe gereeld CPU, geheue, netwerk en prosesse ververs in die Gasheer Metrieke-tab, die terminaalwerkbalk, en dashboard en tuisblad-widgette (daardie gaan nooit vinniger as elke 5 sekondes nie). Elke opdatering lees /proc op die gasheer. Nooit vinniger as die bediener se lewe-opdatering minimum nie. Af hou die stadiger gereelde monsterneem.",
+        "off": "Af",
+        "s1": "Elke sekonde",
+        "s2": "Elke 2 sekondes",
+        "s5": "Elke 5 sekondes"
       },
       "companionAutoOpen": {
         "label": "Maak die metriekepaneel oop met nuwe terminale",
@@ -289,7 +333,7 @@
         "label": "Versamel metrieke"
       },
       "metricsInterval": {
-        "label": "Metriekinterval (sekondes)"
+        "label": "Geskiendemonsterneemtydperk (sekondes)"
       },
       "enabledWidgets": {
         "label": "Geaktiveerde widgets"
@@ -308,5 +352,10 @@
   "plugin": {
     "name": "Gasheermetrieke",
     "description": "Lewendige CPU-, geheue-, skyf-, netwerk- en GPU-statistieke, plus hulpmiddels om jou gasheerbedieners te bestuur."
+  },
+  "card": {
+    "title": "Besigste gasheer",
+    "loading": "Laai...",
+    "empty": "Nog geen onlangse monsters nie. Gasheer verskyn hier sodra hul metrieke ingesamel is, soos terwyl die gasheer-statuskaart oop is."
   }
 }

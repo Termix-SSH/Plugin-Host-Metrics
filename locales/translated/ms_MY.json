@@ -46,6 +46,13 @@
     "noProcessesFound": "Tiada proses ditemui",
     "processesTotal": "jumlah",
     "processesRunning": "berjalan",
+    "processesLoad": "beban",
+    "processesSearch": "Cari proses",
+    "processesTree": "Pohon",
+    "processesCommand": "Arahan",
+    "processesNoMatch": "Tiada proses yang sepadan",
+    "cpuMix": "pengguna {{user}}% sistem {{system}}% io {{iowait}}% curi {{steal}}%",
+    "memoryMix": "cache {{cache}}G",
     "loginStats": "Statistik Log Masuk SSH",
     "noRecentLoginData": "Tiada data log masuk terkini",
     "ports": {
@@ -111,7 +118,28 @@
       "renew": "Barui",
       "noAcmeClient": "Tiada pelanggan ACME (certbot atau acme.sh) ditemui pada hos ini.",
       "addInputRule": "Tambah peraturan INPUT",
-      "firewallWarning": "Perubahan hanya berkuat kuasa semasa masa sehingga disimpan. Berhati-hati agar tidak mengunci diri sendiri.",
+      "firewallWarning": "Perubahan firewall boleh mengganggu SSH atau mendedahkan perkhidmatan. Pastikan akses pemulihan tersedia.",
+      "firewallConfirm": "Semak perubahan firewall",
+      "firewallRecoveryWarning": "Membenarkan trafik boleh mendedahkan perkhidmatan; menafikan trafik atau mengubah polisi lalai boleh memutuskan sambungan SSH dan sesi lain. Pastikan konsol/jejak pemulihan bebas tersedia. Tiada port SSH dianggap dan akses tidak dapat dijamin.",
+      "firewallNonAtomic": "Suntingan UFW BUKAN atom. Perubahan tindakan sahaja mengemas kini aliran padanan unik di tempatnya; suntingan lain memasukkan dan mengesahkan penggantian sebelum memadam asal. Kegagalan atau tamat masa mungkin meninggalkan perubahan separa atau kedua-dua peraturan; segar semula dan periksa sebelum cuba lagi.",
+      "firewallApply": "Terapkan",
+      "firewallCancel": "Batal",
+      "firewallEdit": "Sunting",
+      "firewallDelete": "Padam",
+      "firewallEditPolicy": "Sunting polisi lalai",
+      "firewallReadOnly": "Baca sahaja",
+      "firewallPreserved": "Keluarga, arah, profil dan komen dikekalkan",
+      "firewallStale": "Firewall telah berubah. Tutup penyunting ini dan buka semula peraturan semasa.",
+      "firewallField_action": "Tindakan",
+      "firewallField_protocol": "Protokol",
+      "firewallField_source": "Alamat sumber/CIDR",
+      "firewallField_destination": "Alamat destinasi/CIDR",
+      "firewallField_port": "Port destinasi (atau mana-mana)",
+      "firewallField_sourcePort": "Port sumber (atau mana-mana)",
+      "firewallUfwPersistence": "Perubahan UFW adalah berterusan serta-merta. Tiada simpanan berasingan diperlukan.",
+      "firewallNftPersistence": "Perubahan nftables asli adalah untuk masa berjalan sahaja. Simpan menggunakan perkhidmatan yang dikonfigurasi hos; plugin ini tidak menimpa nftables.conf.",
+      "firewallNativePersistence": "Perubahan iptables asli adalah untuk masa berjalan sahaja sehingga disimpan dengan perkhidmatan ketekunan hos yang disokong.",
+      "firewallPersistConfirm": "Simpan set peraturan iptables asli yang lengkap menggunakan perkhidmatan ketekunan hos yang dikesan, termasuk peraturan di luar penyunting ini.",
       "ruleApplied": "Peraturan digunakan",
       "invalidPort": "Masukkan port yang sah (1-65535)",
       "newUsername": "Nama pengguna baharu",
@@ -248,12 +276,20 @@
   "settings": {
     "admin": {
       "metricsInterval": {
-        "label": "Selang metrik (saat)",
-        "description": "Seberapa kerap hos yang sedang dilihat disampel, melainkan hos menetapkan selangnya sendiri."
+        "label": "Selang pensampelan sejarah (saat)",
+        "description": "Seberapa kerap sampel disimpan untuk carta sejarah, melainkan hos menetapkan selangnya sendiri. Paparan langsung dikawal oleh tetapan langsung di bawah."
       },
       "historyRetentionDays": {
         "label": "Penyimpanan sejarah (hari)",
         "description": "Seberapa lama sampel metrik disimpan untuk carta sejarah."
+      },
+      "liveEnabled": {
+        "label": "Kemas kini langsung",
+        "description": "Membolehkan pengguna membuka paparan langsung ringan untuk CPU, memori, rangkaian dan proses. Berasingan daripada selang pensampelan sejarah."
+      },
+      "liveMinInterval": {
+        "label": "Minimum kemas kini langsung (saat)",
+        "description": "Kelajuan terpantas hos disampel untuk kemas kini langsung, berapa ramai pengguna atau tab yang menonton. Pengguna boleh memilih kadar yang lebih perlahan; pilihan yang lebih pantas dinaikkan ke minimum ini."
       }
     },
     "user": {
@@ -262,6 +298,14 @@
         "description": "Bagaimana suhu dipaparkan dalam Metrik Hos.",
         "celsius": "Celsius",
         "fahrenheit": "Fahrenheit"
+      },
+      "liveInterval": {
+        "label": "Kadar kemas kini langsung",
+        "description": "Seberapa kerap CPU, memori, rangkaian dan proses disegarkan dalam tab Metrik Hos, bar alat terminal, dan widget papan pemuka dan halaman utama (yang tidak pernah lebih pantas daripada setiap 5 saat). Setiap kemas kini membaca /proc pada hos. Tidak pernah lebih pantas daripada minimum kemas kini langsung pelayan. Mati mengekalkan pensampelan biasa yang lebih perlahan.",
+        "off": "Mati",
+        "s1": "Setiap saat",
+        "s2": "Setiap 2 saat",
+        "s5": "Setiap 5 saat"
       },
       "companionAutoOpen": {
         "label": "Buka panel metrik bersama terminal baharu",
@@ -288,7 +332,7 @@
         "label": "Kumpul metrik"
       },
       "metricsInterval": {
-        "label": "Selang metrik (saat)"
+        "label": "Selang pensampelan sejarah (saat)"
       },
       "enabledWidgets": {
         "label": "Widget yang didayakan"
@@ -307,5 +351,10 @@
   "plugin": {
     "name": "Metrik Hos",
     "description": "Statistik CPU, memori, cakera, rangkaian dan GPU secara langsung, serta alat untuk menguruskan hos anda."
+  },
+  "card": {
+    "title": "Hos tersibuk",
+    "loading": "Memuatkan...",
+    "empty": "Tiada sampel terkini lagi. Hos akan dipaparkan di sini sekali metriknya dikumpulkan, seperti ketika kad status hos dibuka."
   }
 }

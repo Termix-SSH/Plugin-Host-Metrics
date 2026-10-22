@@ -49,6 +49,13 @@
     "noProcessesFound": "Procesų nerasta",
     "processesTotal": "iš viso",
     "processesRunning": "vykstantys",
+    "processesLoad": "naša",
+    "processesSearch": "Ieškoti procesų",
+    "processesTree": "Medis",
+    "processesCommand": "Komanda",
+    "processesNoMatch": "Atitinkančių procesų nerasta",
+    "cpuMix": "vartotojas {{user}}% sistema {{system}}% į/i {{iowait}}% pavogta {{steal}}%",
+    "memoryMix": "talpykla {{cache}}G",
     "loginStats": "SSH prisijungimų statistika",
     "noRecentLoginData": "Nėra naujausių prisijungimų duomenų",
     "ports": {
@@ -114,7 +121,28 @@
       "renew": "Atnaujinti",
       "noAcmeClient": "Šiame serveryje nerastas ACME klientas (certbot arba acme.sh).",
       "addInputRule": "Pridėti INPUT taisyklę",
-      "firewallWarning": "Pakeitimai galioja tik iki sistemos perkrovimo. Būkite atsargūs, kad neužrakintumėte prieigos.",
+      "firewallWarning": "Ugniasienės pakeitimai gali nutraukti SSH ryšį arba atverti paslaugas. Įsitikinkite, kad turite prieigą atkūrimui.",
+      "firewallConfirm": "Peržiūrėti ugniasienės pakeitimą",
+      "firewallRecoveryWarning": "Leidžiant srautą, paslaugos gali tapti pasiekiamos; neleidžiant srautui arba keičiant numatytąją politiką, gali būti nutrauktas SSH ir kitų sesijų ryšys. Turėkite nepriklausomą konsolės/atstatymo prieigą. Nėra daroma prielaida apie SSH portą, o prieiga negali būti garantuota.",
+      "firewallNonAtomic": "UFW redagavimai NĖRA atomiški. Tik veiksmo pakeitimai atnaujina vieną atitinkamą srautą vietoje; kiti redagavimai įterpia ir patikrina pakeitimą prieš ištrindami originalą. Nepavykus arba pasibaigus laikui, gali likti dalinis pakeitimas arba abi taisyklės; atnaujinkite ir patikrinkite prieš bandydami dar kartą.",
+      "firewallApply": "Taikyti",
+      "firewallCancel": "Atšaukti",
+      "firewallEdit": "Redaguoti",
+      "firewallDelete": "Ištrinti",
+      "firewallEditPolicy": "Redaguoti numatytąją politiką",
+      "firewallReadOnly": "Tik skaitymui",
+      "firewallPreserved": "Išsaugota šeima, kryptis, profilis ir komentaras",
+      "firewallStale": "Ugniasienė pasikeitė. Uždarykite šį redaktorių ir vėl atidarykite dabartinę taisyklę.",
+      "firewallField_action": "Veiksmas",
+      "firewallField_protocol": "Protokolas",
+      "firewallField_source": "Šaltinio adresas/CIDR",
+      "firewallField_destination": "Paskirties adresas/CIDR",
+      "firewallField_port": "Paskirties prievadas (arba bet kuris)",
+      "firewallField_sourcePort": "Šaltinio prievadas (arba bet kuris)",
+      "firewallUfwPersistence": "UFW pakeitimai taikomi iškart ir išlieka. Atskiro išsaugojimo nereikia.",
+      "firewallNftPersistence": "Vietiniai nftables pakeitimai galioja tik vykdomojo laiko metu. Išsaugokite naudodami serverio konfigūruotą paslaugą; šis įskiepis neperrašo nftables.conf.",
+      "firewallNativePersistence": "Vietiniai iptables pakeitimai galioja tik vykdomojo laiko metu, kol bus išsaugoti naudojant palaikomą serverio išsaugojimo paslaugą.",
+      "firewallPersistConfirm": "Išsaugokite visą vietinį iptables taisyklių rinkinį naudodami aptiktą serverio išsaugojimo paslaugą, įskaitant taisykles, kurios nėra šio redaktoriaje.",
       "ruleApplied": "Taisyklė pritaikyta",
       "invalidPort": "Įveskite galiojantį portą (1-65535)",
       "newUsername": "Naujas naudotojo vardas",
@@ -251,12 +279,20 @@
   "settings": {
     "admin": {
       "metricsInterval": {
-        "label": "Metrikų intervalas (sekundėmis)",
-        "description": "Kaip dažnai imami duomenys iš peržiūrimo svečio, nebent svečias nustato savo intervalą."
+        "label": "Istorijos imčių intervalas (sekundėmis)",
+        "description": "Kaip dažnai įrašomi duomenys istorijos diagramoms, nebent serveris nustato savo intervalą. Tiesioginiai vaizdai valdomi žemiau esančiais tiesioginio atnaujinimo nustatymais."
       },
       "historyRetentionDays": {
         "label": "Istorijos išsaugojimas (dienomis)",
         "description": "Kaip ilgai metrikų duomenys išsaugomi istorijos diagramoms."
+      },
+      "liveEnabled": {
+        "label": "Tiesioginiai atnaujinimai",
+        "description": "Leidžia vartotojams atidaryti lengvą CPU, atminties, tinklo ir procesų tiesioginį vaizdą. Nepriklauso nuo istorijos duomenų rinkimo intervalo."
+      },
+      "liveMinInterval": {
+        "label": "Minimalus tiesioginio atnaujinimo intervalas (sekundės)",
+        "description": "Didžiausias dažnis, kuriuo serveris tikrinamas tiesioginiams atnaujinimams, nepriklausomai nuo to, kiek vartotojų ar skirtukų stebi. Vartotojai gali pasirinkti lėtesnį dažnį; jei pasirinktas dažnis yra greitesnis, jis pakeliamas iki šio minimumo."
       }
     },
     "user": {
@@ -265,6 +301,14 @@
         "description": "Kaip temperatūros rodomos svečių metrikose.",
         "celsius": "Celsijus",
         "fahrenheit": "Farenheitas"
+      },
+      "liveInterval": {
+        "label": "Tiesioginio atnaujinimo dažnis",
+        "description": "Kaip dažnai CPU, atmintis, tinklas ir procesai atnaujinami „Host Metrics“ skirtuke, terminalo įrankių juostoje bei skydelio ir pagrindinio puslapio valdikliuose (jie niekada neatnaujinami dažniau nei kas 5 sekundes). Kiekvienas atnaujinimas skaito /proc failus serveryje. Niekada negali būti greitesnis nei serverio minimalus tiesioginio atnaujinimo intervalas. Išjungus išlieka lėtesnis reguliarus duomenų rinkimas.",
+        "off": "Išjungta",
+        "s1": "Kas sekundę",
+        "s2": "Kas 2 sekundes",
+        "s5": "Kas 5 sekundes"
       },
       "companionAutoOpen": {
         "label": "Atidaryti metrikų skydelį su naujais terminalais",
@@ -291,7 +335,7 @@
         "label": "Rinkti metrikas"
       },
       "metricsInterval": {
-        "label": "Metrikų intervalas (sekundėmis)"
+        "label": "Istorijos imčių intervalas (sekundėmis)"
       },
       "enabledWidgets": {
         "label": "Įgalinti valdikliai"
@@ -310,5 +354,10 @@
   "plugin": {
     "name": "Svečių metrikos",
     "description": "Realiojo laiko CPU, atminties, disko, tinklo ir GPU statistika, taip pat įrankiai hostams valdyti."
+  },
+  "card": {
+    "title": "Labiausiai apkrauti serveriai",
+    "loading": "Įkeliama...",
+    "empty": "Dar nėra naujausių imčių. Serveriai čia rodomi, kai surenkami jų metrikos duomenys, pavyzdžiui, kai atidaryta serverio būsenos kortelė."
   }
 }

@@ -10,6 +10,7 @@ afterEach(async () => {
 
 const ROUTES: Array<[string, string, unknown?]> = [
   ["GET", "/defaults"],
+  ["GET", "/metrics/summary"],
   ["GET", "/metrics/7"],
   ["POST", "/metrics/start/7"],
   ["POST", "/metrics/stop/7", {}],
@@ -41,6 +42,13 @@ describe("metrics", () => {
     const response = await server.request("GET", "/metrics/7");
     expect(response.status).toBe(200);
     expect(response.body).toBeNull();
+  });
+
+  it("lists no summary before any host was sampled", async () => {
+    server = await startServer();
+    const response = await server.request("GET", "/metrics/summary");
+    expect(response.status).toBe(200);
+    expect(response.body).toEqual([]);
   });
 
   it("refuses a host the user cannot see", async () => {

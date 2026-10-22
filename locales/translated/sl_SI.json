@@ -49,6 +49,13 @@
     "noProcessesFound": "Ni najdenih postopkov",
     "processesTotal": "skupaj",
     "processesRunning": "v teku",
+    "processesLoad": "obremenitev",
+    "processesSearch": "Išči procese",
+    "processesTree": "Drevo",
+    "processesCommand": "Ukaz",
+    "processesNoMatch": "Ni ujemajočih se procesov",
+    "cpuMix": "uporabnik {{user}}% sistem {{system}}% vnos/izpis {{iowait}}% ukradeno {{steal}}%",
+    "memoryMix": "predpomnilnik {{cache}}G",
     "loginStats": "Statistika SSH prijave",
     "noRecentLoginData": "Ni nedavnih podatkov o prijavi",
     "ports": {
@@ -114,7 +121,28 @@
       "renew": "Podaljšaj",
       "noAcmeClient": "Na tem gostitelju ni bil najden ACME odjemalec (certbot ali acme.sh).",
       "addInputRule": "Dodaj pravilo za INPUT",
-      "firewallWarning": "Spremembe veljajo le za trenutno izvajanje, dokler niso shranjene. Bodite previdni, da se ne zaklenete izven sistema.",
+      "firewallWarning": "Spremembe požarnega zidu lahko prekinijo SSH ali izpostavijo storitve. Zagotovite dostop za obnovitev.",
+      "firewallConfirm": "Preglej spremembo požarnega zidu",
+      "firewallRecoveryWarning": "Dovajanje prometa lahko izpostavi storitve; zavrnitev prometa ali sprememba privzete politike lahko prekineta SSH in druge seje. Zagotovite neodvisno konzolo ali pot za obnovitev. Noben SSH vrat ni predpostavljen, dostop pa ni mogoče zagotoviti.",
+      "firewallNonAtomic": "Urejanja UFW niso atomarna. Spremembe, ki vključujejo le ukaze, posodobijo edinstven ujemajoč tok na mestu; druge urejanja vstavijo in preverijo nadomestilo pred brisanjem originala. Napaka ali časovni izteek lahko pusti delno spremembo ali obe pravili; osvežite in pregledajte pred ponovnim poskusom.",
+      "firewallApply": "Uporabi",
+      "firewallCancel": "Prekliči",
+      "firewallEdit": "Uredi",
+      "firewallDelete": "Izbriši",
+      "firewallEditPolicy": "Uredi privzeto politiko",
+      "firewallReadOnly": "Samo za branje",
+      "firewallPreserved": "Ohranjena družina, smer, profil in komentar",
+      "firewallStale": "Varnostni požarni zid se je spremenil. Zaprite ta urejevalnik in ponovno odprite trenutno pravilo.",
+      "firewallField_action": "Ukaz",
+      "firewallField_protocol": "Protokol",
+      "firewallField_source": "Virovni naslov/CIDR",
+      "firewallField_destination": "Ciljni naslov/CIDR",
+      "firewallField_port": "Ciljni vrat (ali poljubni)",
+      "firewallField_sourcePort": "Virovni vrat (ali poljubni)",
+      "firewallUfwPersistence": "Spremembe UFW so takoj trajne. Ločeno shranjevanje ni potrebno.",
+      "firewallNftPersistence": "Spremembe v rodnih nftables veljajo le za trenutno izvajanje. Shranite jih s storitvijo, konfigurirano na gostitelju; ta vtičnik ne prepisuje datoteke nftables.conf.",
+      "firewallNativePersistence": "Spremembe v rodnih iptables veljajo le za trenutno izvajanje, dokler jih ne shranite s podprto storitvijo za trajnost gostitelja.",
+      "firewallPersistConfirm": "Shranite celoten niz rodnih pravil iptables z zaznano storitvijo za trajnost gostitelja, vključno s pravili zunaj tega urejevalnika.",
       "ruleApplied": "Pravilo uporabljeno",
       "invalidPort": "Vnesite veljavno vrata (1-65535)",
       "newUsername": "Novo uporabniško ime",
@@ -251,12 +279,20 @@
   "settings": {
     "admin": {
       "metricsInterval": {
-        "label": "Interval metrik (sekunde)",
-        "description": "Kako pogosto se vzorci gostitelja, ki se ogleduje, če gostitelj ne nastavi svojega intervala."
+        "label": "Interval vzorčenja zgodovine (sekunde)",
+        "description": "Kako pogosto se vzorci shranijo za zgodovinske grafone, razen če gostitelj nastavi svoj lastni interval. Žive poglede nadzorujejo nastavitve za živo posodabljanje spodaj."
       },
       "historyRetentionDays": {
         "label": "Obdobje hrambe zgodovine (dni)",
         "description": "Kako dolgo se vzorci metrik hranijo za zgodovinske grafikone."
+      },
+      "liveEnabled": {
+        "label": "Živa posodabljanja",
+        "description": "Omogoča uporabnikom odpiranje lahkega živega pogleda na CPU, pomnilnik, omrežje in procese. Ločeno od intervala vzorčenja zgodovine."
+      },
+      "liveMinInterval": {
+        "label": "Najmanjši interval živega posodabljanja (sekunde)",
+        "description": "Najhitrejša hitrost vzorčenja gostitelja za živa posodabljanja, ne glede na število uporabnikov ali zavihkov. Uporabniki lahko izberejo počasnejše hitrosti; hitrejša izbira se poveča na to najmanjšo vrednost."
       }
     },
     "user": {
@@ -265,6 +301,14 @@
         "description": "Kako so temperature prikazane v metriki gostitelja.",
         "celsius": "Celzij",
         "fahrenheit": "Fahrenheit"
+      },
+      "liveInterval": {
+        "label": "Hitrost živega posodabljanja",
+        "description": "Kako pogosto se CPU, pomnilnik, omrežje in procesi osvežijo na zavihku Metrike gostitelja, v orodni vrstici terminala ter v vidikih nadzorne plošče in domače strani (ti se nikoli ne osvežujejo hitreje kot vsakih 5 sekund). Vsako posodabljanje bere /proc na gostitelju. Nikoli hitreje od najmanjšega intervala živega posodabljanja strežnika. Izklopljeno ohranja počasnejše redno vzorčenje.",
+        "off": "Izklopljeno",
+        "s1": "Vsako sekundo",
+        "s2": "Vsaki 2 sekundi",
+        "s5": "Vsakih 5 sekund"
       },
       "companionAutoOpen": {
         "label": "Odpri ploščo z metriko ob novih terminalih",
@@ -291,7 +335,7 @@
         "label": "Zbiranje metrik"
       },
       "metricsInterval": {
-        "label": "Interval metrik (sekunde)"
+        "label": "Interval vzorčenja zgodovine (sekunde)"
       },
       "enabledWidgets": {
         "label": "Omogočeni vtičniki"
@@ -310,5 +354,10 @@
   "plugin": {
     "name": "Metrike gostitelja",
     "description": "Prikaz trenutnih podatkov o CPU, pomnilniku, disku, omrežju in GPU ter orodja za upravljanje gostiteljev."
+  },
+  "card": {
+    "title": "Najbolj obremenjeni gostitelji",
+    "loading": "Nalaganje...",
+    "empty": "Še ni nedavnih vzorcev. Gostitelji se prikažejo tukaj, ko se zberejo njihove metrike, na primer medtem ko je kartica stanja gostitelja odprta."
   }
 }

@@ -48,6 +48,13 @@
     "noProcessesFound": "Nav atrasts process",
     "processesTotal": "kopā",
     "processesRunning": "palošo",
+    "processesLoad": "slodze",
+    "processesSearch": "Meklēt procesus",
+    "processesTree": "Koks",
+    "processesCommand": "Komanda",
+    "processesNoMatch": "Nav atbilstošu procesu",
+    "cpuMix": "lietotājs {{user}}% sist. {{system}}% i/o {{iowait}}% nozagts {{steal}}%",
+    "memoryMix": "kešatmiņa {{cache}}G",
     "loginStats": "SSH pieteikšanās statistika",
     "noRecentLoginData": "Nav nesenās pieteikšanās datu",
     "ports": {
@@ -113,7 +120,28 @@
       "renew": "Atjaunot",
       "noAcmeClient": "Šajā resursā nav atrasts neviens ACME klients (certbot vai acme.sh).",
       "addInputRule": "Pievienot INPUT noteikumu",
-      "firewallWarning": "Izmaiņas ir tikai izpildes laikā, līdz tās tiek saglabātas. Rīcieties uzmanīgi, lai sevi neizslēgtu.",
+      "firewallWarning": "Ugunsmūra izmaiņas var pārtraukt SSH savienojumu vai atklāt pakalpojumus. Pārliecinieties, ka ir pieejams atjaunošanas piekļuves ceļš.",
+      "firewallConfirm": "Pārskatīt ugunsmūra izmaiņas",
+      "firewallRecoveryWarning": "Satiksmes atļaušana var atklāt pakalpojumus; satiksmes liegšana vai noklusējuma politikas maiņa var atslēgt SSH un citas sesijas. Pārliecinieties, ka ir pieejams neatkarīgs konsoles/atjaunošanas ceļš. Nav pieņemts, ka SSH ports ir pieejams, un piekļuve netiek garantēta.",
+      "firewallNonAtomic": "UFW izmaiņas NAV atomāras. Tikai darbības izmaiņas atjaunina unikālu atbilstošo plūsmu vietā; citas izmaiņas ievieto un pārbauda aizstājēju pirms oriģināla dzēšanas. Kļūme vai time-out var atstāt daļēju izmaiņu vai abas likums; pirms mēģinājuma atkārtot, atsvaidziniet un pārbaudiet.",
+      "firewallApply": "Piemērot",
+      "firewallCancel": "Atcelt",
+      "firewallEdit": "Rediģēt",
+      "firewallDelete": "Dzēst",
+      "firewallEditPolicy": "Rediģēt noklusējuma politiku",
+      "firewallReadOnly": "Tikai lasīšanai",
+      "firewallPreserved": "Saglabāta ģimene, virziens, profils un komentārs",
+      "firewallStale": "Ugunsmūris ir mainījies. Aizveriet šo redaktoru un atveriet pašreizējo likumu.",
+      "firewallField_action": "Darbība",
+      "firewallField_protocol": "Protokols",
+      "firewallField_source": "Avota adrese/CIDR",
+      "firewallField_destination": "Mērķa adrese/CIDR",
+      "firewallField_port": "Mērķa ports (vai jebkurš)",
+      "firewallField_sourcePort": "Avota ports (vai jebkurš)",
+      "firewallUfwPersistence": "UFW izmaiņas ir pastāvīgas uzreiz. Atsevišķa saglabāšana nav nepieciešama.",
+      "firewallNftPersistence": "Iedzimtas nftables izmaiņas ir tikai darbības laikā. Saglabājiet, izmantojot hosta konfigurēto pakalpojumu; šis spraudnis neatstāj nftables.conf.",
+      "firewallNativePersistence": "Iedzimtas iptables izmaiņas ir tikai darbības laikā, līdz tās tiek saglabātas ar atbalstītu hosta pastāvības pakalpojumu.",
+      "firewallPersistConfirm": "Saglabājiet pilnu iedzimto iptables noteikumu kopu, izmantojot noteikto hosta pastāvības pakalpojumu, ieskaitot noteikumus ārpus šī redaktora.",
       "ruleApplied": "Noteikums piemērots",
       "invalidPort": "Ievadiet derīgu portu (1-65535)",
       "newUsername": "Jaunais lietotājvārds",
@@ -250,12 +278,20 @@
   "settings": {
     "admin": {
       "metricsInterval": {
-        "label": "Mērījumu intervāls (sekundes)",
-        "description": "Cik bieži tiek veikts mērījums skatāmajam resursdatoram, ja resursdators nav iestatījis savu intervālu."
+        "label": "Vēstures paraugu ņemšanas intervāls (sekundēs)",
+        "description": "Cik bieži paraugi tiek saglabāti vēstures diagrammām, ja vien hosts nepiešķir savu intervālu. Tiešraides skati pārvalda zemāk esošie tiešraides iestatījumi."
       },
       "historyRetentionDays": {
         "label": "Vēstures saglabāšana (dienas)",
         "description": "Cik ilgi mērījumu dati tiek saglabāti vēstures diagrammām."
+      },
+      "liveEnabled": {
+        "label": "Atjauninājumi tiešraidē",
+        "description": "Ļauj lietotājiem atvērt vieglo CPU, atmiņas, tīkla un procesu tiešraides skatu. Atšķiras no vēstures paraugu ņemšanas intervāla."
+      },
+      "liveMinInterval": {
+        "label": "Minimālais atjauninājumu biežums (sekundes)",
+        "description": "Ātrākais temps, ar kādu hosts tiek paraugāts tiešraides atjauninājumiem, neatkarīgi no tā, cik lietotāju vai cilņu skatās. Lietotāji var izvēlēties lēnākus tempus; ātrāka izvēle tiek paaugstināta līdz šim minimumam."
       }
     },
     "user": {
@@ -264,6 +300,14 @@
         "description": "Kā temperatūra tiek rādīta resursdatora mērījumos.",
         "celsius": "Celsija",
         "fahrenheit": "Farenheita"
+      },
+      "liveInterval": {
+        "label": "Atjauninājumu biežums",
+        "description": "Cik bieži CPU, atmiņa, tīkls un procesi atjauninās Host Metrics cilnē, termināļa rīkjoslā, kā arī instrumentu panelī un sākumlapas logrīkos (tie nekad neatjauninās ātrāk kā ik pēc 5 sekundēm). Katrs atjauninājums lasa /proc hostā. Nekad nav ātrāk par servera minimālo tiešraides atjauninājumu biežumu. Izslēgts saglabā lēnāko regulāro paraugu ņemšanu.",
+        "off": "Izslēgts",
+        "s1": "Katru sekundi",
+        "s2": "Ik pēc 2 sekundēm",
+        "s5": "Katru 5 sekundi"
       },
       "companionAutoOpen": {
         "label": "Atvērt metriku paneli kopā ar jauniem termināļiem",
@@ -290,7 +334,7 @@
         "label": "Vākt mērījumus"
       },
       "metricsInterval": {
-        "label": "Mērījumu intervāls (sekundes)"
+        "label": "Vēstures paraugu ņemšanas intervāls (sekundes)"
       },
       "enabledWidgets": {
         "label": "Iespējotie logrīki"
@@ -309,5 +353,10 @@
   "plugin": {
     "name": "Resursdatora mērījumi",
     "description": "Reāllaika CPU, atmiņas, diska, tīkla un GPU statistika, kā arī rīki hostu pārvaldībai."
+  },
+  "card": {
+    "title": "Aizņemātākie mezgli",
+    "loading": "Ielādē...",
+    "empty": "Vēl nav svaigu paraugu. Mezgli parādās šeit, tiklīdz tiek savākti to metriku dati, piemēram, kamēr ir atvērta mezgla statusa kartīte."
   }
 }

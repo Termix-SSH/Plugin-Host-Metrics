@@ -391,6 +391,9 @@ describe("firewall", () => {
       target: "DROP",
     });
     expect(cmd).toContain("nft -a list chain inet filter input");
+    expect(cmd).toContain(
+      "rules=$(nft -a list chain inet filter input) && handle=",
+    );
     expect(cmd).toContain("udp dport 53 drop # handle");
     expect(cmd).toContain('nft delete rule inet filter input handle "$handle"');
   });

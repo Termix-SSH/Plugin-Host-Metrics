@@ -47,6 +47,13 @@
     "noProcessesFound": "Nem található folyamat",
     "processesTotal": "összesen",
     "processesRunning": "fut",
+    "processesLoad": "terhelés",
+    "processesSearch": "Folyamatok keresése",
+    "processesTree": "Fa",
+    "processesCommand": "Parancs",
+    "processesNoMatch": "Nincs találat a folyamatok között",
+    "cpuMix": "felhasználó {{user}}% rendszer {{system}}% IO {{iowait}}% ellopott {{steal}}%",
+    "memoryMix": "gyorsítótár {{cache}}G",
     "loginStats": "SSH-bejelentkezési statisztikák",
     "noRecentLoginData": "Nincsenek legutóbbi bejelentkezési adatok",
     "ports": {
@@ -112,7 +119,28 @@
       "renew": "Megújítás",
       "noAcmeClient": "Nem található ACME kliens (certbot vagy acme.sh) ezen a hoston.",
       "addInputRule": "INPUT szabály hozzáadása",
-      "firewallWarning": "A változtatások csak futásidőben érvényesek, amíg meg nem őrzik őket. Legyen óvatos, hogy ne zárja ki magát.",
+      "firewallWarning": "A tűzfal módosításai megszakíthatják az SSH kapcsolatot vagy szolgáltatásokat tehetnek elérhetővé. Győződjön meg róla, hogy a helyreállítási hozzáférés elérhető marad.",
+      "firewallConfirm": "Tűzfal-módosítás áttekintése",
+      "firewallRecoveryWarning": "A forgalom engedélyezése szolgáltatásokat tehet elérhetővé; a forgalom megtagadása vagy az alapértelmezett szabályzat módosítása megszakíthatja az SSH és más munkameneteket. Tartsa fent egy független konzol/helyreállítási elérési utat. Nem feltételezünk SSH-portot, és a hozzáférés nem garantálható.",
+      "firewallNonAtomic": "Az UFW-szerkesztések NEM atomikusak. A csak műveletet érintő módosítások helyben frissítik az egyedi, egyező áramlást; a többi szerkesztés beszúrja és ellenőrzi a helyettesítést, mielőtt törölné az eredetit. Egy hiba vagy időtúllépés részleges módosítást vagy mindkét szabályt hagyhatja hátra; frissítsen és ellenőrizzen újrapróbálkozás előtt.",
+      "firewallApply": "Alkalmazás",
+      "firewallCancel": "Mégse",
+      "firewallEdit": "Szerkesztés",
+      "firewallDelete": "Törlés",
+      "firewallEditPolicy": "Alapértelmezett szabályzat szerkesztése",
+      "firewallReadOnly": "Csak olvasható",
+      "firewallPreserved": "Megőrzött család, irány, profil és megjegyzés",
+      "firewallStale": "A tűzfal megváltozott. Zárja be ezt a szerkesztőt, és nyissa újra az aktuális szabályt.",
+      "firewallField_action": "Művelet",
+      "firewallField_protocol": "Protokoll",
+      "firewallField_source": "Forrás cím/CIDR",
+      "firewallField_destination": "Cél cím/CIDR",
+      "firewallField_port": "Cél port (vagy bármelyik)",
+      "firewallField_sourcePort": "Forrás port (vagy bármelyik)",
+      "firewallUfwPersistence": "A UFW módosítások azonnal tartósak. Nincs szükség külön mentésre.",
+      "firewallNftPersistence": "A natív nftables módosítások csak futási idejűek. Mentsd el a host konfigurált szolgáltatását használva; ez a bővítmény nem írja felül az nftables.conf fájlt.",
+      "firewallNativePersistence": "A natív iptables módosítások csak futási idejűek, amíg egy támogatott host tartósítási szolgáltatással el nem mented őket.",
+      "firewallPersistConfirm": "Mentsd el a teljes natív iptables szabálykészletet a felismert host tartósítási szolgáltatást használva, beleértve az ebben a szerkesztőben kívüli szabályokat is.",
       "ruleApplied": "Szabály alkalmazva",
       "invalidPort": "Adj meg egy érvényes portot (1-65535)",
       "newUsername": "Új felhasználónév",
@@ -249,12 +277,20 @@
   "settings": {
     "admin": {
       "metricsInterval": {
-        "label": "Mérőszámok gyakorisága (másodperc)",
-        "description": "Annak a hostnak a mintavételi gyakorisága, amelyet éppen megtekint, kivéve, ha a host saját gyakoriságot állít be."
+        "label": "Történet mintavételi intervallum (másodperc)",
+        "description": "Hogyan gyakran tárolódnak minták a történelmi ábrákhoz, hacsak a gazdagép nem állít be saját intervallumot. Az élő nézeteket az alábbi élő beállítások irányítják."
       },
       "historyRetentionDays": {
         "label": "Előzmények megtartása (nap)",
         "description": "Annak az időtartama, amíg a mérőszámok mintái megmaradnak az előzmény diagramokhoz."
+      },
+      "liveEnabled": {
+        "label": "Élő frissítések",
+        "description": "Lehetővé teszi a felhasználók számára, hogy megnyissák a CPU, memória, hálózat és folyamatok könnyűsúlyú élő nézetét. Külön a történelmi mintavételi intervallumtól."
+      },
+      "liveMinInterval": {
+        "label": "Élő frissítés minimuma (másodperc)",
+        "description": "A leggyorsabb, amivel egy gazdagépet mintavételeznek élő frissítésekhez, függetlenül attól, hogy hány felhasználó vagy lap figyeli. A felhasználók lassabb arányokat választhatnak; egy gyorsabb választást erre a minimumra emelnek."
       }
     },
     "user": {
@@ -263,6 +299,14 @@
         "description": "Hogyan jelennek meg a hőmérsékletek a Host mérőszámokban.",
         "celsius": "Celsius",
         "fahrenheit": "Fahrenheit"
+      },
+      "liveInterval": {
+        "label": "Élő frissítési arány",
+        "description": "Hogyan gyakran frissül a CPU, memória, hálózat és folyamatok a Gazdagép Metrikák fülön, a terminál eszköztáron, valamint a vezérlőpulton és a kezdőoldalon található widgetekben (ezek soha nem gyorsabbak, mint 5 másodpercenként). Minden frissítés olvassa a /proc fájlt a gazdagépen. Soha nem gyorsabb, mint a szerver élő frissítési minimuma. A kikapcsolás a lassabb rendszeres mintavételt tartja fenn.",
+        "off": "Ki",
+        "s1": "Minden másodpercben",
+        "s2": "Minden 2 másodpercben",
+        "s5": "Minden 5 másodpercben"
       },
       "companionAutoOpen": {
         "label": "Mérőpanel megnyitása az új terminálokkal",
@@ -289,7 +333,7 @@
         "label": "Mérőszámok gyűjtése"
       },
       "metricsInterval": {
-        "label": "Mérőszámok gyakorisága (másodperc)"
+        "label": "Történeti mintavételi intervallum (másodperc)"
       },
       "enabledWidgets": {
         "label": "Engedélyezett widgetek"
@@ -308,5 +352,10 @@
   "plugin": {
     "name": "Host mérőszámok",
     "description": "Élő CPU, memória, lemez, hálózati és GPU statisztikák, valamint eszközök a hosztok kezeléséhez."
+  },
+  "card": {
+    "title": "Legforgalmasabb hosztok",
+    "loading": "Betöltés...",
+    "empty": "Még nincsenek friss minták. A hosztok itt jelennek meg, amint összegyűjtöttük a metrikáikat, például amikor a hoszt állapotkártya nyitva van."
   }
 }

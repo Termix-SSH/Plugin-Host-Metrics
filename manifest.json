@@ -1,7 +1,7 @@
 {
   "id": "host-metrics",
   "name": "Host Metrics",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "description": "Live CPU, memory, disk, network and GPU stats, plus tools to manage your hosts.",
   "author": {
     "name": "Termix"
@@ -19,7 +19,8 @@
     "Health checks for your hosts and services",
     "A layout you can rearrange per host",
     "Live stats in the terminal toolbar",
-    "A live metrics panel beside any SSH terminal"
+    "A live metrics panel beside any SSH terminal",
+    "A dashboard card with the hosts working hardest"
   ],
   "env": [
     {
@@ -86,6 +87,22 @@
           "default": 7,
           "min": 1,
           "max": 90
+        },
+        {
+          "key": "liveEnabled",
+          "type": "boolean",
+          "labelKey": "settings.admin.liveEnabled.label",
+          "descriptionKey": "settings.admin.liveEnabled.description",
+          "default": true
+        },
+        {
+          "key": "liveMinInterval",
+          "type": "number",
+          "labelKey": "settings.admin.liveMinInterval.label",
+          "descriptionKey": "settings.admin.liveMinInterval.description",
+          "default": 2,
+          "min": 1,
+          "max": 3600
         }
       ],
       "user": [
@@ -103,6 +120,31 @@
             {
               "value": "fahrenheit",
               "labelKey": "settings.user.temperatureUnit.fahrenheit"
+            }
+          ]
+        },
+        {
+          "key": "liveInterval",
+          "type": "select",
+          "labelKey": "settings.user.liveInterval.label",
+          "descriptionKey": "settings.user.liveInterval.description",
+          "default": "2",
+          "options": [
+            {
+              "value": "off",
+              "labelKey": "settings.user.liveInterval.off"
+            },
+            {
+              "value": "1",
+              "labelKey": "settings.user.liveInterval.s1"
+            },
+            {
+              "value": "2",
+              "labelKey": "settings.user.liveInterval.s2"
+            },
+            {
+              "value": "5",
+              "labelKey": "settings.user.liveInterval.s5"
             }
           ]
         },
@@ -221,6 +263,13 @@
       "homepage.hostMetrics",
       "homepage.widgets",
       "terminal.toolbarStatus"
+    ],
+    "dashboardCards": [
+      {
+        "id": "busiest-hosts",
+        "titleKey": "card.title",
+        "icon": "Activity"
+      }
     ]
   },
   "locales": "locales",
