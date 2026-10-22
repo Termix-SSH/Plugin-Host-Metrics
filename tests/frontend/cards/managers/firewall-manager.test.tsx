@@ -102,25 +102,27 @@ beforeEach(() => {
 });
 afterEach(cleanup);
 describe("firewall manager", () => {
-  it("opens a portalled modal and restores focus when dismissed without writing", async () => {
+  it("opens an inline editor and restores focus when dismissed without writing", async () => {
     const view = await mount();
     const trigger = screen.getByRole("button", { name: "Edit" });
     trigger.focus();
     fireEvent.click(trigger);
-    const dialog = screen.getByRole("dialog", { name: "Edit" });
-    expect(view.container).not.toContainElement(dialog);
-    expect(within(dialog).getByRole("group", { name: "Edit" })).toHaveFocus();
-    expect(within(dialog).getByText("Host 7 · ufw")).toBeInTheDocument();
+    const panel = screen.getByRole("region", { name: "Edit" });
+    expect(view.container).toContainElement(panel);
+    expect(screen.queryByRole("dialog")).toBeNull();
+    expect(within(panel).getByRole("group", { name: "Edit" })).toHaveFocus();
+    expect(within(panel).getByText("Host 7 · ufw")).toBeInTheDocument();
     fireEvent.keyDown(document.activeElement!, { key: "Escape" });
-    await waitFor(() => expect(screen.queryByRole("dialog")).toBeNull());
+    expect(screen.queryByRole("region", { name: "Edit" })).toBeNull();
     expect(trigger).toHaveFocus();
     fireEvent.click(trigger);
     fireEvent.click(screen.getByRole("button", { name: "Cancel" }));
-    await waitFor(() => expect(screen.queryByRole("dialog")).toBeNull());
+    expect(screen.queryByRole("region", { name: "Edit" })).toBeNull();
+    expect(trigger).toHaveFocus();
     expect(mocks.confirm).not.toHaveBeenCalled();
     expect(mocks.post).not.toHaveBeenCalled();
   });
-  it("yields to the safety confirmation and restores the draft when cancelled", async () => {
+  it("disables the inline draft during confirmation and retains it when cancelled", async () => {
     await mount();
     let finish!: (value: boolean) => void;
     mocks.confirm.mockReturnValue(
@@ -134,8 +136,10 @@ describe("firewall manager", () => {
     });
     fireEvent.click(screen.getByRole("button", { name: "Apply" }));
     expect(screen.queryByRole("dialog")).toBeNull();
+    expect(screen.getByRole("group", { name: "Edit" })).toBeDisabled();
     await act(async () => finish(false));
-    expect(screen.getByRole("dialog", { name: "Edit" })).toBeInTheDocument();
+    expect(screen.getByRole("region", { name: "Edit" })).toBeInTheDocument();
+    expect(screen.getByRole("group", { name: "Edit" })).not.toBeDisabled();
     expect(screen.getByLabelText("Destination port (or any)")).toHaveValue(
       "8766",
     );
@@ -313,6 +317,10 @@ describe("firewall manager", () => {
     fireEvent.click(
       screen.getByRole("button", { name: /INPUT · IPv4 \+ IPv6/ }),
     );
+    expect(screen.queryByRole("dialog")).toBeNull();
+    expect(
+      screen.getByRole("region", { name: "Edit default policy" }),
+    ).toBeInTheDocument();
     fireEvent.click(screen.getByRole("button", { name: "Policy" }));
     fireEvent.click(
       within(screen.getByRole("listbox")).getByRole("option", {

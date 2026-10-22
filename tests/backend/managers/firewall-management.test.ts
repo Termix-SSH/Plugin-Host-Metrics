@@ -445,8 +445,8 @@ describe("native replacements and default policies", () => {
     ip = ip.replace("-p tcp", "-m conntrack --ctstate NEW -p tcp");
     const row = (await state()).view.managedRules[0];
     expect(row.spec).toBeUndefined();
-    expect(row.target).toBe("—");
-    expect(row.source).toBe("—");
+    expect(row.target).toBe("-");
+    expect(row.source).toBe("-");
     expect(row.description).toContain("--ctstate NEW");
   });
   it("uses nft JSON handle replace, never a lossy port lookup", async () => {
@@ -472,6 +472,8 @@ describe("native replacements and default policies", () => {
     nft[1].rule.expr.unshift({ counter: { packets: 1, bytes: 2 } });
     expect((await state()).view.managedRules[0].spec).toBeUndefined();
     const s = await state();
+    expect(s.view.managedRules[0].target).toBe("-");
+    expect(s.view.managedRules[0].source).toBe("-");
     nft[1].rule.expr[0].counter.packets++;
     expect((await state()).view.snapshot).toBe(s.view.snapshot);
   });

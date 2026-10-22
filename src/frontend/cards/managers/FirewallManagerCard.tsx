@@ -4,11 +4,6 @@ import {
   ManagerCardShell,
   ManagerSearch,
   useConfirm,
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogDescription,
 } from "@termix-ssh/plugin-sdk/ui";
 import { useEffect, useRef, useState } from "react";
 import { ShieldCheck, Plus, Save, Pencil, Trash2 } from "lucide-react";
@@ -63,6 +58,17 @@ function FirewallManagerHost({ hostId }: { hostId: number | null }) {
   const pending = useRef(false);
   const editorElement = useRef<HTMLFieldSetElement>(null);
   const editorTrigger = useRef<HTMLElement | null>(null);
+  useEffect(() => {
+    if (!editor && !policyEditor) return;
+    editorElement.current?.focus();
+    editorElement.current?.scrollIntoView?.({ block: "nearest" });
+  }, [editor?.rule.id, policyEditor?.policy.id]);
+  const closeEditor = () => {
+    if (pending.current) return;
+    setEditor(null);
+    setPolicyEditor(null);
+    if (editorTrigger.current?.isConnected) editorTrigger.current.focus();
+  };
   const current = useRef({ canEdit, snapshot: data?.snapshot });
   current.current = { canEdit, snapshot: data?.snapshot };
   useEffect(() => {
@@ -293,42 +299,35 @@ function FirewallManagerHost({ hostId }: { hostId: number | null }) {
             </span>
           ))}
       </div>
-      <Dialog
-        // The host confirmation must be the only modal while a change is pending.
-        open={(!!editor || !!policyEditor) && !busy}
-        onOpenChange={(open) => {
-          if (!open && !pending.current) {
-            setEditor(null);
-            setPolicyEditor(null);
-          }
-        }}
-      >
-        <DialogContent
-          className="max-h-[85dvh] overflow-y-auto sm:max-w-lg"
-          onOpenAutoFocus={(event) => {
+      {(editor || policyEditor) && (
+        <section
+          aria-label={t(
+            editor
+              ? "hostMetrics.managers.firewallEdit"
+              : "hostMetrics.managers.firewallEditPolicy",
+          )}
+          className="mb-3 min-w-0 space-y-3 border border-border bg-muted/20 p-3"
+          onKeyDown={(event) => {
+            if (event.key !== "Escape" || pending.current) return;
             event.preventDefault();
-            editorElement.current?.focus();
-          }}
-          onCloseAutoFocus={(event) => {
-            event.preventDefault();
-            if (!pending.current && editorTrigger.current?.isConnected)
-              editorTrigger.current.focus();
+            event.stopPropagation();
+            closeEditor();
           }}
         >
-          <DialogHeader>
-            <DialogTitle>
+          <header className="space-y-1">
+            <h3 className="text-xs font-semibold">
               {t(
                 editor
                   ? "hostMetrics.managers.firewallEdit"
                   : "hostMetrics.managers.firewallEditPolicy",
               )}
-            </DialogTitle>
-            <DialogDescription>
+            </h3>
+            <p className="text-[10px] text-muted-foreground">
               {`Host ${hostId} · ${data?.type ?? ""}`}
               {policyEditor &&
                 ` · ${policyEditor.policy.chain} · ${policyEditor.policy.family}`}
-            </DialogDescription>
-          </DialogHeader>
+            </p>
+          </header>
           {policyEditor && (
             <fieldset
               ref={editorElement}
@@ -373,11 +372,7 @@ function FirewallManagerHost({ hostId }: { hostId: number | null }) {
                 >
                   {t("hostMetrics.managers.firewallApply")}
                 </Button>
-                <Button
-                  size="xs"
-                  variant="ghost"
-                  onClick={() => setPolicyEditor(null)}
-                >
+                <Button size="xs" variant="ghost" onClick={closeEditor}>
                   {t("hostMetrics.managers.firewallCancel")}
                 </Button>
               </div>
@@ -397,7 +392,7 @@ function FirewallManagerHost({ hostId }: { hostId: number | null }) {
               <p className="text-[10px] text-muted-foreground">
                 {t("hostMetrics.managers.firewallPreserved")}:{" "}
                 {editor.spec.family} · {editor.spec.direction} ·{" "}
-                {editor.spec.comment || "—"}
+                {editor.spec.comment || "-"}
               </p>
               <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
                 {(
@@ -478,11 +473,7 @@ function FirewallManagerHost({ hostId }: { hostId: number | null }) {
                 >
                   {t("hostMetrics.managers.firewallApply")}
                 </Button>
-                <Button
-                  size="xs"
-                  variant="ghost"
-                  onClick={() => setEditor(null)}
-                >
+                <Button size="xs" variant="ghost" onClick={closeEditor}>
                   {t("hostMetrics.managers.firewallCancel")}
                 </Button>
               </div>
@@ -493,8 +484,8 @@ function FirewallManagerHost({ hostId }: { hostId: number | null }) {
               )}
             </fieldset>
           )}
-        </DialogContent>
-      </Dialog>
+        </section>
+      )}
       <ManagerSearch value={query} onChange={setQuery} />
       <div className="flex flex-col gap-1">
         {!!rows.length && (
@@ -524,11 +515,11 @@ function FirewallManagerHost({ hostId }: { hostId: number | null }) {
               <span className="grid grid-cols-[3.25rem_2.5rem_3.25rem_minmax(0,1fr)] gap-1.5">
                 <span className="break-words">{rule.target}</span>
                 <span className="break-words">{rule.protocol}</span>
-                <span className="break-all">{rule.dport || "—"}</span>
+                <span className="break-all">{rule.dport || "-"}</span>
                 <span className="min-w-0 break-all">{rule.source}</span>
               </span>
               <span className="mt-0.5 flex flex-wrap gap-x-2 text-[10px] text-muted-foreground">
-                <span>{rule.family || rule.spec?.family || "—"}</span>
+                <span>{rule.family || rule.spec?.family || "-"}</span>
                 <span>
                   {rule.direction || rule.spec?.direction || rule.chain}
                 </span>

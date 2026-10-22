@@ -500,7 +500,7 @@ export async function readManagement(
           item.spec = undefined;
           // A failed subset parse is not evidence for the blank spec's defaults.
           item.chain = chain;
-          item.target = item.protocol = item.source = item.destination = "—";
+          item.target = item.protocol = item.source = item.destination = "-";
           item.dport = item.sport = undefined;
           item.direction = undefined;
           item.readOnlyReason =
@@ -654,7 +654,7 @@ export async function readManagement(
       if (!valid) {
         item.spec = undefined;
         item.chain = r.chain;
-        item.target = item.protocol = item.source = item.destination = "—";
+        item.target = item.protocol = item.source = item.destination = "-";
         item.dport = item.sport = undefined;
         item.direction = undefined;
         item.readOnlyReason =
