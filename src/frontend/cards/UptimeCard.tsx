@@ -1,3 +1,4 @@
+import { useCardSettings } from "../card-settings";
 import { MetricCard } from "@termix-ssh/plugin-sdk/ui";
 import { type ServerMetrics } from "../../shared/metrics.js";
 import { Clock } from "lucide-react";
@@ -5,6 +6,7 @@ import { useTranslation } from "@termix-ssh/plugin-sdk/frontend";
 
 export function UptimeCard({ metrics }: { metrics: ServerMetrics | null }) {
   const { t } = useTranslation();
+  const settings = useCardSettings();
   const uptime = metrics?.uptime;
 
   return (
@@ -16,7 +18,7 @@ export function UptimeCard({ metrics }: { metrics: ServerMetrics | null }) {
         <span className="text-2xl font-bold leading-none text-accent-brand md:text-3xl">
           {uptime?.formatted ?? "N/A"}
         </span>
-        {uptime?.seconds != null && (
+        {settings.showDetails !== false && uptime?.seconds != null && (
           <span className="font-mono text-xs text-muted-foreground">
             {Math.floor(uptime.seconds).toLocaleString()}{" "}
             {t("hostMetrics.seconds")}
