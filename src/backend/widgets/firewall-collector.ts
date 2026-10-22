@@ -1,6 +1,7 @@
 import {
   execCommand,
   execElevated,
+  type ExecResult,
 } from "@termix-ssh/plugin-sdk/host-commands";
 import type { Client } from "ssh2";
 import type {
@@ -113,9 +114,7 @@ function parseNftablesOutput(output: string): FirewallChain[] {
   for (const line of lines) {
     const trimmed = line.trim();
 
-    const chainMatch = trimmed.match(
-      /chain\s+(\S+)\s*\{?\s*(?:type\s+\S+\s+hook\s+(\S+))?/,
-    );
+    const chainMatch = trimmed.match(/^chain\s+(\S+)\s*\{/);
     if (chainMatch) {
       if (currentChain) {
         chains.push(currentChain);
@@ -128,8 +127,8 @@ function parseNftablesOutput(output: string): FirewallChain[] {
       continue;
     }
 
-    if (currentChain && trimmed.startsWith("policy ")) {
-      const policyMatch = trimmed.match(/policy\s+(\S+)/);
+    if (currentChain && /^(type|policy)\s/.test(trimmed)) {
+      const policyMatch = trimmed.match(/\bpolicy\s+(\w+)\s*;/);
       if (policyMatch) {
         currentChain.policy = policyMatch[1].toUpperCase();
       }
@@ -206,7 +205,8 @@ export function parseUfwStatus(output: string): FirewallMetrics | null {
   const lines = output.split("\n").map((line) => line.trimEnd());
   const statusLine = lines.find((line) => line.startsWith("Status:"));
   if (!statusLine) return null;
-  const active = /status:\s*active/i.test(statusLine);
+  if (!/^Status: (active|inactive)\s*$/.test(statusLine)) return null;
+  const active = statusLine.trim() === "Status: active";
 
   const defaults = lines.find((line) => line.startsWith("Default:")) ?? "";
   const policyFor = (direction: string) =>
@@ -230,14 +230,15 @@ export function parseUfwStatus(output: string): FirewallMetrics | null {
     if (!to || !action || !from) continue;
     const [target, direction] = action.split(/\s+/);
     const [port, protocol] = to.replace(/\s*\(v6\)$/, "").split("/");
+    const anyAddress = /\(v6\)/.test(to + from) ? "::/0" : "0.0.0.0/0";
     const anywhere = (value: string) =>
-      /^anywhere/i.test(value) ? "0.0.0.0/0" : value;
+      /^anywhere/i.test(value) ? anyAddress : value;
     const rule: FirewallRule = {
       chain: direction === "OUT" ? "OUTPUT" : "INPUT",
       target: target.toUpperCase(),
       protocol: protocol || "all",
       source: anywhere(from),
-      destination: "0.0.0.0/0",
+      destination: anyAddress,
       ...(/^[\d,:]+$/.test(port) ? { dport: port } : { extra: to }),
     };
     (rule.chain === "OUTPUT" ? output_ : input).rules.push(rule);
@@ -251,88 +252,226 @@ export function parseUfwStatus(output: string): FirewallMetrics | null {
 }
 
 // Firewall tools live in sbin, which a normal user's PATH often lacks.
-const SBIN_PATH = 'PATH="$PATH:/usr/local/sbin:/usr/sbin:/sbin"';
+const SBIN_PATH = 'PATH="/usr/sbin:/usr/bin:/sbin:/bin"';
 
 // Never try `sudo -n` blindly: a failed attempt is logged and mailed to the
 // admin on every poll. Elevate only with the host's saved sudo password.
-async function readFirewall(
+export async function readFirewall(
   client: Client,
   tool: string,
   args: string,
   sudoPassword?: string,
-): Promise<string> {
+  acceptedCodes = [0],
+): Promise<ExecResult | null> {
   const which = await execCommand(
     client,
     `${SBIN_PATH} command -v ${tool} 2>/dev/null`,
     15000,
   );
-  const path = which.stdout?.trim().split("\n")[0];
-  if (!path?.startsWith("/")) return "";
+  if (which.code === 1 && !which.stdout.trim() && !which.stderr.trim())
+    return null;
+  const path = which.stdout.trim();
+  if (which.code !== 0 || !/^\/[\w/+.\-]+$/.test(path))
+    throw new Error(`Cannot locate ${tool}; firewall detection stopped`);
 
-  const command = `${path} ${args}`;
-  const direct = await execCommand(client, `${command} 2>/dev/null`, 15000);
-  if (direct.stdout?.trim()) return direct.stdout;
-  if (!sudoPassword) return "";
-
-  try {
-    const elevated = await execElevated(client, command, sudoPassword, {
+  const command = `LC_ALL=C ${path} ${args}`.trimEnd();
+  let result = await execCommand(client, command, 15000);
+  if (result.code !== null && acceptedCodes.includes(result.code))
+    return result;
+  if (sudoPassword) {
+    result = await execElevated(client, command, sudoPassword, {
       forceSudo: true,
       timeoutMs: 15000,
     });
-    return elevated.stdout ?? "";
-  } catch {
-    return "";
+    if (result.code !== null && acceptedCodes.includes(result.code))
+      return result;
   }
+  throw new Error(
+    `Cannot read ${tool} (exit ${result.code ?? "unknown"}); check host permissions and the saved sudo password`,
+  );
+}
+
+function hasPolicy(chains: FirewallChain[]): boolean {
+  return chains.some(
+    (c) => c.rules.length > 0 || !["ACCEPT", "-"].includes(c.policy),
+  );
 }
 
 export async function collectFirewallMetrics(
   client: Client,
   sudoPassword?: string,
+  strict = false,
 ): Promise<FirewallMetrics> {
   try {
-    const iptables = await readFirewall(
+    const firewalld = await readFirewall(
+      client,
+      "firewall-cmd",
+      "--state",
+      sudoPassword,
+      [0, 252],
+    );
+    if (firewalld) {
+      if (firewalld.code === 0 && firewalld.stdout.trim() === "running")
+        throw new Error(
+          "firewalld is running; manage rules with firewalld, not its underlying iptables/nftables backend",
+        );
+      if (firewalld.code !== 252 || firewalld.stdout.trim() !== "not running")
+        throw new Error(
+          "Cannot determine firewalld state; firewall detection stopped",
+        );
+    }
+
+    const ufwResult = await readFirewall(
+      client,
+      "ufw",
+      "status verbose",
+      sudoPassword,
+    );
+    const ufw = ufwResult && parseUfwStatus(ufwResult.stdout);
+    if (ufwResult && !ufw)
+      throw new Error("Cannot parse UFW status; firewall detection stopped");
+    if (ufw?.status === "active") return ufw;
+
+    const iptablesResult = await readFirewall(
       client,
       "iptables-save",
       "",
       sudoPassword,
     );
-    if (iptables.includes("*filter")) {
-      const chains = parseIptablesOutput(iptables);
-      const hasRules = chains.some((c) => c.rules.length > 0);
+    const iptables = (iptablesResult?.stdout ?? "").replace(/\r/g, "");
+    const tableBlock = /^\*(\w+)[ \t]*\n([\s\S]*?)^COMMIT[ \t]*$/gm;
+    const tables = [...iptables.matchAll(tableBlock)];
+    const dataLines = (text: string) =>
+      text
+        .split("\n")
+        .map((line) => line.trim())
+        .filter((line) => line && !line.startsWith("#"));
+    const unparseable = (
+      result: ExecResult | null,
+      text: string,
+      blocks: RegExpMatchArray[],
+    ) =>
+      result &&
+      (result.stderr.trim() ||
+        dataLines(text.replace(tableBlock, "")).length > 0 ||
+        blocks.some(([, , body]) =>
+          dataLines(body).some(
+            (line) =>
+              !/^:\S+\s+(ACCEPT|DROP|-)\s+\[\d+:\d+\]$/.test(line) &&
+              !/^-A\s+\S+\s+/.test(line),
+          ),
+        ));
+    if (unparseable(iptablesResult, iptables, tables))
+      throw new Error(
+        "Cannot parse complete iptables rules; firewall detection stopped",
+      );
+    // IPv6 rules can be owned by a different backend than IPv4 and are invisible to nft when legacy.
+    const ip6Result = await readFirewall(
+      client,
+      "ip6tables-save",
+      "",
+      sudoPassword,
+    );
+    const ip6 = (ip6Result?.stdout ?? "").replace(/\r/g, "");
+    const ip6Tables = [...ip6.matchAll(tableBlock)];
+    if (unparseable(ip6Result, ip6, ip6Tables))
+      throw new Error(
+        "Cannot parse complete ip6tables rules; firewall detection stopped",
+      );
+    const filter = tables.find(([, name]) => name === "filter")?.[2] ?? "";
+    const ipChains = parseIptablesOutput(filter);
+    const ipActive = [...tables, ...ip6Tables].some(([, , body]) =>
+      hasPolicy(parseIptablesOutput(body)),
+    );
 
+    const nftResult = await readFirewall(
+      client,
+      "nft",
+      "list ruleset",
+      sudoPassword,
+    );
+    const nft = nftResult?.stdout ?? "";
+    const nftTables = [
+      ...nft.matchAll(/^table\s+(\S+)\s+("(?:\\.|[^"\\])*"|[^\s{]+)\s*\{/gm),
+    ];
+    const nftSyntax = nft
+      .replace(/"(?:\\.|[^"\\])*"/g, '""')
+      .replace(/#.*$/gm, "");
+    let depth = 0;
+    let balanced = true;
+    for (const char of nftSyntax) {
+      if (char === "{") depth++;
+      if (char === "}" && --depth < 0) balanced = false;
+    }
+    if (nft.trim() && (!nftTables.length || !balanced || depth !== 0))
+      throw new Error(
+        "Cannot parse nftables rules; firewall detection stopped",
+      );
+    if (/\bufw6?[-_]|\bfirewalld\b/i.test(iptables + "\n" + ip6 + "\n" + nft))
+      throw new Error(
+        "Raw rules still contain UFW/firewalld ownership markers; resolve the manager state on the host before making changes",
+      );
+
+    // Modern iptables/nft do not always print the "managed by iptables-nft" warning, so the proof is: nf_tables headers
+    // plus every nft table being an ip/ip6 table that iptables(6)-save also lists. shortcut: inet/bridge/arp stay ambiguous.
+    const compat =
+      nftTables.length > 0 &&
+      tables.length + ip6Tables.length > 0 &&
+      (!tables.length || /\(nf_tables\)/.test(iptables)) &&
+      (!ip6Tables.length || /\(nf_tables\)/.test(ip6)) &&
+      nftTables.every(([, family, name]) =>
+        (family === "ip" ? tables : family === "ip6" ? ip6Tables : []).some(
+          ([, ipName]) => ipName === name,
+        ),
+      );
+    const warnings = nftResult?.stderr.trim().split("\n").filter(Boolean) ?? [];
+    if (
+      warnings.length &&
+      (!compat ||
+        warnings.some(
+          (line) =>
+            !nftTables.some(
+              ([, family, name]) =>
+                line.trim() ===
+                `# Warning: table ${family} ${name} is managed by iptables-nft, do not touch!`,
+            ),
+        ))
+    )
+      throw new Error(
+        "Cannot establish nftables ownership; firewall detection stopped",
+      );
+    if (ipActive && nftTables.length && !compat)
+      throw new Error(
+        "Mixed or ambiguous iptables/nftables policy; manage rules on the host",
+      );
+
+    if (ufw && !filter && !ipActive && !nftTables.length) return ufw;
+    if (
+      (iptablesResult || ip6Result) &&
+      (ipActive || compat || !nftTables.length)
+    ) {
       return {
         type: "iptables",
-        status: hasRules ? "active" : "inactive",
-        chains: chains.filter(
-          (c) =>
-            c.name === "INPUT" || c.name === "OUTPUT" || c.name === "FORWARD",
+        status: ipActive ? "active" : "inactive",
+        chains: ipChains.filter((c) =>
+          ["INPUT", "OUTPUT", "FORWARD"].includes(c.name),
         ),
       };
     }
-
-    const nft = await readFirewall(client, "nft", "list ruleset", sudoPassword);
-    if (nft.trim()) {
+    if (nftResult) {
       const chains = parseNftablesOutput(nft);
-      const hasRules = chains.some((c) => c.rules.length > 0);
-
       return {
         type: "nftables",
-        status: hasRules ? "active" : "inactive",
+        status: hasPolicy(chains) ? "active" : "inactive",
         chains,
       };
     }
-
-    const ufw = parseUfwStatus(
-      await readFirewall(client, "ufw", "status verbose", sudoPassword),
-    );
     if (ufw) return ufw;
-
-    return {
-      type: "none",
-      status: "unknown",
-      chains: [],
-    };
-  } catch {
+    if (strict)
+      throw new Error("No supported firewall backend found; no changes made");
+    return { type: "none", status: "unknown", chains: [] };
+  } catch (error) {
+    if (strict) throw error;
     return {
       type: "none",
       status: "unknown",

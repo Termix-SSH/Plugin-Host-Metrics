@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 import {
   useTranslation,
@@ -43,25 +43,36 @@ export function useManagerData<T>(
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<ManagerError | null>(null);
 
+  const generation = useRef(0);
   const paramsKey = params ? JSON.stringify(params) : "";
 
   const refresh = useCallback(async () => {
     if (hostId == null) return;
+    const request = ++generation.current;
     setLoading(true);
     setError(null);
     try {
       const res = await managerGet<T>(hostId, resource, params);
-      setData(res);
+      if (request === generation.current) setData(res);
     } catch (err) {
-      setError(extractError(err));
+      if (request === generation.current) {
+        setData(null);
+        setError(extractError(err));
+      }
     } finally {
-      setLoading(false);
+      if (request === generation.current) setLoading(false);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [hostId, resource, paramsKey]);
 
   useEffect(() => {
+    setData(null);
+    setError(null);
+    setLoading(false);
     refresh();
+    return () => {
+      generation.current++;
+    };
   }, [refresh]);
 
   return { data, loading, error, refresh, setData };
