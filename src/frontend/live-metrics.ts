@@ -17,6 +17,12 @@ export function liveIntervalMs(value: unknown): number | null {
   return DEFAULT_POLL_MS;
 }
 
+/** The backgroundGraceS user setting in ms: how long a hidden page keeps its connection. Default 10s. */
+export function backgroundGraceMs(value: unknown): number {
+  const s = Number(value);
+  return Number.isFinite(s) && s >= 0 ? s * 1000 : 10_000;
+}
+
 /** Overlays the 1s live sample on the slow full sample. */
 /** htop's memory split: free, cache, and used as the rest. They never overlap and sum to 100. */
 export function memParts(totalKb: number, freeKb: number, cachedKb: number) {

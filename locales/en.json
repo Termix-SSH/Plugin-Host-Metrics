@@ -465,6 +465,15 @@
         "s2": "Every 2 seconds",
         "s5": "Every 5 seconds"
       },
+      "backgroundGraceS": {
+        "label": "Background grace period",
+        "description": "How long the page can be hidden (for example while you alt-tab) before Host Metrics disconnects from the host. Coming back within this time keeps the connection.",
+        "s0": "Disconnect immediately",
+        "s5": "5 seconds",
+        "s10": "10 seconds",
+        "s30": "30 seconds",
+        "s60": "60 seconds"
+      },
       "companionAutoOpen": {
         "label": "Open the metrics panel with new terminals",
         "description": "Show live metrics beside every SSH terminal. You can still open and close it from the button on the right edge."

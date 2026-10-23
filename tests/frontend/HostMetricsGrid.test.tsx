@@ -11,7 +11,7 @@ import { cleanup, fireEvent, render, screen } from "@testing-library/react";
 import { useState } from "react";
 import "@testing-library/jest-dom/vitest";
 import { MetricCard, ManagerCardShell } from "@termix-ssh/plugin-sdk/ui";
-import { HostMetricsGrid } from "../../src/frontend/HostMetricsGrid";
+import { HostMetricsGrid, gridRef } from "../../src/frontend/HostMetricsGrid";
 import type { HostMetricsLayout } from "../../src/shared/host-metrics.js";
 
 vi.mock("@termix-ssh/plugin-sdk/frontend", () => ({
@@ -140,6 +140,20 @@ const ghost = (container: HTMLElement) =>
   container.querySelector<HTMLElement>("[data-hm-resize-preview]");
 
 describe("HostMetricsGrid", () => {
+  beforeEach(() => {
+    gridRef.width = 912;
+  });
+  it("scales stored widths with the grid so monitor changes keep proportions", () => {
+    gridRef.width = 1824; // grid is half the reference: a 600 slot renders 300
+    const { container } = mount({
+      ...initial,
+      slots: [{ ...initial.slots[0], width: 600 }],
+    });
+    fakeGrid(container);
+    window.dispatchEvent(new Event("resize"));
+    const tile = container.querySelector<HTMLElement>("[data-hm-tile]")!;
+    expect(tile.style.getPropertyValue("--hm-cols")).toBe("312");
+  });
   it("renders the settings minimum in CSS pixels even with a scaled root", () => {
     document.documentElement.style.fontSize = "28px";
     try {
