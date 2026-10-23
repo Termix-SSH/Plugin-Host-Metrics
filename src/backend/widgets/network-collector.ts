@@ -34,6 +34,10 @@ export function counterRate(
   const first = Number(before);
   const second = Number(after);
   if (
+    !before?.trim() ||
+    !after?.trim() ||
+    !Number.isFinite(elapsedSeconds) ||
+    first < 0 ||
     !Number.isFinite(first) ||
     !Number.isFinite(second) ||
     second < first ||

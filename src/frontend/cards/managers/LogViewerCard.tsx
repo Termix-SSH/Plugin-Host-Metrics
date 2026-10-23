@@ -191,6 +191,7 @@ export function LogViewerCard({ hostId }: { hostId: number | null }) {
       />
 
       <pre
+        data-host-metrics-log
         ref={bodyRef}
         className="max-h-[320px] overflow-auto whitespace-pre-wrap break-all border border-border/50 bg-muted/20 p-2 font-mono text-[10px] leading-relaxed"
       >

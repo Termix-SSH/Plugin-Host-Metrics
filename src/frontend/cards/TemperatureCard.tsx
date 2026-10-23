@@ -1,3 +1,4 @@
+import { useCardSettings } from "../card-settings";
 import { StatRow, MetricCard, Select2 } from "@termix-ssh/plugin-sdk/ui";
 import { type ServerMetrics } from "../../shared/metrics.js";
 import { Thermometer } from "lucide-react";
@@ -18,6 +19,7 @@ export function TemperatureCard({
   hostId: number | null;
 }) {
   const { t } = useTranslation();
+  const settings = useCardSettings();
   const unit = temperatureUnitOf(useSettings("user").values.temperatureUnit);
   const temperature = metrics?.temperature;
   const sensors = temperature?.sensors ?? [];
@@ -80,20 +82,19 @@ export function TemperatureCard({
           </label>
         )}
 
-        {sensors.length === 0 ? (
-          <span className="text-xs text-muted-foreground">N/A</span>
-        ) : (
-          <div className="flex flex-col divide-y divide-border">
-            {sensors.map((sensor) => (
-              <StatRow
-                key={`${sensor.label}-${sensor.celsius}`}
-                label={sensor.label}
-                value={formatTemperature(sensor.celsius, unit)}
-                mono
-              />
-            ))}
-          </div>
-        )}
+        {settings.showSensors !== false &&
+          (sensors.length === 0 ? null : (
+            <div className="flex flex-col divide-y divide-border">
+              {sensors.map((sensor) => (
+                <StatRow
+                  key={`${sensor.label}-${sensor.celsius}`}
+                  label={sensor.label}
+                  value={formatTemperature(sensor.celsius, unit)}
+                  mono
+                />
+              ))}
+            </div>
+          ))}
       </div>
     </MetricCard>
   );

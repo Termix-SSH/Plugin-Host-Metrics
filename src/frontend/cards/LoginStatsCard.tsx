@@ -1,3 +1,4 @@
+import { useCardSettings } from "../card-settings";
 import { MetricCard } from "@termix-ssh/plugin-sdk/ui";
 import { type ServerMetrics } from "../../shared/metrics.js";
 import { UserCheck, UserX } from "lucide-react";
@@ -5,9 +6,11 @@ import { useTranslation } from "@termix-ssh/plugin-sdk/frontend";
 
 export function LoginStatsCard({ metrics }: { metrics: ServerMetrics | null }) {
   const { t } = useTranslation();
+  const settings = useCardSettings();
   const loginStats = metrics?.login_stats;
   const recentLogins = loginStats?.recentLogins ?? [];
-  const failedLogins = loginStats?.failedLogins ?? [];
+  const failedLogins =
+    settings.showFailedLogins === false ? [] : (loginStats?.failedLogins ?? []);
 
   const allLogins = [
     ...recentLogins.map((l) => ({ ...l, status: "success" as const })),

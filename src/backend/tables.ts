@@ -113,9 +113,26 @@ export const hostMetricsHistory = adoptLegacyTable(
   ),
 );
 
+/** Named dashboard layouts belong to their creator, independently of any host. */
+export const layoutTemplates = defineTable(
+  "layout_templates",
+  {
+    id: id(),
+    userId: refUser(),
+    name: varchar(100).notNull(),
+    layout: text().notNull(),
+  },
+  {
+    indexes: [
+      { name: "idx_p_host_metrics_layout_templates_user", columns: ["userId"] },
+    ],
+  },
+);
+
 export const tables = [
   hostMetricsPreferences,
   hostHealthChecks,
   hostHealthHistory,
   hostMetricsHistory,
+  layoutTemplates,
 ];

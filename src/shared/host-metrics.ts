@@ -34,7 +34,13 @@ interface HostMetricsSlot {
   order: number;
   colSpan: HostMetricsColSpan;
   height: number | null;
+  /** Optional CSS-pixel width; older layouts continue to use colSpan. */
+  width?: number;
+  settings?: HostMetricsCardSettings;
 }
+
+export const MIN_CARD_WIDTH = 280;
+export const MAX_CARD_WIDTH = 8192;
 
 export interface HostMetricsLayout {
   slots: HostMetricsSlot[];
@@ -111,8 +117,8 @@ const DEFAULT_COLSPAN: Partial<Record<HostMetricsCardId, HostMetricsColSpan>> =
   };
 
 // All cards default to content/auto height (null); the masonry packs them
-// tetris-style and scrollable cards cap their own body height. Users can still
-// pin an explicit height by dragging a card's resize handle.
+// tetris-style and scrollable cards cap their auto-height body. Pinned cards
+// use the available body space, set by the size controls or resize handle.
 const DEFAULT_HEIGHT: Partial<Record<HostMetricsCardId, number | null>> = {};
 
 /**
@@ -142,4 +148,125 @@ export function defaultColSpanFor(id: HostMetricsCardId): HostMetricsColSpan {
 export function defaultHeightFor(id: HostMetricsCardId): number | null {
   if (id in DEFAULT_HEIGHT) return DEFAULT_HEIGHT[id] ?? null;
   return null;
+}
+
+export interface HostMetricsCardSettings {
+  chartSize?: "compact" | "regular" | "large";
+  showHardware?: boolean;
+  showSystemCounts?: boolean;
+  showComposition?: boolean;
+  showActivity?: boolean;
+  showAddresses?: boolean;
+  showLink?: boolean;
+  showCores?: boolean;
+  showCoreGraphs?: boolean;
+  showLoopback?: boolean;
+  showLoad?: boolean;
+  showBreakdown?: boolean;
+  showDetails?: boolean;
+  showProcesses?: boolean;
+  showSensors?: boolean;
+  showFailedLogins?: boolean;
+}
+
+// Only presentation controls supported by each card are persisted.
+export const CARD_SETTINGS: Partial<
+  Record<HostMetricsCardId, (keyof HostMetricsCardSettings)[]>
+> = {
+  cpu: [
+    "chartSize",
+    "showCores",
+    "showCoreGraphs",
+    "showLoad",
+    "showBreakdown",
+    "showHardware",
+    "showSystemCounts",
+  ],
+  memory: [
+    "chartSize",
+    "showDetails",
+    "showBreakdown",
+    "showComposition",
+    "showHardware",
+  ],
+  disk: ["chartSize", "showDetails", "showActivity", "showHardware"],
+  network: [
+    "chartSize",
+    "showDetails",
+    "showActivity",
+    "showAddresses",
+    "showLink",
+    "showLoopback",
+  ],
+  gpu: ["chartSize", "showDetails", "showProcesses"],
+  temperature: ["showSensors"],
+  system: ["showDetails"],
+  uptime: ["showDetails"],
+  login_stats: ["showFailedLogins"],
+  processes: ["showDetails"],
+  ports: ["showDetails"],
+  firewall: ["showDetails"],
+};
+
+export function sanitizeCardSettings(
+  id: string,
+  input: unknown,
+): HostMetricsCardSettings | undefined {
+  if (!input || typeof input !== "object" || Array.isArray(input))
+    return undefined;
+  const values = input as Record<string, unknown>;
+  const result: HostMetricsCardSettings = {};
+  for (const key of Object.hasOwn(CARD_SETTINGS, id)
+    ? CARD_SETTINGS[id as HostMetricsCardId]!
+    : []) {
+    const value = values[key];
+    if (key === "chartSize") {
+      if (value === "compact" || value === "regular" || value === "large")
+        result.chartSize = value;
+    } else if (typeof value === "boolean") result[key] = value;
+  }
+  return Object.keys(result).length ? result : undefined;
+}
+
+export function sanitizeLayout(input: unknown): HostMetricsLayout | null {
+  if (!input || typeof input !== "object") return null;
+  const obj = input as Record<string, unknown>;
+  if (!Array.isArray(obj.slots)) return null;
+  const columns =
+    typeof obj.columns === "number" && obj.columns >= 1 && obj.columns <= 4
+      ? Math.round(obj.columns)
+      : 3;
+  const seen = new Set<string>();
+  const slots = obj.slots
+    .filter((s): s is Record<string, unknown> => !!s && typeof s === "object")
+    .filter((s) => {
+      if (typeof s.id !== "string" || !s.id || seen.has(s.id)) return false;
+      seen.add(s.id);
+      return true;
+    })
+    .map((s, i) => {
+      const settings = sanitizeCardSettings(s.id as string, s.settings);
+      return {
+        id: s.id as HostMetricsCardId,
+        order:
+          typeof s.order === "number" && Number.isFinite(s.order) ? s.order : i,
+        colSpan: s.colSpan === 2 || s.colSpan === 3 ? s.colSpan : 1,
+        height:
+          typeof s.height === "number" &&
+          Number.isFinite(s.height) &&
+          s.height > 0
+            ? Math.min(10000, Math.max(80, Math.round(s.height)))
+            : null,
+        ...(typeof s.width === "number" && Number.isFinite(s.width)
+          ? {
+              width: Math.min(
+                MAX_CARD_WIDTH,
+                Math.max(MIN_CARD_WIDTH, Math.round(s.width)),
+              ),
+            }
+          : {}),
+        ...(settings ? { settings } : {}),
+      };
+    });
+  return { slots, columns } as HostMetricsLayout;
 }

@@ -15,6 +15,46 @@ const notFound = () =>
   Object.assign(new Error("Not found"), { response: { status: 404 } });
 
 describe("host metrics api", () => {
+  it("uses personal layout-template routes and sends only selected host ids", async () => {
+    const api = client();
+    const template = { id: 3, name: "Web", layout: { slots: [], columns: 3 } };
+    api.get.mockResolvedValueOnce({ data: { templates: [template] } });
+    expect(await createHostMetricsApi(api).getLayoutTemplates()).toEqual([
+      template,
+    ]);
+    expect(api.get).toHaveBeenLastCalledWith("/host-metrics/layout-templates");
+    api.get.mockResolvedValueOnce({
+      data: { hosts: [{ id: 7, name: "Host", folder: null }] },
+    });
+    expect(
+      await createHostMetricsApi(api).getLayoutTemplateHosts(),
+    ).toHaveLength(1);
+    expect(api.get).toHaveBeenLastCalledWith(
+      "/host-metrics/layout-templates/hosts",
+    );
+    api.post.mockResolvedValueOnce({ data: template });
+    const body = { name: "Web", layout: { slots: [], columns: 3 } };
+    expect(await createHostMetricsApi(api).createLayoutTemplate(body)).toEqual(
+      template,
+    );
+    expect(api.post).toHaveBeenLastCalledWith(
+      "/host-metrics/layout-templates",
+      body,
+    );
+    api.post.mockResolvedValueOnce({
+      data: { results: [{ hostId: 7, applied: true }] },
+    });
+    expect(await createHostMetricsApi(api).applyLayoutTemplate(3, [7])).toEqual(
+      [{ hostId: 7, applied: true }],
+    );
+    expect(api.post).toHaveBeenLastCalledWith(
+      "/host-metrics/layout-templates/3/apply",
+      { hostIds: [7] },
+    );
+    api.delete.mockResolvedValue({ data: { success: true } });
+    await createHostMetricsApi(api).deleteLayoutTemplate(3);
+    expect(api.delete).toHaveBeenCalledWith("/host-metrics/layout-templates/3");
+  });
   it("answers null while a host has no sample", async () => {
     const api = client();
     api.get.mockRejectedValue(notFound());
