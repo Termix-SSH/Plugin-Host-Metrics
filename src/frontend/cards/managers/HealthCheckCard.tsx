@@ -1,4 +1,5 @@
-import { Button, Sparkline, Select2 } from "@termix-ssh/plugin-sdk/ui";
+import { SmoothSparkline as Sparkline } from "../SmoothCharts";
+import { Button, Select2 } from "@termix-ssh/plugin-sdk/ui";
 import { useEffect, useMemo, useState } from "react";
 import {
   HeartPulse,

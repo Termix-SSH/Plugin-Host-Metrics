@@ -152,7 +152,15 @@ export function defaultHeightFor(id: HostMetricsCardId): number | null {
 
 export interface HostMetricsCardSettings {
   chartSize?: "compact" | "regular" | "large";
+  showHardware?: boolean;
+  showSystemCounts?: boolean;
+  showComposition?: boolean;
+  showActivity?: boolean;
+  showAddresses?: boolean;
+  showLink?: boolean;
   showCores?: boolean;
+  showCoreGraphs?: boolean;
+  showLoopback?: boolean;
   showLoad?: boolean;
   showBreakdown?: boolean;
   showDetails?: boolean;
@@ -165,10 +173,31 @@ export interface HostMetricsCardSettings {
 export const CARD_SETTINGS: Partial<
   Record<HostMetricsCardId, (keyof HostMetricsCardSettings)[]>
 > = {
-  cpu: ["chartSize", "showCores", "showLoad", "showBreakdown"],
-  memory: ["chartSize", "showDetails", "showBreakdown"],
-  disk: ["chartSize", "showDetails"],
-  network: ["chartSize", "showDetails"],
+  cpu: [
+    "chartSize",
+    "showCores",
+    "showCoreGraphs",
+    "showLoad",
+    "showBreakdown",
+    "showHardware",
+    "showSystemCounts",
+  ],
+  memory: [
+    "chartSize",
+    "showDetails",
+    "showBreakdown",
+    "showComposition",
+    "showHardware",
+  ],
+  disk: ["chartSize", "showDetails", "showActivity", "showHardware"],
+  network: [
+    "chartSize",
+    "showDetails",
+    "showActivity",
+    "showAddresses",
+    "showLink",
+    "showLoopback",
+  ],
   gpu: ["chartSize", "showDetails", "showProcesses"],
   temperature: ["showSensors"],
   system: ["showDetails"],

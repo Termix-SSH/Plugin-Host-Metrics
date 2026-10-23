@@ -1,9 +1,10 @@
+import { SmoothLineChart as LineChart } from "./SmoothCharts";
+import { SmoothSparkline as Sparkline } from "./SmoothCharts";
+import { CpuPerformance } from "./PerformanceDetails";
 import { useCardSettings, chartHeight } from "../card-settings";
 import {
-  Sparkline,
   MiniStat,
   MetricCard,
-  LineChart,
   type LineChartSeries,
 } from "@termix-ssh/plugin-sdk/ui";
 import { type ServerMetrics } from "../../shared/metrics.js";
@@ -21,7 +22,7 @@ export function CpuCard({
   hostId,
 }: {
   metrics: ServerMetrics | null;
-  history: number[];
+  history: Array<number | null>;
   hostId: number | null;
 }) {
   const { getMetricsHistory } = useHostMetricsApi();
@@ -67,6 +68,7 @@ export function CpuCard({
 
   return (
     <MetricCard
+      scroll={activeTab === "live"}
       title={t("hostMetrics.cpuUsage")}
       icon={<Cpu className="size-3.5" />}
       action={
@@ -96,9 +98,9 @@ export function CpuCard({
                 </div>
               )}
               <Sparkline
-                data={[...history, percent ?? 0]}
+                data={[...history, percent]}
                 domain={[0, 100]}
-                height={chartHeight(settings, 48)}
+                height={chartHeight(settings, 190)}
               />
               {settings.showBreakdown !== false && metrics?.cpu?.mix && (
                 <div className="flex flex-col gap-0.5">
@@ -144,7 +146,10 @@ export function CpuCard({
                         </span>
                         <div className="h-1.5 flex-1 bg-muted">
                           <div
-                            className={"h-full " + loadColor(c)}
+                            className={
+                              "h-full transition-[width] duration-700 ease-out motion-reduce:transition-none " +
+                              loadColor(c)
+                            }
                             style={{ width: `${c ?? 0}%` }}
                           />
                         </div>
@@ -157,6 +162,9 @@ export function CpuCard({
                 )}
             </div>
           </div>
+        )}
+        {activeTab === "live" && (
+          <CpuPerformance metrics={metrics} hostId={hostId} />
         )}
         {activeTab !== "live" && (
           <>
@@ -176,7 +184,7 @@ export function CpuCard({
                 timestamps={timestamps}
                 domain={[0, 100]}
                 yFormatter={(v) => `${v.toFixed(0)}%`}
-                height={chartHeight(settings, 160)}
+                height={chartHeight(settings, 300)}
               />
             )}
           </>

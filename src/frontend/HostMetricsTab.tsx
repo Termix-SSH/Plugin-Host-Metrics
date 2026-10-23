@@ -274,8 +274,8 @@ function HostMetricsInner({
 
   const pushHistory = React.useCallback((data: ServerMetrics) => {
     setHistories((prev) => {
-      const add = (arr: number[], v: number | null | undefined) =>
-        [...arr, v ?? 0].slice(-HISTORY_LEN);
+      const add = (arr: Array<number | null>, v: number | null | undefined) =>
+        [...arr, v ?? null].slice(-HISTORY_LEN);
       return {
         cpu: add(prev.cpu, data.cpu?.percent),
         memory: add(prev.memory, data.memory?.percent),

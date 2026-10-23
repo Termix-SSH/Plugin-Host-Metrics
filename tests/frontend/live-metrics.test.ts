@@ -63,6 +63,27 @@ describe("mergeLive", () => {
     expect(mergeLive(null, live)).toBeNull();
   });
 
+  it("refreshes composition counters while preserving slow hardware metadata", () => {
+    const details = {
+      semantics: "linux",
+      availableBytes: 1,
+      cachedBytes: 2,
+      installedBytes: 16 * 1024 ** 3,
+      committedBytes: 1234,
+    } as NonNullable<ServerMetrics["memory"]["details"]>;
+    const original = { ...slow, memory: { ...slow.memory, details } };
+    const merged = mergeLive(original, live)!;
+    expect(merged.memory.details).toEqual({
+      ...details,
+      availableBytes: (live.memTotalKb - live.memUsedKb) * 1024,
+      cachedBytes: live.memCachedKb * 1024,
+    });
+    expect(original.memory.details.availableBytes).toBe(1);
+    expect(mergeLive(original, { ...live, memTotalKb: 0 })!.memory).toBe(
+      original.memory,
+    );
+  });
+
   it("overlays cpu, per-core, memory, network and processes but keeps disk", () => {
     const m = mergeLive(slow, live)!;
     expect(m.cpu).toMatchObject({

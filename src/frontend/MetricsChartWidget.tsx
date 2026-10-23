@@ -1,3 +1,4 @@
+import { useSmoothSeries } from "./cards/SmoothCharts";
 import { WidgetTitle, runVisibleInterval } from "@termix-ssh/plugin-sdk/ui";
 import { useEffect, useState, useRef } from "react";
 import { TrendingUp } from "lucide-react";
@@ -68,7 +69,9 @@ interface SparklineProps {
   color: string;
 }
 
-function Sparkline({ values, width, height, color }: SparklineProps) {
+function Sparkline({ values: target, width, height, color }: SparklineProps) {
+  const [row] = useSmoothSeries([target]);
+  const values = row as number[];
   if (values.length < 2) return null;
   const max = Math.max(...values, 1);
   const min = 0;

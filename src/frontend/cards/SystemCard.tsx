@@ -24,9 +24,7 @@ export function SystemCard({ metrics }: { metrics: ServerMetrics | null }) {
       icon={<Server className="size-3.5" />}
       scroll
     >
-      {rows.length === 0 ? (
-        <span className="text-xs text-muted-foreground">N/A</span>
-      ) : (
+      {rows.length === 0 ? null : (
         <div className="flex flex-col divide-y divide-border">
           {rows.map(({ label, value }) => (
             <StatRow key={label} label={label} value={value} mono />

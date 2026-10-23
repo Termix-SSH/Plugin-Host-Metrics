@@ -58,7 +58,7 @@ async function collectDarwinMemoryMetrics(client: Client): Promise<{
 
   return {
     percent: toFixedNum(memPercent, 0),
-    usedGiB: usedGiB ? toFixedNum(usedGiB, 2) : null,
+    usedGiB: usedGiB != null ? toFixedNum(usedGiB, 2) : null,
     totalGiB: totalGiB ? toFixedNum(totalGiB, 2) : null,
   };
 }
@@ -81,7 +81,16 @@ async function collectWindowsMemoryMetrics(client: Client): Promise<{
     const parsed = JSON.parse(stdout.trim());
     const totalKb = Number(parsed?.total);
     const freeKb = Number(parsed?.free);
-    if (Number.isFinite(totalKb) && Number.isFinite(freeKb) && totalKb > 0) {
+    if (
+      parsed?.total != null &&
+      parsed?.free != null &&
+      String(parsed.free).trim() !== "" &&
+      Number.isFinite(totalKb) &&
+      Number.isFinite(freeKb) &&
+      totalKb > 0 &&
+      freeKb >= 0 &&
+      freeKb <= totalKb
+    ) {
       const usedKb = totalKb - freeKb;
       memPercent = Math.max(0, Math.min(100, (usedKb / totalKb) * 100));
       usedGiB = kibToGiB(usedKb);
@@ -95,7 +104,7 @@ async function collectWindowsMemoryMetrics(client: Client): Promise<{
 
   return {
     percent: toFixedNum(memPercent, 0),
-    usedGiB: usedGiB ? toFixedNum(usedGiB, 2) : null,
+    usedGiB: usedGiB != null ? toFixedNum(usedGiB, 2) : null,
     totalGiB: totalGiB ? toFixedNum(totalGiB, 2) : null,
   };
 }
@@ -130,7 +139,13 @@ export async function collectMemoryMetrics(
     };
     const totalKb = getVal("MemTotal:");
     const availKb = getVal("MemAvailable:");
-    if (totalKb && availKb && totalKb > 0) {
+    if (
+      totalKb != null &&
+      availKb != null &&
+      totalKb > 0 &&
+      availKb >= 0 &&
+      availKb <= totalKb
+    ) {
       const usedKb = totalKb - availKb;
       memPercent = Math.max(0, Math.min(100, (usedKb / totalKb) * 100));
       usedGiB = kibToGiB(usedKb);
@@ -144,7 +159,7 @@ export async function collectMemoryMetrics(
 
   return {
     percent: toFixedNum(memPercent, 0),
-    usedGiB: usedGiB ? toFixedNum(usedGiB, 2) : null,
+    usedGiB: usedGiB != null ? toFixedNum(usedGiB, 2) : null,
     totalGiB: totalGiB ? toFixedNum(totalGiB, 2) : null,
   };
 }

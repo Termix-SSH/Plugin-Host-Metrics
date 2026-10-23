@@ -1,9 +1,10 @@
+import { SmoothLineChart as LineChart } from "./SmoothCharts";
+import { SmoothSparkline as Sparkline } from "./SmoothCharts";
+import { MemoryPerformance } from "./PerformanceDetails";
 import { useCardSettings, chartHeight } from "../card-settings";
 import {
-  Sparkline,
   MiniStat,
   MetricCard,
-  LineChart,
   type LineChartSeries,
 } from "@termix-ssh/plugin-sdk/ui";
 import { type ServerMetrics } from "../../shared/metrics.js";
@@ -22,7 +23,7 @@ export function MemoryCard({
   hostId,
 }: {
   metrics: ServerMetrics | null;
-  history: number[];
+  history: Array<number | null>;
   hostId: number | null;
 }) {
   const { getMetricsHistory } = useHostMetricsApi();
@@ -78,6 +79,7 @@ export function MemoryCard({
 
   return (
     <MetricCard
+      scroll={activeTab === "live"}
       title={t("hostMetrics.memoryUsage")}
       icon={<MemoryStick className="size-3.5" />}
       action={
@@ -96,18 +98,18 @@ export function MemoryCard({
             <div className="flex min-w-0 flex-1 flex-col gap-2">
               {settings.showDetails !== false && (
                 <div className="grid grid-cols-2 gap-2">
-                  <MiniStat
-                    caption={t("hostMetrics.memory")}
-                    value={
-                      usedGiB !== null && totalGiB !== null
-                        ? `${usedGiB.toFixed(1)}/${totalGiB.toFixed(1)}G`
-                        : "N/A"
-                    }
-                  />
-                  <MiniStat
-                    caption={t("hostMetrics.free")}
-                    value={freeGiB !== null ? `${freeGiB.toFixed(1)}G` : "N/A"}
-                  />
+                  {usedGiB !== null && totalGiB !== null && (
+                    <MiniStat
+                      caption={t("hostMetrics.memory")}
+                      value={`${usedGiB.toFixed(1)}/${totalGiB.toFixed(1)}G`}
+                    />
+                  )}
+                  {freeGiB !== null && (
+                    <MiniStat
+                      caption={t("hostMetrics.free")}
+                      value={`${freeGiB.toFixed(1)}G`}
+                    />
+                  )}
                 </div>
               )}
               {settings.showBreakdown !== false &&
@@ -132,13 +134,14 @@ export function MemoryCard({
                   </div>
                 )}
               <Sparkline
-                data={[...history, percent ?? 0]}
+                data={[...history, percent]}
                 domain={[0, 100]}
                 height={chartHeight(settings, 48)}
               />
             </div>
           </div>
         )}
+        {activeTab === "live" && <MemoryPerformance metrics={metrics} />}
         {activeTab !== "live" && (
           <>
             {loading && (

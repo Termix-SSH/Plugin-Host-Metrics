@@ -35,9 +35,9 @@ import {
 import { WireGuardManagerCard } from "./managers/WireGuardManagerCard";
 
 export interface MetricCardHistories {
-  cpu: number[];
-  memory: number[];
-  disk: number[];
+  cpu: Array<number | null>;
+  memory: Array<number | null>;
+  disk: Array<number | null>;
   gpu: GpuHistories;
 }
 
@@ -61,7 +61,7 @@ type SimpleMetricCard = ComponentType<{
 }>;
 type HistoryMetricCard = ComponentType<{
   metrics: ServerMetrics | null;
-  history: number[];
+  history: Array<number | null>;
   hostId: number | null;
 }>;
 

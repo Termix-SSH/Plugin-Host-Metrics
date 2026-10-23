@@ -1,8 +1,8 @@
+import { SmoothSparkline as Sparkline } from "./SmoothCharts";
 import { useCardSettings, chartHeight } from "../card-settings";
 import {
   MiniStat,
   RadialGauge,
-  Sparkline,
   StatRow,
   MetricCard,
 } from "@termix-ssh/plugin-sdk/ui";

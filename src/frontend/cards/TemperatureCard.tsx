@@ -83,9 +83,7 @@ export function TemperatureCard({
         )}
 
         {settings.showSensors !== false &&
-          (sensors.length === 0 ? (
-            <span className="text-xs text-muted-foreground">N/A</span>
-          ) : (
+          (sensors.length === 0 ? null : (
             <div className="flex flex-col divide-y divide-border">
               {sensors.map((sensor) => (
                 <StatRow
