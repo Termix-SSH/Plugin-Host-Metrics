@@ -212,9 +212,17 @@ export function CardSettingsView({
               </Select2>
             </Field>
           ) : (
-            <label key={key} className="flex items-center gap-2 text-sm">
+            <label
+              key={key}
+              className="flex cursor-pointer items-center gap-2 text-sm"
+            >
               <Checkbox
-                checked={draft[key] !== false}
+                className="border-border bg-background data-[state=checked]:border-accent-brand data-[state=checked]:bg-accent-brand/20 data-[state=checked]:text-foreground dark:bg-background dark:data-[state=checked]:bg-accent-brand/20"
+                checked={
+                  key === "showCoreGraphs"
+                    ? draft[key] === true
+                    : draft[key] !== false
+                }
                 onCheckedChange={(checked) =>
                   setDraft({ ...draft, [key]: checked === true })
                 }

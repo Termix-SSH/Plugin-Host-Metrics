@@ -18,6 +18,11 @@
 
 ### Added
 
+- Task Manager-style, configurable CPU and memory details, including hardware, utilization history and system counts
+- Physical-disk activity and per-interface network rates, histories and details, with unavailable fields identified rather than inferred
+- Cached Windows hardware and static detail data to reduce repeated collection
+- Smoother metric charts and respect for reduced-motion preferences
+
 - Busiest hosts dashboard card: the hosts with the highest CPU or memory, from samples already collected
 - Live CPU, memory, network and process updates every few seconds on Linux hosts, with per-core CPU bars, a memory split and a sortable, searchable process table with a tree view
 - Edit, delete and default policy management in the Firewall card for UFW, iptables and nftables

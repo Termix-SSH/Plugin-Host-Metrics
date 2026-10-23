@@ -63,7 +63,7 @@ export function AnimatedGauge({
           style={{
             transition: reducedMotion()
               ? "none"
-              : `stroke-dasharray ${durationMs}ms linear`,
+              : `stroke-dasharray ${durationMs}ms cubic-bezier(0.22, 1, 0.36, 1)`,
           }}
         />
       </svg>

@@ -1,9 +1,7 @@
+import { SmoothLineChart as LineChart } from "./SmoothCharts";
+import { NetworkPerformance } from "./PerformanceDetails";
 import { useCardSettings, chartHeight } from "../card-settings";
-import {
-  MetricCard,
-  LineChart,
-  type LineChartSeries,
-} from "@termix-ssh/plugin-sdk/ui";
+import { MetricCard, type LineChartSeries } from "@termix-ssh/plugin-sdk/ui";
 import { type ServerMetrics } from "../../shared/metrics.js";
 import { useState, useEffect } from "react";
 import { Cable, Container, Network, Wifi, WifiOff } from "lucide-react";
@@ -96,7 +94,11 @@ export function NetworkCard({
     };
   }, [activeTab, hostId]);
 
-  const interfaces = metrics?.network?.interfaces ?? [];
+  const interfaces = (metrics?.network?.interfaces ?? []).filter(
+    (i) =>
+      settings.showLoopback === true ||
+      !(i.details?.type === "loopback" || /^lo\d*$|^Loopback/i.test(i.name)),
+  );
 
   const { rxRates, txRates } = rows
     ? computeNetRates(rows)
@@ -183,6 +185,9 @@ export function NetworkCard({
             ))}
           </div>
         ))}
+      {activeTab === "live" && (
+        <NetworkPerformance metrics={metrics} hostId={hostId} />
+      )}
       {activeTab !== "live" && (
         <>
           {loading && (

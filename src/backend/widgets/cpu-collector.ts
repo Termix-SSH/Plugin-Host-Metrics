@@ -112,9 +112,12 @@ async function collectWindowsCpuMetrics(client: Client): Promise<{
     const parsed = JSON.parse(stdout.trim());
     const cpuNum = Number(parsed?.cpu);
     const coresNum = Number(parsed?.cores);
-    cpuPercent = Number.isFinite(cpuNum)
-      ? Math.max(0, Math.min(100, cpuNum))
-      : null;
+    cpuPercent =
+      parsed?.cpu != null &&
+      String(parsed.cpu).trim() !== "" &&
+      Number.isFinite(cpuNum)
+        ? Math.max(0, Math.min(100, cpuNum))
+        : null;
     cores = Number.isFinite(coresNum) && coresNum > 0 ? coresNum : null;
   } catch {
     cpuPercent = null;
@@ -177,7 +180,7 @@ export async function collectCpuMetrics(
       const totalDiff = current.total - previous.total;
       const idleDiff = current.idle - previous.idle;
       const used = totalDiff - idleDiff;
-      if (totalDiff > 0)
+      if (totalDiff > 0 && idleDiff >= 0 && idleDiff <= totalDiff)
         cpuPercent = Math.max(0, Math.min(100, (used / totalDiff) * 100));
     }
     if (current && hostId !== undefined) {

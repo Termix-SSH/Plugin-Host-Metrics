@@ -100,6 +100,38 @@ function settingsView(
 }
 
 describe("focused card settings", () => {
+  it("uses theme accents and saves opt-in CPU graphs on the first click", () => {
+    const { onSave } = settingsView();
+    const graphs = screen.getByRole("checkbox", {
+      name: "Show per-core history graphs",
+    });
+    expect(graphs).not.toBeChecked();
+    expect(graphs).toHaveClass("data-[state=checked]:bg-accent-brand/20");
+    expect(graphs).toHaveClass("dark:data-[state=checked]:bg-accent-brand/20");
+    fireEvent.click(graphs);
+    expect(graphs).toBeChecked();
+    fireEvent.click(screen.getByRole("button", { name: "Save" }));
+    expect(onSave).toHaveBeenCalledWith(
+      expect.objectContaining({ settings: { showCoreGraphs: true } }),
+    );
+  });
+
+  it("reads saved CPU graph settings and resets to the actual opt-in default", () => {
+    const { onSave } = settingsView({ showCoreGraphs: true });
+    const graphs = screen.getByRole("checkbox", {
+      name: "Show per-core history graphs",
+    });
+    expect(graphs).toBeChecked();
+    fireEvent.click(
+      screen.getByRole("button", { name: "Reset presentation settings" }),
+    );
+    expect(graphs).not.toBeChecked();
+    fireEvent.click(screen.getByRole("button", { name: "Save" }));
+    expect(onSave).toHaveBeenCalledWith(
+      expect.objectContaining({ settings: undefined }),
+    );
+  });
+
   it("rejects widths below the grid minimum and saves the minimum CSS-pixel width", () => {
     const { onSave } = settingsView();
     const width = screen.getByRole("spinbutton", { name: "Resize card width" });
@@ -282,19 +314,19 @@ describe("saved presentation options", () => {
       if (id !== "network")
         expect(screen.getByTestId("sparkline")).toHaveAttribute(
           "data-height",
-          "48",
+          id === "cpu" ? "190" : "48",
         );
       rerender(card(id, { chartSize: "large" }));
       if (id !== "network")
         expect(screen.getByTestId("sparkline")).toHaveAttribute(
           "data-height",
-          "72",
+          id === "cpu" ? "285" : "72",
         );
       fireEvent.click(screen.getByRole("button", { name: "1h" }));
       await waitFor(() =>
         expect(screen.getByTestId("linechart")).toHaveAttribute(
           "data-height",
-          "240",
+          id === "cpu" ? "450" : "240",
         ),
       );
     },
