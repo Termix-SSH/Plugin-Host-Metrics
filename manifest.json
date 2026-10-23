@@ -156,6 +156,20 @@
           "default": false
         },
         {
+          "key": "backgroundGraceS",
+          "type": "select",
+          "labelKey": "settings.user.backgroundGraceS.label",
+          "descriptionKey": "settings.user.backgroundGraceS.description",
+          "default": "10",
+          "options": [
+            { "value": "0", "labelKey": "settings.user.backgroundGraceS.s0" },
+            { "value": "5", "labelKey": "settings.user.backgroundGraceS.s5" },
+            { "value": "10", "labelKey": "settings.user.backgroundGraceS.s10" },
+            { "value": "30", "labelKey": "settings.user.backgroundGraceS.s30" },
+            { "value": "60", "labelKey": "settings.user.backgroundGraceS.s60" }
+          ]
+        },
+        {
           "key": "companionSide",
           "type": "select",
           "labelKey": "settings.user.companionSide.label",

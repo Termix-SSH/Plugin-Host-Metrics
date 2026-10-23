@@ -25,6 +25,8 @@ import {
 // Coarser tracks keep CSS dense auto-placement cheap; 1px tracks froze reorders.
 // shortcut: heights land on a 4px lattice (columns stay 1px), drop UNIT to 1 if exact pixels matter.
 const UNIT = 4;
+// Stored widths are CSS px on a REF_WIDTH grid and scale with the real grid, so changing monitors keeps the layout.
+export const gridRef = { width: 1400 }; // mutable only so tests can use a 912px fake grid
 const trackCount = (total: number) => Math.max(1, Math.ceil(total));
 const rowSpan = (height: number, gap: number) =>
   Math.max(1, Math.ceil((height + gap) / UNIT));
@@ -297,6 +299,7 @@ function SizedCard({
       total,
       max: Math.min(MAX_CARD_WIDTH, total - gap),
       pitch: total / trackCount(total),
+      k: total / gridRef.width,
     };
   };
   useLayoutEffect(() => {
@@ -312,7 +315,7 @@ function SizedCard({
             g.gap
           : Math.max(
               Math.min(MIN_CARD_WIDTH, g.max),
-              Math.min(slot.width, g.max),
+              Math.min(slot.width * g.k, g.max),
             );
       g.tile.style.setProperty(
         "--hm-cols",
@@ -568,7 +571,8 @@ function SizedCard({
       if (e.pointerId !== pointerId) return;
       clear();
       const patch: Partial<Slot> = {};
-      if (resizeWidth && width !== startWidth) patch.width = width;
+      if (resizeWidth && width !== startWidth)
+        patch.width = Math.round(width / g.k);
       if (resizeHeight && height !== startHeight)
         patch.height = Math.round(height / g.scale);
       if (Object.keys(patch).length) onChange(patch);
@@ -669,7 +673,8 @@ function SizedCard({
               if (![...keys, "Home", "End"].includes(e.key)) return;
               e.preventDefault();
               e.stopPropagation();
-              if (!geometry()) return;
+              const g = geometry();
+              if (!g) return;
               const min = axis === "width" ? size.min : 80;
               const max = axis === "width" ? size.max : 10000;
               const current =
@@ -691,7 +696,9 @@ function SizedCard({
               );
               if (value !== current)
                 onChange(
-                  axis === "width" ? { width: value } : { height: value },
+                  axis === "width"
+                    ? { width: Math.round(value / g.k) }
+                    : { height: value },
                 );
             }}
           >

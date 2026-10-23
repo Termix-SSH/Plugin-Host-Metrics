@@ -48,7 +48,12 @@ import {
 } from "./cards";
 import { appendGpuHistories } from "./cards/gpu-history";
 import { metricsChangeKey } from "./metrics-change-key";
-import { liveIntervalMs, mergeLive, useLiveMetrics } from "./live-metrics";
+import {
+  backgroundGraceMs,
+  liveIntervalMs,
+  mergeLive,
+  useLiveMetrics,
+} from "./live-metrics";
 
 const HISTORY_LEN = 30;
 
@@ -225,11 +230,24 @@ function HostMetricsInner({
     [liveMetrics, histories, hostId, pluginManagerDefs, effectiveLayout.slots],
   );
 
+  // Alt-tabbing away must not drop the session: only treat the page as hidden
+  // after it stays hidden for the user's grace period (backgroundGraceS).
+  const graceMs = backgroundGraceMs(
+    useSettings("user").values.backgroundGraceS,
+  );
   React.useEffect(() => {
-    const onVis = () => setIsPageVisible(!document.hidden);
+    let timer: ReturnType<typeof setTimeout> | undefined;
+    const onVis = () => {
+      clearTimeout(timer);
+      if (!document.hidden) return setIsPageVisible(true);
+      timer = setTimeout(() => setIsPageVisible(false), graceMs);
+    };
     document.addEventListener("visibilitychange", onVis);
-    return () => document.removeEventListener("visibilitychange", onVis);
-  }, []);
+    return () => {
+      clearTimeout(timer);
+      document.removeEventListener("visibilitychange", onVis);
+    };
+  }, [graceMs]);
 
   const isActuallyVisible = isVisible && isPageVisible;
 
