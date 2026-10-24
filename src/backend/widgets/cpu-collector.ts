@@ -17,20 +17,9 @@ export type CpuSamples = Map<
   { total: number; idle: number; timestamp: number }
 >;
 
-export function parseCpuLine(
-  cpuLine: string,
-): { total: number; idle: number } | undefined {
-  const parts = cpuLine.trim().split(/\s+/);
-  if (parts[0] !== "cpu") return undefined;
-  const nums = parts
-    .slice(1)
-    .map((n) => Number(n))
-    .filter((n) => Number.isFinite(n));
-  if (nums.length < 4) return undefined;
-  const idle = (nums[3] ?? 0) + (nums[4] ?? 0);
-  const total = nums.reduce((a, b) => a + b, 0);
-  return { total, idle };
-}
+import { parseCpuLine } from "@termix-ssh/plugin-sdk/host-scripts";
+
+export { parseCpuLine };
 
 // Parses macOS `top -l 1 -n 0` output, e.g.
 // "CPU usage: 12.34% user, 5.67% sys, 81.99% idle"

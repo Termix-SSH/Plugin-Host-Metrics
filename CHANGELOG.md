@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.2.1
+
+### Changed
+
+- Needs Termix 26.10.6 or newer
+
 ## 1.2.0
 
 ### Added

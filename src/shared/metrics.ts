@@ -87,32 +87,7 @@ export interface ListeningPort {
 export type { FirewallChain } from "./stats-widgets.js";
 
 /** One 1s /proc sample from GET /host-metrics/managers/live/:id. */
-export interface LiveSample {
-  /** The admin minimum between samples; the client never polls faster. */
-  minIntervalS?: number;
-  cpu: number | null;
-  cpuMix?: { user: number; system: number; iowait: number; steal: number };
-  cores: Array<number | null>;
-  coreIds: string[];
-  memTotalKb: number;
-  memCachedKb: number;
-  memFreeKb: number;
-  memUsedKb: number;
-  swapTotalKb: number;
-  swapUsedKb: number;
-  load: [number, number, number];
-  net: Array<{ name: string; rxBps: number | null; txBps: number | null }>;
-  count: number;
-  running: number;
-  procs: Array<{
-    pid: number;
-    name: string;
-    cpu: number;
-    memKb: number;
-    state: string;
-    ppid: number;
-  }>;
-}
+export type { LiveSample } from "@termix-ssh/plugin-sdk/host-scripts";
 
 export type ServerMetrics = {
   cpu: CpuMetrics;

@@ -1,7 +1,7 @@
 {
   "id": "host-metrics",
   "name": "Host Metrics",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "description": "Live CPU, memory, disk, network and GPU stats, plus tools to manage your hosts.",
   "author": {
     "name": "Termix"
@@ -29,7 +29,7 @@
     }
   ],
   "engine": {
-    "termix": ">=26.10.3",
+    "termix": ">=26.10.6",
     "api": "^1.9"
   },
   "capabilities": [

@@ -3,217 +3,32 @@ import {
   execPowerShell,
   type HostPlatform,
 } from "@termix-ssh/plugin-sdk/host-commands";
+import {
+  buildFilesystemList,
+  filterExcludedFilesystems,
+  mergeMonitoredFilesystems,
+  parseDfLines,
+  selectPrimaryFilesystem,
+  shellQuote,
+  type DiskFilesystem,
+  type MonitoredMount,
+} from "@termix-ssh/plugin-sdk/host-scripts";
 import { toFixedNum } from "../util.js";
 import type { Client } from "ssh2";
 
-const DARWIN_DATA_MOUNT = "/System/Volumes/Data";
-
-const PSEUDO_FS_RE =
-  /^(tmpfs|devtmpfs|overlay|udev|none|shm|squashfs|efivarfs)$/;
-
-export interface DfRow {
-  filesystem: string;
-  type: string;
-  mount: string;
-  parts: string[];
-}
-
-export interface DiskFilesystem {
-  filesystem: string;
-  type: string;
-  mount: string;
-  percent: number | null;
-  usedHuman: string | null;
-  totalHuman: string | null;
-  availableHuman: string | null;
-  usedBytes: number | null;
-  totalBytes: number | null;
-  availableBytes: number | null;
-  label?: string;
-}
-
-export interface MonitoredMount {
-  path: string;
-  label?: string;
-}
-
-function shellQuote(value: string): string {
-  return `'${value.replace(/'/g, `'\\''`)}'`;
-}
-
-// Parses `df -T -P`-style output: Filesystem, Type, then the size columns,
-// with Mounted-on last. The Type column (e.g. ext4, nfs4, cifs) is what lets
-// callers filter network shares out by filesystem type rather than guessing
-// from the source path.
-export function parseDfLines(output: string): DfRow[] {
-  return output
-    .split("\n")
-    .map((l) => l.trim())
-    .filter(Boolean)
-    .map((line) => {
-      const parts = line.split(/\s+/);
-      return {
-        filesystem: parts[0] || "",
-        type: parts[1] || "",
-        mount: parts[6] || "",
-        parts,
-      };
-    })
-    .filter((row) => row.parts.length >= 7 && !PSEUDO_FS_RE.test(row.type));
-}
-
-// Finds the index of the most-utilized real filesystem in a GNU `df -TkP`-style
-// row set (parts[2] = total KB, parts[3] = used KB), so a nearly-full
-// secondary mount (e.g. /data) isn't hidden behind a healthy root filesystem.
-export function findWorstMountIndex(bytesRows: DfRow[]): {
-  index: number;
-  usedBytes: number;
-  totalBytes: number;
-} {
-  let worstIndex = -1;
-  let worstUsedBytes = -1;
-  let worstTotalBytes = 0;
-
-  bytesRows.forEach((row, index) => {
-    const totalBytes = Number(row.parts[2]);
-    const usedBytes = Number(row.parts[3]);
-    if (
-      !Number.isFinite(totalBytes) ||
-      !Number.isFinite(usedBytes) ||
-      totalBytes <= 0
-    ) {
-      return;
-    }
-    const usedRatio = usedBytes / totalBytes;
-    const worstRatio =
-      worstTotalBytes > 0 ? worstUsedBytes / worstTotalBytes : -1;
-    if (usedRatio > worstRatio) {
-      worstIndex = index;
-      worstUsedBytes = usedBytes;
-      worstTotalBytes = totalBytes;
-    }
-  });
-
-  return {
-    index: worstIndex,
-    usedBytes: worstUsedBytes,
-    totalBytes: worstTotalBytes,
-  };
-}
-
-// Merges a GNU `df -TkP` size-row set (parts[2..4] in `blockSizeBytes` units)
-// and a `df -hT -P` human-row set into one filesystem list. Byte rows drive
-// the maths; human rows only supply the display strings, matched by mount
-// point so a mismatched row count can't shift the columns.
-export function buildFilesystemList(
-  bytesRows: DfRow[],
-  humanRows: DfRow[],
-  blockSizeBytes = 1,
-): DiskFilesystem[] {
-  const aligned = humanRows.length === bytesRows.length;
-
-  return bytesRows
-    .map((row, index) => {
-      const totalBytes = Number(row.parts[2]) * blockSizeBytes;
-      const usedBytes = Number(row.parts[3]) * blockSizeBytes;
-      const availableBytes = Number(row.parts[4]) * blockSizeBytes;
-      if (!Number.isFinite(totalBytes) || totalBytes <= 0) return null;
-
-      const humanRow = aligned
-        ? humanRows[index]
-        : humanRows.find((h) => h.mount === row.mount);
-
-      const percent = Number.isFinite(usedBytes)
-        ? Math.max(0, Math.min(100, (usedBytes / totalBytes) * 100))
-        : null;
-
-      return {
-        filesystem: row.filesystem,
-        type: row.type,
-        mount: row.mount,
-        percent: toFixedNum(percent, 0),
-        usedHuman: humanRow?.parts[3] || null,
-        totalHuman: humanRow?.parts[2] || null,
-        availableHuman: humanRow?.parts[4] || null,
-        usedBytes: Number.isFinite(usedBytes) ? usedBytes : null,
-        totalBytes,
-        availableBytes: Number.isFinite(availableBytes) ? availableBytes : null,
-      };
-    })
-    .filter((fs): fs is DiskFilesystem => fs !== null);
-}
-
-// The headline disk figure should be the root filesystem - that is what users
-// mean by "the server's disk". On macOS "/" is the small sealed system volume,
-// so the data volume wins there. Only when there is no root mount (containers,
-// chroots) do we fall back to the most-utilized mount.
-export function selectPrimaryFilesystem(
-  filesystems: DiskFilesystem[],
-): DiskFilesystem | null {
-  if (filesystems.length === 0) return null;
-
-  const root =
-    filesystems.find((fs) => fs.mount === DARWIN_DATA_MOUNT) ??
-    filesystems.find((fs) => fs.mount === "/");
-  if (root) return root;
-
-  let best = filesystems[0];
-  for (const fs of filesystems) {
-    const ratio = (fs.usedBytes ?? 0) / (fs.totalBytes || 1);
-    const bestRatio = (best.usedBytes ?? 0) / (best.totalBytes || 1);
-    if (ratio > bestRatio) best = fs;
-  }
-  return best;
-}
-
-// Excluded mounts are user-configured per host: an exact mount-path match
-// (e.g. "/mnt/nas") or a filesystem-type substring match (e.g. "nfs" matches
-// nfs/nfs4, "cifs" matches cifs/smb3), so network shares can be dropped from
-// the headline percent and the filesystem list without hiding local disks.
-export function filterExcludedFilesystems(
-  filesystems: DiskFilesystem[],
-  excludedMounts?: string[] | null,
-): DiskFilesystem[] {
-  if (!excludedMounts || excludedMounts.length === 0) return filesystems;
-
-  const normalized = excludedMounts
-    .map((entry) => entry.trim().toLowerCase())
-    .filter(Boolean);
-  if (normalized.length === 0) return filesystems;
-
-  return filesystems.filter((fs) => {
-    const mount = fs.mount.toLowerCase();
-    const type = fs.type.toLowerCase();
-    return !normalized.some(
-      (entry) => mount === entry || (type && type.includes(entry)),
-    );
-  });
-}
-
-export function mergeMonitoredFilesystems(
-  filesystems: DiskFilesystem[],
-  monitored: MonitoredMount[],
-  customFilesystems: Array<DiskFilesystem | null>,
-): DiskFilesystem[] {
-  const result = [...filesystems];
-  monitored.forEach((entry, index) => {
-    const path = entry.path.trim();
-    const custom = customFilesystems[index];
-    if (!path || !custom) return;
-
-    const existing = result.find((fs) => fs.mount === path);
-    if (existing) {
-      existing.label = entry.label?.trim() || undefined;
-      return;
-    }
-    result.push({
-      ...custom,
-      mount: path,
-      label: entry.label?.trim() || undefined,
-    });
-  });
-  return result;
-}
+export {
+  buildFilesystemList,
+  filterExcludedFilesystems,
+  findWorstMountIndex,
+  mergeMonitoredFilesystems,
+  parseDfLines,
+  selectPrimaryFilesystem,
+} from "@termix-ssh/plugin-sdk/host-scripts";
+export type {
+  DfRow,
+  DiskFilesystem,
+  MonitoredMount,
+} from "@termix-ssh/plugin-sdk/host-scripts";
 
 function humanizeBytes(bytes: number): string {
   const units = ["B", "K", "M", "G", "T", "P"];
