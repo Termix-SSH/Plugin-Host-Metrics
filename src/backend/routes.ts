@@ -656,6 +656,7 @@ export function registerRoutes(router: Router, deps: RouteDeps): void {
     log,
     repository,
     recordHealth: deps.recordHealth,
+    onDispose: (fn) => ctx.disposables.add(fn),
     liveConfig: async (hostId) => {
       const [enabled, min, host] = await Promise.all([
         ctx.settings.get<boolean>("liveEnabled"),
@@ -666,7 +667,7 @@ export function registerRoutes(router: Router, deps: RouteDeps): void {
       return {
         enabled: enabled !== false && host.metricsEnabled !== false,
         minSeconds:
-          Number.isFinite(minSeconds) && minSeconds >= 1 ? minSeconds : 2,
+          Number.isFinite(minSeconds) && minSeconds >= 0.25 ? minSeconds : 2,
       };
     },
     runOnHost: async (hostId, level, fn) => {

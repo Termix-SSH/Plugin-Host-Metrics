@@ -6,6 +6,7 @@ import {
   type LiveSample,
 } from "@termix-ssh/plugin-sdk/host-scripts";
 import type { RequestHandler, Router } from "express";
+import { createSamplers } from "./live-stream.js";
 import { managerHandler } from "./route-helpers.js";
 import type { ManagerRoutesDeps } from "./types.js";
 
@@ -15,6 +16,8 @@ const STALE_MS = 60_000;
 
 export function registerLiveRoutes(app: Router, deps: ManagerRoutesDeps): void {
   const { validateHostId, liveConfig } = deps;
+  const streamed = createSamplers(deps.runOnHost);
+  deps.onDispose?.(() => streamed.dispose?.());
   // One baseline and one in-flight/recent sample per host, shared by every user
   // and tab, so the host sees at most one exec per admin minimum interval.
   // shortcut: samples are host-level data and the access check runs first;
@@ -67,6 +70,19 @@ export function registerLiveRoutes(app: Router, deps: ManagerRoutesDeps): void {
       "live_sample",
       async (client, host, req) => {
         const minMs: number = req.res?.locals.liveMinMs;
+        // Streaming: a held shell per host samples at the viewer pace, so a poll
+        // only reads the cache. Requests without ?stream keep the one-exec path.
+        if (req.query?.stream !== undefined) {
+          // The admin minimum wins over the 5s cap, so a slower floor is never undercut.
+          const ms = Math.min(
+            Math.max(5000, minMs),
+            Math.max(minMs, Number(req.query.ms) || minMs),
+          );
+          return {
+            ...(await streamed(host.id, ms)),
+            minIntervalS: minMs / 1000,
+          };
+        }
         const now = Date.now();
         // Entries live past their own minimum, so a long minimum is never cut short.
         for (const [k, v] of recent)

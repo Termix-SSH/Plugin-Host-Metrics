@@ -6,6 +6,7 @@ import type { LiveSample, ServerMetrics } from "../../src/shared/metrics";
 describe("liveIntervalMs", () => {
   it("maps the setting to milliseconds, off to null, anything else to 2s", () => {
     expect(liveIntervalMs("off")).toBeNull();
+    expect(liveIntervalMs("0.5")).toBe(500);
     expect(liveIntervalMs("1")).toBe(1000);
     expect(liveIntervalMs("5")).toBe(5000);
     expect(liveIntervalMs("2")).toBe(2000);

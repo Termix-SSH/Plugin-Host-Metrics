@@ -101,7 +101,7 @@
           "labelKey": "settings.admin.liveMinInterval.label",
           "descriptionKey": "settings.admin.liveMinInterval.description",
           "default": 2,
-          "min": 1,
+          "min": 0.25,
           "max": 3600
         }
       ],
@@ -133,6 +133,10 @@
             {
               "value": "off",
               "labelKey": "settings.user.liveInterval.off"
+            },
+            {
+              "value": "0.5",
+              "labelKey": "settings.user.liveInterval.s05"
             },
             {
               "value": "1",

@@ -12,6 +12,7 @@ const RETRY_MS = 30_000;
 /** The liveInterval user setting in ms, null for "off", 2s for anything unknown. */
 export function liveIntervalMs(value: unknown): number | null {
   if (value === "off") return null;
+  if (value === "0.5") return 500;
   if (value === "1") return 1000;
   if (value === "5") return 5000;
   return DEFAULT_POLL_MS;
@@ -103,7 +104,10 @@ export function useLiveMetrics(
     const tick = async () => {
       if (!document.hidden) {
         try {
-          const sample = await managerGet<LiveSample>(hostId, "live");
+          const sample = await managerGet<LiveSample>(hostId, "live", {
+            stream: 1,
+            ms: intervalMs,
+          });
           if (stopped) return;
           errors = 0;
           setLive(sample);

@@ -377,6 +377,7 @@
         "label": "Live update rate",
         "description": "How often CPU, memory, network and processes refresh in the Host Metrics tab, the terminal toolbar, and dashboard and homepage widgets (those never go faster than every 5 seconds). Each update reads /proc on the host. Never faster than the server's live update minimum. Off keeps the slower regular sampling.",
         "off": "Off",
+        "s05": "Every 0.5 seconds",
         "s1": "Every second",
         "s2": "Every 2 seconds",
         "s5": "Every 5 seconds"

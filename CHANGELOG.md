@@ -9,6 +9,8 @@
 ### Changed
 
 - Needs Termix 26.10.6 or newer
+- Live metrics share one SSH sampler per host and serve every viewer from a server-side cache, so additional viewers reuse one sample instead of each reading the host
+- Live update rate gains a 0.5 second option, and the admin live minimum can go down to 0.25 seconds
 
 ### Fixed
 
