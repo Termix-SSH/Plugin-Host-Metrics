@@ -2,6 +2,10 @@
 
 ## 1.2.1
 
+### Added
+
+- Resize cards, change how each card shows, undo and redo layout changes, and save layouts as templates to apply to other hosts
+
 ### Changed
 
 - Needs Termix 26.10.6 or newer
