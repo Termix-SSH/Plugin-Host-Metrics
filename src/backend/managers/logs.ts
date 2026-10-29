@@ -24,6 +24,12 @@ const COMMON_LOGS = [
 
 const LIST_LOGS_CMD = `ls -1 ${LOG_PATH_ALLOWLIST.map(shellSingleQuote).join(" ")} 2>/dev/null`;
 
+/** "nginx" means nginx.service, the way systemctl reads it. */
+export function systemdUnitName(unit: string): string {
+  const name = unit.trim();
+  return /\.[a-z]+$/.test(name) ? name : name + ".service";
+}
+
 export function clampLines(n: unknown): number {
   const v = typeof n === "string" ? Number(n) : n;
   if (typeof v !== "number" || !Number.isFinite(v)) return 200;
@@ -112,9 +118,10 @@ export function registerLogRoutes(app: Router, deps: ManagerRoutesDeps): void {
 
       let cmd: string;
       if (unit) {
-        if (!isValidSystemdUnit(unit))
+        const name = systemdUnitName(unit);
+        if (!isValidSystemdUnit(name))
           throw new ManagerInputError("Invalid unit");
-        cmd = buildJournalCommand(unit, lines);
+        cmd = buildJournalCommand(name, lines);
       } else if (path) {
         if (!isAllowedPath(path, LOG_PATH_ALLOWLIST)) {
           throw new ManagerInputError("Path not allowed");

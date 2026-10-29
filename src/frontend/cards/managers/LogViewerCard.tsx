@@ -34,6 +34,8 @@ export function LogViewerCard({ hostId }: { hostId: number | null }) {
   const bodyRef = useRef<HTMLPreElement | null>(null);
   const contentRef = useRef(content);
   contentRef.current = content;
+  // Only the newest request may set the content or the error.
+  const requestRef = useRef(0);
 
   // Load the host's actual log files once.
   useEffect(() => {
@@ -61,10 +63,12 @@ export function LogViewerCard({ hostId }: { hostId: number | null }) {
       if (!p) return false;
       params.path = p;
     }
+    const request = ++requestRef.current;
     setLoading(true);
     setError(null);
     try {
       const res = await managerGet<{ content: string }>(hostId, "logs", params);
+      if (request !== requestRef.current) return false;
       const next = res.content || "";
       const changed = next !== contentRef.current;
       if (changed) {
@@ -77,17 +81,18 @@ export function LogViewerCard({ hostId }: { hostId: number | null }) {
       }
       return changed;
     } catch (e) {
-      setError(extractError(e, t).message);
+      if (request === requestRef.current) setError(extractError(e, t).message);
     } finally {
-      setLoading(false);
+      if (request === requestRef.current) setLoading(false);
     }
   }, [customPath, hostId, lines, mode, path, unit]);
 
   useEffect(() => {
     void fetchLog();
-    // Custom paths are applied on blur/manual refresh, not on every keystroke.
+    // Custom paths and units are applied on blur, Enter or refresh, not on
+    // every keystroke, so a half typed name is never sent.
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [hostId, mode, path, unit, lines]);
+  }, [hostId, mode, path, lines]);
 
   useAdaptivePolling(
     fetchLog,
@@ -156,6 +161,9 @@ export function LogViewerCard({ hostId }: { hostId: number | null }) {
             value={unit}
             onChange={(e) => setUnit(e.target.value)}
             onBlur={fetchLog}
+            onKeyDown={(e) => {
+              if (e.key === "Enter") void fetchLog();
+            }}
             placeholder="nginx.service"
             className="h-7 flex-1 border border-border bg-background px-2 font-mono text-[11px] outline-none focus:ring-1 focus:ring-ring"
           />

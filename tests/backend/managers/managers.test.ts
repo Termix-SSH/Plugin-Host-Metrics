@@ -61,6 +61,7 @@ import {
 import {
   buildTailCommand,
   clampLines,
+  systemdUnitName,
 } from "../../../src/backend/managers/logs.js";
 
 describe("exec-elevated", () => {
@@ -475,5 +476,13 @@ describe("logs", () => {
     expect(buildTailCommand("/var/log/syslog", 100)).toBe(
       "tail -n 100 '/var/log/syslog'",
     );
+  });
+});
+
+describe("systemdUnitName", () => {
+  it("reads a bare name as a service, like systemctl", () => {
+    expect(systemdUnitName("webapp")).toBe("webapp.service");
+    expect(systemdUnitName(" webapp.service ")).toBe("webapp.service");
+    expect(systemdUnitName("backup.timer")).toBe("backup.timer");
   });
 });

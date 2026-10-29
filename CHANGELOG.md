@@ -10,6 +10,10 @@
 
 - Needs Termix 26.10.6 or newer
 
+### Fixed
+
+- The log viewer reads a unit when you press Enter or leave the field, instead of failing with Invalid unit while you type, and a bare name like webapp means webapp.service
+
 ## 1.2.0
 
 ### Added
