@@ -1,3 +1,4 @@
+import type { PerformanceSamples } from "./widgets/performance-collector.js";
 import type { PluginHostStatus } from "@termix-ssh/plugin-sdk/backend";
 import type { CpuSamples } from "./widgets/cpu-collector.js";
 import { createNetworkSamples } from "./widgets/network-collector.js";
@@ -427,18 +428,22 @@ export function canStartInitialMetrics(
 /** The last CPU and network sample per host, for rates between polls. */
 function createRateSamples() {
   const cpu: CpuSamples = new Map();
+  const performance: PerformanceSamples = new Map();
   const network = createNetworkSamples();
   return {
     cpu,
+    performance,
     network,
     clear(hostId?: number) {
       if (hostId === undefined) {
         cpu.clear();
+        performance.clear();
         network.counters.clear();
         network.windows.clear();
         return;
       }
       cpu.delete(hostId);
+      performance.delete(hostId);
       network.counters.delete(hostId);
       network.windows.delete(hostId);
     },

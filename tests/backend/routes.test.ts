@@ -187,6 +187,118 @@ describe("layout preferences", () => {
     );
   });
 
+  it("roundtrips pixel width with legacy spans, heights and order unchanged", async () => {
+    server = await startServer();
+    const layout = {
+      columns: 3,
+      slots: [
+        { id: "cpu", order: 0, colSpan: 1, height: null, width: 573 },
+        { id: "service_manager", order: 1, colSpan: 2, height: 723 },
+      ],
+    };
+    expect(
+      (
+        await server.request("POST", "/host-metrics/preferences/7", {
+          body: layout,
+        })
+      ).status,
+    ).toBe(200);
+    expect(
+      (await server.request("GET", "/host-metrics/preferences/7")).body.layout,
+    ).toEqual(layout);
+  });
+
+  it.each([
+    [573.4, 573],
+    [1, 280],
+    [-1, 280],
+    [0, 280],
+    [100000, 8192],
+    [null, undefined],
+    ["573", undefined],
+    [true, undefined],
+    [{}, undefined],
+  ])("sanitizes optional width %j to %j", async (width, expected) => {
+    server = await startServer();
+    const slot = { id: "cpu", order: 0, colSpan: 1, height: null };
+    await server.request("POST", "/host-metrics/preferences/7", {
+      body: { columns: 3, slots: [{ ...slot, width }] },
+    });
+    const read = (await server.request("GET", "/host-metrics/preferences/7"))
+      .body.layout.slots[0];
+    expect(read).toEqual(
+      expected === undefined ? slot : { ...slot, width: expected },
+    );
+  });
+
+  it("drops nonfinite numeric widths from stored preferences on read", async () => {
+    server = await startServer();
+    const raw =
+      '{"columns":3,"slots":[{"id":"cpu","order":0,"colSpan":1,"height":null,"width":1e999}]}';
+    server.db.sqlite
+      .prepare(
+        "INSERT INTO p_host_metrics_host_metrics_preferences (user_id, host_id, layout) VALUES (?, ?, ?)",
+      )
+      .run("user-1", 7, raw);
+    const read = (await server.request("GET", "/host-metrics/preferences/7"))
+      .body.layout.slots[0];
+    expect(read).not.toHaveProperty("width");
+  });
+
+  it("roundtrips supported card settings, drops invalid fields and restores enabled widgets on discard", async () => {
+    server = await startServer();
+    const entry = {
+      columns: 3,
+      slots: [
+        {
+          id: "cpu",
+          order: 0,
+          colSpan: 1,
+          height: null,
+          settings: { showCores: false, chartSize: "large" },
+        },
+        { id: "memory", order: 1, colSpan: 1, height: null },
+      ],
+    };
+    const post = (body: unknown) =>
+      server!.request("POST", "/host-metrics/preferences/7", { body });
+    await post(entry);
+    expect(
+      (await server.request("GET", "/host-metrics/preferences/7")).body.layout,
+    ).toEqual(entry);
+    await post({
+      columns: 2,
+      slots: [
+        {
+          id: "disk",
+          order: 0,
+          colSpan: 1,
+          height: null,
+          settings: {
+            chartSize: "giant",
+            showCores: false,
+            showDetails: "false",
+            unknown: true,
+          },
+        },
+      ],
+    });
+    expect(
+      (await server.request("GET", "/host-metrics/preferences/7")).body.layout
+        .slots[0],
+    ).not.toHaveProperty("settings");
+    expect(await server.mock.ctx.settings.getHost(7, "enabledWidgets")).toEqual(
+      ["disk"],
+    );
+    await post(entry);
+    expect(await server.mock.ctx.settings.getHost(7, "enabledWidgets")).toEqual(
+      ["cpu", "memory"],
+    );
+    expect(
+      (await server.request("GET", "/host-metrics/preferences/7")).body.layout,
+    ).toEqual(entry);
+  });
+
   it("rejects a malformed layout", async () => {
     server = await startServer();
     const response = await server.request(

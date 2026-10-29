@@ -1,3 +1,4 @@
+import { useCardSettings } from "../card-settings";
 import { useMemo, useState } from "react";
 import { MetricCard, PanelSearch } from "@termix-ssh/plugin-sdk/ui";
 import { type ServerMetrics } from "../../shared/metrics.js";
@@ -7,6 +8,7 @@ import { type ProcSort, viewProcesses } from "../process-view";
 
 export function ProcessesCard({ metrics }: { metrics: ServerMetrics | null }) {
   const { t } = useTranslation();
+  const settings = useCardSettings();
   const procs = metrics?.processes;
   const top = procs?.top;
   const [sort, setSort] = useState<ProcSort>("cpu");
@@ -40,37 +42,41 @@ export function ProcessesCard({ metrics }: { metrics: ServerMetrics | null }) {
       icon={<Cpu className="size-3.5" />}
       scroll
     >
-      <div className="mb-2 flex flex-wrap items-center gap-x-4 gap-y-1 text-xs">
-        {procs?.total != null && (
-          <span>
-            <span className="font-bold text-foreground">{procs.total}</span>{" "}
+      {settings.showDetails !== false && (
+        <div className="mb-2 flex flex-wrap items-center gap-x-4 gap-y-1 text-xs">
+          {procs?.total != null && (
+            <span>
+              <span className="font-bold text-foreground">{procs.total}</span>{" "}
+              <span className="text-muted-foreground">
+                {t("hostMetrics.processesTotal")}
+              </span>
+            </span>
+          )}
+          {procs?.running != null && (
+            <span>
+              <span className="font-bold text-accent-brand">
+                {procs.running}
+              </span>{" "}
+              <span className="text-muted-foreground">
+                {t("hostMetrics.processesRunning")}
+              </span>
+            </span>
+          )}
+          {metrics?.cpu?.load && (
             <span className="text-muted-foreground">
-              {t("hostMetrics.processesTotal")}
+              {t("hostMetrics.processesLoad")}{" "}
+              <span className="font-mono text-foreground">
+                {metrics.cpu.load.map((l) => l.toFixed(2)).join(" ")}
+              </span>
             </span>
-          </span>
-        )}
-        {procs?.running != null && (
-          <span>
-            <span className="font-bold text-accent-brand">{procs.running}</span>{" "}
-            <span className="text-muted-foreground">
-              {t("hostMetrics.processesRunning")}
+          )}
+          {metrics?.uptime?.formatted && (
+            <span className="font-mono text-muted-foreground">
+              {metrics.uptime.formatted}
             </span>
-          </span>
-        )}
-        {metrics?.cpu?.load && (
-          <span className="text-muted-foreground">
-            {t("hostMetrics.processesLoad")}{" "}
-            <span className="font-mono text-foreground">
-              {metrics.cpu.load.map((l) => l.toFixed(2)).join(" ")}
-            </span>
-          </span>
-        )}
-        {metrics?.uptime?.formatted && (
-          <span className="font-mono text-muted-foreground">
-            {metrics.uptime.formatted}
-          </span>
-        )}
-      </div>
+          )}
+        </div>
+      )}
       <div className="mb-2 flex items-center gap-1.5">
         <PanelSearch
           value={query}

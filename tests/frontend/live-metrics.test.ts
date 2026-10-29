@@ -6,6 +6,7 @@ import type { LiveSample, ServerMetrics } from "../../src/shared/metrics";
 describe("liveIntervalMs", () => {
   it("maps the setting to milliseconds, off to null, anything else to 2s", () => {
     expect(liveIntervalMs("off")).toBeNull();
+    expect(liveIntervalMs("0.5")).toBe(500);
     expect(liveIntervalMs("1")).toBe(1000);
     expect(liveIntervalMs("5")).toBe(5000);
     expect(liveIntervalMs("2")).toBe(2000);
@@ -61,6 +62,27 @@ describe("mergeLive", () => {
   it("returns the slow sample untouched until a live sample exists", () => {
     expect(mergeLive(slow, null)).toBe(slow);
     expect(mergeLive(null, live)).toBeNull();
+  });
+
+  it("refreshes composition counters while preserving slow hardware metadata", () => {
+    const details = {
+      semantics: "linux",
+      availableBytes: 1,
+      cachedBytes: 2,
+      installedBytes: 16 * 1024 ** 3,
+      committedBytes: 1234,
+    } as NonNullable<ServerMetrics["memory"]["details"]>;
+    const original = { ...slow, memory: { ...slow.memory, details } };
+    const merged = mergeLive(original, live)!;
+    expect(merged.memory.details).toEqual({
+      ...details,
+      availableBytes: (live.memTotalKb - live.memUsedKb) * 1024,
+      cachedBytes: live.memCachedKb * 1024,
+    });
+    expect(original.memory.details.availableBytes).toBe(1);
+    expect(mergeLive(original, { ...live, memTotalKb: 0 })!.memory).toBe(
+      original.memory,
+    );
   });
 
   it("overlays cpu, per-core, memory, network and processes but keeps disk", () => {

@@ -1,9 +1,11 @@
+import { SmoothLineChart as LineChart } from "./SmoothCharts";
+import { SmoothSparkline as Sparkline } from "./SmoothCharts";
+import { DiskPerformance } from "./PerformanceDetails";
+import { useCardSettings, chartHeight } from "../card-settings";
 import {
   RadialGauge,
-  Sparkline,
   MiniStat,
   MetricCard,
-  LineChart,
   type LineChartSeries,
 } from "@termix-ssh/plugin-sdk/ui";
 import { type ServerMetrics } from "../../shared/metrics.js";
@@ -20,11 +22,12 @@ export function DiskCard({
   hostId,
 }: {
   metrics: ServerMetrics | null;
-  history: number[];
+  history: Array<number | null>;
   hostId: number | null;
 }) {
   const { getMetricsHistory } = useHostMetricsApi();
   const { t } = useTranslation();
+  const settings = useCardSettings();
   const [activeTab, setActiveTab] = useState<HistoryTab>("live");
   const [rows, setRows] = useState<MetricsHistoryRow[] | null>(null);
   const [loading, setLoading] = useState(false);
@@ -97,6 +100,7 @@ export function DiskCard({
 
   return (
     <MetricCard
+      scroll={activeTab === "live"}
       title={t("hostMetrics.diskUsage")}
       icon={<HardDrive className="size-3.5" />}
       action={
@@ -119,27 +123,32 @@ export function DiskCard({
           <div className="flex items-center gap-4">
             <RadialGauge value={percent} />
             <div className="flex min-w-0 flex-1 flex-col gap-2">
-              <div className="grid grid-cols-2 gap-2">
-                <MiniStat
-                  caption={activeMount ?? t("hostMetrics.disk")}
-                  value={
-                    usedHuman && totalHuman
-                      ? `${usedHuman}/${totalHuman}`
-                      : "N/A"
-                  }
-                />
-                <MiniStat
-                  caption={t("hostMetrics.available")}
-                  value={availableHuman ?? "N/A"}
-                />
-              </div>
+              {settings.showDetails !== false && (
+                <div className="grid grid-cols-2 gap-2">
+                  {usedHuman && totalHuman && (
+                    <MiniStat
+                      caption={activeMount ?? t("hostMetrics.disk")}
+                      value={`${usedHuman}/${totalHuman}`}
+                    />
+                  )}
+                  {availableHuman && (
+                    <MiniStat
+                      caption={t("hostMetrics.available")}
+                      value={availableHuman}
+                    />
+                  )}
+                </div>
+              )}
               <Sparkline
-                data={[...history, percent ?? 0]}
+                data={[...history, percent]}
                 domain={[0, 100]}
-                height={48}
+                height={chartHeight(settings, 48)}
               />
             </div>
           </div>
+        )}
+        {activeTab === "live" && (
+          <DiskPerformance metrics={metrics} hostId={hostId} />
         )}
         {activeTab !== "live" && (
           <>
@@ -159,7 +168,7 @@ export function DiskCard({
                 timestamps={timestamps}
                 domain={[0, 100]}
                 yFormatter={(v) => `${v.toFixed(0)}%`}
-                height={160}
+                height={chartHeight(settings, 160)}
               />
             )}
           </>

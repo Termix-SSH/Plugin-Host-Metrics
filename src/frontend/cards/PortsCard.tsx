@@ -1,3 +1,4 @@
+import { useCardSettings } from "../card-settings";
 import { MetricCard, PanelSearch, Select2 } from "@termix-ssh/plugin-sdk/ui";
 import {
   type ServerMetrics,
@@ -12,8 +13,11 @@ function formatAddress(addr: string) {
 }
 
 function PortRow({ port }: { port: ListeningPort }) {
+  const settings = useCardSettings();
   return (
-    <div className="grid grid-cols-[3.5rem_3rem_1fr_4rem] gap-2 overflow-hidden border-b border-border/50 py-1 font-mono text-xs last:border-0">
+    <div
+      className={`grid ${settings.showDetails === false ? "grid-cols-[3.5rem_3rem_1fr]" : "grid-cols-[3.5rem_3rem_1fr_4rem]"} gap-2 overflow-hidden border-b border-border/50 py-1 font-mono text-xs last:border-0`}
+    >
       <span className="truncate font-bold text-accent-brand">
         {port.localPort}
       </span>
@@ -23,15 +27,18 @@ function PortRow({ port }: { port: ListeningPort }) {
       <span className="truncate font-semibold">
         {port.process ?? (port.pid ? `PID:${port.pid}` : "-")}
       </span>
-      <span className="truncate text-right text-muted-foreground">
-        {formatAddress(port.localAddress)}
-      </span>
+      {settings.showDetails !== false && (
+        <span className="truncate text-right text-muted-foreground">
+          {formatAddress(port.localAddress)}
+        </span>
+      )}
     </div>
   );
 }
 
 export function PortsCard({ metrics }: { metrics: ServerMetrics | null }) {
   const { t } = useTranslation();
+  const settings = useCardSettings();
   const [query, setQuery] = useState("");
   const [proto, setProto] = useState<"all" | "tcp" | "udp">("all");
   const ports = useMemo(() => metrics?.ports?.ports ?? [], [metrics]);
@@ -77,11 +84,15 @@ export function PortsCard({ metrics }: { metrics: ServerMetrics | null }) {
         </span>
       </div>
       <div className="flex flex-col">
-        <div className="grid grid-cols-[3.5rem_3rem_1fr_4rem] gap-2 border-b border-border pb-1 text-[10px] font-bold uppercase text-muted-foreground">
+        <div
+          className={`grid ${settings.showDetails === false ? "grid-cols-[3.5rem_3rem_1fr]" : "grid-cols-[3.5rem_3rem_1fr_4rem]"} gap-2 border-b border-border pb-1 text-[10px] font-bold uppercase text-muted-foreground`}
+        >
           <span>{t("hostMetrics.ports.port")}</span>
           <span>{t("hostMetrics.ports.protocol")}</span>
           <span>{t("hostMetrics.ports.process")}</span>
-          <span className="text-right">{t("hostMetrics.ports.address")}</span>
+          {settings.showDetails !== false && (
+            <span className="text-right">{t("hostMetrics.ports.address")}</span>
+          )}
         </div>
         {filtered.length === 0 ? (
           <span className="py-2 text-xs italic text-muted-foreground">

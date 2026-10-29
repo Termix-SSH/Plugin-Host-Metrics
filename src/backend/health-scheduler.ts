@@ -175,7 +175,7 @@ export function createHealthAlerts(
         .asUser(userId, () => ctx.hosts.get(hostId))
         .catch(() => null);
       const hostName = host?.name || host?.ip || `#${hostId}`;
-      const name = check.name || check.target;
+      const name = check.name || check.target || check.command || "";
       await ctx.notify.send(
         result.ok
           ? {

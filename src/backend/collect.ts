@@ -1,3 +1,9 @@
+import {
+  collectPerformance,
+  enrichPerformance,
+  type PerformanceGroup,
+} from "./widgets/performance-collector.js";
+import type { ServerMetrics } from "../shared/metrics.js";
 import type { Client } from "ssh2";
 import type { PluginSsh } from "@termix-ssh/plugin-sdk/backend";
 import { detectHostPlatform } from "@termix-ssh/plugin-sdk/host-commands";
@@ -22,6 +28,11 @@ import {
 import { sessionKey, type MetricsSessions } from "./sessions.js";
 import type { MetricsState } from "./state.js";
 import type { CollectorRegistry } from "./collectors.js";
+import {
+  collectRouterOsMetrics,
+  isKnownRouterOs,
+  isRouterOs,
+} from "./routeros.js";
 
 export function isHostKeyVerificationError(error: unknown): boolean {
   return (
@@ -32,10 +43,12 @@ export function isHostKeyVerificationError(error: unknown): boolean {
 }
 
 export type CollectedMetrics = {
-  cpu: Awaited<ReturnType<typeof collectCpuMetrics>>;
-  memory: Awaited<ReturnType<typeof collectMemoryMetrics>>;
-  disk: Awaited<ReturnType<typeof collectDiskMetrics>>;
-  network: Awaited<ReturnType<typeof collectNetworkMetrics>>;
+  cpu: Awaited<ReturnType<typeof collectCpuMetrics>> & ServerMetrics["cpu"];
+  memory: Awaited<ReturnType<typeof collectMemoryMetrics>> &
+    ServerMetrics["memory"];
+  disk: Awaited<ReturnType<typeof collectDiskMetrics>> & ServerMetrics["disk"];
+  network: Awaited<ReturnType<typeof collectNetworkMetrics>> &
+    ServerMetrics["network"];
   uptime: Awaited<ReturnType<typeof collectUptimeMetrics>>;
   processes: Awaited<ReturnType<typeof collectProcessesMetrics>>;
   system: Awaited<ReturnType<typeof collectSystemMetrics>>;
@@ -72,6 +85,7 @@ export async function collectMetrics(
   deps: CollectDeps,
   host: MetricsHost,
   mounts: {
+    enabledWidgets?: string[];
     excludedMounts: string[];
     monitoredMounts: Array<{ path: string; label?: string }>;
   },
@@ -98,9 +112,22 @@ export async function collectMetrics(
     const existing = sessions.get(key);
 
     try {
+      const routerOsSample = async (
+        client: Client,
+      ): Promise<CollectedMetrics> => {
+        const result = await collectRouterOsMetrics(client, host.id, state);
+        state.metricsCache.set(host.id, result);
+        return result;
+      };
       const collect = async (client: Client): Promise<CollectedMetrics> => {
         onAuthenticated?.();
+        if (isKnownRouterOs(host.id)) {
+          return routerOsSample(client);
+        }
         const platform = await detectHostPlatform(client);
+        if (platform === "other" && (await isRouterOs(client, host.id))) {
+          return routerOsSample(client);
+        }
         const result: CollectedMetrics = {
           cpu: await collectCpuMetrics(
             client,
@@ -153,6 +180,23 @@ export async function collectMetrics(
             processes: [],
           }),
         };
+
+        const groups = (
+          ["cpu", "memory", "disk", "network"] as PerformanceGroup[]
+        ).filter(
+          (group) =>
+            !mounts.enabledWidgets || mounts.enabledWidgets.includes(group),
+        );
+        enrichPerformance(
+          result,
+          await collectPerformance(
+            client,
+            platform,
+            host.id,
+            state.rateSamples.performance,
+            groups,
+          ),
+        );
 
         const extra = await collectors.run(client, host.id, host.userId);
         if (Object.keys(extra).length > 0) result.extra = extra;

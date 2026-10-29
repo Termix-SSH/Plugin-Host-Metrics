@@ -1,8 +1,7 @@
-import {
-  MetricCard,
-  LineChart,
-  type LineChartSeries,
-} from "@termix-ssh/plugin-sdk/ui";
+import { SmoothLineChart as LineChart } from "./SmoothCharts";
+import { NetworkPerformance } from "./PerformanceDetails";
+import { useCardSettings, chartHeight } from "../card-settings";
+import { MetricCard, type LineChartSeries } from "@termix-ssh/plugin-sdk/ui";
 import { type ServerMetrics } from "../../shared/metrics.js";
 import { useState, useEffect } from "react";
 import { Cable, Container, Network, Wifi, WifiOff } from "lucide-react";
@@ -70,6 +69,7 @@ export function NetworkCard({
 }) {
   const { getMetricsHistory } = useHostMetricsApi();
   const { t } = useTranslation();
+  const settings = useCardSettings();
   const [activeTab, setActiveTab] = useState<HistoryTab>("live");
   const [rows, setRows] = useState<MetricsHistoryRow[] | null>(null);
   const [loading, setLoading] = useState(false);
@@ -94,7 +94,11 @@ export function NetworkCard({
     };
   }, [activeTab, hostId]);
 
-  const interfaces = metrics?.network?.interfaces ?? [];
+  const interfaces = (metrics?.network?.interfaces ?? []).filter(
+    (i) =>
+      settings.showLoopback === true ||
+      !(i.details?.type === "loopback" || /^lo\d*$|^Loopback/i.test(i.name)),
+  );
 
   const { rxRates, txRates } = rows
     ? computeNetRates(rows)
@@ -161,7 +165,9 @@ export function NetworkCard({
                   </span>
                 </div>
                 <div className="flex justify-between font-mono text-[10px] text-muted-foreground">
-                  <span className="truncate">{iface.ip}</span>
+                  {settings.showDetails !== false && (
+                    <span className="truncate">{iface.ip}</span>
+                  )}
                   {(iface.rxRateBps != null || iface.txRateBps != null) && (
                     <span className="shrink-0">
                       &#8595;{" "}
@@ -179,6 +185,9 @@ export function NetworkCard({
             ))}
           </div>
         ))}
+      {activeTab === "live" && (
+        <NetworkPerformance metrics={metrics} hostId={hostId} />
+      )}
       {activeTab !== "live" && (
         <>
           {loading && (
@@ -197,7 +206,7 @@ export function NetworkCard({
               timestamps={timestamps}
               domain={[0, netMax]}
               yFormatter={formatBytes}
-              height={160}
+              height={chartHeight(settings, 160)}
             />
           )}
         </>

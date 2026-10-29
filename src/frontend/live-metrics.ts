@@ -12,9 +12,16 @@ const RETRY_MS = 30_000;
 /** The liveInterval user setting in ms, null for "off", 2s for anything unknown. */
 export function liveIntervalMs(value: unknown): number | null {
   if (value === "off") return null;
+  if (value === "0.5") return 500;
   if (value === "1") return 1000;
   if (value === "5") return 5000;
   return DEFAULT_POLL_MS;
+}
+
+/** The backgroundGraceS user setting in ms: how long a hidden page keeps its connection. Default 10s. */
+export function backgroundGraceMs(value: unknown): number {
+  const s = Number(value);
+  return Number.isFinite(s) && s >= 0 ? s * 1000 : 10_000;
 }
 
 /** Overlays the 1s live sample on the slow full sample. */
@@ -51,11 +58,19 @@ export function mergeLive(
     },
     memory: memTotal
       ? {
+          ...m.memory,
           percent: Math.round((l.memUsedKb / memTotal) * 100),
           usedGiB: gib(l.memUsedKb),
           totalGiB: gib(memTotal),
           cachedGiB: gib(l.memCachedKb),
           freeGiB: gib(l.memFreeKb),
+          ...(m.memory.details && {
+            details: {
+              ...m.memory.details,
+              availableBytes: Math.max(0, memTotal - l.memUsedKb) * 1024,
+              cachedBytes: l.memCachedKb * 1024,
+            },
+          }),
         }
       : m.memory,
     network: m.network && {
@@ -92,7 +107,10 @@ export function useLiveMetrics(
   intervalMs: number | null,
 ): LiveSample | null {
   const { managerGet } = useHostMetricsApi();
-  const [live, setLive] = useState<LiveSample | null>(null);
+  const [live, setLive] = useState<{
+    hostId: number;
+    sample: LiveSample;
+  } | null>(null);
 
   useEffect(() => {
     if (hostId == null || !active || intervalMs == null) return;
@@ -103,10 +121,13 @@ export function useLiveMetrics(
     const tick = async () => {
       if (!document.hidden) {
         try {
-          const sample = await managerGet<LiveSample>(hostId, "live");
+          const sample = await managerGet<LiveSample>(hostId, "live", {
+            stream: 1,
+            ms: intervalMs,
+          });
           if (stopped) return;
           errors = 0;
-          setLive(sample);
+          setLive({ hostId, sample });
           // The admin minimum wins over a faster user choice.
           delay = Math.max(intervalMs, (sample.minIntervalS ?? 0) * 1000);
         } catch (error) {
@@ -131,5 +152,7 @@ export function useLiveMetrics(
     };
   }, [hostId, active, intervalMs, managerGet]);
 
-  return live;
+  return active && intervalMs != null && live?.hostId === hostId
+    ? live.sample
+    : null;
 }

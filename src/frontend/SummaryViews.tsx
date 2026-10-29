@@ -2,6 +2,17 @@ import { usePermission, useTranslation } from "@termix-ssh/plugin-sdk/frontend";
 import type { MetricsSummaryStore } from "./summary-store";
 import { useMetricsSummary } from "./summary-store";
 import { hostHasMetrics } from "./host-filter";
+import type { ReactNode } from "react";
+import type { HealthLevel } from "./host-metrics-api";
+import { useDashboardHealth, type HealthSummaryStore } from "./health-summary";
+
+const HEALTH_TONE: Record<HealthLevel, string> = {
+  ok: "text-accent-brand",
+  warn: "text-warning",
+  crit: "text-red-400",
+};
+// Room for a few checks next to the bars; the rest are counted.
+const MAX_ROW_CHECKS = 3;
 
 /** The widget fields the live sample can refresh; the rest keep the regular value. */
 const LIVE_METRICS = ["cpu", "memory", "network", "processes"];
@@ -31,8 +42,11 @@ export function RowBar({ label, value }: { label: string; value: number }) {
   );
 }
 
-/** CPU, RAM and disk bars in a dashboard host row ("dashboard.hostRow"). */
-export function createDashboardHostMetrics(store: MetricsSummaryStore) {
+/** CPU, RAM and disk bars plus dashboard health checks in a host row ("dashboard.hostRow"). */
+export function createDashboardHostMetrics(
+  store: MetricsSummaryStore,
+  health: HealthSummaryStore,
+) {
   return function DashboardHostMetrics(props: Record<string, unknown>) {
     const { t } = useTranslation();
     const allowed = usePermission("use");
@@ -43,14 +57,50 @@ export function createDashboardHostMetrics(store: MetricsSummaryStore) {
       store,
       allowed && online && wanted ? hostId : null,
     );
+    const checks =
+      useDashboardHealth(health, allowed && online ? hostId : null)?.checks ??
+      [];
 
     const cpu = metrics?.cpu?.percent ?? null;
     const ram = metrics?.memory?.percent ?? null;
     const disk = metrics?.disk?.percent ?? null;
-    if (!allowed || !wanted) return null;
+    if (!allowed) return null;
+    const shown = checks.slice(0, MAX_ROW_CHECKS);
+    const healthChecks = shown.length > 0 && (
+      <>
+        {shown.map((check) => (
+          <div
+            key={check.id}
+            className="flex min-w-16 max-w-28 shrink-0 flex-col gap-0.5"
+            title={`${check.name}: ${check.detail ?? ""}`}
+            data-hm-health-check={check.id}
+          >
+            <span className="truncate text-[10px] text-muted-foreground">
+              {check.name}
+            </span>
+            <span
+              className={`truncate text-[10px] font-bold ${HEALTH_TONE[check.level]}`}
+            >
+              {check.detail || "-"}
+            </span>
+          </div>
+        ))}
+        {checks.length > shown.length && (
+          <span className="shrink-0 text-[10px] text-muted-foreground">
+            +{checks.length - shown.length}
+          </span>
+        )}
+      </>
+    );
+    if (!wanted) {
+      return healthChecks ? (
+        <div className="flex shrink-0 items-center gap-3">{healthChecks}</div>
+      ) : null;
+    }
     if (!online || (cpu === null && ram === null && disk === null)) {
       return (
         <div className="flex shrink-0 items-center gap-3">
+          {healthChecks}
           {[0, 1, 2].map((slot) => (
             <span
               key={slot}
@@ -64,12 +114,52 @@ export function createDashboardHostMetrics(store: MetricsSummaryStore) {
     }
     return (
       <div className="flex shrink-0 items-center gap-3">
+        {healthChecks}
         {cpu !== null && <RowBar label={t("dashboard.cpu")} value={cpu} />}
         {ram !== null && <RowBar label={t("dashboard.ram")} value={ram} />}
         {disk !== null && (
           <RowBar label={t("dashboardTab.disk")} value={disk} />
         )}
       </div>
+    );
+  };
+}
+
+/**
+ * The status badge of a dashboard host row ("dashboard.hostRowBadge"). A
+ * dashboard check that warns or fails replaces the layout's badge; otherwise
+ * the layout's own badge (`fallback`) shows.
+ */
+export function createDashboardHealthBadge(health: HealthSummaryStore) {
+  return function DashboardHealthBadge(props: Record<string, unknown>) {
+    const { t } = useTranslation();
+    const allowed = usePermission("use");
+    const hostId = Number(props.hostId) || null;
+    const summary = useDashboardHealth(
+      health,
+      allowed && props.online === true ? hostId : null,
+    );
+    const fallback = (props.fallback ?? null) as ReactNode;
+    if (!summary || summary.level === "ok") return <>{fallback}</>;
+    const problems = summary.checks.filter((check) => check.level !== "ok");
+    return (
+      <span
+        className={`shrink-0 border px-1.5 py-0.5 text-[10px] font-semibold ${
+          summary.level === "crit"
+            ? "border-red-500/40 text-red-500 bg-red-500/10"
+            : "border-warning/40 text-warning bg-warning/10"
+        }`}
+        title={problems
+          .map((check) => `${check.name}: ${check.detail ?? ""}`)
+          .join("\n")}
+        data-hm-health-badge={summary.level}
+      >
+        {t(
+          summary.level === "crit"
+            ? "hostMetrics.health.failing"
+            : "hostMetrics.health.warning",
+        )}
+      </span>
     );
   };
 }

@@ -1,8 +1,10 @@
+import { SmoothLineChart as LineChart } from "./SmoothCharts";
+import { SmoothSparkline as Sparkline } from "./SmoothCharts";
+import { CpuPerformance } from "./PerformanceDetails";
+import { useCardSettings, chartHeight } from "../card-settings";
 import {
-  Sparkline,
   MiniStat,
   MetricCard,
-  LineChart,
   type LineChartSeries,
 } from "@termix-ssh/plugin-sdk/ui";
 import { type ServerMetrics } from "../../shared/metrics.js";
@@ -20,11 +22,12 @@ export function CpuCard({
   hostId,
 }: {
   metrics: ServerMetrics | null;
-  history: number[];
+  history: Array<number | null>;
   hostId: number | null;
 }) {
   const { getMetricsHistory } = useHostMetricsApi();
   const { t } = useTranslation();
+  const settings = useCardSettings();
   const [activeTab, setActiveTab] = useState<HistoryTab>("live");
   const [rows, setRows] = useState<MetricsHistoryRow[] | null>(null);
   const [loading, setLoading] = useState(false);
@@ -65,6 +68,7 @@ export function CpuCard({
 
   return (
     <MetricCard
+      scroll={activeTab === "live"}
       title={t("hostMetrics.cpuUsage")}
       icon={<Cpu className="size-3.5" />}
       action={
@@ -80,13 +84,13 @@ export function CpuCard({
               value={percent}
               colorClassName={loadTextColor(percent)}
               caption={
-                cores !== null
+                settings.showCores !== false && cores !== null
                   ? t("hostMetrics.cpuCores", { count: cores })
                   : undefined
               }
             />
             <div className="flex min-w-0 flex-1 flex-col gap-2">
-              {load && (
+              {settings.showLoad !== false && load && (
                 <div className="grid grid-cols-3 gap-2">
                   <MiniStat caption="1m" value={load[0].toFixed(2)} />
                   <MiniStat caption="5m" value={load[1].toFixed(2)} />
@@ -94,11 +98,11 @@ export function CpuCard({
                 </div>
               )}
               <Sparkline
-                data={[...history, percent ?? 0]}
+                data={[...history, percent]}
                 domain={[0, 100]}
-                height={48}
+                height={chartHeight(settings, 190)}
               />
-              {metrics?.cpu?.mix && (
+              {settings.showBreakdown !== false && metrics?.cpu?.mix && (
                 <div className="flex flex-col gap-0.5">
                   <div className="flex h-1.5 w-full bg-muted">
                     <div
@@ -128,31 +132,39 @@ export function CpuCard({
                   </div>
                 </div>
               )}
-              {metrics?.cpu?.perCore && metrics.cpu.perCore.length > 0 && (
-                <div className="flex flex-col gap-0.5">
-                  {metrics.cpu.perCore.map((c, i) => (
-                    <div
-                      key={i}
-                      className="flex items-center gap-1.5 font-mono text-[10px] text-muted-foreground"
-                    >
-                      <span className="w-5 shrink-0">
-                        #{metrics.cpu.coreIds?.[i] ?? i}
-                      </span>
-                      <div className="h-1.5 flex-1 bg-muted">
-                        <div
-                          className={"h-full " + loadColor(c)}
-                          style={{ width: `${c ?? 0}%` }}
-                        />
+              {settings.showCores !== false &&
+                metrics?.cpu?.perCore &&
+                metrics.cpu.perCore.length > 0 && (
+                  <div className="flex flex-col gap-0.5">
+                    {metrics.cpu.perCore.map((c, i) => (
+                      <div
+                        key={i}
+                        className="flex items-center gap-1.5 font-mono text-[10px] text-muted-foreground"
+                      >
+                        <span className="w-5 shrink-0">
+                          #{metrics.cpu.coreIds?.[i] ?? i}
+                        </span>
+                        <div className="h-1.5 flex-1 bg-muted">
+                          <div
+                            className={
+                              "h-full transition-[width] duration-700 ease-out motion-reduce:transition-none " +
+                              loadColor(c)
+                            }
+                            style={{ width: `${c ?? 0}%` }}
+                          />
+                        </div>
+                        <span className="w-7 shrink-0 text-right">
+                          {c == null ? "-" : `${c.toFixed(0)}%`}
+                        </span>
                       </div>
-                      <span className="w-7 shrink-0 text-right">
-                        {c == null ? "-" : `${c.toFixed(0)}%`}
-                      </span>
-                    </div>
-                  ))}
-                </div>
-              )}
+                    ))}
+                  </div>
+                )}
             </div>
           </div>
+        )}
+        {activeTab === "live" && (
+          <CpuPerformance metrics={metrics} hostId={hostId} />
         )}
         {activeTab !== "live" && (
           <>
@@ -172,7 +184,7 @@ export function CpuCard({
                 timestamps={timestamps}
                 domain={[0, 100]}
                 yFormatter={(v) => `${v.toFixed(0)}%`}
-                height={160}
+                height={chartHeight(settings, 300)}
               />
             )}
           </>

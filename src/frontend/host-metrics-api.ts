@@ -5,6 +5,11 @@ import {
 } from "@termix-ssh/plugin-sdk/frontend";
 import type { HostMetricsLayout } from "../shared/host-metrics.js";
 import type { ServerMetrics } from "../shared/metrics.js";
+import type {
+  LayoutTemplate,
+  LayoutTemplateHost,
+  LayoutTemplateApplyResult,
+} from "../shared/layout-templates.js";
 
 // Every call is keyed by a host's numeric database id, and the receiving
 // backend must own that host in its own database: a synced host has a
@@ -67,12 +72,31 @@ export interface MetricsSummaryRow {
   lastChecked: string;
 }
 
+export type HealthLevel = "ok" | "warn" | "crit";
+
+export interface DashboardHealth {
+  hostId: number;
+  level: HealthLevel;
+  checks: Array<{
+    id: string;
+    name: string;
+    level: HealthLevel;
+    detail: string | null;
+    ts: string;
+  }>;
+}
+
 /** The plugin's routes, relative to /plugin-api/host-metrics/. */
 export function createHostMetricsApi(api: PluginApiClient) {
   return {
     /** The newest sample already collected for every reachable host. */
     async summary(): Promise<MetricsSummaryRow[]> {
       return (await api.get<MetricsSummaryRow[]>("/metrics/summary")).data;
+    },
+
+    /** Latest stored results of the checks shown on the dashboard. */
+    async healthSummary(): Promise<DashboardHealth[]> {
+      return (await api.get<DashboardHealth[]>("/health/summary")).data;
     },
 
     async getMetrics(hostId: number): Promise<ServerMetrics | null> {
@@ -183,6 +207,44 @@ export function createHostMetricsApi(api: PluginApiClient) {
     async getHostPlatform(hostId: number): Promise<PlatformInfo> {
       return (await api.get<PlatformInfo>(`/host-metrics/platform/${hostId}`))
         .data;
+    },
+
+    async getLayoutTemplates() {
+      return (
+        await api.get<{ templates: LayoutTemplate[] }>(
+          "/host-metrics/layout-templates",
+        )
+      ).data.templates;
+    },
+
+    async createLayoutTemplate(template: Omit<LayoutTemplate, "id">) {
+      return (
+        await api.post<LayoutTemplate>(
+          "/host-metrics/layout-templates",
+          template,
+        )
+      ).data;
+    },
+
+    async deleteLayoutTemplate(id: number) {
+      await api.delete(`/host-metrics/layout-templates/${id}`);
+    },
+
+    async getLayoutTemplateHosts() {
+      return (
+        await api.get<{ hosts: LayoutTemplateHost[] }>(
+          "/host-metrics/layout-templates/hosts",
+        )
+      ).data.hosts;
+    },
+
+    async applyLayoutTemplate(id: number, hostIds: number[]) {
+      return (
+        await api.post<{ results: LayoutTemplateApplyResult[] }>(
+          `/host-metrics/layout-templates/${id}/apply`,
+          { hostIds },
+        )
+      ).data.results;
     },
 
     /** GET a manager resource (read). */

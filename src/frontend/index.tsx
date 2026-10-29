@@ -20,9 +20,11 @@ import {
   useMetricsCompanionDefaults,
 } from "./HostMetricsCompanion";
 import {
+  createDashboardHealthBadge,
   createDashboardHostMetrics,
   createHomepageHostMetrics,
 } from "./SummaryViews";
+import { createHealthSummaryStore } from "./health-summary";
 
 type HostMetricsTabConfig = Parameters<typeof HostMetricsTab>[0]["hostConfig"];
 
@@ -51,6 +53,8 @@ export async function activate(app: TermixApp): Promise<void> {
   const metricsApi = createHostMetricsApi(app.api);
   const summaries = createMetricsSummaryStore(metricsApi);
   app.onDispose(() => summaries.dispose());
+  const healthSummaries = createHealthSummaryStore(metricsApi);
+  app.onDispose(() => healthSummaries.dispose());
 
   // The latest disk sample, for the file manager's usage bar.
   app.registerAction(
@@ -137,7 +141,15 @@ export async function activate(app: TermixApp): Promise<void> {
     actionId: "host-metrics.dashboardHost",
     titleKey: "nav.hostMetrics",
     kind: "component",
-    component: createDashboardHostMetrics(summaries),
+    component: createDashboardHostMetrics(summaries, healthSummaries),
+  });
+
+  // A dashboard check that warns or fails replaces the host row's status badge.
+  app.registerSlotContribution("dashboard.hostRowBadge", {
+    actionId: "host-metrics.dashboardHealthBadge",
+    titleKey: "nav.hostMetrics",
+    kind: "component",
+    component: createDashboardHealthBadge(healthSummaries),
   });
 
   app.registerDashboardCard({

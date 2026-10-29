@@ -2,6 +2,7 @@ import type { GpuMetrics, FirewallMetrics } from "./stats-widgets.js";
 
 /** What GET /metrics/:id answers. */
 interface CpuMetrics {
+  details?: CpuDetails;
   percent: number | null;
   cores: number | null;
   load: [number, number, number] | null;
@@ -14,6 +15,7 @@ interface CpuMetrics {
 }
 
 interface MemoryMetrics {
+  details?: MemoryDetails;
   percent: number | null;
   usedGiB: number | null;
   totalGiB: number | null;
@@ -38,6 +40,7 @@ export interface DiskFilesystem {
 }
 
 interface DiskMetrics {
+  devices?: PhysicalDisk[];
   percent: number | null;
   usedHuman: string | null;
   totalHuman: string | null;
@@ -47,6 +50,7 @@ interface DiskMetrics {
 }
 
 interface NetworkInterface {
+  details?: AdapterDetails;
   name: string;
   ip: string;
   state: string;
@@ -56,6 +60,73 @@ interface NetworkInterface {
   txBytes?: string | null;
   rxRateBps?: number | null;
   txRateBps?: number | null;
+}
+
+/** Read-only OS counters. null means unsupported, denied, or not yet sampled. */
+export interface CpuDetails {
+  model: string | null;
+  currentGHz: number | null;
+  baseGHz: number | null;
+  maxGHz: number | null;
+  sockets: number | null;
+  physicalCores: number | null;
+  logicalCores: number | null;
+  virtualization: string | null;
+  l1Bytes: number | null;
+  l2Bytes: number | null;
+  l3Bytes: number | null;
+  processes: number | null;
+  threads: number | null;
+  handles: number | null;
+  uptimeSeconds: number | null;
+  semantics: "linux" | "darwin" | "windows";
+}
+
+export interface MemoryDetails {
+  availableBytes: number | null;
+  compressedBytes: number | null;
+  committedBytes: number | null;
+  commitLimitBytes: number | null;
+  cachedBytes: number | null;
+  pagedPoolBytes: number | null;
+  nonpagedPoolBytes: number | null;
+  reclaimableSlabBytes: number | null;
+  unreclaimableSlabBytes: number | null;
+  wiredBytes: number | null;
+  installedBytes: number | null;
+  hardwareReservedBytes: number | null;
+  speedMHz: number | null;
+  slotsUsed: number | null;
+  slotsTotal: number | null;
+  memoryType: string | null;
+  formFactor: string | null;
+  semantics: "linux" | "darwin" | "windows";
+}
+
+export interface PhysicalDisk {
+  id: string;
+  model: string | null;
+  media: string | null;
+  bus: string | null;
+  capacityBytes: number | null;
+  formattedBytes: number | null;
+  system: boolean | null;
+  pagefile: boolean | null;
+  activePercent: number | null;
+  readBps: number | null;
+  writeBps: number | null;
+  latencyMs: number | null;
+}
+
+export interface AdapterDetails {
+  model: string | null;
+  type: string | null;
+  ipv4: string[] | null;
+  ipv6: string[] | null;
+  dns: string[] | null;
+  linkMbps: number | null;
+  mac: string | null;
+  duplex: string | null;
 }
 
 interface ProcessInfo {
@@ -87,32 +158,7 @@ export interface ListeningPort {
 export type { FirewallChain } from "./stats-widgets.js";
 
 /** One 1s /proc sample from GET /host-metrics/managers/live/:id. */
-export interface LiveSample {
-  /** The admin minimum between samples; the client never polls faster. */
-  minIntervalS?: number;
-  cpu: number | null;
-  cpuMix?: { user: number; system: number; iowait: number; steal: number };
-  cores: Array<number | null>;
-  coreIds: string[];
-  memTotalKb: number;
-  memCachedKb: number;
-  memFreeKb: number;
-  memUsedKb: number;
-  swapTotalKb: number;
-  swapUsedKb: number;
-  load: [number, number, number];
-  net: Array<{ name: string; rxBps: number | null; txBps: number | null }>;
-  count: number;
-  running: number;
-  procs: Array<{
-    pid: number;
-    name: string;
-    cpu: number;
-    memKb: number;
-    state: string;
-    ppid: number;
-  }>;
-}
+export type { LiveSample } from "@termix-ssh/plugin-sdk/host-scripts";
 
 export type ServerMetrics = {
   cpu: CpuMetrics;
