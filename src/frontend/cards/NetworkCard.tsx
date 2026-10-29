@@ -1,3 +1,4 @@
+import { useCardSettings, chartHeight } from "../card-settings";
 import {
   MetricCard,
   LineChart,
@@ -70,6 +71,7 @@ export function NetworkCard({
 }) {
   const { getMetricsHistory } = useHostMetricsApi();
   const { t } = useTranslation();
+  const settings = useCardSettings();
   const [activeTab, setActiveTab] = useState<HistoryTab>("live");
   const [rows, setRows] = useState<MetricsHistoryRow[] | null>(null);
   const [loading, setLoading] = useState(false);
@@ -161,7 +163,9 @@ export function NetworkCard({
                   </span>
                 </div>
                 <div className="flex justify-between font-mono text-[10px] text-muted-foreground">
-                  <span className="truncate">{iface.ip}</span>
+                  {settings.showDetails !== false && (
+                    <span className="truncate">{iface.ip}</span>
+                  )}
                   {(iface.rxRateBps != null || iface.txRateBps != null) && (
                     <span className="shrink-0">
                       &#8595;{" "}
@@ -197,7 +201,7 @@ export function NetworkCard({
               timestamps={timestamps}
               domain={[0, netMax]}
               yFormatter={formatBytes}
-              height={160}
+              height={chartHeight(settings, 160)}
             />
           )}
         </>

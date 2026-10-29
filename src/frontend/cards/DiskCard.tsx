@@ -1,3 +1,4 @@
+import { useCardSettings, chartHeight } from "../card-settings";
 import {
   RadialGauge,
   Sparkline,
@@ -25,6 +26,7 @@ export function DiskCard({
 }) {
   const { getMetricsHistory } = useHostMetricsApi();
   const { t } = useTranslation();
+  const settings = useCardSettings();
   const [activeTab, setActiveTab] = useState<HistoryTab>("live");
   const [rows, setRows] = useState<MetricsHistoryRow[] | null>(null);
   const [loading, setLoading] = useState(false);
@@ -119,24 +121,26 @@ export function DiskCard({
           <div className="flex items-center gap-4">
             <RadialGauge value={percent} />
             <div className="flex min-w-0 flex-1 flex-col gap-2">
-              <div className="grid grid-cols-2 gap-2">
-                <MiniStat
-                  caption={activeMount ?? t("hostMetrics.disk")}
-                  value={
-                    usedHuman && totalHuman
-                      ? `${usedHuman}/${totalHuman}`
-                      : "N/A"
-                  }
-                />
-                <MiniStat
-                  caption={t("hostMetrics.available")}
-                  value={availableHuman ?? "N/A"}
-                />
-              </div>
+              {settings.showDetails !== false && (
+                <div className="grid grid-cols-2 gap-2">
+                  <MiniStat
+                    caption={activeMount ?? t("hostMetrics.disk")}
+                    value={
+                      usedHuman && totalHuman
+                        ? `${usedHuman}/${totalHuman}`
+                        : "N/A"
+                    }
+                  />
+                  <MiniStat
+                    caption={t("hostMetrics.available")}
+                    value={availableHuman ?? "N/A"}
+                  />
+                </div>
+              )}
               <Sparkline
                 data={[...history, percent ?? 0]}
                 domain={[0, 100]}
-                height={48}
+                height={chartHeight(settings, 48)}
               />
             </div>
           </div>
@@ -159,7 +163,7 @@ export function DiskCard({
                 timestamps={timestamps}
                 domain={[0, 100]}
                 yFormatter={(v) => `${v.toFixed(0)}%`}
-                height={160}
+                height={chartHeight(settings, 160)}
               />
             )}
           </>

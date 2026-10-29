@@ -1,3 +1,4 @@
+import { useCardSettings, chartHeight } from "../card-settings";
 import {
   Sparkline,
   MiniStat,
@@ -26,6 +27,7 @@ export function MemoryCard({
 }) {
   const { getMetricsHistory } = useHostMetricsApi();
   const { t } = useTranslation();
+  const settings = useCardSettings();
   const [activeTab, setActiveTab] = useState<HistoryTab>("live");
   const [rows, setRows] = useState<MetricsHistoryRow[] | null>(null);
   const [loading, setLoading] = useState(false);
@@ -92,43 +94,47 @@ export function MemoryCard({
               colorClassName={loadTextColor(percent)}
             />
             <div className="flex min-w-0 flex-1 flex-col gap-2">
-              <div className="grid grid-cols-2 gap-2">
-                <MiniStat
-                  caption={t("hostMetrics.memory")}
-                  value={
-                    usedGiB !== null && totalGiB !== null
-                      ? `${usedGiB.toFixed(1)}/${totalGiB.toFixed(1)}G`
-                      : "N/A"
-                  }
-                />
-                <MiniStat
-                  caption={t("hostMetrics.free")}
-                  value={freeGiB !== null ? `${freeGiB.toFixed(1)}G` : "N/A"}
-                />
-              </div>
-              {parts && metrics?.memory?.cachedGiB != null && (
-                <div className="flex flex-col gap-0.5">
-                  <div className="flex h-1.5 w-full bg-muted">
-                    <div
-                      className="bg-accent-brand"
-                      style={{ width: `${parts.used}%` }}
-                    />
-                    <div
-                      className="bg-accent-brand/40"
-                      style={{ width: `${parts.cache}%` }}
-                    />
-                  </div>
-                  <div className="font-mono text-[10px] text-muted-foreground">
-                    {t("hostMetrics.memoryMix", {
-                      cache: metrics.memory.cachedGiB.toFixed(1),
-                    })}
-                  </div>
+              {settings.showDetails !== false && (
+                <div className="grid grid-cols-2 gap-2">
+                  <MiniStat
+                    caption={t("hostMetrics.memory")}
+                    value={
+                      usedGiB !== null && totalGiB !== null
+                        ? `${usedGiB.toFixed(1)}/${totalGiB.toFixed(1)}G`
+                        : "N/A"
+                    }
+                  />
+                  <MiniStat
+                    caption={t("hostMetrics.free")}
+                    value={freeGiB !== null ? `${freeGiB.toFixed(1)}G` : "N/A"}
+                  />
                 </div>
               )}
+              {settings.showBreakdown !== false &&
+                parts &&
+                metrics?.memory?.cachedGiB != null && (
+                  <div className="flex flex-col gap-0.5">
+                    <div className="flex h-1.5 w-full bg-muted">
+                      <div
+                        className="bg-accent-brand"
+                        style={{ width: `${parts.used}%` }}
+                      />
+                      <div
+                        className="bg-accent-brand/40"
+                        style={{ width: `${parts.cache}%` }}
+                      />
+                    </div>
+                    <div className="font-mono text-[10px] text-muted-foreground">
+                      {t("hostMetrics.memoryMix", {
+                        cache: metrics.memory.cachedGiB.toFixed(1),
+                      })}
+                    </div>
+                  </div>
+                )}
               <Sparkline
                 data={[...history, percent ?? 0]}
                 domain={[0, 100]}
-                height={48}
+                height={chartHeight(settings, 48)}
               />
             </div>
           </div>
@@ -151,7 +157,7 @@ export function MemoryCard({
                 timestamps={timestamps}
                 domain={[0, 100]}
                 yFormatter={(v) => `${v.toFixed(0)}%`}
-                height={160}
+                height={chartHeight(settings, 160)}
               />
             )}
           </>

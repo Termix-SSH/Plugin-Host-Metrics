@@ -1,3 +1,4 @@
+import { useCardSettings } from "../card-settings";
 import { MetricCard } from "@termix-ssh/plugin-sdk/ui";
 import { type ServerMetrics } from "../../shared/metrics.js";
 import { ShieldCheck } from "lucide-react";
@@ -5,6 +6,7 @@ import { useTranslation } from "@termix-ssh/plugin-sdk/frontend";
 
 export function FirewallCard({ metrics }: { metrics: ServerMetrics | null }) {
   const { t } = useTranslation();
+  const settings = useCardSettings();
   const fw = metrics?.firewall;
 
   const totalRules =
@@ -37,18 +39,20 @@ export function FirewallCard({ metrics }: { metrics: ServerMetrics | null }) {
               {fw.type}
             </span>
           </div>
-          <div className="flex items-center gap-4 text-xs text-muted-foreground">
-            <span>
-              <span className="font-bold text-foreground">
-                {fw.chains?.length ?? 0}
-              </span>{" "}
-              {t("hostMetrics.firewall.chains")}
-            </span>
-            <span>
-              <span className="font-bold text-foreground">{totalRules}</span>{" "}
-              {t("hostMetrics.firewall.rules")}
-            </span>
-          </div>
+          {settings.showDetails !== false && (
+            <div className="flex items-center gap-4 text-xs text-muted-foreground">
+              <span>
+                <span className="font-bold text-foreground">
+                  {fw.chains?.length ?? 0}
+                </span>{" "}
+                {t("hostMetrics.firewall.chains")}
+              </span>
+              <span>
+                <span className="font-bold text-foreground">{totalRules}</span>{" "}
+                {t("hostMetrics.firewall.rules")}
+              </span>
+            </div>
+          )}
         </div>
       )}
     </MetricCard>

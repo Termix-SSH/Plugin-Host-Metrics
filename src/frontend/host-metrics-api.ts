@@ -5,6 +5,11 @@ import {
 } from "@termix-ssh/plugin-sdk/frontend";
 import type { HostMetricsLayout } from "../shared/host-metrics.js";
 import type { ServerMetrics } from "../shared/metrics.js";
+import type {
+  LayoutTemplate,
+  LayoutTemplateHost,
+  LayoutTemplateApplyResult,
+} from "../shared/layout-templates.js";
 
 // Every call is keyed by a host's numeric database id, and the receiving
 // backend must own that host in its own database: a synced host has a
@@ -183,6 +188,44 @@ export function createHostMetricsApi(api: PluginApiClient) {
     async getHostPlatform(hostId: number): Promise<PlatformInfo> {
       return (await api.get<PlatformInfo>(`/host-metrics/platform/${hostId}`))
         .data;
+    },
+
+    async getLayoutTemplates() {
+      return (
+        await api.get<{ templates: LayoutTemplate[] }>(
+          "/host-metrics/layout-templates",
+        )
+      ).data.templates;
+    },
+
+    async createLayoutTemplate(template: Omit<LayoutTemplate, "id">) {
+      return (
+        await api.post<LayoutTemplate>(
+          "/host-metrics/layout-templates",
+          template,
+        )
+      ).data;
+    },
+
+    async deleteLayoutTemplate(id: number) {
+      await api.delete(`/host-metrics/layout-templates/${id}`);
+    },
+
+    async getLayoutTemplateHosts() {
+      return (
+        await api.get<{ hosts: LayoutTemplateHost[] }>(
+          "/host-metrics/layout-templates/hosts",
+        )
+      ).data.hosts;
+    },
+
+    async applyLayoutTemplate(id: number, hostIds: number[]) {
+      return (
+        await api.post<{ results: LayoutTemplateApplyResult[] }>(
+          `/host-metrics/layout-templates/${id}/apply`,
+          { hostIds },
+        )
+      ).data.results;
     },
 
     /** GET a manager resource (read). */

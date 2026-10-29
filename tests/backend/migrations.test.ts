@@ -1,4 +1,7 @@
 import { afterEach, describe, expect, it } from "vitest";
+import { copyFileSync, mkdirSync, mkdtempSync, rmSync } from "node:fs";
+import { tmpdir } from "node:os";
+import { join } from "node:path";
 import { createTestDb, type TestDb } from "@termix-ssh/plugin-sdk/testing";
 import { pluginDir } from "./server";
 
@@ -107,12 +110,62 @@ const seedLegacy = (sqlite: TestDb["sqlite"]) => {
 };
 
 describe("adopting the host metrics tables", () => {
+  it("upgrades an existing 0002 database without changing saved data or indexes", async () => {
+    const fixture = mkdtempSync(join(tmpdir(), "host-metrics-upgrade-"));
+    const migrationDir = join(fixture, "migrations", "sqlite");
+    try {
+      mkdirSync(migrationDir, { recursive: true });
+      copyFileSync(
+        join(pluginDir, "manifest.json"),
+        join(fixture, "manifest.json"),
+      );
+      for (const file of [
+        "0001_adopt_host_metrics_tables.sql",
+        "0002_bigint_network_bytes.sql",
+      ]) {
+        copyFileSync(
+          join(pluginDir, "migrations", "sqlite", file),
+          join(migrationDir, file),
+        );
+      }
+      db = await createTestDb(fixture, { before: seedLegacy });
+      expect(db.applied).toHaveLength(2);
+      expect(tableExists("p_host_metrics_layout_templates")).toBe(false);
+      const saved = () =>
+        LEGACY.map((table) => ({
+          rows: db!.sqlite
+            .prepare(`SELECT * FROM p_host_metrics_${table}`)
+            .all(),
+          indexes: indexNames(`p_host_metrics_${table}`),
+        }));
+      const before = saved();
+      copyFileSync(
+        join(pluginDir, "migrations", "sqlite", "0003_layout_templates.sql"),
+        join(migrationDir, "0003_layout_templates.sql"),
+      );
+      expect(await db.migrate()).toEqual(["0003_layout_templates"]);
+      expect(saved()).toEqual(before);
+      expect(tableExists("p_host_metrics_layout_templates")).toBe(true);
+      db.sqlite.exec(`INSERT INTO p_host_metrics_layout_templates
+        (user_id, name, layout) VALUES ('user-1', 'Upgrade', '{}')`);
+      expect(await db.migrate()).toEqual([]);
+      expect(
+        db.sqlite
+          .prepare("SELECT name FROM p_host_metrics_layout_templates")
+          .all(),
+      ).toEqual([{ name: "Upgrade" }]);
+    } finally {
+      rmSync(fixture, { recursive: true, force: true });
+    }
+  });
+
   it("keeps every row and index when the legacy tables are there", async () => {
     db = await createTestDb(pluginDir, { before: seedLegacy });
 
     expect(db.applied).toEqual([
       "0001_adopt_host_metrics_tables",
       "0002_bigint_network_bytes",
+      "0003_layout_templates",
     ]);
     for (const table of LEGACY) {
       expect(tableExists(table)).toBe(false);
@@ -174,6 +227,40 @@ describe("adopting the host metrics tables", () => {
         db.sqlite.prepare(`SELECT * FROM p_host_metrics_${table}`).all(),
       ).toEqual([]);
     }
+    expect(tableExists("p_host_metrics_layout_templates")).toBe(true);
+    expect(tableExists("p_host_metrics_health_templates")).toBe(false);
+    expect(indexNames("p_host_metrics_layout_templates")).toEqual([
+      "idx_p_host_metrics_layout_templates_user",
+    ]);
+  });
+
+  it("leaves any already-applied development health-template table inert and untouched", async () => {
+    db = await createTestDb(pluginDir, {
+      before(sqlite) {
+        sqlite.exec(`CREATE TABLE p_host_metrics_health_templates (id INTEGER PRIMARY KEY, name TEXT);
+          INSERT INTO p_host_metrics_health_templates VALUES (1, 'Old development data');`);
+      },
+    });
+    expect(tableExists("p_host_metrics_layout_templates")).toBe(true);
+    expect(
+      db.sqlite.prepare("SELECT * FROM p_host_metrics_health_templates").all(),
+    ).toEqual([{ id: 1, name: "Old development data" }]);
+  });
+
+  it("keeps personal templates when hosts are deleted and cascades on user deletion", async () => {
+    db = await createTestDb(pluginDir, { before: seedLegacy });
+    db.sqlite.exec(`INSERT INTO p_host_metrics_layout_templates
+      (user_id, name, layout) VALUES ('user-1', 'Web', '{}')`);
+    db.sqlite.exec("DELETE FROM ssh_data WHERE id = 7");
+    expect(
+      db.sqlite
+        .prepare("SELECT name, layout FROM p_host_metrics_layout_templates")
+        .all(),
+    ).toEqual([{ name: "Web", layout: "{}" }]);
+    db.sqlite.exec("DELETE FROM users WHERE id = 'user-1'");
+    expect(
+      db.sqlite.prepare("SELECT * FROM p_host_metrics_layout_templates").all(),
+    ).toEqual([]);
   });
 
   it("cascades every table on host delete, and the user tables on user delete", async () => {
