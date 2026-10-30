@@ -5,6 +5,13 @@ vi.mock("../../../src/backend/managers/live-stream.js", () => ({
   createSamplers: () => sample,
 }));
 import { registerLiveRoutes } from "../../../src/backend/managers/live.js";
+import { AccessDeniedError } from "../../../src/backend/managers/route-helpers.js";
+
+const runOnHost = vi.fn(
+  async (_id: number, _l: string, fn: (...a: unknown[]) => unknown) =>
+    fn({}, { id: 1, actorId: "u" }),
+);
+const assertAccess = vi.fn(async () => "u");
 
 async function call(query: Record<string, string>, minMs = 500) {
   let handler: (req: unknown, res: unknown) => Promise<void>;
@@ -18,11 +25,8 @@ async function call(query: Record<string, string>, minMs = 500) {
     {
       validateHostId: (_q: unknown, _r: unknown, n: () => void) => n(),
       liveConfig: async () => ({ enabled: true, minSeconds: minMs / 1000 }),
-      runOnHost: async (
-        _id: number,
-        _l: string,
-        fn: (...a: unknown[]) => unknown,
-      ) => fn({}, { id: 1, actorId: "u" }),
+      runOnHost,
+      assertAccess,
       log: { error: vi.fn() },
     } as never,
   );
@@ -57,5 +61,25 @@ describe("live route ?stream", () => {
     sample.mockClear();
     await call({ stream: "1", ms: "99999" }, 10_000);
     expect(sample).toHaveBeenCalledWith(1, 10_000);
+  });
+
+  it("does not hold a pooled connection while the stream starts", async () => {
+    sample.mockResolvedValue({ cores: [] });
+    runOnHost.mockClear();
+    assertAccess.mockClear();
+    const res = await call({ stream: "1" });
+    expect(assertAccess).toHaveBeenCalledWith(1, "connect");
+    expect(runOnHost).not.toHaveBeenCalled();
+    expect(res.json).toHaveBeenCalledWith(
+      expect.objectContaining({ cores: [] }),
+    );
+  });
+
+  it("refuses a stream without access", async () => {
+    sample.mockClear();
+    assertAccess.mockRejectedValueOnce(new AccessDeniedError());
+    const res = await call({ stream: "1" });
+    expect(sample).not.toHaveBeenCalled();
+    expect(res.status).toHaveBeenCalledWith(403);
   });
 });

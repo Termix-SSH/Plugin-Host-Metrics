@@ -38,6 +38,11 @@ export interface HealthCheckEvent {
 export interface ManagerRoutesDeps {
   validateHostId: RequestHandler;
   runOnHost: RunOnHost;
+  /** Throws unless the acting user has `level` access, without borrowing a connection. */
+  assertAccess: (
+    hostId: number,
+    level: PluginHostShareLevel,
+  ) => Promise<unknown>;
   log: MetricsLogger;
   repository: HostMetricsRepository;
   recordHealth: HealthRecorder;

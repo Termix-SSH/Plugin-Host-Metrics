@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.3.1
+
+### Fixed
+
+- Live metrics no longer get stuck on hosts shown in several places at once, which filled the host's SSH connections and made the app report a lost server connection
+
 ## 1.3.0
 
 ### Added

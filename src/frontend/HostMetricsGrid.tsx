@@ -10,7 +10,7 @@ import {
   type PointerEvent as ReactPointerEvent,
   type ReactNode,
 } from "react";
-import { Button, type GridCardCatalogEntry } from "@termix-ssh/plugin-sdk/ui";
+import { type GridCardCatalogEntry } from "@termix-ssh/plugin-sdk/ui";
 import { useTranslation } from "@termix-ssh/plugin-sdk/frontend";
 import { CardSettingsView } from "./card-settings";
 import {
@@ -722,10 +722,9 @@ function Tile({
               >
                 <GripVertical className="size-3 text-muted-foreground" />
               </button>
-              <Button
-                variant="ghost"
-                size="icon-sm"
-                className="size-6 border border-border bg-card"
+              <button
+                type="button"
+                className="flex size-6 items-center justify-center border border-border bg-card text-muted-foreground hover:text-foreground"
                 title={t("hostMetrics.cardSettings.title", { card: label })}
                 aria-label={t("hostMetrics.cardSettings.title", {
                   card: label,
@@ -733,7 +732,7 @@ function Tile({
                 onClick={onSettings}
               >
                 <Settings2 className="size-3" />
-              </Button>
+              </button>
               <button
                 type="button"
                 onClick={onRemove}

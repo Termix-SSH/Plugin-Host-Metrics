@@ -7,7 +7,7 @@ import {
 } from "@termix-ssh/plugin-sdk/host-scripts";
 import type { RequestHandler, Router } from "express";
 import { createSamplers } from "./live-stream.js";
-import { managerHandler } from "./route-helpers.js";
+import { guardedHandler, managerHandler } from "./route-helpers.js";
 import type { ManagerRoutesDeps } from "./types.js";
 
 export { liveCmd, parseLive, type LivePrev };
@@ -45,6 +45,70 @@ export function registerLiveRoutes(app: Router, deps: ManagerRoutesDeps): void {
     }
   };
 
+  // Streaming: a held shell per host samples at the viewer pace, so a poll only
+  // reads the cache. It must not hold a pooled connection while it waits, or
+  // waiting polls fill the host's pool and the stream can never start.
+  const streamHandler = guardedHandler(
+    deps.log,
+    "live_sample",
+    async (hostId, req) => {
+      await deps.assertAccess(hostId, "connect");
+      const minMs: number = req.res?.locals.liveMinMs;
+      // The admin minimum wins over the 5s cap, so a slower floor is never undercut.
+      const ms = Math.min(
+        Math.max(5000, minMs),
+        Math.max(minMs, Number(req.query.ms) || minMs),
+      );
+      return { ...(await streamed(hostId, ms)), minIntervalS: minMs / 1000 };
+    },
+  );
+
+  const sampleHandler = managerHandler(
+    deps,
+    "connect",
+    "live_sample",
+    async (client, host, req) => {
+      const minMs: number = req.res?.locals.liveMinMs;
+      const now = Date.now();
+      // Entries live past their own minimum, so a long minimum is never cut short.
+      for (const [k, v] of recent)
+        if (!v.pending && now - v.at > Math.max(STALE_MS, v.minMs * 2)) {
+          recent.delete(k);
+          prevs.delete(k);
+        }
+      const hit = recent.get(host.id);
+      // A running sample is always joined. Failures are reused too, which
+      // backs a failing host off to the same pace.
+      // The current policy is applied on the way out so a raised minimum reaches clients at once.
+      const withPolicy = (p: Promise<LiveSample>) =>
+        p.then((s) => ({ ...s, minIntervalS: minMs / 1000 }));
+      if (hit && (hit.pending || now - hit.at < minMs)) {
+        return withPolicy(hit.sample);
+      }
+
+      const before = prevs.get(host.id);
+      const sample = (async () => {
+        const { stdout, code } = await execCommand(
+          client,
+          liveCmd(before?.pageBytes),
+          5000,
+        );
+        // A failed run must not replace the baseline with garbage.
+        if (code !== 0) throw new Error("live sample failed");
+        const parsed = parseLive(stdout, before, now);
+        prevs.set(host.id, parsed.next);
+        return parsed.sample;
+      })();
+      const entry = { at: now, minMs, pending: true, sample };
+      recent.set(host.id, entry);
+      const settle = () => {
+        entry.pending = false;
+      };
+      sample.then(settle, settle);
+      return withPolicy(sample);
+    },
+  );
+
   /**
    * @openapi
    * /plugin-api/host-metrics/host-metrics/managers/live/{id}:
@@ -57,70 +121,16 @@ export function registerLiveRoutes(app: Router, deps: ManagerRoutesDeps): void {
    *         required: true
    *         schema: { type: integer }
    *     responses:
-   *       200: { description: One live sample, shared per host and reused until the admin minimum interval passes. Includes minIntervalS. }
+   *       200: { description: One live sample, shared per host and reused until the admin minimum interval passes. With ?stream it is read from a held stream per host. Includes minIntervalS. }
    *       403: { description: No access, or live updates are disabled (code LIVE_DISABLED). }
    */
   app.get(
     "/host-metrics/managers/live/:id",
     validateHostId,
     gate,
-    managerHandler(
-      deps,
-      "connect",
-      "live_sample",
-      async (client, host, req) => {
-        const minMs: number = req.res?.locals.liveMinMs;
-        // Streaming: a held shell per host samples at the viewer pace, so a poll
-        // only reads the cache. Requests without ?stream keep the one-exec path.
-        if (req.query?.stream !== undefined) {
-          // The admin minimum wins over the 5s cap, so a slower floor is never undercut.
-          const ms = Math.min(
-            Math.max(5000, minMs),
-            Math.max(minMs, Number(req.query.ms) || minMs),
-          );
-          return {
-            ...(await streamed(host.id, ms)),
-            minIntervalS: minMs / 1000,
-          };
-        }
-        const now = Date.now();
-        // Entries live past their own minimum, so a long minimum is never cut short.
-        for (const [k, v] of recent)
-          if (!v.pending && now - v.at > Math.max(STALE_MS, v.minMs * 2)) {
-            recent.delete(k);
-            prevs.delete(k);
-          }
-        const hit = recent.get(host.id);
-        // A running sample is always joined. Failures are reused too, which
-        // backs a failing host off to the same pace.
-        // The current policy is applied on the way out so a raised minimum reaches clients at once.
-        const withPolicy = (p: Promise<LiveSample>) =>
-          p.then((s) => ({ ...s, minIntervalS: minMs / 1000 }));
-        if (hit && (hit.pending || now - hit.at < minMs)) {
-          return withPolicy(hit.sample);
-        }
-
-        const before = prevs.get(host.id);
-        const sample = (async () => {
-          const { stdout, code } = await execCommand(
-            client,
-            liveCmd(before?.pageBytes),
-            5000,
-          );
-          // A failed run must not replace the baseline with garbage.
-          if (code !== 0) throw new Error("live sample failed");
-          const parsed = parseLive(stdout, before, now);
-          prevs.set(host.id, parsed.next);
-          return parsed.sample;
-        })();
-        const entry = { at: now, minMs, pending: true, sample };
-        recent.set(host.id, entry);
-        const settle = () => {
-          entry.pending = false;
-        };
-        sample.then(settle, settle);
-        return withPolicy(sample);
-      },
-    ),
+    (req, res) =>
+      req.query?.stream !== undefined
+        ? streamHandler(req, res)
+        : sampleHandler(req, res),
   );
 }
