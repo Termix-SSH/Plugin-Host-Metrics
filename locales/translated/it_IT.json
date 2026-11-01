@@ -36,6 +36,7 @@
       "noProcesses": "Nessun processo sta utilizzando la GPU"
     },
     "totpFailed": "Verifica TOTP non riuscita",
+    "incorrectPassphrase": "Passphrase non corretta. Riprova.",
     "noneAuthNotSupported": "Le metriche host non supportano il tipo di autenticazione 'none'.",
     "noHostSelected": "Nessun host selezionato",
     "systemInfo": "Informazioni di sistema",

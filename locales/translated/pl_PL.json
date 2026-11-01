@@ -37,6 +37,7 @@
       "noProcesses": "Żaden proces nie używa karty graficznej"
     },
     "totpFailed": "Weryfikacja TOTP nie powiodła się",
+    "incorrectPassphrase": "Nieprawidłowa fraza hasłowa. Spróbuj ponownie.",
     "noneAuthNotSupported": "Metryki hosta nie obsługują typu uwierzytelniania „none”.",
     "noHostSelected": "Nie wybrano hosta",
     "systemInfo": "Informacje o systemie",

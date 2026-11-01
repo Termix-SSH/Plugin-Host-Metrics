@@ -35,6 +35,7 @@
       "noProcesses": "Keine Prozesse nutzen die GPU"
     },
     "totpFailed": "TOTP-Überprüfung fehlgeschlagen",
+    "incorrectPassphrase": "Falsche Passphrase. Bitte versuchen Sie es erneut.",
     "noneAuthNotSupported": "Host-Metriken unterstützen den Authentifizierungstyp „none“ nicht.",
     "noHostSelected": "Kein Host ausgewählt",
     "systemInfo": "Systeminformationen",

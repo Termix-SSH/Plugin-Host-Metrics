@@ -5,7 +5,10 @@ import type {
   Response,
   Router,
 } from "express";
-import type { PluginContext } from "@termix-ssh/plugin-sdk/backend";
+import type {
+  PluginContext,
+  PluginHostShareLevel,
+} from "@termix-ssh/plugin-sdk/backend";
 import {
   defaultLayoutFromWidgets,
   deriveEnabledWidgets,
@@ -85,6 +88,7 @@ export function registerRoutes(router: Router, deps: RouteDeps): void {
     log,
     registerViewer: (hostId, sessionId, userId) =>
       poller.registerViewer(hostId, sessionId, userId),
+    clearAuthFailure: (hostId) => poller.clearAuthFailure(hostId),
   };
 
   /**
@@ -237,7 +241,16 @@ export function registerRoutes(router: Router, deps: RouteDeps): void {
           ],
         });
       }
-      const result = await startInteractive(interactive, host, userId);
+      const keyPassword =
+        typeof req.body?.keyPassword === "string" && req.body.keyPassword
+          ? req.body.keyPassword
+          : undefined;
+      const result = await startInteractive(
+        interactive,
+        host,
+        userId,
+        keyPassword,
+      );
       res.status(result.status).json(result.body);
     } catch (error) {
       log.error("Failed to start metrics collection", error, {
@@ -695,6 +708,25 @@ export function registerRoutes(router: Router, deps: RouteDeps): void {
 
   registerLayoutTemplateRoutes(router, deps);
 
+  const assertAccess = async (
+    hostId: number,
+    level: PluginHostShareLevel,
+  ): Promise<string> => {
+    const userId = ctx.currentActor();
+    if (!userId) throw new AccessDeniedError("Authentication required");
+    const access = await ctx.hosts.checkAccess(hostId, level);
+    if (!access.hasAccess) {
+      if (
+        level !== "connect" &&
+        (await ctx.hosts.checkAccess(hostId, "connect")).hasAccess
+      ) {
+        throw editAccessDenied();
+      }
+      throw new AccessDeniedError();
+    }
+    return userId;
+  };
+
   registerManagerRoutes(router, {
     validateHostId,
     log,
@@ -714,19 +746,9 @@ export function registerRoutes(router: Router, deps: RouteDeps): void {
           Number.isFinite(minSeconds) && minSeconds >= 0.25 ? minSeconds : 2,
       };
     },
+    assertAccess,
     runOnHost: async (hostId, level, fn) => {
-      const userId = ctx.currentActor();
-      if (!userId) throw new AccessDeniedError("Authentication required");
-      const access = await ctx.hosts.checkAccess(hostId, level);
-      if (!access.hasAccess) {
-        if (
-          level !== "connect" &&
-          (await ctx.hosts.checkAccess(hostId, "connect")).hasAccess
-        ) {
-          throw editAccessDenied();
-        }
-        throw new AccessDeniedError();
-      }
+      const userId = await assertAccess(hostId, level);
       const host = await poller.resolve(hostId, userId);
       if (!host) throw new AccessDeniedError("Host not found");
       return ctx.ssh.withConnection(host, MANAGER_CONNECTION, (client) =>

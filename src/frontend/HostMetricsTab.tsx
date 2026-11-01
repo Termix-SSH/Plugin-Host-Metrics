@@ -2,6 +2,7 @@ import { CardSettingsContext } from "./card-settings";
 import {
   Button,
   ComponentSlot,
+  PassphraseDialog,
   TOTPDialog,
   useTabsSafe,
   ConnectionLogProvider,
@@ -108,9 +109,16 @@ function HostMetricsInner({
   const [currentHostConfig, setCurrentHostConfig] = React.useState(hostConfig);
   const [isRefreshing, setIsRefreshing] = React.useState(false);
   const [totpRequired, setTotpRequired] = React.useState(false);
+  const [passphraseRequired, setPassphraseRequired] = React.useState(false);
+  const keyPasswordRef = React.useRef<string | undefined>(undefined);
   const [totpSessionId, setTotpSessionId] = React.useState<string | null>(null);
   const [totpPrompt, setTotpPrompt] = React.useState<string>("");
   const [isPageVisible, setIsPageVisible] = React.useState(!document.hidden);
+  // Reconnecting after the page was in the background: the last cards stay up.
+  const [resuming, setResuming] = React.useState(false);
+  const backgroundedRef = React.useRef(false);
+  const metricsRef = React.useRef(metrics);
+  metricsRef.current = metrics;
   const [totpVerified, setTotpVerified] = React.useState(false);
   const [viewerSessionId, setViewerSessionId] = React.useState<string | null>(
     null,
@@ -324,6 +332,18 @@ function HostMetricsInner({
     }
   };
 
+  const handlePassphraseSubmit = (passphrase: string) => {
+    keyPasswordRef.current = passphrase;
+    setPassphraseRequired(false);
+    metricsRetryRef.current.reset();
+    metricsRetryRef.current.retryNow();
+  };
+
+  const handlePassphraseCancel = () => {
+    setPassphraseRequired(false);
+    if (currentTab !== null) removeTab(currentTab);
+  };
+
   const handleTOTPCancel = async () => {
     setTotpRequired(false);
     if (currentHostConfig?.id) {
@@ -357,8 +377,9 @@ function HostMetricsInner({
 
   const stopMetricsPollingRef = React.useRef<(() => void) | null>(null);
 
-  const fetchMetrics = React.useCallback(async (): Promise<void> => {
-    if (!currentHostConfig?.id) return;
+  /** Resolves false when it stopped to ask the person for something. */
+  const fetchMetrics = React.useCallback(async (): Promise<boolean> => {
+    if (!currentHostConfig?.id) return false;
     if (currentHostConfig.authType === "none") {
       toast.error(t("hostMetrics.noneAuthNotSupported"));
       if (currentTab !== null) removeTab(currentTab);
@@ -371,16 +392,27 @@ function HostMetricsInner({
         stage: "stats_connecting",
         message: `Connecting to ${currentHostConfig.username}@${currentHostConfig.ip}:${currentHostConfig.port}`,
       });
-      const result = await metricsApi.startMetrics(currentHostConfig.id);
+      const result = await metricsApi.startMetrics(
+        currentHostConfig.id,
+        keyPasswordRef.current,
+      );
       result?.connectionLogs?.forEach((log) =>
         addLog(log as ConnectionLogPayload),
       );
+      if (result.status === "passphrase_required") {
+        if (keyPasswordRef.current) {
+          toast.error(t("hostMetrics.incorrectPassphrase"));
+        }
+        keyPasswordRef.current = undefined;
+        setPassphraseRequired(true);
+        return false;
+      }
       if (result.requires_totp) {
         setTotpRequired(true);
         setTotpSessionId(result.sessionId || null);
         setTotpPrompt(result.prompt || "Verification code");
         // The TOTP dialog gates further progress; retry loop pauses via `enabled`.
-        return;
+        return false;
       }
       if (result.viewerSessionId) setViewerSessionId(result.viewerSessionId);
     }
@@ -429,6 +461,7 @@ function HostMetricsInner({
       },
       { runImmediately: false },
     );
+    return true;
   }, [
     currentHostConfig,
     totpVerified,
@@ -444,8 +477,7 @@ function HostMetricsInner({
   const metricsRetry = useConnectionRetry({
     connect: async () => {
       try {
-        await fetchMetrics();
-        if (!totpRequired) metricsRetry.markConnected();
+        if (await fetchMetrics()) metricsRetry.markConnected();
       } catch (error: unknown) {
         const logError = error as ConnectionLogError;
         if (logError.connectionLogs) {
@@ -461,18 +493,22 @@ function HostMetricsInner({
           });
         }
         metricsRetry.markFailed();
+      } finally {
+        setResuming(false);
       }
     },
     enabled:
       isPageVisible &&
       metricsEnabled &&
       !totpRequired &&
+      !passphraseRequired &&
       !!currentHostConfig?.id,
     autoStart: false,
   });
 
   const metricsRetryRef = React.useRef(metricsRetry);
   metricsRetryRef.current = metricsRetry;
+  const connectionStatus = resuming ? "connected" : metricsRetry.status;
 
   // Connects once per host and stays connected while this tab exists, even
   // when the user switches to another tab and back. Only the browser tab
@@ -480,6 +516,7 @@ function HostMetricsInner({
   // between Termix tabs must not tear down and reconnect the session.
   React.useEffect(() => {
     if (!metricsEnabled || !currentHostConfig?.id) return;
+    if (!isPageVisible) backgroundedRef.current = true;
 
     let cancelled = false;
 
@@ -496,6 +533,8 @@ function HostMetricsInner({
     const debounce = setTimeout(() => {
       if (cancelled) return;
       if (isPageVisible) {
+        setResuming(backgroundedRef.current && !!metricsRef.current);
+        backgroundedRef.current = false;
         clearLogs();
         metricsRetryRef.current.reset();
         metricsRetryRef.current.retryNow();
@@ -533,7 +572,7 @@ function HostMetricsInner({
 
   const handleRefresh = async () => {
     if (!currentHostConfig?.id) return;
-    if (metricsRetry.status !== "connected") {
+    if (connectionStatus !== "connected") {
       metricsRetry.retryNow();
       return;
     }
@@ -552,10 +591,10 @@ function HostMetricsInner({
   };
 
   const showCards =
-    metricsEnabled && metricsRetry.status === "connected" && metrics;
+    metricsEnabled && connectionStatus === "connected" && metrics;
   const showOffline =
     metricsEnabled &&
-    metricsRetry.status !== "connecting" &&
+    connectionStatus !== "connecting" &&
     !metrics &&
     serverStatus === "offline";
 
@@ -578,7 +617,7 @@ function HostMetricsInner({
       <div className="flex min-h-0 flex-1 flex-col overflow-hidden">
         <div className="flex flex-1 flex-col overflow-x-hidden overflow-y-auto">
           {!totpRequired &&
-            (metricsRetry.status === "connected" || showOffline) && (
+            (connectionStatus === "connected" || showOffline) && (
               <div className="flex h-12.5 shrink-0 items-center justify-between gap-2 border-b border-border px-3">
                 <div className="flex min-w-0 items-center gap-2">
                   <Server className="size-4 shrink-0 text-accent-brand" />
@@ -714,7 +753,7 @@ function HostMetricsInner({
 
         {metricsEnabled && !totpRequired && (
           <ConnectionScreen
-            status={showOffline ? "error" : metricsRetry.status}
+            status={showOffline ? "error" : connectionStatus}
             message={t("hostMetrics.connecting")}
             detail={
               currentHostConfig?.ip
@@ -727,8 +766,8 @@ function HostMetricsInner({
             onManualRetry={metricsRetry.retryNow}
             logPosition={
               showOffline ||
-              metricsRetry.status === "error" ||
-              metricsRetry.status === "disconnected"
+              connectionStatus === "error" ||
+              connectionStatus === "disconnected"
                 ? "top"
                 : "bottom"
             }
@@ -745,6 +784,19 @@ function HostMetricsInner({
           onApply={preferences.applyTemplate}
         />
       )}
+
+      <PassphraseDialog
+        isOpen={passphraseRequired}
+        onSubmit={handlePassphraseSubmit}
+        onCancel={handlePassphraseCancel}
+        hostInfo={{
+          ip: currentHostConfig?.ip ?? "",
+          port: currentHostConfig?.port ?? 22,
+          username: currentHostConfig?.username ?? "",
+          name: currentHostConfig?.name,
+        }}
+        backgroundColor="var(--bg-canvas)"
+      />
 
       <TOTPDialog
         isOpen={totpRequired}

@@ -37,6 +37,7 @@
       "noProcesses": "Žiadny proces nepoužíva GPU"
     },
     "totpFailed": "Overenie TOTP zlyhalo",
+    "incorrectPassphrase": "Nesprávne heslo. Skúste to znova.",
     "noneAuthNotSupported": "Metriky hostiteľa nepodporujú typ overovania 'none'.",
     "noHostSelected": "Nie je vybraný žiadny hostiteľ",
     "systemInfo": "Informácie o systéme",

@@ -121,13 +121,18 @@ export function useLiveMetrics(
     const tick = async () => {
       if (!document.hidden) {
         try {
-          const sample = await managerGet<LiveSample>(hostId, "live", {
-            stream: 1,
-            ms: intervalMs,
-          });
+          const sample = await managerGet<LiveSample & { pending?: boolean }>(
+            hostId,
+            "live",
+            {
+              stream: 1,
+              nowait: 1,
+              ms: intervalMs,
+            },
+          );
           if (stopped) return;
           errors = 0;
-          setLive({ hostId, sample });
+          if (!sample.pending) setLive({ hostId, sample });
           // The admin minimum wins over a faster user choice.
           delay = Math.max(intervalMs, (sample.minIntervalS ?? 0) * 1000);
         } catch (error) {

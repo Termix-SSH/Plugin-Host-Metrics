@@ -36,6 +36,7 @@
       "noProcesses": "Niciun proces nu utilizează GPU-ul"
     },
     "totpFailed": "Verificarea TOTP a eșuat",
+    "incorrectPassphrase": "Fraza de acces este incorectă. Încercați din nou.",
     "noneAuthNotSupported": "Metricile gazdei nu suportă tipul de autentificare „none”.",
     "noHostSelected": "Nicio gazdă selectată",
     "systemInfo": "Informații sistem",

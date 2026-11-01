@@ -35,6 +35,7 @@
       "noProcesses": "Geen prosesse gebruik die GPU nie"
     },
     "totpFailed": "TOTP-verifikasie het misluk",
+    "incorrectPassphrase": "Onkorrekte wagwoordfrase. Probeer asseblief weer.",
     "noneAuthNotSupported": "Gasheermetrieke ondersteun nie die 'none'-verifikasietipe nie.",
     "noHostSelected": "Geen gasheer gekies nie",
     "systemInfo": "Stelselinligting",

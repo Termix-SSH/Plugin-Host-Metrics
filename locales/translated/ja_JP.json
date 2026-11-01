@@ -34,6 +34,7 @@
       "noProcesses": "GPU を使用しているプロセスはありません"
     },
     "totpFailed": "TOTP 認証に失敗しました",
+    "incorrectPassphrase": "パスフレーズが正しくありません。もう一度お試しください。",
     "noneAuthNotSupported": "ホストメトリクスは「none」認証タイプをサポートしていません。",
     "noHostSelected": "ホストが選択されていません",
     "systemInfo": "システム情報",

@@ -36,6 +36,7 @@
       "noProcesses": "Nav procesu, kas izmanto GPU"
     },
     "totpFailed": "TOTP verifikācija neizdevās",
+    "incorrectPassphrase": "Nepareiza parolfrāze. Lūdzu, mēģiniet vēlreiz.",
     "noneAuthNotSupported": "Servera rādītāji neatbalsta autentifikācijas veidu 'none'.",
     "noHostSelected": "Nav izvēlēts serveris",
     "systemInfo": "Sistēmas informācija",

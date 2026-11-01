@@ -34,6 +34,7 @@
       "noProcesses": "沒有程序正在使用 GPU"
     },
     "totpFailed": "TOTP 驗證失敗",
+    "incorrectPassphrase": "金鑰密碼不正確，請再試一次。",
     "noneAuthNotSupported": "主機指標不支援「none」驗證類型。",
     "noHostSelected": "未選擇主機",
     "systemInfo": "系統資訊",

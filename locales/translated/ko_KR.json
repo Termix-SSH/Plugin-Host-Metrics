@@ -34,6 +34,7 @@
       "noProcesses": "GPU를 사용하는 프로세스가 없습니다"
     },
     "totpFailed": "TOTP 인증 실패",
+    "incorrectPassphrase": "잘못된 암호입니다. 다시 시도해 주세요.",
     "noneAuthNotSupported": "호스트 메트릭스는 'none' 인증 유형을 지원하지 않습니다.",
     "noHostSelected": "선택된 호스트가 없습니다",
     "systemInfo": "시스템 정보",

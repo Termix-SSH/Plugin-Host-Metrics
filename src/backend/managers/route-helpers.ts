@@ -44,13 +44,21 @@ export function managerHandler(
   operation: string,
   fn: (client: Client, host: ManagerHost, req: Request) => Promise<unknown>,
 ) {
+  return guardedHandler(log, operation, (hostId, req) =>
+    runOnHost(hostId, level, (client, host) => fn(client, host, req)),
+  );
+}
+
+/** Like managerHandler, but `fn` gets no connection and does its own access check. */
+export function guardedHandler(
+  log: MetricsLogger,
+  operation: string,
+  fn: (hostId: number, req: Request) => Promise<unknown>,
+) {
   return async (req: Request, res: Response) => {
     const hostId = parseInt(String(req.params.id), 10);
     try {
-      const result = await runOnHost(hostId, level, (client, host) =>
-        fn(client, host, req),
-      );
-      return res.json(result);
+      return res.json(await fn(hostId, req));
     } catch (error) {
       if (error instanceof ManagerInputError) {
         return res.status(400).json({ error: error.message });

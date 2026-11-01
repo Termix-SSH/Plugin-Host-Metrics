@@ -35,6 +35,7 @@
       "noProcesses": "Inga processer använder GPU:n"
     },
     "totpFailed": "TOTP-verifieringen misslyckades",
+    "incorrectPassphrase": "Fel lösenfras. Försök igen.",
     "noneAuthNotSupported": "Värdmätningar stöder inte autentiseringstypen 'none'.",
     "noHostSelected": "Ingen värd vald",
     "systemInfo": "Systeminformation",

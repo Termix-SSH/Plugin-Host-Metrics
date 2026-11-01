@@ -37,6 +37,7 @@
       "noProcesses": "Nėra procesų, naudojančių GPU"
     },
     "totpFailed": "TOTP patikrinimas nepavyko",
+    "incorrectPassphrase": "Neteisinga slaptažodžio frazė. Bandykite dar kartą.",
     "noneAuthNotSupported": "Serverio metrikos nepalaiko „none“ autentifikacijos tipo.",
     "noHostSelected": "Nepasirinktas serveris",
     "systemInfo": "Sistemos informacija",

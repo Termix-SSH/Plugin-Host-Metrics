@@ -37,6 +37,7 @@
       "noProcesses": "Žádný proces nepoužívá GPU"
     },
     "totpFailed": "Ověření TOTP selhalo",
+    "incorrectPassphrase": "Nesprávné heslo. Zkuste to prosím znovu.",
     "noneAuthNotSupported": "Metriky hostitele nepodporují typ ověření 'none'.",
     "noHostSelected": "Nebyl vybrán žádný hostitel",
     "systemInfo": "Informace o systému",

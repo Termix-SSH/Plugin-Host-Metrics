@@ -35,6 +35,7 @@
       "noProcesses": "Ingen processer bruger GPU'en"
     },
     "totpFailed": "TOTP-verificeringen mislykkedes",
+    "incorrectPassphrase": "Forkert adgangskode. Prøv venligst igen.",
     "noneAuthNotSupported": "Værtmetrik understøtter ikke autentificeringstypen 'none'.",
     "noHostSelected": "Ingen vært valgt",
     "systemInfo": "Systeminformation",

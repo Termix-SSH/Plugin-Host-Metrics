@@ -233,7 +233,8 @@ export async function collectMetrics(
           error.message.includes("No password available") ||
           error.message.includes("Unsupported authentication type") ||
           error.message.includes("No SSH key available") ||
-          error.message.includes("Invalid SSH key format")
+          error.message.includes("Invalid SSH key format") ||
+          error.message.includes("SSH key is encrypted")
         ) {
           state.authFailures.recordFailure(host.id, "AUTH", true);
         } else if (isHostKeyVerificationError(error)) {

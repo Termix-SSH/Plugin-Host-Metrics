@@ -21,6 +21,35 @@ beforeEach(async () => {
 });
 afterEach(() => db?.close());
 
+describe("metrics history on real SQLite", () => {
+  const sample = {
+    hostId: 1,
+    cpuPercent: 1,
+    memPercent: 2,
+    diskPercent: 3,
+    netRxBytes: null,
+    netTxBytes: null,
+  };
+  const rows = () =>
+    (
+      db.sqlite
+        .prepare(
+          "SELECT COUNT(*) AS n FROM p_host_metrics_host_metrics_history",
+        )
+        .get() as { n: number }
+    ).n;
+
+  it("keeps one sample a minute per host and saves only now and then", async () => {
+    db.sqlite.exec("PRAGMA foreign_keys = OFF");
+    const persist = vi.spyOn(db.database, "persist");
+    await repository.recordSample(sample, 7);
+    await repository.recordSample(sample, 7);
+    await repository.recordSample({ ...sample, hostId: 2 }, 7);
+    expect(rows()).toBe(2);
+    expect(persist).toHaveBeenCalledTimes(1);
+  });
+});
+
 describe("layout template repository on real SQLite", () => {
   it("creates, reads and deletes by the owning user, preserving duplicate names and snapshots", async () => {
     const first = await repository.createTemplate("user-1", values);

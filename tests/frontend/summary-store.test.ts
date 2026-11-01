@@ -21,6 +21,21 @@ function fakeApi() {
 const flush = () => new Promise((resolve) => setTimeout(resolve, 0));
 
 describe("metrics summary store", () => {
+  it("gives only a few hosts a live slot and hands freed slots on", () => {
+    const store = createMetricsSummaryStore(
+      fakeApi() as unknown as HostMetricsApi,
+    );
+    const grants = Array.from({ length: 8 }, () => vi.fn());
+    const releases = grants.map((grant) => store.claimLive(grant));
+    expect(grants.filter((g) => g.mock.calls.length > 0)).toHaveLength(6);
+    expect(grants[6]).not.toHaveBeenCalled();
+    releases[0]();
+    expect(grants[6]).toHaveBeenCalledTimes(1);
+    releases[7]();
+    releases[1]();
+    expect(grants[7]).not.toHaveBeenCalled();
+  });
+
   it("holds one viewer per host while anything watches it", async () => {
     const api = fakeApi();
     const store = createMetricsSummaryStore(api as unknown as HostMetricsApi);

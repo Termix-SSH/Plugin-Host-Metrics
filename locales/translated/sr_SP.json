@@ -36,6 +36,7 @@
       "noProcesses": "Ниједан процес не користи GPU"
     },
     "totpFailed": "Неуспешна TOTP верификација",
+    "incorrectPassphrase": "Нетачна лозинка. Покушајте поново.",
     "noneAuthNotSupported": "Метрике хоста не подржавају тип аутентификације 'none'.",
     "noHostSelected": "Није изабран хост",
     "systemInfo": "Информације о систему",

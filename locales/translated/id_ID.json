@@ -34,6 +34,7 @@
       "noProcesses": "Tidak ada proses yang menggunakan GPU"
     },
     "totpFailed": "Verifikasi TOTP gagal",
+    "incorrectPassphrase": "Passphrase salah. Silakan coba lagi.",
     "noneAuthNotSupported": "Metrik Host tidak mendukung jenis autentikasi 'none'.",
     "noHostSelected": "Tidak ada host yang dipilih",
     "systemInfo": "Informasi Sistem",

@@ -36,6 +36,7 @@
       "noProcesses": "Nenhum processo está a utilizar a GPU"
     },
     "totpFailed": "Falha na verificação TOTP",
+    "incorrectPassphrase": "Frase-passe incorreta. Tente novamente.",
     "noneAuthNotSupported": "As Métricas do Servidor não suportam o tipo de autenticação 'none'.",
     "noHostSelected": "Nenhum servidor selecionado",
     "systemInfo": "Informação do Sistema",

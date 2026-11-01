@@ -36,6 +36,7 @@
       "noProcesses": "Nijedan proces ne koristi GPU"
     },
     "totpFailed": "TOTP provjera nije uspjela",
+    "incorrectPassphrase": "Netočan šifarski izraz. Pokušajte ponovno.",
     "noneAuthNotSupported": "Metrike poslužitelja ne podržavaju vrstu autentifikacije 'none'.",
     "noHostSelected": "Nije odabran poslužitelj",
     "systemInfo": "Informacije o sustavu",

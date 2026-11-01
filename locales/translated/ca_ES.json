@@ -36,6 +36,7 @@
       "noProcesses": "Cap procés està utilitzant la GPU"
     },
     "totpFailed": "La verificació TOTP ha fallat",
+    "incorrectPassphrase": "La frase de pas és incorrecta. Si us plau, torneu-ho a provar.",
     "noneAuthNotSupported": "Les mètriques de l'amfitrió no admeten el tipus d'autenticació 'none'.",
     "noHostSelected": "No s'ha seleccionat cap amfitrió",
     "systemInfo": "Informació del sistema",

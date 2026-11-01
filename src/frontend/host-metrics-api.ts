@@ -48,6 +48,7 @@ interface ConnectionLogEntry {
 
 export interface StartMetricsResult {
   success: boolean;
+  status?: "passphrase_required";
   requires_totp?: boolean;
   sessionId?: string;
   prompt?: string;
@@ -110,10 +111,17 @@ export function createHostMetricsApi(api: PluginApiClient) {
     },
 
     /** Throws an Error carrying the server's connectionLogs on failure. */
-    async startMetrics(hostId: number): Promise<StartMetricsResult> {
+    async startMetrics(
+      hostId: number,
+      keyPassword?: string,
+    ): Promise<StartMetricsResult> {
       try {
-        return (await api.post<StartMetricsResult>(`/metrics/start/${hostId}`))
-          .data;
+        return (
+          await api.post<StartMetricsResult>(
+            `/metrics/start/${hostId}`,
+            keyPassword ? { keyPassword } : undefined,
+          )
+        ).data;
       } catch (error) {
         const body = bodyOf(error);
         if (body?.connectionLogs) {

@@ -35,6 +35,7 @@
       "noProcesses": "Ükski protsess ei kasuta GPU-d"
     },
     "totpFailed": "TOTP kinnitamine ebaõnnestus",
+    "incorrectPassphrase": "Vale paroolfraas. Proovi uuesti.",
     "noneAuthNotSupported": "Mõõdikud ei toeta autentimistüüpi 'none'.",
     "noHostSelected": "Ühtegi peremeesmasinat ei ole valitud",
     "systemInfo": "Süsteemi teave",

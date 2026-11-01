@@ -35,6 +35,7 @@
       "noProcesses": "Geen processen gebruiken de GPU"
     },
     "totpFailed": "TOTP-verificatie mislukt",
+    "incorrectPassphrase": "Onjuiste wachtzin. Probeer het opnieuw.",
     "noneAuthNotSupported": "Hostmetrieken ondersteunt geen 'none'-autenticatietype.",
     "noHostSelected": "Geen host geselecteerd",
     "systemInfo": "Systeemgegevens",

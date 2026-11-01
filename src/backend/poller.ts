@@ -354,6 +354,10 @@ export class MetricsPoller {
       .finally(() => this.inFlight.delete(host.id));
   }
 
+  clearAuthFailure(hostId: number): void {
+    this.deps.state.authFailures.reset(hostId);
+  }
+
   /** One sample for one host. Public for tests. */
   async poll(host: MetricsHost): Promise<void> {
     const { state, log } = this.deps;

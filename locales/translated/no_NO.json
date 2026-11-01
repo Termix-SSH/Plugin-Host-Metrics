@@ -35,6 +35,7 @@
       "noProcesses": "Ingen prosesser bruker GPU-en"
     },
     "totpFailed": "TOTP-verifisering mislyktes",
+    "incorrectPassphrase": "Feil passfrase. Vennligst prøv igjen.",
     "noneAuthNotSupported": "Vertsmetrikker støtter ikke autentiseringstypen «none».",
     "noHostSelected": "Ingen vert valgt",
     "systemInfo": "Systeminformasjon",

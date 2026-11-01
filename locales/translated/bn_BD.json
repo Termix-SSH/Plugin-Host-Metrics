@@ -35,6 +35,7 @@
       "noProcesses": "কোনো প্রসেস GPU ব্যবহার করছে না"
     },
     "totpFailed": "TOTP যাচাইকরণ ব্যর্থ হয়েছে",
+    "incorrectPassphrase": "ভুল পাসফ্রেজ। অনুগ্রহ করে আবার চেষ্টা করুন।",
     "noneAuthNotSupported": "হোস্ট মেট্রিক্স 'none' অথেন্টিকেশন টাইপ সমর্থন করে না।",
     "noHostSelected": "কোনো হোস্ট নির্বাচন করা হয়নি",
     "systemInfo": "সিস্টেম তথ্য",

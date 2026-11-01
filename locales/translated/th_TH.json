@@ -34,6 +34,7 @@
       "noProcesses": "ไม่มีกระบวนการใดใช้ GPU"
     },
     "totpFailed": "การตรวจสอบ TOTP ล้มเหลว",
+    "incorrectPassphrase": "คีย์วลีไม่ถูกต้อง โปรดลองอีกครั้ง",
     "noneAuthNotSupported": "เมตริกโฮสต์ไม่รองรับประเภทการตรวจสอบสิทธิ์ 'none'",
     "noHostSelected": "ไม่ได้เลือกโฮสต์",
     "systemInfo": "ข้อมูลระบบ",

@@ -35,6 +35,7 @@
       "noProcesses": "GPU kullanan işlem yok"
     },
     "totpFailed": "TOTP doğrulaması başarısız oldu",
+    "incorrectPassphrase": "Geçersiz parola. Lütfen tekrar deneyin.",
     "noneAuthNotSupported": "Ana Bilgisayar Metrikleri, 'none' kimlik doğrulama türünü desteklemez.",
     "noHostSelected": "Hiçbir ana bilgisayar seçilmedi",
     "systemInfo": "Sistem Bilgileri",

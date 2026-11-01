@@ -37,6 +37,7 @@
       "noProcesses": "Noben postopek ne uporablja grafične kartice"
     },
     "totpFailed": "Preverjanje TOTP ni uspelo",
+    "incorrectPassphrase": "Napačna geslena fraza. Poskusite znova.",
     "noneAuthNotSupported": "Metrike strežnika ne podpirajo vrste overitve 'none'.",
     "noHostSelected": "Ni izbranega strežnika",
     "systemInfo": "Sistemske informacije",

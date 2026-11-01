@@ -35,6 +35,7 @@
       "noProcesses": "कोई प्रक्रिया GPU का उपयोग नहीं कर रही है"
     },
     "totpFailed": "TOTP सत्यापन विफल",
+    "incorrectPassphrase": "गलत पासफ्रेज़। कृपया पुनः प्रयास करें।",
     "noneAuthNotSupported": "होस्ट मेट्रिक्स 'none' प्रमाणीकरण प्रकार का समर्थन नहीं करता है।",
     "noHostSelected": "कोई होस्ट नहीं चुना गया",
     "systemInfo": "सिस्टम जानकारी",

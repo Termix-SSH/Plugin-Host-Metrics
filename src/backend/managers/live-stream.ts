@@ -152,7 +152,18 @@ export function createSamplers(runOnHost: RunOnHost) {
   }, 2000);
   timer.unref?.();
 
-  const sample = async (hostId: number, ms: number): Promise<LiveSample> => {
+  /** With wait false, answers null until the first frames are in instead of holding the request. */
+  async function sample(hostId: number, ms: number): Promise<LiveSample>;
+  async function sample(
+    hostId: number,
+    ms: number,
+    wait: false,
+  ): Promise<LiveSample | null>;
+  async function sample(
+    hostId: number,
+    ms: number,
+    wait = true,
+  ): Promise<LiveSample | null> {
     const now = Date.now();
     let slot = slots.get(hostId);
     if (slot?.error && now - slot.failedAt < FAIL_RETRY_MS) throw slot.error;
@@ -177,6 +188,7 @@ export function createSamplers(runOnHost: RunOnHost) {
     slot ??= start(hostId, target, want);
     slot.seen = now;
     if (slot.count < 2) {
+      if (!wait) return null;
       const s = slot;
       await new Promise<void>((ok, bad) => {
         const w = {
@@ -191,7 +203,7 @@ export function createSamplers(runOnHost: RunOnHost) {
       });
     }
     return slot.sample ?? s_fallback(slot);
-  };
+  }
   const s_fallback = (slot: Slot): LiveSample => {
     throw slot.error ?? new Error("live stream stopped");
   };

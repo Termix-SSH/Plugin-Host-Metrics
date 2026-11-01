@@ -34,6 +34,7 @@
       "noProcesses": "Không có quá trình nào đang sử dụng GPU"
     },
     "totpFailed": "Xác minh TOTP thất bại",
+    "incorrectPassphrase": "Mật khẩu không đúng. Vui lòng thử lại.",
     "noneAuthNotSupported": "Chỉ số máy chủ không hỗ trợ loại xác thực 'none'.",
     "noHostSelected": "Chưa chọn máy chủ",
     "systemInfo": "Thông tin hệ thống",

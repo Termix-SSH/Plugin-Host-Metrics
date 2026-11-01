@@ -35,6 +35,7 @@
       "noProcesses": "Няма процеси, използващи GPU"
     },
     "totpFailed": "Неуспешна TOTP верификация",
+    "incorrectPassphrase": "Грешна парола. Моля, опитайте отново.",
     "noneAuthNotSupported": "Метриките на хоста не поддържат тип автентикация 'none'.",
     "noHostSelected": "Не е избран хост",
     "systemInfo": "Системна информация",

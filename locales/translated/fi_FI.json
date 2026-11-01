@@ -35,6 +35,7 @@
       "noProcesses": "GPU:ta ei käytetä"
     },
     "totpFailed": "TOTP-vahvistus epäonnistui",
+    "incorrectPassphrase": "Virheellinen avainsana. Yritä uudelleen.",
     "noneAuthNotSupported": "Isäntämittarit eivät tue 'none'-tunnistautumistyyppiä.",
     "noHostSelected": "Isäntää ei valittu",
     "systemInfo": "Järjestelmätiedot",

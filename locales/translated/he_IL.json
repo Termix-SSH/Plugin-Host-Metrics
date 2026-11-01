@@ -36,6 +36,7 @@
       "noProcesses": "אין תהליכים המשתמשים בכרטיס המסך"
     },
     "totpFailed": "אימות TOTP נכשל",
+    "incorrectPassphrase": "מילת הססמה שגויה. אנא נסה שוב.",
     "noneAuthNotSupported": "מדדי מארח אינם תומכים בסוג אימות 'none'.",
     "noHostSelected": "לא נבחר מארח",
     "systemInfo": "מידע על המערכת",

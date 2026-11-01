@@ -35,6 +35,7 @@
       "noProcesses": "Nincsenek GPU-t használó folyamatok"
     },
     "totpFailed": "A TOTP-hitelesítés sikertelen",
+    "incorrectPassphrase": "Helytelen jelszófráza. Kérjük, próbálja újra.",
     "noneAuthNotSupported": "A Host metrikák nem támogatja a „none” hitelesítési típust.",
     "noHostSelected": "Nincs kiválasztott host",
     "systemInfo": "Rendszerinformációk",

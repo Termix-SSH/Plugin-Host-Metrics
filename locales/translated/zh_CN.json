@@ -34,6 +34,7 @@
       "noProcesses": "没有进程正在使用 GPU"
     },
     "totpFailed": "TOTP 验证失败",
+    "incorrectPassphrase": "密码短语不正确。请重试。",
     "noneAuthNotSupported": "主机指标不支持“无”身份验证类型。",
     "noHostSelected": "未选择主机",
     "systemInfo": "系统信息",

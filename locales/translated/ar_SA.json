@@ -39,6 +39,7 @@
       "noProcesses": "لا توجد عمليات تستخدم وحدة معالجة الرسومات"
     },
     "totpFailed": "فشل التحقق من TOTP",
+    "incorrectPassphrase": "عبارة المرور غير صحيحة. يرجى المحاولة مرة أخرى.",
     "noneAuthNotSupported": "لا يدعم مقاييس المضيف نوع المصادقة 'none'.",
     "noHostSelected": "لم يتم تحديد مضيف",
     "systemInfo": "معلومات النظام",

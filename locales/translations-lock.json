@@ -29,6 +29,7 @@
   "hostMetrics.gpu.processes": "e1cf2c58b7d7",
   "hostMetrics.gpu.noProcesses": "98be50e79c61",
   "hostMetrics.totpFailed": "b0b0ce2c58a3",
+  "hostMetrics.incorrectPassphrase": "27eef18d05f1",
   "hostMetrics.noneAuthNotSupported": "3327f0175be0",
   "hostMetrics.noHostSelected": "9a1c405b1079",
   "hostMetrics.systemInfo": "5131fe5695bc",

@@ -3,6 +3,43 @@ import type { PluginSsh } from "@termix-ssh/plugin-sdk/backend";
 import { startInteractive } from "../../src/backend/interactive.js";
 import type { MetricsHost } from "../../src/backend/helpers.js";
 
+describe("startInteractive with an encrypted key", () => {
+  const host = { id: 7, ip: "h", port: 22, username: "u" } as never;
+  const deps = (prepare: unknown) => ({
+    ssh: { prepare } as unknown as PluginSsh,
+    sessions: { get: () => undefined } as never,
+    log: { info: vi.fn(), warn: vi.fn(), error: vi.fn() } as never,
+    registerViewer: vi.fn(),
+  });
+
+  it("asks for the passphrase and does not report an error", async () => {
+    const prepare = vi.fn(async () => ({
+      config: {},
+      outcome: {
+        status: "error",
+        code: "passphrase-required",
+        message: "The SSH key is encrypted.",
+      },
+    }));
+    const result = await startInteractive(deps(prepare), host, "user");
+    expect(result.status).toBe(200);
+    expect(result.body.status).toBe("passphrase_required");
+  });
+
+  it("uses the typed passphrase for this connection", async () => {
+    const prepare = vi.fn(async (_host: unknown, _options: unknown) => ({
+      config: {},
+      outcome: {
+        status: "error",
+        code: "passphrase-required",
+        message: "wrong",
+      },
+    }));
+    await startInteractive(deps(prepare), host, "user", "secret");
+    expect(prepare.mock.calls[0]![0]).toMatchObject({ keyPassword: "secret" });
+  });
+});
+
 describe("startInteractive through a jump host", () => {
   it("returns requires_totp when a jump host asks for a code", async () => {
     let answer: Promise<string | null> | null = null;

@@ -50,6 +50,17 @@ describe("liveStreamCmd", () => {
 });
 
 describe("createSamplers", () => {
+  it("answers null at once with wait false until the first frames are in", async () => {
+    const f = fake();
+    const get = createSamplers(f.runOnHost as never);
+    expect(await get(1, 500, false)).toBeNull();
+    await Promise.resolve();
+    emit(f.streams[0], 2);
+    expect(await get(1, 500, false)).toMatchObject({ memTotalKb: 1000 });
+    expect(f.client.exec).toHaveBeenCalledTimes(1);
+    get.dispose();
+  });
+
   it("shares one stream between callers and splits partial chunks", async () => {
     const f = fake();
     const get = createSamplers(f.runOnHost as never);

@@ -87,7 +87,13 @@ export type HostMetricsRepository = Awaited<
 /**
  * Config upserts read the row by its unique (user, host) pair first.
  */
+const SAMPLE_GAP_MS = 55_000;
+const PRUNE_GAP_MS = 10 * 60_000;
+const HISTORY_PERSIST_GAP_MS = 5 * 60_000;
+
 export async function createHostMetricsRepository(db: PluginDatabase) {
+  const sampleTimes = new Map<number, { written: number; pruned: number }>();
+  let lastHistoryPersist = 0;
   const preferences: Table = await db.define(hostMetricsPreferences);
   const checks: Table = await db.define(hostHealthChecks);
   const health: Table = await db.define(hostHealthHistory);
@@ -330,25 +336,40 @@ export async function createHostMetricsRepository(db: PluginDatabase) {
       }));
     },
 
-    /** One sample, then drops the host's samples older than the retention. */
+    /**
+     * Keeps at most one sample a minute per host and drops the ones past the
+     * retention. On SQLite every save rewrites the whole database, so history
+     * must stay small and must not cause a save for each sample.
+     */
     async recordSample(
       input: MetricsHistoryInput,
       retentionDays: number,
     ): Promise<void> {
+      const nowMs = Date.now();
+      const last = sampleTimes.get(input.hostId);
+      if (last && nowMs - last.written < SAMPLE_GAP_MS) return;
       const drizzle = await client();
-      const now = new Date();
+      const now = new Date(nowMs);
       await drizzle.insert(history).values({ ...input, ts: sqlTimestamp(now) });
-      const cutoff = new Date(now.getTime() - retentionDays * 86_400_000);
-      await drizzle
-        .delete(history)
-        .where(
-          and(
-            eq(history.hostId, input.hostId),
-            lt(history.ts, sqlTimestamp(cutoff)),
-          ),
-        );
-      // A sample every few seconds per host: let the debounced save pick it up.
-      await db.persist({ lazy: true });
+      const entry = last ?? { written: nowMs, pruned: 0 };
+      entry.written = nowMs;
+      sampleTimes.set(input.hostId, entry);
+      if (nowMs - entry.pruned >= PRUNE_GAP_MS) {
+        entry.pruned = nowMs;
+        const cutoff = new Date(nowMs - retentionDays * 86_400_000);
+        await drizzle
+          .delete(history)
+          .where(
+            and(
+              eq(history.hostId, input.hostId),
+              lt(history.ts, sqlTimestamp(cutoff)),
+            ),
+          );
+      }
+      if (nowMs - lastHistoryPersist >= HISTORY_PERSIST_GAP_MS) {
+        lastHistoryPersist = nowMs;
+        await db.persist({ lazy: true });
+      }
     },
 
     async listSamples(

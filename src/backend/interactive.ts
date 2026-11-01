@@ -25,6 +25,8 @@ export interface InteractiveDeps {
   sessions: MetricsSessions;
   log: MetricsLogger;
   registerViewer: (hostId: number, sessionId: string, userId: string) => void;
+  /** Lets background polling use a connection opened after a failed login. */
+  clearAuthFailure?: (hostId: number) => void;
 }
 
 function stageForError(message: string): [string, string] {
@@ -55,9 +57,12 @@ function stageForError(message: string): [string, string] {
  */
 export async function startInteractive(
   deps: InteractiveDeps,
-  host: MetricsHost,
+  target: MetricsHost,
   userId: string,
+  keyPassword?: string,
 ): Promise<StartResult> {
+  // The passphrase a person typed only lives on this one connection.
+  const host = keyPassword ? { ...target, keyPassword } : target;
   const { ssh, sessions, log } = deps;
   const logs: ConnectionLog[] = [
     connectionLog("info", "stats_connecting", "Starting metrics collection"),
@@ -93,6 +98,17 @@ export async function startInteractive(
   config.readyTimeout = CONNECT_TIMEOUT_MS;
   if (prepared.outcome.status !== "ready") {
     const outcome = prepared.outcome;
+    if (outcome.status === "error" && outcome.code === "passphrase-required") {
+      logs.push(connectionLog("info", "auth", outcome.message));
+      return {
+        status: 200,
+        body: {
+          success: false,
+          status: "passphrase_required",
+          connectionLogs: logs,
+        },
+      };
+    }
     logs.push(connectionLog("error", "auth", outcome.message));
     if (outcome.status === "interaction-required") {
       return {
@@ -194,6 +210,7 @@ export async function startInteractive(
               hostId: host.id,
               userId,
             });
+            deps.clearAuthFailure?.(host.id);
             const viewerSessionId = newSessionId("viewer");
             deps.registerViewer(host.id, viewerSessionId, userId);
             resolve({ success: true, viewerSessionId });
