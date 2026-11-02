@@ -114,4 +114,34 @@ describe("mergeLive", () => {
     });
     expect(m.disk).toBe(slow.disk);
   });
+
+  it("overlays live GPU readings and keeps the slow ones without them", () => {
+    const gpu = (utilizationPercent: number) => ({
+      source: "nvidia-smi" as const,
+      gpus: [
+        {
+          index: 0,
+          uuid: "GPU-1",
+          name: "RTX",
+          driverVersion: null,
+          utilizationPercent,
+          memoryUsedMiB: null,
+          memoryTotalMiB: null,
+          memoryPercent: null,
+          temperatureCelsius: null,
+          powerDrawWatts: null,
+          powerLimitWatts: null,
+          fanPercent: null,
+        },
+      ],
+      processes: [],
+    });
+    const withGpu = { ...slow, gpu: gpu(5) };
+    expect(mergeLive(withGpu, live)!.gpu).toBe(withGpu.gpu);
+    const fresh = gpu(90);
+    const merged = mergeLive(withGpu, { ...live, gpu: fresh, gpuAt: 1 })!;
+    expect(merged.gpu).toBe(fresh);
+    const none = { source: "none" as const, gpus: [], processes: [] };
+    expect(mergeLive(withGpu, { ...live, gpu: none })!.gpu).toBe(withGpu.gpu);
+  });
 });

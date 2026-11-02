@@ -5,6 +5,9 @@ import {
   parseNvidiaSmiProcesses,
   parseAmdgpuOutput,
   mergeGpuMetrics,
+  parseLiveGpuOutput,
+  LIVE_GPU_COMMAND,
+  LIVE_GPU_PROBE,
 } from "../../../src/backend/widgets/gpu-collector.js";
 
 const RTX_UUID = "GPU-3b8f2c1a-5d4e-7f60-8a9b-0c1d2e3f4a5b";
@@ -260,5 +263,40 @@ describe("amdgpu collector", () => {
     );
     expect(amdOnly.source).toBe("amdgpu");
     expect(amdOnly.gpus).toHaveLength(2);
+  });
+});
+
+describe("live GPU output", () => {
+  it("runs both queries in their own shells so exits cannot end the stream", () => {
+    expect(LIVE_GPU_COMMAND).toMatch(
+      /^echo '##GPU'; \$t sh -c 'command -v nvidia-smi/,
+    );
+    expect(LIVE_GPU_COMMAND).toContain(
+      "echo '##AMD'; ( for d in /sys/class/drm",
+    );
+    expect(LIVE_GPU_COMMAND.trimEnd()).toMatch(/\);$/);
+    expect(LIVE_GPU_PROBE).toMatch(/^g=0;/);
+    expect(LIVE_GPU_PROBE).toContain('t="timeout 5";');
+  });
+
+  it("parses NVIDIA and AMD sections together", () => {
+    const merged = parseLiveGpuOutput(
+      `${GPU_QUERY_OUTPUT}---\n${APPS_QUERY_OUTPUT}##AMD\n${AMDGPU_OUTPUT}`,
+    );
+    expect(merged.source).toBe("nvidia-smi");
+    expect(merged.gpus.map((gpu) => gpu.index)).toEqual([0, 1, 2, 3]);
+    expect(merged.gpus[0].utilizationPercent).toBe(37);
+    expect(merged.processes).toHaveLength(2);
+  });
+
+  it("reads AMD only, and nothing from a failed driver", () => {
+    expect(parseLiveGpuOutput(`##AMD\n${AMDGPU_OUTPUT}`).source).toBe(
+      "amdgpu",
+    );
+    expect(parseLiveGpuOutput(`${DRIVER_FAILURE}---\n##AMD\n`)).toEqual({
+      source: "none",
+      gpus: [],
+      processes: [],
+    });
   });
 });

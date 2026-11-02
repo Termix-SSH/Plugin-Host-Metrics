@@ -56,6 +56,8 @@ import {
 } from "./live-metrics";
 
 const HISTORY_LEN = 30;
+/** How long a live GPU reading keeps the slow poll out of the GPU sparklines. */
+const LIVE_GPU_FRESH_MS = 10_000;
 
 type ConnectionLogPayload = Parameters<
   ReturnType<typeof useConnectionLog>["addLog"]
@@ -224,6 +226,20 @@ function HostMetricsInner({
     () => mergeLive(metrics, live),
     [metrics, live],
   );
+  // GPU sparklines follow the live stream once it carries GPU readings, one
+  // point per reading, and the slow poll stops adding to them meanwhile.
+  const liveGpuAtRef = React.useRef(0);
+  const liveGpu = live?.gpu?.gpus.length ? live.gpu : null;
+  const liveGpuAt = liveGpu ? (live?.gpuAt ?? 0) : 0;
+  React.useEffect(() => {
+    if (!liveGpu || !liveGpuAt) return;
+    liveGpuAtRef.current = Date.now();
+    setHistories((prev) => ({
+      ...prev,
+      gpu: appendGpuHistories(prev.gpu, liveGpu.gpus, HISTORY_LEN),
+    }));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [liveGpuAt]);
 
   const renderCard = React.useCallback(
     (id: string) => {
@@ -310,7 +326,10 @@ function HostMetricsInner({
         cpu: add(prev.cpu, data.cpu?.percent),
         memory: add(prev.memory, data.memory?.percent),
         disk: add(prev.disk, data.disk?.percent),
-        gpu: appendGpuHistories(prev.gpu, data.gpu?.gpus, HISTORY_LEN),
+        gpu:
+          Date.now() - liveGpuAtRef.current < LIVE_GPU_FRESH_MS
+            ? prev.gpu
+            : appendGpuHistories(prev.gpu, data.gpu?.gpus, HISTORY_LEN),
       };
     });
   }, []);

@@ -3,8 +3,15 @@ import {
   liveCmd,
   parseLive,
   type LivePrev,
-  type LiveSample,
 } from "@termix-ssh/plugin-sdk/host-scripts";
+import type { LiveSample } from "../../shared/metrics.js";
+import type { GpuMetrics } from "../../shared/stats-widgets.js";
+import {
+  LIVE_GPU_COMMAND,
+  LIVE_GPU_MARK,
+  LIVE_GPU_PROBE,
+  parseLiveGpuOutput,
+} from "../widgets/gpu-collector.js";
 import type { RunOnHost } from "./types.js";
 
 // The SDK's awk program, so the stream always matches its parser. It holds no single quote.
@@ -13,20 +20,31 @@ const AWK = liveCmd(1).split("'")[1];
 /**
  * One long-lived shell per viewed host prints a sample every `ms` and the
  * server keeps only the latest. Viewers read that cache, so the host runs one
- * awk (no process scan on most ticks) however many people watch.
+ * awk (no process scan on most ticks) however many people watch. Hosts with
+ * a GPU also print its readings every `gpuEvery` ticks.
  * shortcut: fractional sleep needs GNU or busybox sleep, and the loop may run one
  * extra tick after the channel closes; add a heartbeat if that ever matters.
  */
-export const liveStreamCmd = (ms: number, procEvery: number) =>
+export const liveStreamCmd = (
+  ms: number,
+  procEvery: number,
+  gpuEvery = procEvery,
+) =>
   "sh -c " +
   shellSingleQuote(
-    "pg=$(getconf PAGESIZE); n=0; while :; do if [ $((n % " +
+    "pg=$(getconf PAGESIZE); n=0; " +
+      LIVE_GPU_PROBE +
+      " while :; do if [ $((n % " +
       procEvery +
       ")) -eq 0 ]; then awk -v pg=$pg '" +
       AWK +
       "' /proc/[0-9]*/stat; else awk -v pg=$pg '" +
       AWK +
-      "'; fi; echo '##END'; n=$((n+1)); sleep " +
+      "'; fi; if [ $g = 1 ] && [ $((n % " +
+      gpuEvery +
+      ")) -eq 0 ]; then " +
+      LIVE_GPU_COMMAND +
+      " fi; echo '##END'; n=$((n+1)); sleep " +
       ms / 1000 +
       " 2>/dev/null || sleep 1; done",
   );
@@ -44,6 +62,9 @@ interface Slot {
   /** Parser state at the last process scan, so process CPU spans scan to scan. */
   scan?: LivePrev;
   procs?: Pick<LiveSample, "count" | "running" | "procs">;
+  /** The last GPU reading, kept between the ticks that print none. */
+  gpu?: GpuMetrics;
+  gpuAt?: number;
   sample?: LiveSample;
   at: number;
   count: number;
@@ -91,12 +112,15 @@ export function createSamplers(runOnHost: RunOnHost) {
     };
     slots.set(hostId, slot);
     const procEvery = Math.max(1, Math.round(2000 / ms));
+    // At most once a second: nvidia-smi is heavier than the awk sample.
+    const gpuEvery = Math.max(1, Math.round(1000 / ms));
+    const cmd = liveStreamCmd(ms, procEvery, gpuEvery);
     runOnHost(
       hostId,
       "connect",
       (client) =>
         new Promise<void>((resolve) => {
-          client.exec(liveStreamCmd(ms, procEvery), (err, stream) => {
+          client.exec(cmd, (err, stream) => {
             if (err || !stream) {
               fail(slot, err ?? new Error("live stream failed"));
               return resolve();
@@ -110,8 +134,17 @@ export function createSamplers(runOnHost: RunOnHost) {
               if (buf.length > MAX_BUF) buf = "";
               let i: number;
               while ((i = buf.indexOf("##END\n")) >= 0) {
-                const chunk = buf.slice(0, i);
+                const frame = buf.slice(0, i);
                 buf = buf.slice(i + 6);
+                const gpuMarkIdx = frame.indexOf(LIVE_GPU_MARK + "\n");
+                const chunk =
+                  gpuMarkIdx === -1 ? frame : frame.slice(0, gpuMarkIdx);
+                if (gpuMarkIdx !== -1) {
+                  slot.gpu = parseLiveGpuOutput(
+                    frame.slice(gpuMarkIdx + LIVE_GPU_MARK.length + 1),
+                  );
+                  slot.gpuAt = Date.now();
+                }
                 try {
                   const p = parseLive(chunk, slot.prev);
                   slot.prev = p.next;
@@ -125,7 +158,13 @@ export function createSamplers(runOnHost: RunOnHost) {
                       procs: s.sample.procs,
                     };
                   }
-                  slot.sample = { ...p.sample, ...slot.procs };
+                  slot.sample = {
+                    ...p.sample,
+                    ...slot.procs,
+                    ...(slot.gpu && slot.gpu.gpus.length > 0
+                      ? { gpu: slot.gpu, gpuAt: slot.gpuAt }
+                      : {}),
+                  };
                   slot.at = Date.now();
                   if (++slot.count >= 2)
                     for (const w of slot.waiters.splice(0)) w.ok();
