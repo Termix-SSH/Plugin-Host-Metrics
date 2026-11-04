@@ -4,6 +4,7 @@
     "togglePanel": "Metrics panel"
   },
   "hostMetrics": {
+    "collecting": "Collecting data...",
     "cpu": "CPU",
     "memory": "Memory",
     "disk": "Disk",

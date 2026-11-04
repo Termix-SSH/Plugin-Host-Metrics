@@ -1,5 +1,6 @@
 import type { ReactNode } from "react";
 import { SmoothLineChart as LineChart } from "./SmoothCharts";
+import { ChartPlaceholder } from "./ChartPlaceholder";
 import { loadColor, loadTextColor } from "../process-view";
 
 export interface LiveStat {
@@ -49,7 +50,15 @@ export function LiveUsage({
   children?: ReactNode;
 }) {
   const value = percent == null ? null : Math.min(100, Math.max(0, percent));
-  const enough = points.filter((point) => point != null).length >= 2;
+  // The first reading can lack this value (CPU only comes with live ones), so
+  // start the line at its first point instead of leaving an empty strip.
+  const first = Math.max(
+    0,
+    points.findIndex((point) => point != null),
+  );
+  const shown = points.slice(first);
+  const shownTimes = timestamps.slice(first);
+  const enough = shown.filter((point) => point != null).length >= 2;
   return (
     <div className="flex flex-col gap-3">
       <div className="flex flex-wrap items-end gap-x-5 gap-y-2">
@@ -84,17 +93,14 @@ export function LiveUsage({
       </div>
       {enough ? (
         <LineChart
-          series={[{ key: "live", label, color, data: points }]}
-          timestamps={timestamps}
-          domain={liveDomain(points)}
+          series={[{ key: "live", label, color, data: shown }]}
+          timestamps={shownTimes}
+          domain={liveDomain(shown)}
           yFormatter={(v) => `${v.toFixed(0)}%`}
           height={chartHeight}
         />
       ) : (
-        <div
-          className="flex items-center justify-center text-[11px] text-muted-foreground"
-          style={{ height: chartHeight }}
-        />
+        <ChartPlaceholder height={chartHeight} />
       )}
       {children}
     </div>

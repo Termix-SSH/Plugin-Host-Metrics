@@ -7,6 +7,7 @@ import {
 import { useTranslation } from "@termix-ssh/plugin-sdk/frontend";
 import type { ServerMetrics } from "../../shared/metrics.js";
 import { useSmoothSeries } from "./SmoothCharts";
+import { ChartPlaceholder } from "./ChartPlaceholder";
 import { chartHeight, useCardSettings } from "../card-settings";
 
 export type HistoryPoint = {
@@ -187,7 +188,11 @@ function HistoryGraph({
   const smooth = useSmoothSeries(
     keys.map((key) => points.map((p) => p.values[key] ?? null)),
   );
-  if (!points.some((p) => keys.some((k) => p.values[k] != null))) return null;
+  const hasData = points.some((p) => keys.some((k) => p.values[k] != null));
+  // Early on, hold the space; later a value the host never reports hides.
+  if (!hasData && points.length < 2)
+    return <ChartPlaceholder height={chartHeight(settings, height)} />;
+  if (!hasData) return null;
   if (compact)
     return (
       <div role="img" aria-label={labels.join(" / ")} className="min-w-0">
