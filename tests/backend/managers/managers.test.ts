@@ -46,11 +46,6 @@ import {
   parseCertbotCertificates,
 } from "../../../src/backend/managers/ssl.js";
 import {
-  buildIptablesRuleCommand,
-  buildNftRuleCommand,
-  buildUfwRuleCommand,
-} from "../../../src/backend/managers/firewall.js";
-import {
   parsePasswd,
   parseSudoers,
 } from "../../../src/backend/managers/users.js";
@@ -356,57 +351,6 @@ describe("ssl (dual client)", () => {
       client: "certbot",
     });
     expect(certs[0].domains).toContain("www.example.com");
-  });
-});
-
-describe("firewall", () => {
-  it("builds iptables add/delete on INPUT only", () => {
-    expect(
-      buildIptablesRuleCommand("add", {
-        protocol: "tcp",
-        port: 443,
-        target: "ACCEPT",
-      }),
-    ).toBe("iptables -A INPUT -p tcp --dport 443 -j ACCEPT");
-    expect(
-      buildIptablesRuleCommand("delete", {
-        protocol: "udp",
-        port: 53,
-        target: "DROP",
-      }),
-    ).toBe("iptables -D INPUT -p udp --dport 53 -j DROP");
-  });
-  it("builds nft rules", () => {
-    expect(
-      buildNftRuleCommand("add", {
-        protocol: "tcp",
-        port: 22,
-        target: "ACCEPT",
-      }),
-    ).toBe("nft add rule inet filter input tcp dport 22 accept");
-  });
-  it("deletes an nft rule by its handle", () => {
-    const cmd = buildNftRuleCommand("delete", {
-      protocol: "udp",
-      port: 53,
-      target: "DROP",
-    });
-    expect(cmd).toContain("nft -a list chain inet filter input");
-    expect(cmd).toContain(
-      "rules=$(nft -a list chain inet filter input) && handle=",
-    );
-    expect(cmd).toContain("udp dport 53 drop # handle");
-    expect(cmd).toContain('nft delete rule inet filter input handle "$handle"');
-  });
-  it("builds ufw rules", () => {
-    const spec = { protocol: "tcp", port: 443, target: "ACCEPT" } as const;
-    expect(buildUfwRuleCommand("add", spec)).toBe("ufw allow 443/tcp");
-    expect(buildUfwRuleCommand("delete", spec)).toBe(
-      "ufw delete allow 443/tcp",
-    );
-    expect(
-      buildUfwRuleCommand("add", { protocol: "udp", port: 53, target: "DROP" }),
-    ).toBe("ufw deny 53/udp");
   });
 });
 

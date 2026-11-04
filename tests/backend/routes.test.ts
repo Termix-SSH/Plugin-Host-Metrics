@@ -380,8 +380,6 @@ const WRITE_ROUTES: Array<[string, unknown]> = [
   ["/host-metrics/managers/ssl/7/issue", {}],
   ["/host-metrics/managers/ssl/7/renew", {}],
   ["/host-metrics/managers/ssl/7/revoke", {}],
-  ["/host-metrics/managers/firewall/7/rule", {}],
-  ["/host-metrics/managers/firewall/7/persist", {}],
   ["/host-metrics/managers/users/7/action", {}],
   ["/host-metrics/managers/wireguard/7/action", {}],
 ];

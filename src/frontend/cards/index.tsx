@@ -23,7 +23,6 @@ import { ProcessInspectorCard } from "./managers/ProcessInspectorCard";
 import { PackageManagerCard } from "./managers/PackageManagerCard";
 import { CronManagerCard } from "./managers/CronManagerCard";
 import { SslManagerCard } from "./managers/SslManagerCard";
-import { FirewallManagerCard } from "./managers/FirewallManagerCard";
 import { UserManagerCard } from "./managers/UserManagerCard";
 import { HealthCheckCard } from "./managers/HealthCheckCard";
 import { LogViewerCard } from "./managers/LogViewerCard";
@@ -171,11 +170,6 @@ export const CARD_DEFINITIONS: Record<string, CardDefinition> = {
     "ssl_manager",
     "hostMetrics.managers.ssl",
     SslManagerCard,
-  ),
-  firewall_manager: managerCard(
-    "firewall_manager",
-    "hostMetrics.managers.firewall",
-    FirewallManagerCard,
   ),
   user_manager: managerCard(
     "user_manager",

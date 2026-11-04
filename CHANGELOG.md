@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.4.0
+
+### Removed
+
+- The Firewall manager card. Changing firewall rules moved to the Firewall plugin, which fills the same card when it is installed. The Firewall status card stays
+
 ## 1.3.1
 
 ### Fixed

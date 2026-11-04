@@ -28,7 +28,7 @@ Read the [docs](https://docs.termix.site/plugins/host-metrics) to set it up and 
 
 - CPU, memory, disk, network, temperature, NVIDIA and AMD GPUs, processes, ports and logins
 - History charts for each host
-- Manage services, packages, cron jobs, firewall rules, users, SSL certificates, logs and WireGuard
+- Manage services, packages, cron jobs, users, SSL certificates, logs and WireGuard
 - Health checks for your hosts and services
 - A layout you can rearrange per host
 - Live stats in the terminal toolbar

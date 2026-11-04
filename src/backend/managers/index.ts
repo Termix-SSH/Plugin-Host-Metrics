@@ -8,7 +8,6 @@ import { registerSimpleReadRoutes } from "./simple-reads.js";
 import { registerCronRoutes } from "./cron.js";
 import { registerPackageRoutes } from "./packages.js";
 import { registerSslRoutes } from "./ssl.js";
-import { registerFirewallRoutes } from "./firewall.js";
 import { registerUserRoutes } from "./users.js";
 import { registerHealthRoutes } from "./health.js";
 import { registerLogRoutes } from "./logs.js";
@@ -56,7 +55,6 @@ export function registerManagerRoutes(
   registerCronRoutes(app, deps);
   registerPackageRoutes(app, deps);
   registerSslRoutes(app, deps);
-  registerFirewallRoutes(app, deps);
   registerUserRoutes(app, deps);
   registerHealthRoutes(app, deps);
   registerLogRoutes(app, deps);

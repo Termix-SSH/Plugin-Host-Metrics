@@ -1,4 +1,4 @@
-Host Metrics shows live stats for your Linux hosts: CPU, memory, disk, network, temperature, NVIDIA and AMD GPUs, processes, open ports and logins. It keeps history for charts, runs health checks, and has managers for services, packages, cron jobs, the firewall, users, certificates, logs and WireGuard.
+Host Metrics shows live stats for your Linux hosts: CPU, memory, disk, network, temperature, NVIDIA and AMD GPUs, processes, open ports and logins. It keeps history for charts, runs health checks, and has managers for services, packages, cron jobs, users, certificates, logs and WireGuard.
 
 Everything is read over SSH. There is no agent to install.
 
@@ -80,7 +80,6 @@ Manager cards let you change a host, not just watch it:
 | Services  | Start, stop, restart, enable and disable systemd services.                                                    |
 | Packages  | See available upgrades, install a package, and upgrade one or all, with apt, dnf, yum, pacman, zypper or apk. |
 | Cron      | See and edit cron jobs.                                                                                       |
-| Firewall  | See and change firewall rules.                                                                                |
 | Users     | See and manage local users.                                                                                   |
 | SSL       | See certbot and acme.sh certificates and when they expire, and issue, renew or revoke them.                   |
 | Logs      | Read the journal and log files.                                                                               |
@@ -88,25 +87,11 @@ Manager cards let you change a host, not just watch it:
 
 Changes run with sudo. Save the host's Sudo Password so Termix can answer the prompt. Without it, changes that need root fail with a message saying so.
 
-The firewall card and manager detect the owner before selecting a backend. Active UFW takes precedence over its underlying iptables/nftables rules; absent or inactive UFW still allows native backends. Reads use the saved Sudo Password when needed, without attempting sudo on every poll when no password is saved. An unreadable or unrecognised state is shown as unknown in periodic stats, and the manager reports an error rather than guessing a backend. Running or indeterminate firewalld, stale UFW/firewalld-owned raw rules, and conflicting native policies block changes. Firewalld management is not supported.
+The Firewall card shows whether the firewall is on and its rules. It only reads. To change rules, install the [Firewall](/plugins/firewall) plugin: it fills the Firewall manager card here and adds a Firewall tab for each host.
 
-Native iptables-nft tables stay on iptables when each nonempty iptables-save/ip6tables-save export identifies nf_tables and every nft table is an IPv4 or IPv6 table listed by its matching export. This does not depend on nft printing an ownership warning. Both iptables families are checked independently, including legacy IPv6 policies invisible to nft. Mixed or unrecognised policies remain ambiguous, not permission to bypass a manager. Native nftables changes require an existing `inet filter input` filter base chain hooked to input; the plugin does not create tables or chains.
+The card detects the firewall that owns the rules. Active UFW takes precedence over its underlying iptables or nftables rules. Reads use the saved Sudo Password when needed, without trying sudo on every poll when no password is saved. An unreadable or unrecognised state shows as unknown.
 
-UFW rules are already persistent, so Save does not dump or reload them. Native iptables Save requires either netfilter-persistent with its IPv4 plugin, or the iptables init script (IPv4-only). When IPv6 chains are present, both netfilter-persistent family plugins are required. It reports save failures without trying another backend. Native nftables persistence must be configured on the host: the plugin will not guess or overwrite `/etc/nftables.conf`. Rule changes can affect SSH access; keep a recovery connection available.
-
-### Editing firewall rules and defaults
-
-Click a supported rule, or choose Edit/Delete beside it. The editor keeps its address family, direction, comment and application-profile identity. Review the exact old/new rule and host before confirming. Default INPUT and OUTPUT policies have their own controls and confirmation; there is no FORWARD-policy editor. Allowing traffic can expose services, and denying traffic can interrupt SSH on any port. Keep independent console/recovery access available.
-
-Rule management uses a fresh host-bound snapshot rather than reconstructing commands from periodic metrics. Every plugin firewall write (including legacy additions and Save) is serialized per host in this backend process. Changes outside the plugin are not locked: if another administrator is changing the firewall, stop and coordinate on the host. The manager re-reads and checks identity/order after changes, and refreshes after failed requests as well as successful ones. A timeout is an unknown outcome, not a reason to retry automatically.
-
-- **UFW:** advanced management requires the verified UFW 0.36.2 Python layout and canonical generated user-rule files. Unsupported versions/custom files remain read-only. Simple single-port rules (including a port with no explicit protocol) and single-expansion destination profiles such as OpenSSH are supported. Profiles stay named profiles; their protocol/ports are locked. Multi-expansion/source profiles, duplicate flows, rules after expanded groups, logging, LIMIT, interface/routed rules and port ranges stay explicitly read-only. Family-specific numbered deletion never deletes by a guessed port specification. A unique action-only change uses UFW's existing-slot update behavior; other edits insert, verify exact family/order/constraints, then delete the freshly identified original. **These operations are not atomic:** failure may leave both rules or another partial result. Inspect the refreshed rules before retrying. The plugin never enables an inactive firewall.
-- **Native iptables:** only lossless simple INPUT/OUTPUT rules are editable; additional matches, comments, targets and user chains stay read-only. Replacements use `iptables -R`/`ip6tables -R` at the original position with the xtables lock. External writers such as fail2ban or Docker can still shift rule numbers between the snapshot and the write, causing the wrong rule to be changed; coordinate or pause those writers before editing. Default policies accept only ACCEPT/DROP on verified built-in INPUT/OUTPUT chains, with the family shown explicitly.
-- **Native nftables:** rules come from JSON identities and handles, not the lossy status display. Only simple TCP/UDP single-port + accept/drop expressions on verified input/output filter base chains can be edited. Counters, comments, sets and other expressions stay read-only. Replacements use the existing handle. Default policy editing requires a supported unambiguous base hook and accepts only accept/drop; chain/table scope is shown. Native rule additions retain the existing fixed `inet filter input` requirement.
-
-UFW persists changes immediately. Native changes are runtime-only until saved by the host's persistence setup. The Save control is shown only for iptables; nftables configuration files are never overwritten by this editor. Connect-only users can view rules but cannot mutate them; the server independently requires edit permission.
-
-On a shared host, seeing the managers only needs connect access. Changing the host (starting or stopping a service, killing a process, installing packages, editing cron, firewall rules, users, certificates or WireGuard) needs edit access. Without it the buttons are hidden.
+On a shared host, seeing the managers only needs connect access. Changing the host (starting or stopping a service, killing a process, installing packages, editing cron, users, certificates or WireGuard) needs edit access. Without it the buttons are hidden.
 
 ## Health checks
 
