@@ -176,20 +176,14 @@
       "off": "Off"
     },
     "managers": {
-      "services": "Services",
       "processInspector": "Process Inspector",
-      "logViewer": "Log Viewer",
       "cron": "Cron Jobs",
       "packages": "Packages",
       "ssl": "SSL Certificates",
       "users": "Users & Permissions",
       "healthCheck": "Health Checks",
       "diskBreakdown": "Disk Breakdown",
-      "systemdTimers": "Timers",
       "topMemory": "Top by Memory",
-      "start": "Start",
-      "stop": "Stop",
-      "restart": "Restart",
       "actionDone": "{{name}} updated",
       "actionFailed": "Action failed",
       "editRequired": "You need edit access to this host to change it",
@@ -212,10 +206,7 @@
       "addUser": "Add",
       "deleteUser": "Delete user",
       "noHealthChecks": "No health checks configured yet.",
-      "follow": "Follow",
-      "noLogData": "No log output.",
       "tree": "Tree",
-      "enableDisable": "Enable / disable at boot",
       "grantSudo": "Grant sudo",
       "revokeSudo": "Revoke sudo",
       "sslIssueCert": "Issue certificate",
@@ -239,22 +230,6 @@
       "healthInterval": "Check every (minutes)",
       "healthSaved": "Health checks saved",
       "healthMissingFields": "Each check needs a name and a target or command",
-      "logFile": "File",
-      "logUnit": "Unit",
-      "logCustomPath": "Custom path under /var/log (optional)",
-      "logGrep": "Filter lines...",
-      "wireguard": "WireGuard",
-      "wgNotInstalled": "WireGuard is not installed on this host",
-      "wgNoInterfaces": "No WireGuard interfaces configured",
-      "wgInterfaceUp": "Bring up",
-      "wgInterfaceDown": "Bring down",
-      "wgBringingUp": "Bringing {{name}} up...",
-      "wgBringingDown": "Bringing {{name}} down...",
-      "wgInterfaceUpDone": "{{name}} is up",
-      "wgInterfaceDownDone": "{{name}} is down",
-      "wgLastHandshake": "Last handshake",
-      "wgHandshakeNever": "Never",
-      "wgNoPeers": "No peers",
       "revoke": "Revoke",
       "healthScript": "Script",
       "healthCommand": "Command to run on the host",
@@ -425,7 +400,7 @@
   "permissions": {
     "use": {
       "title": "Use Host Metrics",
-      "description": "View host metrics and use the host managers (services, packages, firewall and more) on hosts you can reach."
+      "description": "View host metrics and use the host managers (packages, cron jobs and more) on hosts you can reach."
     }
   },
   "settings": {

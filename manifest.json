@@ -15,7 +15,7 @@
   "features": [
     "CPU, memory, disk, network, temperature, NVIDIA and AMD GPUs, processes, ports and logins",
     "History charts for each host",
-    "Manage services, packages, cron jobs, users, SSL certificates, logs and WireGuard",
+    "Manage packages, cron jobs, users and SSL certificates",
     "Health checks for your hosts and services",
     "A layout you can rearrange per host",
     "Live stats in the terminal toolbar",

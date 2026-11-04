@@ -8,7 +8,6 @@ import {
   buildListUpgradableCommand,
 } from "@termix-ssh/plugin-sdk/host-commands";
 import {
-  isValidSystemdUnit,
   isValidPid,
   isValidPort,
   isValidPackageName,
@@ -16,13 +15,8 @@ import {
   isValidDomain,
   isValidDnsProvider,
   isValidSignal,
-  isValidServiceAction,
   isAllowedPath,
 } from "../../../src/backend/managers/validation.js";
-import {
-  parseServiceList,
-  buildServiceActionCommand,
-} from "../../../src/backend/managers/services.js";
 import {
   parseProcessList,
   buildKillCommand,
@@ -53,11 +47,6 @@ import {
   buildHealthCheckCommand,
   parseHealthResult,
 } from "../../../src/backend/managers/health.js";
-import {
-  buildTailCommand,
-  clampLines,
-  systemdUnitName,
-} from "../../../src/backend/managers/logs.js";
 
 describe("exec-elevated", () => {
   it("single-quotes and escapes for the shell", () => {
@@ -104,12 +93,6 @@ describe("platform probe parsing", () => {
 });
 
 describe("validation (injection defense)", () => {
-  it("systemd units", () => {
-    expect(isValidSystemdUnit("nginx.service")).toBe(true);
-    expect(isValidSystemdUnit("ssh.socket")).toBe(true);
-    expect(isValidSystemdUnit("nginx.service; rm -rf /")).toBe(false);
-    expect(isValidSystemdUnit("nginx")).toBe(false);
-  });
   it("pids", () => {
     expect(isValidPid(123)).toBe(true);
     expect(isValidPid("123")).toBe(true);
@@ -136,13 +119,11 @@ describe("validation (injection defense)", () => {
     expect(isValidDomain("ex ample.com")).toBe(false);
     expect(isValidDomain("a;b.com")).toBe(false);
   });
-  it("dns providers, signals, service actions", () => {
+  it("dns providers and signals", () => {
     expect(isValidDnsProvider("cloudflare")).toBe(true);
     expect(isValidDnsProvider("cf; rm")).toBe(false);
     expect(isValidSignal("KILL")).toBe(true);
     expect(isValidSignal("BOOM")).toBe(false);
-    expect(isValidServiceAction("restart")).toBe(true);
-    expect(isValidServiceAction("destroy")).toBe(false);
   });
   it("path allowlist rejects traversal and out-of-allowlist", () => {
     expect(isAllowedPath("/var/log/syslog", ["/var/log"])).toBe(true);
@@ -151,24 +132,6 @@ describe("validation (injection defense)", () => {
     );
     expect(isAllowedPath("/etc/passwd", ["/var/log"])).toBe(false);
     expect(isAllowedPath("relative/path", ["/var/log"])).toBe(false);
-  });
-});
-
-describe("services", () => {
-  it("parses list-units --plain", () => {
-    const out =
-      "nginx.service loaded active running A high performance web server\n" +
-      "ssh.service loaded active running OpenBSD Secure Shell server\n" +
-      "cron.service loaded inactive dead Regular background program";
-    const rows = parseServiceList(out);
-    expect(rows).toHaveLength(3);
-    expect(rows[0]).toMatchObject({ unit: "nginx.service", active: "active" });
-    expect(rows[2].active).toBe("inactive");
-  });
-  it("builds action command", () => {
-    expect(buildServiceActionCommand("nginx.service", "restart")).toBe(
-      "systemctl restart nginx.service",
-    );
   });
 });
 
@@ -406,27 +369,5 @@ describe("health checks", () => {
       "500 0.01",
     );
     expect(bad.ok).toBe(false);
-  });
-});
-
-describe("logs", () => {
-  it("clamps line counts", () => {
-    expect(clampLines(50)).toBe(50);
-    expect(clampLines(99999)).toBe(2000);
-    expect(clampLines("abc")).toBe(200);
-    expect(clampLines(0)).toBe(1);
-  });
-  it("builds a quoted tail command without suppressing stderr", () => {
-    expect(buildTailCommand("/var/log/syslog", 100)).toBe(
-      "tail -n 100 '/var/log/syslog'",
-    );
-  });
-});
-
-describe("systemdUnitName", () => {
-  it("reads a bare name as a service, like systemctl", () => {
-    expect(systemdUnitName("webapp")).toBe("webapp.service");
-    expect(systemdUnitName(" webapp.service ")).toBe("webapp.service");
-    expect(systemdUnitName("backup.timer")).toBe("backup.timer");
   });
 });

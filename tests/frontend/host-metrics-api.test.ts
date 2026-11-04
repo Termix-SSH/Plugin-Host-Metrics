@@ -101,12 +101,12 @@ describe("host metrics api", () => {
     api.post.mockResolvedValue({ data: { success: true } });
     await createHostMetricsApi(api).managerPost(
       7,
-      "services",
+      "packages",
       { a: 1 },
       "action",
     );
     expect(api.post).toHaveBeenCalledWith(
-      "/host-metrics/managers/services/7/action",
+      "/host-metrics/managers/packages/7/action",
       { a: 1 },
     );
   });

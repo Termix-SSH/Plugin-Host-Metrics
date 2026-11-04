@@ -373,7 +373,6 @@ describe("health checks", () => {
 });
 
 const WRITE_ROUTES: Array<[string, unknown]> = [
-  ["/host-metrics/managers/services/7/action", { unit: "a.service" }],
   ["/host-metrics/managers/processes/7/signal", { pid: 1 }],
   ["/host-metrics/managers/cron/7", { entries: [] }],
   ["/host-metrics/managers/packages/7/action", { action: "upgrade-all" }],
@@ -381,7 +380,6 @@ const WRITE_ROUTES: Array<[string, unknown]> = [
   ["/host-metrics/managers/ssl/7/renew", {}],
   ["/host-metrics/managers/ssl/7/revoke", {}],
   ["/host-metrics/managers/users/7/action", {}],
-  ["/host-metrics/managers/wireguard/7/action", {}],
 ];
 
 describe("manager write actions", () => {
@@ -412,7 +410,7 @@ describe("manager write actions", () => {
     connectOnly(server);
     const response = await server.request(
       "GET",
-      "/host-metrics/managers/services/7",
+      "/host-metrics/managers/processes/7",
     );
     expect(response.status).not.toBe(403);
   });
@@ -426,8 +424,8 @@ describe("manager write actions", () => {
     });
     const response = await server.request(
       "POST",
-      "/host-metrics/managers/services/7/action",
-      { body: { unit: "a.service" } },
+      "/host-metrics/managers/processes/7/signal",
+      { body: { pid: 1 } },
     );
     expect(response.status).toBe(403);
     expect(response.body).toEqual({ error: "No access to this host" });

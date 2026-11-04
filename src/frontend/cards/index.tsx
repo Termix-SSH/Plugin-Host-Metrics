@@ -18,20 +18,16 @@ import { FirewallCard } from "./FirewallCard";
 import { TemperatureCard } from "./TemperatureCard";
 import { GpuCard } from "./GpuCard";
 import type { GpuHistories } from "./gpu-history";
-import { ServiceManagerCard } from "./managers/ServiceManagerCard";
 import { ProcessInspectorCard } from "./managers/ProcessInspectorCard";
 import { PackageManagerCard } from "./managers/PackageManagerCard";
 import { CronManagerCard } from "./managers/CronManagerCard";
 import { SslManagerCard } from "./managers/SslManagerCard";
 import { UserManagerCard } from "./managers/UserManagerCard";
 import { HealthCheckCard } from "./managers/HealthCheckCard";
-import { LogViewerCard } from "./managers/LogViewerCard";
 import {
   TopMemoryCard,
-  SystemdTimersCard,
   DiskBreakdownCard,
 } from "./managers/SimpleManagerCards";
-import { WireGuardManagerCard } from "./managers/WireGuardManagerCard";
 
 export interface MetricCardHistories {
   cpu: Array<number | null>;
@@ -141,20 +137,10 @@ export const CARD_DEFINITIONS: Record<string, CardDefinition> = {
       <GpuCard metrics={metrics} gpuHistories={histories.gpu} />
     ),
   },
-  service_manager: managerCard(
-    "service_manager",
-    "hostMetrics.managers.services",
-    ServiceManagerCard,
-  ),
   process_inspector: managerCard(
     "process_inspector",
     "hostMetrics.managers.processInspector",
     ProcessInspectorCard,
-  ),
-  log_viewer: managerCard(
-    "log_viewer",
-    "hostMetrics.managers.logViewer",
-    LogViewerCard,
   ),
   cron_manager: managerCard(
     "cron_manager",
@@ -186,20 +172,10 @@ export const CARD_DEFINITIONS: Record<string, CardDefinition> = {
     "hostMetrics.managers.diskBreakdown",
     DiskBreakdownCard,
   ),
-  systemd_timers: managerCard(
-    "systemd_timers",
-    "hostMetrics.managers.systemdTimers",
-    SystemdTimersCard,
-  ),
   top_memory: managerCard(
     "top_memory",
     "hostMetrics.managers.topMemory",
     TopMemoryCard,
-  ),
-  wireguard_manager: managerCard(
-    "wireguard_manager",
-    "hostMetrics.managers.wireguard",
-    WireGuardManagerCard,
   ),
 };
 

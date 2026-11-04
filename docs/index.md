@@ -1,4 +1,4 @@
-Host Metrics shows live stats for your Linux hosts: CPU, memory, disk, network, temperature, NVIDIA and AMD GPUs, processes, open ports and logins. It keeps history for charts, runs health checks, and has managers for services, packages, cron jobs, users, certificates, logs and WireGuard.
+Host Metrics shows live stats for your Linux hosts: CPU, memory, disk, network, temperature, NVIDIA and AMD GPUs, processes, open ports and logins. It keeps history for charts, runs health checks, and has managers for packages, cron jobs, users and certificates.
 
 Everything is read over SSH. There is no agent to install.
 
@@ -75,23 +75,22 @@ Windows hardware inventory is cached per host for up to five minutes; utilizatio
 
 Manager cards let you change a host, not just watch it:
 
-| Manager   | What you can do                                                                                               |
-| --------- | ------------------------------------------------------------------------------------------------------------- |
-| Services  | Start, stop, restart, enable and disable systemd services.                                                    |
-| Packages  | See available upgrades, install a package, and upgrade one or all, with apt, dnf, yum, pacman, zypper or apk. |
-| Cron      | See and edit cron jobs.                                                                                       |
-| Users     | See and manage local users.                                                                                   |
-| SSL       | See certbot and acme.sh certificates and when they expire, and issue, renew or revoke them.                   |
-| Logs      | Read the journal and log files.                                                                               |
-| WireGuard | See WireGuard interfaces and peers, and bring an interface up or down.                                        |
+| Manager  | What you can do                                                                                               |
+| -------- | ------------------------------------------------------------------------------------------------------------- |
+| Packages | See available upgrades, install a package, and upgrade one or all, with apt, dnf, yum, pacman, zypper or apk. |
+| Cron     | See and edit cron jobs.                                                                                       |
+| Users    | See and manage local users.                                                                                   |
+| SSL      | See certbot and acme.sh certificates and when they expire, and issue, renew or revoke them.                   |
 
 Changes run with sudo. Save the host's Sudo Password so Termix can answer the prompt. Without it, changes that need root fail with a message saying so.
 
 The Firewall card shows whether the firewall is on and its rules. It only reads. To change rules, install the [Firewall](/plugins/firewall) plugin: it fills the Firewall manager card here and adds a Firewall tab for each host.
 
+The [Services](/plugins/service-manager) plugin fills the Services, Timers and Log Viewer cards, and the [WireGuard](/plugins/wireguard) plugin fills the WireGuard card.
+
 The card detects the firewall that owns the rules. Active UFW takes precedence over its underlying iptables or nftables rules. Reads use the saved Sudo Password when needed, without trying sudo on every poll when no password is saved. An unreadable or unrecognised state shows as unknown.
 
-On a shared host, seeing the managers only needs connect access. Changing the host (starting or stopping a service, killing a process, installing packages, editing cron, users, certificates or WireGuard) needs edit access. Without it the buttons are hidden.
+On a shared host, seeing the managers only needs connect access. Changing the host (killing a process, installing packages, editing cron, users or certificates) needs edit access. Without it the buttons are hidden.
 
 ## Health checks
 
