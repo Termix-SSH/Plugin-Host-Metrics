@@ -29,7 +29,7 @@
     }
   ],
   "engine": {
-    "termix": ">=26.10.6",
+    "termix": ">=26.11.1-0",
     "api": "^1.9"
   },
   "capabilities": [
@@ -42,7 +42,8 @@
     "ui:surface",
     "events:core",
     "users:impersonate",
-    "notify:send"
+    "notify:send",
+    "operations:provide"
   ],
   "provides": [
     {
@@ -166,11 +167,26 @@
           "descriptionKey": "settings.user.backgroundGraceS.description",
           "default": "10",
           "options": [
-            { "value": "0", "labelKey": "settings.user.backgroundGraceS.s0" },
-            { "value": "5", "labelKey": "settings.user.backgroundGraceS.s5" },
-            { "value": "10", "labelKey": "settings.user.backgroundGraceS.s10" },
-            { "value": "30", "labelKey": "settings.user.backgroundGraceS.s30" },
-            { "value": "60", "labelKey": "settings.user.backgroundGraceS.s60" }
+            {
+              "value": "0",
+              "labelKey": "settings.user.backgroundGraceS.s0"
+            },
+            {
+              "value": "5",
+              "labelKey": "settings.user.backgroundGraceS.s5"
+            },
+            {
+              "value": "10",
+              "labelKey": "settings.user.backgroundGraceS.s10"
+            },
+            {
+              "value": "30",
+              "labelKey": "settings.user.backgroundGraceS.s30"
+            },
+            {
+              "value": "60",
+              "labelKey": "settings.user.backgroundGraceS.s60"
+            }
           ]
         },
         {
@@ -290,7 +306,122 @@
         "titleKey": "card.title",
         "icon": "Activity"
       }
-    ]
+    ],
+    "operations": {
+      "actions": [
+        {
+          "id": "host-metrics.list-processes",
+          "titleKey": "operations.processes.list",
+          "scope": "host",
+          "risk": "read",
+          "permission": "use",
+          "hostAccess": "connect",
+          "when": {
+            "settings": {
+              "metricsEnabled": true
+            }
+          },
+          "surfaces": {
+            "assistant": true,
+            "mcp": true,
+            "palette": false
+          }
+        },
+        {
+          "id": "host-metrics.health",
+          "titleKey": "operations.health.title",
+          "scope": "host",
+          "risk": "read",
+          "permission": "use",
+          "hostAccess": "connect",
+          "surfaces": {
+            "assistant": true,
+            "mcp": true,
+            "palette": false
+          }
+        },
+        {
+          "id": "host-metrics.signal-process",
+          "titleKey": "operations.processes.signal",
+          "icon": "Skull",
+          "scope": "resource",
+          "resource": "host-metrics.process",
+          "inputs": [
+            {
+              "key": "signal",
+              "type": "select",
+              "labelKey": "operations.processes.signalLabel",
+              "required": true,
+              "default": "TERM",
+              "options": [
+                {
+                  "value": "TERM",
+                  "labelKey": "operations.processes.term"
+                },
+                {
+                  "value": "KILL",
+                  "labelKey": "operations.processes.kill"
+                },
+                {
+                  "value": "HUP",
+                  "labelKey": "operations.processes.hup"
+                },
+                {
+                  "value": "INT",
+                  "labelKey": "operations.processes.int"
+                }
+              ]
+            }
+          ],
+          "risk": "destructive",
+          "permission": "use",
+          "hostAccess": "edit",
+          "dryRun": "describe",
+          "when": {
+            "settings": {
+              "metricsEnabled": true
+            }
+          }
+        }
+      ],
+      "resources": [
+        {
+          "id": "host-metrics.process",
+          "titleKey": "operations.processes.title",
+          "icon": "Cpu",
+          "list": "host-metrics.list-processes",
+          "key": "pid",
+          "name": "command",
+          "tab": "host-metrics",
+          "columns": [
+            {
+              "key": "user",
+              "titleKey": "operations.processes.user"
+            },
+            {
+              "key": "cpu",
+              "titleKey": "operations.processes.cpu",
+              "type": "percent"
+            },
+            {
+              "key": "mem",
+              "titleKey": "operations.processes.memory",
+              "type": "percent"
+            }
+          ]
+        }
+      ],
+      "signals": [
+        {
+          "id": "host-metrics.health",
+          "titleKey": "operations.health.title",
+          "read": "host-metrics.health",
+          "scope": "host",
+          "kind": "status",
+          "refreshSec": 60
+        }
+      ]
+    }
   },
   "locales": "locales",
   "platforms": ["linux", "win32", "darwin"]

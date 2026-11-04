@@ -1,10 +1,11 @@
-import {
-  execCommand,
-  execElevated,
-} from "@termix-ssh/plugin-sdk/host-commands";
+import { execCommand } from "@termix-ssh/plugin-sdk/host-commands";
 import { isValidPid, isValidSignal, type Signal } from "./validation.js";
 import type { Router } from "express";
-import { managerHandler, ManagerInputError } from "./route-helpers.js";
+import {
+  guardedHandler,
+  managerHandler,
+  ManagerInputError,
+} from "./route-helpers.js";
 import type { ManagerRoutesDeps } from "./types.js";
 
 export interface ProcessRow {
@@ -19,7 +20,7 @@ export interface ProcessRow {
   args: string;
 }
 
-const LIST_PROCESSES_CMD =
+export const LIST_PROCESSES_CMD =
   "ps -eo pid,ppid,user:20,pcpu,pmem,rss,stat,comm,args --sort=-pcpu --no-headers 2>/dev/null | head -n 300";
 
 /** Parse `ps -eo pid,ppid,user,pcpu,pmem,rss,stat,comm,args` output. */
@@ -107,27 +108,24 @@ export function registerProcessRoutes(
   app.post(
     "/host-metrics/managers/processes/:id/signal",
     validateHostId,
-    managerHandler(
-      deps,
-      "edit",
-      "processes_signal",
-      async (client, host, req) => {
-        const { pid, signal } = req.body as {
-          pid?: number;
-          signal?: string;
-        };
-        if (!isValidPid(pid)) throw new ManagerInputError("Invalid pid");
-        if (!isValidSignal(signal))
-          throw new ManagerInputError("Invalid signal");
-        const cmd = buildKillCommand(Number(pid), signal);
-        // Try unprivileged first; elevate only if the process isn't owned.
-        const result = await execElevated(client, cmd, host.sudoPassword);
-        return {
-          success: result.code === 0,
-          output: result.stdout || result.stderr,
-          usedSudo: result.usedSudo,
-        };
-      },
-    ),
+    guardedHandler(deps.log, "processes_signal", async (hostId, req) => {
+      await deps.assertAccess(hostId, "edit");
+      const { pid, signal } = req.body as {
+        pid?: number;
+        signal?: string;
+      };
+      if (!isValidPid(pid)) throw new ManagerInputError("Invalid pid");
+      if (!isValidSignal(signal)) throw new ManagerInputError("Invalid signal");
+      const outcome = await deps.runAction("host-metrics.signal-process", {
+        hostId,
+        resourceKey: String(pid),
+        input: { signal },
+        confirmed: true,
+      });
+      if (outcome.status !== "success") {
+        throw new Error(outcome.error ?? outcome.status);
+      }
+      return outcome.data;
+    }),
   );
 }

@@ -22,6 +22,8 @@ import {
 } from "./interactive.js";
 import type { MetricsLogger } from "./log.js";
 import { registerManagerRoutes } from "./managers/index.js";
+import type { RunOnHost } from "./managers/types.js";
+import { registerOperations } from "./operations.js";
 import {
   AccessDeniedError,
   editAccessDenied,
@@ -727,7 +729,25 @@ export function registerRoutes(router: Router, deps: RouteDeps): void {
     return userId;
   };
 
+  const runOnHost: RunOnHost = async (hostId, level, fn) => {
+    const userId = await assertAccess(hostId, level);
+    const host = await poller.resolve(hostId, userId);
+    if (!host) throw new AccessDeniedError("Host not found");
+    return ctx.ssh.withConnection(host, MANAGER_CONNECTION, (client) =>
+      fn(client as never, {
+        id: host.id,
+        userId: host.userId,
+        actorId: userId,
+        sudoPassword: sudoPasswordOf(host),
+        enableDocker: !!host.enableDocker,
+      }),
+    );
+  };
+
+  registerOperations(ctx, runOnHost, repository);
+
   registerManagerRoutes(router, {
+    runAction: (actionId, options) => ctx.operations.run(actionId, options),
     validateHostId,
     log,
     repository,
@@ -747,19 +767,6 @@ export function registerRoutes(router: Router, deps: RouteDeps): void {
       };
     },
     assertAccess,
-    runOnHost: async (hostId, level, fn) => {
-      const userId = await assertAccess(hostId, level);
-      const host = await poller.resolve(hostId, userId);
-      if (!host) throw new AccessDeniedError("Host not found");
-      return ctx.ssh.withConnection(host, MANAGER_CONNECTION, (client) =>
-        fn(client as never, {
-          id: host.id,
-          userId: host.userId,
-          actorId: userId,
-          sudoPassword: sudoPasswordOf(host),
-          enableDocker: !!host.enableDocker,
-        }),
-      );
-    },
+    runOnHost,
   });
 }

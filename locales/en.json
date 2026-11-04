@@ -496,5 +496,23 @@
     "title": "Busiest hosts",
     "loading": "Loading...",
     "empty": "No recent samples yet. Hosts show here once their metrics are collected, like while the host status card is open."
+  },
+  "operations": {
+    "health": {
+      "title": "Health checks"
+    },
+    "processes": {
+      "title": "Processes",
+      "list": "List processes",
+      "signal": "Signal process",
+      "signalLabel": "Signal",
+      "term": "Ask to stop (TERM)",
+      "kill": "Force stop (KILL)",
+      "hup": "Reload (HUP)",
+      "int": "Interrupt (INT)",
+      "user": "User",
+      "cpu": "CPU",
+      "memory": "Memory"
+    }
   }
 }

@@ -1,6 +1,9 @@
 import type { Client } from "ssh2";
 import type { RequestHandler } from "express";
-import type { PluginHostShareLevel } from "@termix-ssh/plugin-sdk/backend";
+import type {
+  PluginHostShareLevel,
+  PluginOperations,
+} from "@termix-ssh/plugin-sdk/backend";
 import type { HostMetricsRepository } from "../repository.js";
 import type { MetricsLogger } from "../log.js";
 import type { HealthRecorder } from "./health.js";
@@ -38,6 +41,8 @@ export interface HealthCheckEvent {
 export interface ManagerRoutesDeps {
   validateHostId: RequestHandler;
   runOnHost: RunOnHost;
+  /** Runs one of this plugin's actions through the gate, for run history. */
+  runAction: PluginOperations["run"];
   /** Throws unless the acting user has `level` access, without borrowing a connection. */
   assertAccess: (
     hostId: number,
