@@ -1,3 +1,4 @@
+import type { ComponentType } from "react";
 import { Activity, Server } from "lucide-react";
 import type {
   HostEditorSectionProps,
@@ -25,6 +26,8 @@ import {
   createHomepageHostMetrics,
 } from "./SummaryViews";
 import { createHealthSummaryStore } from "./health-summary";
+import { CARD_DEFINITIONS } from "./cards";
+import { HOST_PAGE_CARDS, createHostPageTile } from "./HostPageTiles";
 
 type HostMetricsTabConfig = Parameters<typeof HostMetricsTab>[0]["hostConfig"];
 
@@ -168,6 +171,24 @@ export async function activate(app: TermixApp): Promise<void> {
     kind: "component",
     component: createHomepageHostMetrics(summaries),
   });
+
+  // Metrics cards as tiles on Operations Center's host page.
+  for (const cardId of HOST_PAGE_CARDS) {
+    app.registerSlotContribution("host-page.tiles", {
+      actionId: `host-metrics.${cardId}`,
+      titleKey: CARD_DEFINITIONS[cardId].labelKey,
+      icon: Activity,
+      kind: "component",
+      component: createHostPageTile(
+        metricsApi,
+        cardId,
+      ) as unknown as ComponentType<Record<string, unknown>>,
+      when: (context) =>
+        allowed &&
+        !!(context.host as PluginHostRecord | undefined)?.enableSsh &&
+        metricsEnabledFor(context.host as PluginHostRecord),
+    });
+  }
 
   app.declareActionSlot({
     id: "host-metrics.managers",

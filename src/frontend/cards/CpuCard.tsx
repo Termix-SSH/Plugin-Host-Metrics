@@ -1,17 +1,12 @@
 import { SmoothLineChart as LineChart } from "./SmoothCharts";
-import { SmoothSparkline as Sparkline } from "./SmoothCharts";
 import { CpuPerformance } from "./PerformanceDetails";
 import { useCardSettings, chartHeight } from "../card-settings";
-import {
-  MiniStat,
-  MetricCard,
-  type LineChartSeries,
-} from "@termix-ssh/plugin-sdk/ui";
+import { MetricCard, type LineChartSeries } from "@termix-ssh/plugin-sdk/ui";
 import { type ServerMetrics } from "../../shared/metrics.js";
 import { useState, useEffect } from "react";
 import { Cpu } from "lucide-react";
-import { loadColor, loadTextColor } from "../process-view";
-import { AnimatedGauge } from "./AnimatedGauge";
+import { loadColor } from "../process-view";
+import { LiveUsage } from "./LiveUsage";
 import { useTranslation } from "@termix-ssh/plugin-sdk/frontend";
 import { type MetricsHistoryRow, useHostMetricsApi } from "../host-metrics-api";
 import { CardTimeTabs, type HistoryTab } from "./CardTimeTabs";
@@ -19,10 +14,13 @@ import { CardTimeTabs, type HistoryTab } from "./CardTimeTabs";
 export function CpuCard({
   metrics,
   history,
+  timestamps: liveTimes = [],
   hostId,
 }: {
   metrics: ServerMetrics | null;
   history: Array<number | null>;
+  /** When each history point was taken. */
+  timestamps?: string[];
   hostId: number | null;
 }) {
   const { getMetricsHistory } = useHostMetricsApi();
@@ -79,89 +77,87 @@ export function CpuCard({
     >
       <div className="flex flex-col gap-3">
         {activeTab === "live" && (
-          <div className="flex items-center gap-4">
-            <AnimatedGauge
-              value={percent}
-              colorClassName={loadTextColor(percent)}
-              caption={
-                settings.showCores !== false && cores !== null
-                  ? t("hostMetrics.cpuCores", { count: cores })
-                  : undefined
-              }
-            />
-            <div className="flex min-w-0 flex-1 flex-col gap-2">
-              {settings.showLoad !== false && load && (
-                <div className="grid grid-cols-3 gap-2">
-                  <MiniStat caption="1m" value={load[0].toFixed(2)} />
-                  <MiniStat caption="5m" value={load[1].toFixed(2)} />
-                  <MiniStat caption="15m" value={load[2].toFixed(2)} />
+          <LiveUsage
+            percent={percent}
+            caption={
+              settings.showCores !== false && cores !== null
+                ? t("hostMetrics.cpuCores", { count: cores })
+                : undefined
+            }
+            stats={
+              settings.showLoad !== false && load
+                ? [
+                    { caption: "1m", value: load[0].toFixed(2) },
+                    { caption: "5m", value: load[1].toFixed(2) },
+                    { caption: "15m", value: load[2].toFixed(2) },
+                  ]
+                : []
+            }
+            label={t("hostMetrics.cpuUsage")}
+            color="var(--accent-brand)"
+            points={history}
+            timestamps={liveTimes}
+            chartHeight={chartHeight(settings, 110)}
+          >
+            {settings.showBreakdown !== false && metrics?.cpu?.mix && (
+              <div className="flex flex-col gap-0.5">
+                <div className="flex h-1.5 w-full bg-muted">
+                  <div
+                    className="bg-accent-brand"
+                    style={{ width: `${metrics.cpu.mix.user}%` }}
+                  />
+                  <div
+                    className="bg-accent-brand/70"
+                    style={{ width: `${metrics.cpu.mix.system}%` }}
+                  />
+                  <div
+                    className="bg-accent-brand/45"
+                    style={{ width: `${metrics.cpu.mix.iowait}%` }}
+                  />
+                  <div
+                    className="bg-accent-brand/25"
+                    style={{ width: `${metrics.cpu.mix.steal}%` }}
+                  />
                 </div>
-              )}
-              <Sparkline
-                data={[...history, percent]}
-                domain={[0, 100]}
-                height={chartHeight(settings, 190)}
-              />
-              {settings.showBreakdown !== false && metrics?.cpu?.mix && (
-                <div className="flex flex-col gap-0.5">
-                  <div className="flex h-1.5 w-full bg-muted">
-                    <div
-                      className="bg-accent-brand"
-                      style={{ width: `${metrics.cpu.mix.user}%` }}
-                    />
-                    <div
-                      className="bg-accent-brand/70"
-                      style={{ width: `${metrics.cpu.mix.system}%` }}
-                    />
-                    <div
-                      className="bg-accent-brand/45"
-                      style={{ width: `${metrics.cpu.mix.iowait}%` }}
-                    />
-                    <div
-                      className="bg-accent-brand/25"
-                      style={{ width: `${metrics.cpu.mix.steal}%` }}
-                    />
-                  </div>
-                  <div className="font-mono text-[10px] text-muted-foreground">
-                    {t("hostMetrics.cpuMix", {
-                      user: metrics.cpu.mix.user.toFixed(0),
-                      system: metrics.cpu.mix.system.toFixed(0),
-                      iowait: metrics.cpu.mix.iowait.toFixed(0),
-                      steal: metrics.cpu.mix.steal.toFixed(0),
-                    })}
-                  </div>
+                <div className="font-mono text-[10px] text-muted-foreground">
+                  {t("hostMetrics.cpuMix", {
+                    user: metrics.cpu.mix.user.toFixed(0),
+                    system: metrics.cpu.mix.system.toFixed(0),
+                    iowait: metrics.cpu.mix.iowait.toFixed(0),
+                    steal: metrics.cpu.mix.steal.toFixed(0),
+                  })}
                 </div>
-              )}
-              {settings.showCores !== false &&
-                metrics?.cpu?.perCore &&
-                metrics.cpu.perCore.length > 0 && (
-                  <div className="flex flex-col gap-0.5">
-                    {metrics.cpu.perCore.map((c, i) => (
-                      <div
-                        key={i}
-                        className="flex items-center gap-1.5 font-mono text-[10px] text-muted-foreground"
-                      >
-                        <span className="w-5 shrink-0">
-                          #{metrics.cpu.coreIds?.[i] ?? i}
-                        </span>
-                        <div className="h-1.5 flex-1 bg-muted">
-                          <div
-                            className={
-                              "h-full transition-[width] duration-700 ease-out motion-reduce:transition-none " +
-                              loadColor(c)
-                            }
-                            style={{ width: `${c ?? 0}%` }}
-                          />
-                        </div>
-                        <span className="w-7 shrink-0 text-right">
-                          {c == null ? "-" : `${c.toFixed(0)}%`}
-                        </span>
+              </div>
+            )}
+            {settings.showCores !== false &&
+              metrics?.cpu?.perCore &&
+              metrics.cpu.perCore.length > 0 && (
+                <div className="grid grid-cols-[repeat(auto-fill,minmax(9rem,1fr))] gap-x-4 gap-y-0.5">
+                  {metrics.cpu.perCore.map((c, i) => (
+                    <div
+                      key={i}
+                      className="flex items-center gap-1.5 font-mono text-[10px] text-muted-foreground"
+                    >
+                      <span className="w-5 shrink-0">
+                        #{metrics.cpu.coreIds?.[i] ?? i}
+                      </span>
+                      <div className="h-1.5 flex-1 bg-muted">
+                        <div
+                          className={
+                            "h-full transition-[width] duration-700 ease-out motion-reduce:transition-none " +
+                            loadColor(c)
+                          }
+                          style={{ width: `${c ?? 0}%` }}
+                        />
                       </div>
-                    ))}
-                  </div>
-                )}
-            </div>
-          </div>
+                      <span className="w-7 shrink-0 text-right">
+                        {c == null ? "-" : `${c.toFixed(0)}%`}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              )}
+          </LiveUsage>
         )}
         {activeTab === "live" && (
           <CpuPerformance metrics={metrics} hostId={hostId} />

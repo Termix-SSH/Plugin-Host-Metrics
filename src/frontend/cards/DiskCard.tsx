@@ -1,13 +1,8 @@
 import { SmoothLineChart as LineChart } from "./SmoothCharts";
-import { SmoothSparkline as Sparkline } from "./SmoothCharts";
 import { DiskPerformance } from "./PerformanceDetails";
 import { useCardSettings, chartHeight } from "../card-settings";
-import {
-  RadialGauge,
-  MiniStat,
-  MetricCard,
-  type LineChartSeries,
-} from "@termix-ssh/plugin-sdk/ui";
+import { MetricCard, type LineChartSeries } from "@termix-ssh/plugin-sdk/ui";
+import { LiveUsage } from "./LiveUsage";
 import { type ServerMetrics } from "../../shared/metrics.js";
 import { useState, useEffect, useMemo } from "react";
 import { HardDrive } from "lucide-react";
@@ -19,10 +14,13 @@ import { CardTimeTabs, type HistoryTab } from "./CardTimeTabs";
 export function DiskCard({
   metrics,
   history,
+  timestamps: liveTimes = [],
   hostId,
 }: {
   metrics: ServerMetrics | null;
   history: Array<number | null>;
+  /** When each history point was taken. */
+  timestamps?: string[];
   hostId: number | null;
 }) {
   const { getMetricsHistory } = useHostMetricsApi();
@@ -120,32 +118,37 @@ export function DiskCard({
     >
       <div className="flex flex-col gap-3">
         {activeTab === "live" && (
-          <div className="flex items-center gap-4">
-            <RadialGauge value={percent} />
-            <div className="flex min-w-0 flex-1 flex-col gap-2">
-              {settings.showDetails !== false && (
-                <div className="grid grid-cols-2 gap-2">
-                  {usedHuman && totalHuman && (
-                    <MiniStat
-                      caption={activeMount ?? t("hostMetrics.disk")}
-                      value={`${usedHuman}/${totalHuman}`}
-                    />
-                  )}
-                  {availableHuman && (
-                    <MiniStat
-                      caption={t("hostMetrics.available")}
-                      value={availableHuman}
-                    />
-                  )}
-                </div>
-              )}
-              <Sparkline
-                data={[...history, percent]}
-                domain={[0, 100]}
-                height={chartHeight(settings, 48)}
-              />
-            </div>
-          </div>
+          <LiveUsage
+            percent={percent}
+            caption={activeMount ?? undefined}
+            stats={
+              settings.showDetails !== false
+                ? [
+                    ...(usedHuman && totalHuman
+                      ? [
+                          {
+                            caption: t("hostMetrics.disk"),
+                            value: `${usedHuman}/${totalHuman}`,
+                          },
+                        ]
+                      : []),
+                    ...(availableHuman
+                      ? [
+                          {
+                            caption: t("hostMetrics.available"),
+                            value: availableHuman,
+                          },
+                        ]
+                      : []),
+                  ]
+                : []
+            }
+            label={t("hostMetrics.diskUsage")}
+            color="var(--chart-4)"
+            points={isCustomMount ? [] : history}
+            timestamps={isCustomMount ? [] : liveTimes}
+            chartHeight={chartHeight(settings, 80)}
+          />
         )}
         {activeTab === "live" && (
           <DiskPerformance metrics={metrics} hostId={hostId} />

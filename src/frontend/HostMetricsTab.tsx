@@ -35,6 +35,7 @@ import { toast } from "sonner";
 import { RefreshCw, Server, LayoutDashboard, Undo2, Redo2 } from "lucide-react";
 import { useHostMetricsPreferences } from "./hooks/useHostMetricsPreferences.ts";
 import { HostMetricsGrid } from "./HostMetricsGrid";
+import { emptyHistories, pushLive } from "./live-history";
 import { LayoutTemplates } from "./LayoutTemplates";
 import { handleLayoutHistoryKeyDown } from "./layout-history-shortcuts";
 import {
@@ -100,12 +101,8 @@ function HostMetricsInner({
     "offline",
   );
   const [metrics, setMetrics] = React.useState<ServerMetrics | null>(null);
-  const [histories, setHistories] = React.useState<MetricCardHistories>({
-    cpu: [],
-    memory: [],
-    disk: [],
-    gpu: {},
-  });
+  const [histories, setHistories] =
+    React.useState<MetricCardHistories>(emptyHistories);
   const [currentHostConfig, setCurrentHostConfig] = React.useState(hostConfig);
   const [isRefreshing, setIsRefreshing] = React.useState(false);
   const [totpRequired, setTotpRequired] = React.useState(false);
@@ -224,6 +221,10 @@ function HostMetricsInner({
     () => mergeLive(metrics, live),
     [metrics, live],
   );
+  // The live charts follow every reading, live ones included.
+  React.useEffect(() => {
+    if (liveMetrics) setHistories((prev) => pushLive(prev, liveMetrics));
+  }, [liveMetrics]);
 
   const renderCard = React.useCallback(
     (id: string) => {
@@ -275,7 +276,7 @@ function HostMetricsInner({
     if (hostConfig?.id !== currentHostConfig?.id) {
       setServerStatus("offline");
       setMetrics(null);
-      setHistories({ cpu: [], memory: [], disk: [], gpu: {} });
+      setHistories(emptyHistories());
     }
     setCurrentHostConfig(hostConfig);
   }, [hostConfig?.id]);
@@ -303,16 +304,11 @@ function HostMetricsInner({
   };
 
   const pushHistory = React.useCallback((data: ServerMetrics) => {
-    setHistories((prev) => {
-      const add = (arr: Array<number | null>, v: number | null | undefined) =>
-        [...arr, v ?? null].slice(-HISTORY_LEN);
-      return {
-        cpu: add(prev.cpu, data.cpu?.percent),
-        memory: add(prev.memory, data.memory?.percent),
-        disk: add(prev.disk, data.disk?.percent),
-        gpu: appendGpuHistories(prev.gpu, data.gpu?.gpus, HISTORY_LEN),
-      };
-    });
+    // CPU, memory and disk follow the live readings, see pushLive.
+    setHistories((prev) => ({
+      ...prev,
+      gpu: appendGpuHistories(prev.gpu, data.gpu?.gpus, HISTORY_LEN),
+    }));
   }, []);
 
   const handleTOTPSubmit = async (totpCode: string) => {
@@ -728,16 +724,16 @@ function HostMetricsInner({
             )}
 
           {editMode && (
-            <div className="mx-2.5 mt-2.5 flex shrink-0 items-center gap-2 border border-dashed border-accent-brand/40 bg-accent-brand/5 px-3 py-2">
-              <LayoutDashboard className="size-3.5 shrink-0 text-accent-brand" />
-              <span className="text-xs font-semibold text-accent-brand">
+            <div className="flex shrink-0 items-center gap-2 border-b border-border px-3 py-1.5">
+              <LayoutDashboard className="size-3 shrink-0 text-accent-brand" />
+              <span className="text-[11px] text-muted-foreground">
                 {t("hostMetrics.editModeInstructions")}
               </span>
             </div>
           )}
 
           {showCards && (
-            <div className="p-2.5">
+            <div>
               <HostMetricsGrid
                 key={hostId}
                 layout={gridLayout}

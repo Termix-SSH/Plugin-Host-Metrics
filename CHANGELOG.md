@@ -6,6 +6,13 @@
 
 - Processes across hosts and sending them signals through Termix actions, from Automations, the CLI, the phone app and the command palette
 - Health checks show as a status tile on the dashboard and host page
+- CPU, memory, disk, network, uptime, system, processes and ports cards can go on Operations Center's host page as tiles
+
+### Changed
+
+- Cards sit edge to edge with shared lines and no gaps, like the dashboard, and the add list sits beside the grid with a search and filters
+- The default layout puts cards in rows that share one height, so there are no gaps between them
+- CPU, memory and disk open on the number, with a live chart of the last couple of minutes that scales to the data so small changes show, drawn like the history charts
 
 ### Removed
 

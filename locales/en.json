@@ -118,15 +118,10 @@
       "failing": "Failing"
     },
     "grid": {
-      "move": "Drag to move, or use the arrow keys",
-      "moveCard": "Move {{card}}",
-      "removeCard": "Remove {{card}}",
       "addCard": "Add card",
-      "empty": "No cards yet. Add one below."
+      "empty": "No cards yet. Add one from the list.",
+      "cards": "Host Metrics"
     },
-    "cardWidth": "Resize card width",
-    "cardHeight": "Resize card height",
-    "cardSize": "Resize card width and height",
     "undoLayout": "Undo layout change (Ctrl+Z)",
     "redoLayout": "Redo layout change (Ctrl+Y)",
     "layoutTemplates": {
@@ -329,6 +324,10 @@
       "send": "Send",
       "compositionLabel": "Memory composition: {{used}} in use, {{available}} available",
       "compositionHint": "In use / available. Compressed memory, where reported, is part of in-use memory; cached counters overlap and are listed separately."
+    },
+    "hostPage": {
+      "totp": "Open Host Metrics once to sign in to this host.",
+      "failed": "Could not read metrics from this host."
     }
   },
   "metricsHistory": {

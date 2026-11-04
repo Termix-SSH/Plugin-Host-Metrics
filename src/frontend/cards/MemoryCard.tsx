@@ -1,12 +1,7 @@
 import { SmoothLineChart as LineChart } from "./SmoothCharts";
-import { SmoothSparkline as Sparkline } from "./SmoothCharts";
 import { MemoryPerformance } from "./PerformanceDetails";
 import { useCardSettings, chartHeight } from "../card-settings";
-import {
-  MiniStat,
-  MetricCard,
-  type LineChartSeries,
-} from "@termix-ssh/plugin-sdk/ui";
+import { MetricCard, type LineChartSeries } from "@termix-ssh/plugin-sdk/ui";
 import { type ServerMetrics } from "../../shared/metrics.js";
 import { useState, useEffect } from "react";
 import { MemoryStick } from "lucide-react";
@@ -14,16 +9,18 @@ import { useTranslation } from "@termix-ssh/plugin-sdk/frontend";
 import { type MetricsHistoryRow, useHostMetricsApi } from "../host-metrics-api";
 import { CardTimeTabs, type HistoryTab } from "./CardTimeTabs";
 import { memParts } from "../live-metrics";
-import { loadTextColor } from "../process-view";
-import { AnimatedGauge } from "./AnimatedGauge";
+import { LiveUsage } from "./LiveUsage";
 
 export function MemoryCard({
   metrics,
   history,
+  timestamps: liveTimes = [],
   hostId,
 }: {
   metrics: ServerMetrics | null;
   history: Array<number | null>;
+  /** When each history point was taken. */
+  timestamps?: string[];
   hostId: number | null;
 }) {
   const { getMetricsHistory } = useHostMetricsApi();
@@ -90,56 +87,58 @@ export function MemoryCard({
     >
       <div className="flex flex-col gap-3">
         {activeTab === "live" && (
-          <div className="flex items-center gap-4">
-            <AnimatedGauge
-              value={percent}
-              colorClassName={loadTextColor(percent)}
-            />
-            <div className="flex min-w-0 flex-1 flex-col gap-2">
-              {settings.showDetails !== false && (
-                <div className="grid grid-cols-2 gap-2">
-                  {usedGiB !== null && totalGiB !== null && (
-                    <MiniStat
-                      caption={t("hostMetrics.memory")}
-                      value={`${usedGiB.toFixed(1)}/${totalGiB.toFixed(1)}G`}
+          <LiveUsage
+            percent={percent}
+            stats={
+              settings.showDetails !== false
+                ? [
+                    ...(usedGiB !== null && totalGiB !== null
+                      ? [
+                          {
+                            caption: t("hostMetrics.memory"),
+                            value: `${usedGiB.toFixed(1)}/${totalGiB.toFixed(1)}G`,
+                          },
+                        ]
+                      : []),
+                    ...(freeGiB !== null
+                      ? [
+                          {
+                            caption: t("hostMetrics.free"),
+                            value: `${freeGiB.toFixed(1)}G`,
+                          },
+                        ]
+                      : []),
+                  ]
+                : []
+            }
+            label={t("hostMetrics.memoryUsage")}
+            color="var(--chart-3)"
+            points={history}
+            timestamps={liveTimes}
+            chartHeight={chartHeight(settings, 110)}
+          >
+            {settings.showBreakdown !== false &&
+              parts &&
+              metrics?.memory?.cachedGiB != null && (
+                <div className="flex flex-col gap-0.5">
+                  <div className="flex h-1.5 w-full bg-muted">
+                    <div
+                      className="bg-accent-brand"
+                      style={{ width: `${parts.used}%` }}
                     />
-                  )}
-                  {freeGiB !== null && (
-                    <MiniStat
-                      caption={t("hostMetrics.free")}
-                      value={`${freeGiB.toFixed(1)}G`}
+                    <div
+                      className="bg-accent-brand/40"
+                      style={{ width: `${parts.cache}%` }}
                     />
-                  )}
+                  </div>
+                  <div className="font-mono text-[10px] text-muted-foreground">
+                    {t("hostMetrics.memoryMix", {
+                      cache: metrics.memory.cachedGiB.toFixed(1),
+                    })}
+                  </div>
                 </div>
               )}
-              {settings.showBreakdown !== false &&
-                parts &&
-                metrics?.memory?.cachedGiB != null && (
-                  <div className="flex flex-col gap-0.5">
-                    <div className="flex h-1.5 w-full bg-muted">
-                      <div
-                        className="bg-accent-brand"
-                        style={{ width: `${parts.used}%` }}
-                      />
-                      <div
-                        className="bg-accent-brand/40"
-                        style={{ width: `${parts.cache}%` }}
-                      />
-                    </div>
-                    <div className="font-mono text-[10px] text-muted-foreground">
-                      {t("hostMetrics.memoryMix", {
-                        cache: metrics.memory.cachedGiB.toFixed(1),
-                      })}
-                    </div>
-                  </div>
-                )}
-              <Sparkline
-                data={[...history, percent]}
-                domain={[0, 100]}
-                height={chartHeight(settings, 48)}
-              />
-            </div>
-          </div>
+          </LiveUsage>
         )}
         {activeTab === "live" && <MemoryPerformance metrics={metrics} />}
         {activeTab !== "live" && (

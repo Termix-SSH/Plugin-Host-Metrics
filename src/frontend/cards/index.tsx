@@ -30,6 +30,8 @@ import {
 } from "./managers/SimpleManagerCards";
 
 export interface MetricCardHistories {
+  /** When each cpu, memory and disk point was taken, ISO time. */
+  ts: string[];
   cpu: Array<number | null>;
   memory: Array<number | null>;
   disk: Array<number | null>;
@@ -57,6 +59,7 @@ type SimpleMetricCard = ComponentType<{
 type HistoryMetricCard = ComponentType<{
   metrics: ServerMetrics | null;
   history: Array<number | null>;
+  timestamps?: string[];
   hostId: number | null;
 }>;
 
@@ -84,7 +87,12 @@ function historyCard(
     labelKey,
     kind: "metric",
     render: ({ metrics, histories, hostId }) => (
-      <Comp metrics={metrics} history={histories[series]} hostId={hostId} />
+      <Comp
+        metrics={metrics}
+        history={histories[series]}
+        timestamps={histories.ts}
+        hostId={hostId}
+      />
     ),
   };
 }

@@ -128,22 +128,91 @@ const DEFAULT_COLSPAN: Partial<Record<HostMetricsCardId, HostMetricsColSpan>> =
 const DEFAULT_HEIGHT: Partial<Record<HostMetricsCardId, number | null>> = {};
 
 /**
- * Build a default layout from a list of enabled metric-card ids (e.g. the host's
- * current the `enabledWidgets` host setting), preserving canonical order. Manager
- * cards are not added by default.
+ * Rows of the default layout: cards that sit well side by side, their widths
+ * out of 12 columns and one height per row, so every row ends on one line.
+ */
+const DEFAULT_ROWS: {
+  height: number;
+  cards: [HostMetricCardId, number][];
+}[] = [
+  {
+    height: 400,
+    cards: [
+      ["cpu", 4],
+      ["memory", 4],
+      ["disk", 4],
+    ],
+  },
+  {
+    height: 170,
+    cards: [
+      ["uptime", 3],
+      ["temperature", 3],
+      ["system", 6],
+    ],
+  },
+  {
+    height: 340,
+    cards: [
+      ["network", 6],
+      ["login_stats", 6],
+    ],
+  },
+  {
+    height: 340,
+    cards: [
+      ["processes", 6],
+      ["ports", 6],
+    ],
+  },
+  {
+    height: 300,
+    cards: [
+      ["gpu", 6],
+      ["firewall", 6],
+    ],
+  },
+];
+
+/**
+ * Build a default layout from a list of enabled metric-card ids (e.g. the
+ * host's `enabledWidgets` setting). Cards go in rows with one height each;
+ * a row missing a card lets the others widen to fill it. Manager cards are
+ * not added by default.
  */
 export function defaultLayoutFromWidgets(
   enabledWidgets: string[],
   columns = 3,
 ): HostMetricsLayout {
   const enabled = new Set(enabledWidgets);
-  const ids = METRIC_CARD_IDS.filter((id) => enabled.has(id));
-  const slots: HostMetricsSlot[] = ids.map((id, i) => ({
-    id,
-    order: i,
-    colSpan: DEFAULT_COLSPAN[id] ?? 1,
-    height: DEFAULT_HEIGHT[id] ?? null,
-  }));
+  const slots: HostMetricsSlot[] = [];
+  let y = 0;
+  for (const row of DEFAULT_ROWS) {
+    const cards = row.cards.filter(([id]) => enabled.has(id));
+    if (cards.length === 0) continue;
+    const total = cards.reduce((sum, [, w]) => sum + w, 0);
+    let x = 0;
+    cards.forEach(([id, wanted], index) => {
+      const w =
+        index === cards.length - 1
+          ? GRID_COLUMNS - x
+          : Math.round((wanted * GRID_COLUMNS) / total);
+      slots.push({
+        id,
+        order: slots.length,
+        colSpan: Math.max(
+          1,
+          Math.min(3, Math.round(w / 4)),
+        ) as HostMetricsColSpan,
+        height: row.height,
+        x,
+        y,
+        w,
+      });
+      x += w;
+    });
+    y += row.height;
+  }
   return { slots, columns };
 }
 
