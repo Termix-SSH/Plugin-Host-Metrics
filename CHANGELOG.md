@@ -16,6 +16,11 @@
 - Charts show a placeholder until their first readings come in, instead of an empty space
 - Network interfaces are rows with a line between them instead of separate boxes
 
+### Fixed
+
+- The memory card no longer shows an empty Hardware heading when the host does not report its memory modules
+- Disk throughput charts show one decimal for small rates instead of the same label on every line
+
 ### Removed
 
 - The Firewall manager card. Changing firewall rules moved to the Firewall plugin, which fills the same card when it is installed. The Firewall status card stays
