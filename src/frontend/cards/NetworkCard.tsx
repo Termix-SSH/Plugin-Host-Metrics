@@ -144,11 +144,11 @@ export function NetworkCard({
             </span>
           </div>
         ) : (
-          <div className="flex flex-col gap-2">
+          <div className="flex flex-col divide-y divide-border">
             {interfaces.map((iface, i) => (
               <div
                 key={`${iface.name}-${i}`}
-                className="flex flex-col gap-1 border border-border bg-muted/30 p-2"
+                className="flex flex-col gap-1 py-2 first:pt-0 last:pb-0"
               >
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2">

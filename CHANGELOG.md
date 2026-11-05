@@ -14,6 +14,7 @@
 - The default layout puts cards in rows that share one height, so there are no gaps between them
 - CPU, memory and disk open on the number, with a live chart of the last couple of minutes that scales to the data so small changes show, drawn like the history charts
 - Charts show a placeholder until their first readings come in, instead of an empty space
+- Network interfaces are rows with a line between them instead of separate boxes
 
 ### Removed
 
