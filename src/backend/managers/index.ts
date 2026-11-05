@@ -2,7 +2,6 @@ import { detectPlatform } from "@termix-ssh/plugin-sdk/host-commands";
 import type { Router } from "express";
 import { managerHandler } from "./route-helpers.js";
 import type { ManagerRoutesDeps } from "./types.js";
-import { registerProcessRoutes } from "./processes.js";
 import { registerSimpleReadRoutes } from "./simple-reads.js";
 import { registerHealthRoutes } from "./health.js";
 import { registerLiveRoutes } from "./live.js";
@@ -42,7 +41,6 @@ export function registerManagerRoutes(
     ),
   );
 
-  registerProcessRoutes(app, deps);
   registerSimpleReadRoutes(app, deps);
   registerHealthRoutes(app, deps);
   registerLiveRoutes(app, deps);

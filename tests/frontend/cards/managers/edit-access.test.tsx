@@ -23,7 +23,6 @@ vi.mock("@termix-ssh/plugin-sdk/frontend", async (original) => ({
 
 import { useCanEditHost } from "../../../../src/frontend/cards/managers/useCanEditHost";
 import { extractError } from "../../../../src/frontend/cards/managers/useManagerData";
-import { ProcessInspectorCard } from "../../../../src/frontend/cards/managers/ProcessInspectorCard";
 
 afterEach(() => {
   cleanup();
@@ -71,32 +70,5 @@ describe("edit access in the UI", () => {
       "hostMetrics.managers.editRequired",
     );
     expect(extractError(error).message).toBe("server text");
-  });
-
-  const processes = [
-    {
-      pid: 12,
-      user: "root",
-      cpu: 1,
-      mem: 1,
-      command: "nginx",
-      args: "nginx",
-    },
-  ];
-
-  it("hides process actions from a connect-only user", async () => {
-    mocks.get.mockResolvedValue({ data: { processes } });
-    mocks.host = { id: "7", isShared: true, permissionLevel: "connect" };
-    render(<ProcessInspectorCard hostId={7} />);
-    expect(await screen.findByText("nginx")).toBeTruthy();
-    expect(screen.queryByTitle("hostMetrics.managers.killHint")).toBeNull();
-  });
-
-  it("shows process actions to an editor", async () => {
-    mocks.get.mockResolvedValue({ data: { processes } });
-    mocks.host = { id: "7", isShared: true, permissionLevel: "edit" };
-    render(<ProcessInspectorCard hostId={7} />);
-    expect(await screen.findByText("nginx")).toBeTruthy();
-    expect(screen.getByTitle("hostMetrics.managers.killHint")).toBeTruthy();
   });
 });

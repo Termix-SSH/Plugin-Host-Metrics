@@ -18,7 +18,6 @@ import { FirewallCard } from "./FirewallCard";
 import { TemperatureCard } from "./TemperatureCard";
 import { GpuCard } from "./GpuCard";
 import type { GpuHistories } from "./gpu-history";
-import { ProcessInspectorCard } from "./managers/ProcessInspectorCard";
 import { HealthCheckCard } from "./managers/HealthCheckCard";
 import {
   TopMemoryCard,
@@ -141,11 +140,6 @@ export const CARD_DEFINITIONS: Record<string, CardDefinition> = {
       <GpuCard metrics={metrics} gpuHistories={histories.gpu} />
     ),
   },
-  process_inspector: managerCard(
-    "process_inspector",
-    "hostMetrics.managers.processInspector",
-    ProcessInspectorCard,
-  ),
   health_check: managerCard(
     "health_check",
     "hostMetrics.managers.healthCheck",

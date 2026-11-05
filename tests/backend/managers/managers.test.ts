@@ -4,15 +4,7 @@ import {
   shellSingleQuote,
   parsePlatformProbe,
 } from "@termix-ssh/plugin-sdk/host-commands";
-import {
-  isValidPid,
-  isValidPort,
-  isValidSignal,
-} from "../../../src/backend/managers/validation.js";
-import {
-  parseProcessList,
-  buildKillCommand,
-} from "../../../src/backend/managers/processes.js";
+import { isValidPort } from "../../../src/backend/managers/validation.js";
 import {
   parseDfMounts,
   parseTopMemory,
@@ -67,40 +59,10 @@ describe("platform probe parsing", () => {
 });
 
 describe("validation (injection defense)", () => {
-  it("pids", () => {
-    expect(isValidPid(123)).toBe(true);
-    expect(isValidPid("123")).toBe(true);
-    expect(isValidPid(0)).toBe(false);
-    expect(isValidPid("1; reboot")).toBe(false);
-    expect(isValidPid(-5)).toBe(false);
-  });
   it("ports", () => {
     expect(isValidPort(443)).toBe(true);
     expect(isValidPort(0)).toBe(false);
     expect(isValidPort(70000)).toBe(false);
-  });
-  it("signals", () => {
-    expect(isValidSignal("KILL")).toBe(true);
-    expect(isValidSignal("BOOM")).toBe(false);
-  });
-});
-
-describe("processes", () => {
-  it("parses ps output", () => {
-    const out =
-      "1234 1 root 12.5 3.2 45000 S /usr/bin/node node server.js\n" +
-      "5678 1234 deploy 0.0 1.1 12000 Sl bash -bash";
-    const rows = parseProcessList(out);
-    expect(rows[0]).toMatchObject({
-      pid: 1234,
-      user: "root",
-      cpu: 12.5,
-      command: "/usr/bin/node",
-    });
-    expect(rows[1].pid).toBe(5678);
-  });
-  it("builds kill command", () => {
-    expect(buildKillCommand(42, "TERM")).toBe("kill -TERM 42");
   });
 });
 

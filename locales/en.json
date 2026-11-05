@@ -172,18 +172,14 @@
       "off": "Off"
     },
     "managers": {
-      "processInspector": "Process Inspector",
       "healthCheck": "Health Checks",
       "diskBreakdown": "Disk Breakdown",
       "topMemory": "Top by Memory",
       "actionDone": "{{name}} updated",
       "actionFailed": "Action failed",
       "editRequired": "You need edit access to this host to change it",
-      "signalSent": "Signal sent to PID {{pid}}",
-      "killHint": "Click: terminate (SIGTERM). Right-click: force kill (SIGKILL).",
       "working": "Working...",
       "noHealthChecks": "No health checks configured yet.",
-      "tree": "Tree",
       "healthRun": "Run",
       "healthName": "Name",
       "healthTarget": "Host / address",
@@ -464,19 +460,6 @@
   "operations": {
     "health": {
       "title": "Health checks"
-    },
-    "processes": {
-      "title": "Processes",
-      "list": "List processes",
-      "signal": "Signal process",
-      "signalLabel": "Signal",
-      "term": "Ask to stop (TERM)",
-      "kill": "Force stop (KILL)",
-      "hup": "Reload (HUP)",
-      "int": "Interrupt (INT)",
-      "user": "User",
-      "cpu": "CPU",
-      "memory": "Memory"
     }
   }
 }

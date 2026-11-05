@@ -28,7 +28,7 @@ Read the [docs](https://docs.termix.site/plugins/host-metrics) to set it up and 
 
 - CPU, memory, disk, network, temperature, NVIDIA and AMD GPUs, processes, ports and logins
 - History charts for each host
-- Inspect processes and run health checks on each host
+- Run health checks on each host
 - Health checks for your hosts and services
 - A layout you can rearrange per host
 - Live stats in the terminal toolbar

@@ -15,7 +15,7 @@
   "features": [
     "CPU, memory, disk, network, temperature, NVIDIA and AMD GPUs, processes, ports and logins",
     "History charts for each host",
-    "Inspect processes and run health checks on each host",
+    "Run health checks on each host",
     "Health checks for your hosts and services",
     "A layout you can rearrange per host",
     "Live stats in the terminal toolbar",
@@ -310,24 +310,6 @@
     "operations": {
       "actions": [
         {
-          "id": "host-metrics.list-processes",
-          "titleKey": "operations.processes.list",
-          "scope": "host",
-          "risk": "read",
-          "permission": "use",
-          "hostAccess": "connect",
-          "when": {
-            "settings": {
-              "metricsEnabled": true
-            }
-          },
-          "surfaces": {
-            "assistant": true,
-            "mcp": true,
-            "palette": false
-          }
-        },
-        {
           "id": "host-metrics.health",
           "titleKey": "operations.health.title",
           "scope": "host",
@@ -339,76 +321,6 @@
             "mcp": true,
             "palette": false
           }
-        },
-        {
-          "id": "host-metrics.signal-process",
-          "titleKey": "operations.processes.signal",
-          "icon": "Skull",
-          "scope": "resource",
-          "resource": "host-metrics.process",
-          "inputs": [
-            {
-              "key": "signal",
-              "type": "select",
-              "labelKey": "operations.processes.signalLabel",
-              "required": true,
-              "default": "TERM",
-              "options": [
-                {
-                  "value": "TERM",
-                  "labelKey": "operations.processes.term"
-                },
-                {
-                  "value": "KILL",
-                  "labelKey": "operations.processes.kill"
-                },
-                {
-                  "value": "HUP",
-                  "labelKey": "operations.processes.hup"
-                },
-                {
-                  "value": "INT",
-                  "labelKey": "operations.processes.int"
-                }
-              ]
-            }
-          ],
-          "risk": "destructive",
-          "permission": "use",
-          "hostAccess": "edit",
-          "dryRun": "describe",
-          "when": {
-            "settings": {
-              "metricsEnabled": true
-            }
-          }
-        }
-      ],
-      "resources": [
-        {
-          "id": "host-metrics.process",
-          "titleKey": "operations.processes.title",
-          "icon": "Cpu",
-          "list": "host-metrics.list-processes",
-          "key": "pid",
-          "name": "command",
-          "tab": "host-metrics",
-          "columns": [
-            {
-              "key": "user",
-              "titleKey": "operations.processes.user"
-            },
-            {
-              "key": "cpu",
-              "titleKey": "operations.processes.cpu",
-              "type": "percent"
-            },
-            {
-              "key": "mem",
-              "titleKey": "operations.processes.memory",
-              "type": "percent"
-            }
-          ]
         }
       ],
       "signals": [

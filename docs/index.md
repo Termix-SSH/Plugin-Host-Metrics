@@ -1,4 +1,4 @@
-Host Metrics shows live stats for your Linux hosts: CPU, memory, disk, network, temperature, NVIDIA and AMD GPUs, processes, open ports and logins. It keeps history for charts, runs health checks, and can inspect and stop processes.
+Host Metrics shows live stats for your Linux hosts: CPU, memory, disk, network, temperature, NVIDIA and AMD GPUs, processes, open ports and logins. It keeps history for charts and runs health checks.
 
 Everything is read over SSH. There is no agent to install.
 
@@ -73,15 +73,15 @@ Windows hardware inventory is cached per host for up to five minutes; utilizatio
 
 ## Managers
 
-The Process Inspector and Health Checks cards are built in. Changes run with sudo. Save the host's Sudo Password so Termix can answer the prompt. Without it, changes that need root fail with a message saying so.
+The Health Checks card is built in.
 
 The Firewall card shows whether the firewall is on and its rules. It only reads. To change rules, install the [Firewall](/plugins/firewall) plugin: it fills the Firewall manager card here and adds a Firewall tab for each host.
 
-Other plugins fill the rest of the manager cards when they are installed: [Services](/plugins/service-manager) fills Services, Timers and Log Viewer, [WireGuard](/plugins/wireguard) fills WireGuard, [Packages](/plugins/package-manager) fills Packages, [Cron](/plugins/cron) fills Cron Jobs, [Users](/plugins/user-manager) fills Users and [Certificates](/plugins/certificates) fills SSL Certificates.
+Other plugins fill the rest of the manager cards when they are installed: [Process Manager](/plugins/process-manager) fills Process Inspector, [Services](/plugins/service-manager) fills Services, Timers and Log Viewer, [WireGuard](/plugins/wireguard) fills WireGuard, [Packages](/plugins/package-manager) fills Packages, [Cron](/plugins/cron) fills Cron Jobs, [Users](/plugins/user-manager) fills Users and [Certificates](/plugins/certificates) fills SSL Certificates.
 
 The card detects the firewall that owns the rules. Active UFW takes precedence over its underlying iptables or nftables rules. Reads use the saved Sudo Password when needed, without trying sudo on every poll when no password is saved. An unreadable or unrecognised state shows as unknown.
 
-On a shared host, seeing the managers only needs connect access. Changing the host, like killing a process, needs edit access. Without it the buttons are hidden.
+On a shared host, seeing the managers only needs connect access. Changing a host needs edit access, and the buttons are hidden without it.
 
 ## Health checks
 
