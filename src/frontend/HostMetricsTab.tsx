@@ -3,6 +3,7 @@ import {
   Button,
   ComponentSlot,
   PassphraseDialog,
+  TileEditBar,
   TOTPDialog,
   useTabsSafe,
   ConnectionLogProvider,
@@ -641,60 +642,6 @@ function HostMetricsInner({
                       host: currentHostConfig,
                     }}
                   />
-                  {editMode && (
-                    <>
-                      <Button
-                        variant="ghost"
-                        size="xs"
-                        onClick={() => setTemplatesOpen(true)}
-                      >
-                        {t("hostMetrics.layoutTemplates.open")}
-                      </Button>
-                      <Button
-                        variant="ghost"
-                        size="icon-sm"
-                        title={t("hostMetrics.undoLayout")}
-                        aria-label={t("hostMetrics.undoLayout")}
-                        aria-keyshortcuts="Control+Z Meta+Z"
-                        disabled={!canUndo}
-                        onClick={undo}
-                      >
-                        <Undo2 className="size-4" />
-                      </Button>
-                      <Button
-                        variant="ghost"
-                        size="icon-sm"
-                        title={t("hostMetrics.redoLayout")}
-                        aria-label={t("hostMetrics.redoLayout")}
-                        aria-keyshortcuts="Control+Y Control+Shift+Z Meta+Shift+Z"
-                        disabled={!canRedo}
-                        onClick={redo}
-                      >
-                        <Redo2 className="size-4" />
-                      </Button>
-                      <Button
-                        variant="ghost"
-                        size="xs"
-                        onClick={discardChanges}
-                      >
-                        {t("hostMetrics.discardChanges")}
-                      </Button>
-                      <Button
-                        variant="ghost"
-                        size="xs"
-                        className="text-muted-foreground"
-                        onClick={() =>
-                          setLayout(
-                            defaultLayoutFromWidgets(
-                              statsConfig.enabledWidgets ?? [],
-                            ),
-                          )
-                        }
-                      >
-                        {t("hostMetrics.reset")}
-                      </Button>
-                    </>
-                  )}
                   <Button
                     variant="ghost"
                     size="icon-sm"
@@ -724,12 +671,52 @@ function HostMetricsInner({
             )}
 
           {editMode && (
-            <div className="flex shrink-0 items-center gap-2 border-b border-border px-3 py-1.5">
-              <LayoutDashboard className="size-3 shrink-0 text-accent-brand" />
-              <span className="text-[11px] text-muted-foreground">
+            <TileEditBar
+              onReset={() =>
+                setLayout(
+                  defaultLayoutFromWidgets(statsConfig.enabledWidgets ?? []),
+                )
+              }
+              onDone={finishEditing}
+            >
+              <span className="hidden lg:inline">
                 {t("hostMetrics.editModeInstructions")}
               </span>
-            </div>
+              <span className="flex items-center gap-0.5">
+                <Button
+                  variant="ghost"
+                  size="xs"
+                  onClick={() => setTemplatesOpen(true)}
+                >
+                  {t("hostMetrics.layoutTemplates.open")}
+                </Button>
+                <Button
+                  variant="ghost"
+                  size="icon-sm"
+                  title={t("hostMetrics.undoLayout")}
+                  aria-label={t("hostMetrics.undoLayout")}
+                  aria-keyshortcuts="Control+Z Meta+Z"
+                  disabled={!canUndo}
+                  onClick={undo}
+                >
+                  <Undo2 className="size-4" />
+                </Button>
+                <Button
+                  variant="ghost"
+                  size="icon-sm"
+                  title={t("hostMetrics.redoLayout")}
+                  aria-label={t("hostMetrics.redoLayout")}
+                  aria-keyshortcuts="Control+Y Control+Shift+Z Meta+Shift+Z"
+                  disabled={!canRedo}
+                  onClick={redo}
+                >
+                  <Redo2 className="size-4" />
+                </Button>
+                <Button variant="ghost" size="xs" onClick={discardChanges}>
+                  {t("hostMetrics.discardChanges")}
+                </Button>
+              </span>
+            </TileEditBar>
           )}
 
           {showCards && (
