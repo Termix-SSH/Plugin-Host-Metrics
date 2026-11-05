@@ -4,9 +4,9 @@
 
 ### Added
 
-- Processes across hosts and sending them signals through Termix actions, from Automations, the CLI, the phone app and the command palette
 - Health checks show as a status tile on the dashboard and host page
 - CPU, memory, disk, network, uptime, system, processes and ports cards can go on Operations Center's host page as tiles
+- A Web Servers card, filled by the Web Servers plugin when it is installed
 
 ### Changed
 
@@ -27,6 +27,7 @@
 - The Services, Timers and Log Viewer cards. The Services plugin fills them when it is installed
 - The WireGuard card. The WireGuard plugin fills it when it is installed
 - The Packages, Cron, Users and SSL cards. The Packages, Cron, Users and Certificates plugins fill them when they are installed
+- The Process Inspector card. The Process Manager plugin fills it when it is installed. The top processes card stays
 
 ## 1.3.1
 

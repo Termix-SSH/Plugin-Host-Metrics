@@ -23,7 +23,8 @@ export type HostMetricManagerId =
   | "systemd_timers"
   | "top_memory"
   | "wireguard_manager"
-  | "tailscale_manager";
+  | "tailscale_manager"
+  | "webserver_manager";
 
 export type HostMetricsCardId = HostMetricCardId | HostMetricManagerId;
 
@@ -84,6 +85,7 @@ const MANAGER_CARD_IDS: HostMetricManagerId[] = [
   "top_memory",
   "wireguard_manager",
   "tailscale_manager",
+  "webserver_manager",
 ];
 
 export function isMetricCardId(id: string): id is HostMetricCardId {
