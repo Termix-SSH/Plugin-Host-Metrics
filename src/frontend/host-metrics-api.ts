@@ -30,15 +30,6 @@ export interface MetricsHistoryResponse {
   toTs: string;
 }
 
-export interface PlatformInfo {
-  hasSystemd: boolean;
-  pkg: "apt" | "dnf" | "yum" | "pacman" | null;
-  hasCertbot: boolean;
-  hasAcmeSh: boolean;
-  hasDocker: boolean;
-  osPrettyName: string | null;
-}
-
 interface ConnectionLogEntry {
   type: "info" | "success" | "warning" | "error";
   stage: string;
@@ -212,11 +203,6 @@ export function createHostMetricsApi(api: PluginApiClient) {
       await api.post(`/host-metrics/preferences/${hostId}`, layout);
     },
 
-    async getHostPlatform(hostId: number): Promise<PlatformInfo> {
-      return (await api.get<PlatformInfo>(`/host-metrics/platform/${hostId}`))
-        .data;
-    },
-
     async getLayoutTemplates() {
       return (
         await api.get<{ templates: LayoutTemplate[] }>(
@@ -265,21 +251,6 @@ export function createHostMetricsApi(api: PluginApiClient) {
         await api.get<T>(`/host-metrics/managers/${resource}/${hostId}`, {
           params,
         })
-      ).data;
-    },
-
-    /** GET where the host id sits mid-path: /managers/logs/{id}/files. */
-    async managerGetSub<T>(
-      hostId: number,
-      resource: string,
-      sub: string,
-      params?: Record<string, string | number>,
-    ): Promise<T> {
-      return (
-        await api.get<T>(
-          `/host-metrics/managers/${resource}/${hostId}/${sub}`,
-          { params },
-        )
       ).data;
     },
 

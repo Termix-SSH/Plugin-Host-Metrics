@@ -19,10 +19,6 @@ import { TemperatureCard } from "./TemperatureCard";
 import { GpuCard } from "./GpuCard";
 import type { GpuHistories } from "./gpu-history";
 import { ProcessInspectorCard } from "./managers/ProcessInspectorCard";
-import { PackageManagerCard } from "./managers/PackageManagerCard";
-import { CronManagerCard } from "./managers/CronManagerCard";
-import { SslManagerCard } from "./managers/SslManagerCard";
-import { UserManagerCard } from "./managers/UserManagerCard";
 import { HealthCheckCard } from "./managers/HealthCheckCard";
 import {
   TopMemoryCard,
@@ -149,26 +145,6 @@ export const CARD_DEFINITIONS: Record<string, CardDefinition> = {
     "process_inspector",
     "hostMetrics.managers.processInspector",
     ProcessInspectorCard,
-  ),
-  cron_manager: managerCard(
-    "cron_manager",
-    "hostMetrics.managers.cron",
-    CronManagerCard,
-  ),
-  package_manager: managerCard(
-    "package_manager",
-    "hostMetrics.managers.packages",
-    PackageManagerCard,
-  ),
-  ssl_manager: managerCard(
-    "ssl_manager",
-    "hostMetrics.managers.ssl",
-    SslManagerCard,
-  ),
-  user_manager: managerCard(
-    "user_manager",
-    "hostMetrics.managers.users",
-    UserManagerCard,
   ),
   health_check: managerCard(
     "health_check",

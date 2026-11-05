@@ -374,12 +374,6 @@ describe("health checks", () => {
 
 const WRITE_ROUTES: Array<[string, unknown]> = [
   ["/host-metrics/managers/processes/7/signal", { pid: 1 }],
-  ["/host-metrics/managers/cron/7", { entries: [] }],
-  ["/host-metrics/managers/packages/7/action", { action: "upgrade-all" }],
-  ["/host-metrics/managers/ssl/7/issue", {}],
-  ["/host-metrics/managers/ssl/7/renew", {}],
-  ["/host-metrics/managers/ssl/7/revoke", {}],
-  ["/host-metrics/managers/users/7/action", {}],
 ];
 
 describe("manager write actions", () => {

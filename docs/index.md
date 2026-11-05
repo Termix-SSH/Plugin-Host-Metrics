@@ -1,4 +1,4 @@
-Host Metrics shows live stats for your Linux hosts: CPU, memory, disk, network, temperature, NVIDIA and AMD GPUs, processes, open ports and logins. It keeps history for charts, runs health checks, and has managers for packages, cron jobs, users and certificates.
+Host Metrics shows live stats for your Linux hosts: CPU, memory, disk, network, temperature, NVIDIA and AMD GPUs, processes, open ports and logins. It keeps history for charts, runs health checks, and can inspect and stop processes.
 
 Everything is read over SSH. There is no agent to install.
 
@@ -73,24 +73,15 @@ Windows hardware inventory is cached per host for up to five minutes; utilizatio
 
 ## Managers
 
-Manager cards let you change a host, not just watch it:
-
-| Manager  | What you can do                                                                                               |
-| -------- | ------------------------------------------------------------------------------------------------------------- |
-| Packages | See available upgrades, install a package, and upgrade one or all, with apt, dnf, yum, pacman, zypper or apk. |
-| Cron     | See and edit cron jobs.                                                                                       |
-| Users    | See and manage local users.                                                                                   |
-| SSL      | See certbot and acme.sh certificates and when they expire, and issue, renew or revoke them.                   |
-
-Changes run with sudo. Save the host's Sudo Password so Termix can answer the prompt. Without it, changes that need root fail with a message saying so.
+The Process Inspector and Health Checks cards are built in. Changes run with sudo. Save the host's Sudo Password so Termix can answer the prompt. Without it, changes that need root fail with a message saying so.
 
 The Firewall card shows whether the firewall is on and its rules. It only reads. To change rules, install the [Firewall](/plugins/firewall) plugin: it fills the Firewall manager card here and adds a Firewall tab for each host.
 
-The [Services](/plugins/service-manager) plugin fills the Services, Timers and Log Viewer cards, and the [WireGuard](/plugins/wireguard) plugin fills the WireGuard card.
+Other plugins fill the rest of the manager cards when they are installed: [Services](/plugins/service-manager) fills Services, Timers and Log Viewer, [WireGuard](/plugins/wireguard) fills WireGuard, [Packages](/plugins/package-manager) fills Packages, [Cron](/plugins/cron) fills Cron Jobs, [Users](/plugins/user-manager) fills Users and [Certificates](/plugins/certificates) fills SSL Certificates.
 
 The card detects the firewall that owns the rules. Active UFW takes precedence over its underlying iptables or nftables rules. Reads use the saved Sudo Password when needed, without trying sudo on every poll when no password is saved. An unreadable or unrecognised state shows as unknown.
 
-On a shared host, seeing the managers only needs connect access. Changing the host (killing a process, installing packages, editing cron, users or certificates) needs edit access. Without it the buttons are hidden.
+On a shared host, seeing the managers only needs connect access. Changing the host, like killing a process, needs edit access. Without it the buttons are hidden.
 
 ## Health checks
 

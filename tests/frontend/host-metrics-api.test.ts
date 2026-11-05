@@ -99,14 +99,9 @@ describe("host metrics api", () => {
   it("puts the host id between a manager and its action", async () => {
     const api = client();
     api.post.mockResolvedValue({ data: { success: true } });
-    await createHostMetricsApi(api).managerPost(
-      7,
-      "packages",
-      { a: 1 },
-      "action",
-    );
+    await createHostMetricsApi(api).managerPost(7, "health", { a: 1 }, "run");
     expect(api.post).toHaveBeenCalledWith(
-      "/host-metrics/managers/packages/7/action",
+      "/host-metrics/managers/health/7/run",
       { a: 1 },
     );
   });

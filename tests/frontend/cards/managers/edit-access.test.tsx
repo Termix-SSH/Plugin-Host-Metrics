@@ -23,7 +23,7 @@ vi.mock("@termix-ssh/plugin-sdk/frontend", async (original) => ({
 
 import { useCanEditHost } from "../../../../src/frontend/cards/managers/useCanEditHost";
 import { extractError } from "../../../../src/frontend/cards/managers/useManagerData";
-import { PackageManagerCard } from "../../../../src/frontend/cards/managers/PackageManagerCard";
+import { ProcessInspectorCard } from "../../../../src/frontend/cards/managers/ProcessInspectorCard";
 
 afterEach(() => {
   cleanup();
@@ -73,23 +73,30 @@ describe("edit access in the UI", () => {
     expect(extractError(error).message).toBe("server text");
   });
 
-  it("hides package actions from a connect-only user", async () => {
-    mocks.get.mockResolvedValue({
-      data: { pkg: "apt", upgradable: [{ name: "nginx" }] },
-    });
+  const processes = [
+    {
+      pid: 12,
+      user: "root",
+      cpu: 1,
+      mem: 1,
+      command: "nginx",
+      args: "nginx",
+    },
+  ];
+
+  it("hides process actions from a connect-only user", async () => {
+    mocks.get.mockResolvedValue({ data: { processes } });
     mocks.host = { id: "7", isShared: true, permissionLevel: "connect" };
-    render(<PackageManagerCard hostId={7} />);
+    render(<ProcessInspectorCard hostId={7} />);
     expect(await screen.findByText("nginx")).toBeTruthy();
-    expect(screen.queryByText("hostMetrics.managers.update")).toBeNull();
+    expect(screen.queryByTitle("hostMetrics.managers.killHint")).toBeNull();
   });
 
-  it("shows package actions to an editor", async () => {
-    mocks.get.mockResolvedValue({
-      data: { pkg: "apt", upgradable: [{ name: "nginx" }] },
-    });
+  it("shows process actions to an editor", async () => {
+    mocks.get.mockResolvedValue({ data: { processes } });
     mocks.host = { id: "7", isShared: true, permissionLevel: "edit" };
-    render(<PackageManagerCard hostId={7} />);
+    render(<ProcessInspectorCard hostId={7} />);
     expect(await screen.findByText("nginx")).toBeTruthy();
-    expect(screen.getByText("hostMetrics.managers.update")).toBeTruthy();
+    expect(screen.getByTitle("hostMetrics.managers.killHint")).toBeTruthy();
   });
 });

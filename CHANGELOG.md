@@ -26,6 +26,7 @@
 - The Firewall manager card. Changing firewall rules moved to the Firewall plugin, which fills the same card when it is installed. The Firewall status card stays
 - The Services, Timers and Log Viewer cards. The Services plugin fills them when it is installed
 - The WireGuard card. The WireGuard plugin fills it when it is installed
+- The Packages, Cron, Users and SSL cards. The Packages, Cron, Users and Certificates plugins fill them when they are installed
 
 ## 1.3.1
 

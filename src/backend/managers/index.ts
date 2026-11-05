@@ -4,10 +4,6 @@ import { managerHandler } from "./route-helpers.js";
 import type { ManagerRoutesDeps } from "./types.js";
 import { registerProcessRoutes } from "./processes.js";
 import { registerSimpleReadRoutes } from "./simple-reads.js";
-import { registerCronRoutes } from "./cron.js";
-import { registerPackageRoutes } from "./packages.js";
-import { registerSslRoutes } from "./ssl.js";
-import { registerUserRoutes } from "./users.js";
 import { registerHealthRoutes } from "./health.js";
 import { registerLiveRoutes } from "./live.js";
 
@@ -48,10 +44,6 @@ export function registerManagerRoutes(
 
   registerProcessRoutes(app, deps);
   registerSimpleReadRoutes(app, deps);
-  registerCronRoutes(app, deps);
-  registerPackageRoutes(app, deps);
-  registerSslRoutes(app, deps);
-  registerUserRoutes(app, deps);
   registerHealthRoutes(app, deps);
   registerLiveRoutes(app, deps);
 }
