@@ -125,6 +125,21 @@
     },
     "undoLayout": "Undo layout change (Ctrl+Z)",
     "redoLayout": "Redo layout change (Ctrl+Y)",
+    "transfer": {
+      "open": "Export / Import",
+      "title": "Export and import",
+      "exportTitle": "Export",
+      "exportHint": "Saves your layouts, health checks and dashboard templates as a file. Hosts are matched by address and user on import.",
+      "includeHistory": "Include history",
+      "export": "Download file",
+      "importTitle": "Import",
+      "importHint": "Choose a file made by Export. Hosts that are not found here are skipped.",
+      "overwrite": "Replace existing layouts, checks and templates",
+      "choose": "Choose file",
+      "invalidFile": "This is not a Host Metrics export file.",
+      "failed": "The transfer failed.",
+      "result": "Imported {{imported}}, updated {{updated}}, skipped {{skipped}}, failed {{failed}}."
+    },
     "layoutTemplates": {
       "open": "Dashboard Templates",
       "emptyHint": "Save the current dashboard layout above, then choose hosts to apply it to.",

@@ -203,6 +203,29 @@ export function createHostMetricsApi(api: PluginApiClient) {
       await api.post(`/host-metrics/preferences/${hostId}`, layout);
     },
 
+    async exportData(history: boolean) {
+      return (
+        await api.get<Record<string, unknown>>(
+          `/export${history ? "?history=1" : ""}`,
+        )
+      ).data;
+    },
+
+    async importData(
+      data: Record<string, unknown>,
+      options: { overwrite: boolean; history: boolean },
+    ) {
+      return (
+        await api.post<{
+          imported: number;
+          updated: number;
+          skipped: number;
+          failed: number;
+          errors: string[];
+        }>("/import", { data, ...options })
+      ).data;
+    },
+
     async getLayoutTemplates() {
       return (
         await api.get<{ templates: LayoutTemplate[] }>(

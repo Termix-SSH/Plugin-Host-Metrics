@@ -4,6 +4,7 @@
 
 ### Added
 
+- Export and import of layouts, health checks, dashboard templates and history, with `GET /export` and `POST /import` and buttons in the dashboard edit mode
 - Health checks show as a status tile on the dashboard and host page
 - CPU, memory, disk, network, uptime, system, processes and ports cards can go on Operations Center's host page as tiles
 - A Web Servers card, filled by the Web Servers plugin when it is installed

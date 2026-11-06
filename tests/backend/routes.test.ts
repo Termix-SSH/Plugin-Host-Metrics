@@ -21,6 +21,8 @@ const ROUTES: Array<[string, string, unknown?]> = [
   ["GET", "/metrics/history/7"],
   ["GET", "/host-metrics/preferences/7"],
   ["POST", "/host-metrics/preferences/7", { slots: [], columns: 3 }],
+  ["GET", "/export"],
+  ["POST", "/import", { data: {} }],
   ["GET", "/host-metrics/platform/7"],
   ["POST", "/host-metrics/managers/health/7/config", { checks: [] }],
 ];

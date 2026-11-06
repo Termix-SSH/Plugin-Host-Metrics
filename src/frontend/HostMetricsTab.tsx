@@ -38,6 +38,7 @@ import { useHostMetricsPreferences } from "./hooks/useHostMetricsPreferences.ts"
 import { HostMetricsGrid } from "./HostMetricsGrid";
 import { emptyHistories, pushLive } from "./live-history";
 import { LayoutTemplates } from "./LayoutTemplates";
+import { DataTransfer } from "./DataTransfer";
 import { handleLayoutHistoryKeyDown } from "./layout-history-shortcuts";
 import {
   CARD_DEFINITIONS,
@@ -151,6 +152,7 @@ function HostMetricsInner({
   const preferences = useHostMetricsPreferences(hostId, defaultLayout);
   const [templatesOpen, setTemplatesOpen] = React.useState(false);
   React.useEffect(() => setTemplatesOpen(false), [hostId]);
+  const [transferOpen, setTransferOpen] = React.useState(false);
   const {
     layout: effectiveLayout,
     setLayout,
@@ -692,6 +694,13 @@ function HostMetricsInner({
                 </Button>
                 <Button
                   variant="ghost"
+                  size="xs"
+                  onClick={() => setTransferOpen(true)}
+                >
+                  {t("hostMetrics.transfer.open")}
+                </Button>
+                <Button
+                  variant="ghost"
                   size="icon-sm"
                   title={t("hostMetrics.undoLayout")}
                   aria-label={t("hostMetrics.undoLayout")}
@@ -757,6 +766,8 @@ function HostMetricsInner({
           />
         )}
       </div>
+
+      {transferOpen && <DataTransfer onClose={() => setTransferOpen(false)} />}
 
       {templatesOpen && hostId != null && (
         <LayoutTemplates

@@ -16,6 +16,12 @@ Choose **Customise** to move cards and resize them by their left, right or botto
 
 In the dashboard's edit mode, **Dashboard Templates** saves your current layout as one of up to 50 private templates and copies it once to up to 100 hosts you can access. It replaces only your own layouts on those hosts; later template changes or deletion do not affect them. On hosts you own, applying a template also updates the enabled widgets used by the mobile view; shared-host settings and sampling intervals stay unchanged.
 
+## Export and import
+
+In edit mode, **Export / Import** saves your layouts, health checks and dashboard templates as a JSON file. Tick Include history to add metric samples and health results of the last 30 days. Import reads the same file. Hosts are matched by address, port and user, so the file also works on another server. Hosts that are not found or that you cannot connect to are skipped. Existing layouts, checks and templates are kept unless you choose to replace them. History that is already stored is never added twice.
+
+The same is available as an API: `GET /plugin-api/host-metrics/export?history=1&from=&to=&hostIds=` and `POST /plugin-api/host-metrics/import` with `{ "data": <file>, "overwrite": false, "history": true }`. Both are logged in the audit log.
+
 The cards: CPU, memory, disk, network, temperature, GPU, uptime, system info, top processes, listening ports, recent logins and firewall status.
 
 The terminal toolbar shows small CPU, memory and disk bars for the host you are in.

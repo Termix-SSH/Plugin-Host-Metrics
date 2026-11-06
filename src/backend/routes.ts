@@ -39,6 +39,7 @@ import { sqlTimestamp, type HostMetricsRepository } from "./repository.js";
 import { sessionKey, type MetricsSessions } from "./sessions.js";
 import { MANAGER_CONNECTION, sudoPasswordOf } from "./helpers.js";
 import { registerLayoutTemplateRoutes } from "./layout-templates.js";
+import { registerTransferRoutes } from "./transfer.js";
 
 export interface RouteDeps {
   ctx: PluginContext;
@@ -709,6 +710,7 @@ export function registerRoutes(router: Router, deps: RouteDeps): void {
   );
 
   registerLayoutTemplateRoutes(router, deps);
+  registerTransferRoutes(router, deps);
 
   const assertAccess = async (
     hostId: number,
