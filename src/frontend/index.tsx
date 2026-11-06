@@ -118,6 +118,18 @@ export async function activate(app: TermixApp): Promise<void> {
       allowed && !!host.enableSsh && metricsEnabledFor(host),
   });
 
+  app.registerPaletteEntry({
+    id: "host-metrics.open",
+    titleKey: "nav.hostMetrics",
+    icon: Server,
+    keywords: ["metrics", "cpu", "memory", "disk", "stats", "monitor"],
+    scope: "host",
+    when: (host) => allowed && !!host?.enableSsh && metricsEnabledFor(host),
+    run: (shell, host) => {
+      if (host) shell.openTab(host, "host-metrics");
+    },
+  });
+
   app.registerHostEditorSection({
     id: "host-metrics",
     group: "ssh",
