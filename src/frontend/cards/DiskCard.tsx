@@ -1,7 +1,11 @@
 import { SmoothLineChart as LineChart } from "./SmoothCharts";
 import { DiskPerformance } from "./PerformanceDetails";
 import { useCardSettings, chartHeight } from "../card-settings";
-import { MetricCard, type LineChartSeries } from "@termix-ssh/plugin-sdk/ui";
+import {
+  MetricCard,
+  type LineChartSeries,
+  LoadingState,
+} from "@termix-ssh/plugin-sdk/ui";
 import { LiveUsage } from "./LiveUsage";
 import { type ServerMetrics } from "../../shared/metrics.js";
 import { useState, useEffect, useMemo } from "react";
@@ -155,11 +159,7 @@ export function DiskCard({
         )}
         {activeTab !== "live" && (
           <>
-            {loading && (
-              <div className="flex h-36 items-center justify-center text-xs text-muted-foreground">
-                {t("common.loading")}
-              </div>
-            )}
+            {loading && <LoadingState compact label={t("common.loading")} />}
             {!loading && rows !== null && rows.length === 0 && (
               <div className="flex h-36 items-center justify-center text-xs text-muted-foreground">
                 {t("metricsHistory.noData")}

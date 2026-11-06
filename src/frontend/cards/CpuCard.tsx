@@ -1,7 +1,11 @@
 import { SmoothLineChart as LineChart } from "./SmoothCharts";
 import { CpuPerformance } from "./PerformanceDetails";
 import { useCardSettings, chartHeight } from "../card-settings";
-import { MetricCard, type LineChartSeries } from "@termix-ssh/plugin-sdk/ui";
+import {
+  MetricCard,
+  type LineChartSeries,
+  LoadingState,
+} from "@termix-ssh/plugin-sdk/ui";
 import { type ServerMetrics } from "../../shared/metrics.js";
 import { useState, useEffect } from "react";
 import { Cpu } from "lucide-react";
@@ -164,11 +168,7 @@ export function CpuCard({
         )}
         {activeTab !== "live" && (
           <>
-            {loading && (
-              <div className="flex h-36 items-center justify-center text-xs text-muted-foreground">
-                {t("common.loading")}
-              </div>
-            )}
+            {loading && <LoadingState compact label={t("common.loading")} />}
             {!loading && rows !== null && rows.length === 0 && (
               <div className="flex h-36 items-center justify-center text-xs text-muted-foreground">
                 {t("metricsHistory.noData")}

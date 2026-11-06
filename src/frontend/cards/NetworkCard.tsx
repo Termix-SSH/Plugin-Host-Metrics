@@ -1,7 +1,11 @@
 import { SmoothLineChart as LineChart } from "./SmoothCharts";
 import { NetworkPerformance } from "./PerformanceDetails";
 import { useCardSettings, chartHeight } from "../card-settings";
-import { MetricCard, type LineChartSeries } from "@termix-ssh/plugin-sdk/ui";
+import {
+  MetricCard,
+  type LineChartSeries,
+  LoadingState,
+} from "@termix-ssh/plugin-sdk/ui";
 import { type ServerMetrics } from "../../shared/metrics.js";
 import { useState, useEffect } from "react";
 import { Cable, Container, Network, Wifi, WifiOff } from "lucide-react";
@@ -190,11 +194,7 @@ export function NetworkCard({
       )}
       {activeTab !== "live" && (
         <>
-          {loading && (
-            <div className="flex h-36 items-center justify-center text-xs text-muted-foreground">
-              {t("common.loading")}
-            </div>
-          )}
+          {loading && <LoadingState compact label={t("common.loading")} />}
           {!loading && rows !== null && !hasNetData && (
             <div className="flex h-36 items-center justify-center text-xs text-muted-foreground">
               {t("metricsHistory.noData")}
