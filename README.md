@@ -28,9 +28,10 @@ Read the [docs](https://docs.termix.site/plugins/host-metrics) to set it up and 
 
 - CPU, memory, disk, network, temperature, NVIDIA and AMD GPUs, processes, ports and logins
 - History charts for each host
-- Run health checks on each host
-- Health checks for your hosts and services
-- A layout you can rearrange per host
+- Health checks for your hosts and services, including your own scripts
+- A layout you can rearrange per host, with export and import
+- Cards from other plugins, like Services, Packages, Firewall and Web Servers, when they are installed
+- Health checks as a status tile, and metrics cards on the Operations Center host page
 - Live stats in the terminal toolbar
 
 <br />
