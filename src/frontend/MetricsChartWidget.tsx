@@ -1,5 +1,9 @@
 import { useSmoothSeries } from "./cards/SmoothCharts";
-import { WidgetTitle, runVisibleInterval } from "@termix-ssh/plugin-sdk/ui";
+import {
+  WidgetTitle,
+  runVisibleInterval,
+  LoadingState,
+} from "@termix-ssh/plugin-sdk/ui";
 import { useEffect, useState, useRef } from "react";
 import { TrendingUp } from "lucide-react";
 import { useHost, useTranslation } from "@termix-ssh/plugin-sdk/frontend";
@@ -201,9 +205,7 @@ function MetricsChartWidget({
 
         <div ref={containerRef} className="flex-1 min-h-0 relative">
           {loading ? (
-            <div className="absolute inset-0 flex items-center justify-center text-[10px] text-muted-foreground/60">
-              {t("homepage.loading")}
-            </div>
+            <LoadingState compact label={t("homepage.loading")} />
           ) : values.length < 2 ? (
             <div className="absolute inset-0 flex items-center justify-center text-[10px] text-muted-foreground/60">
               {t("homepage.noData")}

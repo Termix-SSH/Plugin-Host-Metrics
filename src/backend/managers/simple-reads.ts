@@ -34,42 +34,6 @@ export function parseTopMemory(output: string): MemProcessRow[] {
   return rows;
 }
 
-// Systemd timers
-
-interface TimerRow {
-  next: string;
-  left: string;
-  last: string;
-  unit: string;
-  activates: string;
-}
-
-const TIMERS_CMD =
-  "systemctl list-timers --all --no-legend --no-pager 2>/dev/null";
-
-function parseTimers(output: string): TimerRow[] {
-  const rows: TimerRow[] = [];
-  for (const raw of output.split("\n")) {
-    const line = raw.trim();
-    if (!line || line.startsWith("NEXT")) continue;
-    // NEXT(3) LEFT(2) LAST(3) PASSED(2) UNIT ACTIVATES  -> columns vary; grab
-    // the trailing UNIT + ACTIVATES which always end the line.
-    const parts = line.split(/\s+/);
-    if (parts.length < 2) continue;
-    const activates = parts[parts.length - 1];
-    const unit = parts[parts.length - 2];
-    if (!unit.endsWith(".timer")) continue;
-    rows.push({
-      next: parts.slice(0, 3).join(" "),
-      left: "",
-      last: "",
-      unit,
-      activates,
-    });
-  }
-  return rows;
-}
-
 // Disk breakdown (per-mount)
 
 export interface MountUsage {
@@ -133,32 +97,6 @@ export function registerSimpleReadRoutes(
     managerHandler(deps, "connect", "top_memory", async (client) => {
       const { stdout } = await execCommand(client, TOP_MEM_CMD, 15000);
       return { processes: parseTopMemory(stdout) };
-    }),
-  );
-
-  /**
-   * @openapi
-   * /plugin-api/host-metrics/host-metrics/managers/timers/{id}:
-   *   get:
-   *     summary: List systemd timers
-   *     tags: [Host Metrics]
-   *     parameters:
-   *       - in: path
-   *         name: id
-   *         required: true
-   *         schema: { type: integer }
-   *     responses:
-   *       200: { description: The timers with their next and last runs. }
-   *       400: { description: Invalid input. }
-   *       403: { description: No access to the host, or elevation denied. }
-   *       500: { description: The command failed on the host. }
-   */
-  app.get(
-    "/host-metrics/managers/timers/:id",
-    validateHostId,
-    managerHandler(deps, "connect", "systemd_timers", async (client) => {
-      const { stdout } = await execCommand(client, TIMERS_CMD, 15000);
-      return { timers: parseTimers(stdout) };
     }),
   );
 

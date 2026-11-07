@@ -112,8 +112,8 @@ export function createSamplers(runOnHost: RunOnHost) {
     };
     slots.set(hostId, slot);
     const procEvery = Math.max(1, Math.round(2000 / ms));
-    // At most once a second: nvidia-smi is heavier than the awk sample.
-    const gpuEvery = Math.max(1, Math.round(1000 / ms));
+    // With the process scan: nvidia-smi is much heavier than the awk sample.
+    const gpuEvery = procEvery;
     const cmd = liveStreamCmd(ms, procEvery, gpuEvery);
     runOnHost(
       hostId,

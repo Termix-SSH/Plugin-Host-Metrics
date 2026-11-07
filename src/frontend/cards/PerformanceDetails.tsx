@@ -7,6 +7,7 @@ import {
 import { useTranslation } from "@termix-ssh/plugin-sdk/frontend";
 import type { ServerMetrics } from "../../shared/metrics.js";
 import { useSmoothSeries } from "./SmoothCharts";
+import { ChartPlaceholder } from "./ChartPlaceholder";
 import { chartHeight, useCardSettings } from "../card-settings";
 
 export type HistoryPoint = {
@@ -97,10 +98,13 @@ export function formatPerformanceValue(
   return String(value);
 }
 function DetailGrid({
+  title,
   data,
   fields,
   semantics,
 }: {
+  /** Drawn as a section heading, only when a field has a value. */
+  title?: string;
   data: object | undefined;
   fields: string[];
   semantics?: string;
@@ -117,6 +121,12 @@ function DetailGrid({
     );
   });
   if (!shown.length) return null;
+  if (title)
+    return (
+      <Section title={title}>
+        <DetailGrid data={data} fields={fields} semantics={semantics} />
+      </Section>
+    );
   return (
     <dl className="grid min-w-0 grid-cols-2 gap-x-3 gap-y-2 text-xs">
       {shown.map((key) => {
@@ -187,7 +197,11 @@ function HistoryGraph({
   const smooth = useSmoothSeries(
     keys.map((key) => points.map((p) => p.values[key] ?? null)),
   );
-  if (!points.some((p) => keys.some((k) => p.values[k] != null))) return null;
+  const hasData = points.some((p) => keys.some((k) => p.values[k] != null));
+  // Early on, hold the space; later a value the host never reports hides.
+  if (!hasData && points.length < 2)
+    return <ChartPlaceholder height={chartHeight(settings, height)} />;
+  if (!hasData) return null;
   if (compact)
     return (
       <div role="img" aria-label={labels.join(" / ")} className="min-w-0">
@@ -215,7 +229,9 @@ function HistoryGraph({
         domain={[0, max]}
         height={chartHeight(settings, height)}
         yFormatter={(v) =>
-          percent ? `${v.toFixed(0)}%` : `${(v / 1024).toFixed(0)} KiB/s`
+          percent
+            ? `${v.toFixed(0)}%`
+            : `${(v / 1024).toFixed(max < 10 * 1024 ? 1 : 0)} KiB/s`
         }
       />
     </div>
@@ -239,33 +255,31 @@ export function CpuPerformance({
   return (
     <div className="flex min-w-0 flex-col gap-3">
       {settings.showHardware !== false && (
-        <Section title={t("hostMetrics.performance.sectionHardware")}>
-          <DetailGrid
-            data={d}
-            fields={[
-              "model",
-              "currentGHz",
-              "baseGHz",
-              "maxGHz",
-              "sockets",
-              "physicalCores",
-              "logicalCores",
-              "virtualization",
-              "l1Bytes",
-              "l2Bytes",
-              "l3Bytes",
-            ]}
-          />
-        </Section>
+        <DetailGrid
+          title={t("hostMetrics.performance.sectionHardware")}
+          data={d}
+          fields={[
+            "model",
+            "currentGHz",
+            "baseGHz",
+            "maxGHz",
+            "sockets",
+            "physicalCores",
+            "logicalCores",
+            "virtualization",
+            "l1Bytes",
+            "l2Bytes",
+            "l3Bytes",
+          ]}
+        />
       )}
       {settings.showSystemCounts !== false && (
-        <Section title={t("hostMetrics.performance.sectionCounters")}>
-          <DetailGrid
-            data={d}
-            semantics={d?.semantics}
-            fields={["processes", "threads", "handles", "uptimeSeconds"]}
-          />
-        </Section>
+        <DetailGrid
+          title={t("hostMetrics.performance.sectionCounters")}
+          data={d}
+          semantics={d?.semantics}
+          fields={["processes", "threads", "handles", "uptimeSeconds"]}
+        />
       )}
       {settings.showCoreGraphs === true &&
         settings.showCores !== false &&
@@ -372,21 +386,20 @@ export function MemoryPerformance({
         />
       )}
       {settings.showHardware !== false && (
-        <Section title={t("hostMetrics.performance.sectionHardware")}>
-          <DetailGrid
-            data={details}
-            semantics={details?.semantics}
-            fields={[
-              "installedBytes",
-              "memoryType",
-              "speedMHz",
-              "slotsUsed",
-              "slotsTotal",
-              "formFactor",
-              "hardwareReservedBytes",
-            ]}
-          />
-        </Section>
+        <DetailGrid
+          title={t("hostMetrics.performance.sectionHardware")}
+          data={details}
+          semantics={details?.semantics}
+          fields={[
+            "installedBytes",
+            "memoryType",
+            "speedMHz",
+            "slotsUsed",
+            "slotsTotal",
+            "formFactor",
+            "hardwareReservedBytes",
+          ]}
+        />
       )}
     </div>
   );

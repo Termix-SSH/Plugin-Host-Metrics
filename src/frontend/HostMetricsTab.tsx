@@ -3,6 +3,7 @@ import {
   Button,
   ComponentSlot,
   PassphraseDialog,
+  TileEditBar,
   TOTPDialog,
   useTabsSafe,
   ConnectionLogProvider,
@@ -35,7 +36,9 @@ import { toast } from "sonner";
 import { RefreshCw, Server, LayoutDashboard, Undo2, Redo2 } from "lucide-react";
 import { useHostMetricsPreferences } from "./hooks/useHostMetricsPreferences.ts";
 import { HostMetricsGrid } from "./HostMetricsGrid";
+import { emptyHistories, pushLive } from "./live-history";
 import { LayoutTemplates } from "./LayoutTemplates";
+import { DataTransfer } from "./DataTransfer";
 import { handleLayoutHistoryKeyDown } from "./layout-history-shortcuts";
 import {
   CARD_DEFINITIONS,
@@ -102,12 +105,8 @@ function HostMetricsInner({
     "offline",
   );
   const [metrics, setMetrics] = React.useState<ServerMetrics | null>(null);
-  const [histories, setHistories] = React.useState<MetricCardHistories>({
-    cpu: [],
-    memory: [],
-    disk: [],
-    gpu: {},
-  });
+  const [histories, setHistories] =
+    React.useState<MetricCardHistories>(emptyHistories);
   const [currentHostConfig, setCurrentHostConfig] = React.useState(hostConfig);
   const [isRefreshing, setIsRefreshing] = React.useState(false);
   const [totpRequired, setTotpRequired] = React.useState(false);
@@ -155,6 +154,7 @@ function HostMetricsInner({
   const preferences = useHostMetricsPreferences(hostId, defaultLayout);
   const [templatesOpen, setTemplatesOpen] = React.useState(false);
   React.useEffect(() => setTemplatesOpen(false), [hostId]);
+  const [transferOpen, setTransferOpen] = React.useState(false);
   const {
     layout: effectiveLayout,
     setLayout,
@@ -226,6 +226,10 @@ function HostMetricsInner({
     () => mergeLive(metrics, live),
     [metrics, live],
   );
+  // The live charts follow every reading, live ones included.
+  React.useEffect(() => {
+    if (liveMetrics) setHistories((prev) => pushLive(prev, liveMetrics));
+  }, [liveMetrics]);
   // GPU sparklines follow the live stream once it carries GPU readings, one
   // point per reading, and the slow poll stops adding to them meanwhile.
   const liveGpuAtRef = React.useRef(0);
@@ -291,7 +295,7 @@ function HostMetricsInner({
     if (hostConfig?.id !== currentHostConfig?.id) {
       setServerStatus("offline");
       setMetrics(null);
-      setHistories({ cpu: [], memory: [], disk: [], gpu: {} });
+      setHistories(emptyHistories());
     }
     setCurrentHostConfig(hostConfig);
   }, [hostConfig?.id]);
@@ -319,19 +323,14 @@ function HostMetricsInner({
   };
 
   const pushHistory = React.useCallback((data: ServerMetrics) => {
-    setHistories((prev) => {
-      const add = (arr: Array<number | null>, v: number | null | undefined) =>
-        [...arr, v ?? null].slice(-HISTORY_LEN);
-      return {
-        cpu: add(prev.cpu, data.cpu?.percent),
-        memory: add(prev.memory, data.memory?.percent),
-        disk: add(prev.disk, data.disk?.percent),
-        gpu:
-          Date.now() - liveGpuAtRef.current < LIVE_GPU_FRESH_MS
-            ? prev.gpu
-            : appendGpuHistories(prev.gpu, data.gpu?.gpus, HISTORY_LEN),
-      };
-    });
+    // CPU, memory and disk follow the live readings, see pushLive.
+    setHistories((prev) => ({
+      ...prev,
+      gpu:
+        Date.now() - liveGpuAtRef.current < LIVE_GPU_FRESH_MS
+          ? prev.gpu
+          : appendGpuHistories(prev.gpu, data.gpu?.gpus, HISTORY_LEN),
+    }));
   }, []);
 
   const handleTOTPSubmit = async (totpCode: string) => {
@@ -664,60 +663,6 @@ function HostMetricsInner({
                       host: currentHostConfig,
                     }}
                   />
-                  {editMode && (
-                    <>
-                      <Button
-                        variant="ghost"
-                        size="xs"
-                        onClick={() => setTemplatesOpen(true)}
-                      >
-                        {t("hostMetrics.layoutTemplates.open")}
-                      </Button>
-                      <Button
-                        variant="ghost"
-                        size="icon-sm"
-                        title={t("hostMetrics.undoLayout")}
-                        aria-label={t("hostMetrics.undoLayout")}
-                        aria-keyshortcuts="Control+Z Meta+Z"
-                        disabled={!canUndo}
-                        onClick={undo}
-                      >
-                        <Undo2 className="size-4" />
-                      </Button>
-                      <Button
-                        variant="ghost"
-                        size="icon-sm"
-                        title={t("hostMetrics.redoLayout")}
-                        aria-label={t("hostMetrics.redoLayout")}
-                        aria-keyshortcuts="Control+Y Control+Shift+Z Meta+Shift+Z"
-                        disabled={!canRedo}
-                        onClick={redo}
-                      >
-                        <Redo2 className="size-4" />
-                      </Button>
-                      <Button
-                        variant="ghost"
-                        size="xs"
-                        onClick={discardChanges}
-                      >
-                        {t("hostMetrics.discardChanges")}
-                      </Button>
-                      <Button
-                        variant="ghost"
-                        size="xs"
-                        className="text-muted-foreground"
-                        onClick={() =>
-                          setLayout(
-                            defaultLayoutFromWidgets(
-                              statsConfig.enabledWidgets ?? [],
-                            ),
-                          )
-                        }
-                      >
-                        {t("hostMetrics.reset")}
-                      </Button>
-                    </>
-                  )}
                   <Button
                     variant="ghost"
                     size="icon-sm"
@@ -747,16 +692,63 @@ function HostMetricsInner({
             )}
 
           {editMode && (
-            <div className="mx-2.5 mt-2.5 flex shrink-0 items-center gap-2 border border-dashed border-accent-brand/40 bg-accent-brand/5 px-3 py-2">
-              <LayoutDashboard className="size-3.5 shrink-0 text-accent-brand" />
-              <span className="text-xs font-semibold text-accent-brand">
+            <TileEditBar
+              onReset={() =>
+                setLayout(
+                  defaultLayoutFromWidgets(statsConfig.enabledWidgets ?? []),
+                )
+              }
+              onDone={finishEditing}
+            >
+              <span className="hidden lg:inline">
                 {t("hostMetrics.editModeInstructions")}
               </span>
-            </div>
+              <span className="flex items-center gap-0.5">
+                <Button
+                  variant="ghost"
+                  size="xs"
+                  onClick={() => setTemplatesOpen(true)}
+                >
+                  {t("hostMetrics.layoutTemplates.open")}
+                </Button>
+                <Button
+                  variant="ghost"
+                  size="xs"
+                  onClick={() => setTransferOpen(true)}
+                >
+                  {t("hostMetrics.transfer.open")}
+                </Button>
+                <Button
+                  variant="ghost"
+                  size="icon-sm"
+                  title={t("hostMetrics.undoLayout")}
+                  aria-label={t("hostMetrics.undoLayout")}
+                  aria-keyshortcuts="Control+Z Meta+Z"
+                  disabled={!canUndo}
+                  onClick={undo}
+                >
+                  <Undo2 className="size-4" />
+                </Button>
+                <Button
+                  variant="ghost"
+                  size="icon-sm"
+                  title={t("hostMetrics.redoLayout")}
+                  aria-label={t("hostMetrics.redoLayout")}
+                  aria-keyshortcuts="Control+Y Control+Shift+Z Meta+Shift+Z"
+                  disabled={!canRedo}
+                  onClick={redo}
+                >
+                  <Redo2 className="size-4" />
+                </Button>
+                <Button variant="ghost" size="xs" onClick={discardChanges}>
+                  {t("hostMetrics.discardChanges")}
+                </Button>
+              </span>
+            </TileEditBar>
           )}
 
           {showCards && (
-            <div className="p-2.5">
+            <div>
               <HostMetricsGrid
                 key={hostId}
                 layout={gridLayout}
@@ -793,6 +785,8 @@ function HostMetricsInner({
           />
         )}
       </div>
+
+      {transferOpen && <DataTransfer onClose={() => setTransferOpen(false)} />}
 
       {templatesOpen && hostId != null && (
         <LayoutTemplates

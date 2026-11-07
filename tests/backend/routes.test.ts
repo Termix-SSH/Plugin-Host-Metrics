@@ -21,6 +21,8 @@ const ROUTES: Array<[string, string, unknown?]> = [
   ["GET", "/metrics/history/7"],
   ["GET", "/host-metrics/preferences/7"],
   ["POST", "/host-metrics/preferences/7", { slots: [], columns: 3 }],
+  ["GET", "/export"],
+  ["POST", "/import", { data: {} }],
   ["GET", "/host-metrics/platform/7"],
   ["POST", "/host-metrics/managers/health/7/config", { checks: [] }],
 ];
@@ -372,21 +374,7 @@ describe("health checks", () => {
   });
 });
 
-const WRITE_ROUTES: Array<[string, unknown]> = [
-  ["/host-metrics/managers/services/7/action", { unit: "a.service" }],
-  ["/host-metrics/managers/processes/7/signal", { pid: 1 }],
-  ["/host-metrics/managers/cron/7", { entries: [] }],
-  ["/host-metrics/managers/packages/7/action", { action: "upgrade-all" }],
-  ["/host-metrics/managers/ssl/7/issue", {}],
-  ["/host-metrics/managers/ssl/7/renew", {}],
-  ["/host-metrics/managers/ssl/7/revoke", {}],
-  ["/host-metrics/managers/firewall/7/rule", {}],
-  ["/host-metrics/managers/firewall/7/persist", {}],
-  ["/host-metrics/managers/users/7/action", {}],
-  ["/host-metrics/managers/wireguard/7/action", {}],
-];
-
-describe("manager write actions", () => {
+describe("manager access", () => {
   // A user the host was shared with at connect level.
   function connectOnly(server: TestServer) {
     const levels = ["connect"];
@@ -398,23 +386,12 @@ describe("manager write actions", () => {
     });
   }
 
-  it.each(WRITE_ROUTES)("POST %s needs edit access", async (path, body) => {
-    server = await startServer();
-    connectOnly(server);
-    const response = await server.request("POST", path, { body });
-    expect(response.status).toBe(403);
-    expect(response.body).toEqual({
-      error: "You need edit access to this host to change it",
-      code: "HOST_EDIT_REQUIRED",
-    });
-  });
-
   it("still lets a connect-level user read", async () => {
     server = await startServer();
     connectOnly(server);
     const response = await server.request(
       "GET",
-      "/host-metrics/managers/services/7",
+      "/host-metrics/managers/health/7",
     );
     expect(response.status).not.toBe(403);
   });
@@ -428,8 +405,8 @@ describe("manager write actions", () => {
     });
     const response = await server.request(
       "POST",
-      "/host-metrics/managers/services/7/action",
-      { body: { unit: "a.service" } },
+      "/host-metrics/managers/health/7/run",
+      { body: {} },
     );
     expect(response.status).toBe(403);
     expect(response.body).toEqual({ error: "No access to this host" });

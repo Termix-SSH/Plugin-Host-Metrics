@@ -18,23 +18,15 @@ import { FirewallCard } from "./FirewallCard";
 import { TemperatureCard } from "./TemperatureCard";
 import { GpuCard } from "./GpuCard";
 import type { GpuHistories } from "./gpu-history";
-import { ServiceManagerCard } from "./managers/ServiceManagerCard";
-import { ProcessInspectorCard } from "./managers/ProcessInspectorCard";
-import { PackageManagerCard } from "./managers/PackageManagerCard";
-import { CronManagerCard } from "./managers/CronManagerCard";
-import { SslManagerCard } from "./managers/SslManagerCard";
-import { FirewallManagerCard } from "./managers/FirewallManagerCard";
-import { UserManagerCard } from "./managers/UserManagerCard";
 import { HealthCheckCard } from "./managers/HealthCheckCard";
-import { LogViewerCard } from "./managers/LogViewerCard";
 import {
   TopMemoryCard,
-  SystemdTimersCard,
   DiskBreakdownCard,
 } from "./managers/SimpleManagerCards";
-import { WireGuardManagerCard } from "./managers/WireGuardManagerCard";
 
 export interface MetricCardHistories {
+  /** When each cpu, memory and disk point was taken, ISO time. */
+  ts: string[];
   cpu: Array<number | null>;
   memory: Array<number | null>;
   disk: Array<number | null>;
@@ -62,6 +54,7 @@ type SimpleMetricCard = ComponentType<{
 type HistoryMetricCard = ComponentType<{
   metrics: ServerMetrics | null;
   history: Array<number | null>;
+  timestamps?: string[];
   hostId: number | null;
 }>;
 
@@ -89,7 +82,12 @@ function historyCard(
     labelKey,
     kind: "metric",
     render: ({ metrics, histories, hostId }) => (
-      <Comp metrics={metrics} history={histories[series]} hostId={hostId} />
+      <Comp
+        metrics={metrics}
+        history={histories[series]}
+        timestamps={histories.ts}
+        hostId={hostId}
+      />
     ),
   };
 }
@@ -142,46 +140,6 @@ export const CARD_DEFINITIONS: Record<string, CardDefinition> = {
       <GpuCard metrics={metrics} gpuHistories={histories.gpu} />
     ),
   },
-  service_manager: managerCard(
-    "service_manager",
-    "hostMetrics.managers.services",
-    ServiceManagerCard,
-  ),
-  process_inspector: managerCard(
-    "process_inspector",
-    "hostMetrics.managers.processInspector",
-    ProcessInspectorCard,
-  ),
-  log_viewer: managerCard(
-    "log_viewer",
-    "hostMetrics.managers.logViewer",
-    LogViewerCard,
-  ),
-  cron_manager: managerCard(
-    "cron_manager",
-    "hostMetrics.managers.cron",
-    CronManagerCard,
-  ),
-  package_manager: managerCard(
-    "package_manager",
-    "hostMetrics.managers.packages",
-    PackageManagerCard,
-  ),
-  ssl_manager: managerCard(
-    "ssl_manager",
-    "hostMetrics.managers.ssl",
-    SslManagerCard,
-  ),
-  firewall_manager: managerCard(
-    "firewall_manager",
-    "hostMetrics.managers.firewall",
-    FirewallManagerCard,
-  ),
-  user_manager: managerCard(
-    "user_manager",
-    "hostMetrics.managers.users",
-    UserManagerCard,
-  ),
   health_check: managerCard(
     "health_check",
     "hostMetrics.managers.healthCheck",
@@ -192,20 +150,10 @@ export const CARD_DEFINITIONS: Record<string, CardDefinition> = {
     "hostMetrics.managers.diskBreakdown",
     DiskBreakdownCard,
   ),
-  systemd_timers: managerCard(
-    "systemd_timers",
-    "hostMetrics.managers.systemdTimers",
-    SystemdTimersCard,
-  ),
   top_memory: managerCard(
     "top_memory",
     "hostMetrics.managers.topMemory",
     TopMemoryCard,
-  ),
-  wireguard_manager: managerCard(
-    "wireguard_manager",
-    "hostMetrics.managers.wireguard",
-    WireGuardManagerCard,
   ),
 };
 

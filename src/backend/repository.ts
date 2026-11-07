@@ -173,6 +173,83 @@ export async function createHostMetricsRepository(db: PluginDatabase) {
       return upsert(checks, userId, hostId, { checks: json, intervalSeconds });
     },
 
+    /** Every saved layout of one user, for export. */
+    async listUserLayouts(
+      userId: string,
+    ): Promise<Array<{ hostId: number; layout: string }>> {
+      const drizzle = await client();
+      const rows = await drizzle
+        .select({ hostId: preferences.hostId, layout: preferences.layout })
+        .from(preferences)
+        .where(eq(preferences.userId, userId));
+      return rows.map((row: Record<string, unknown>) => ({
+        hostId: Number(row.hostId),
+        layout: String(row.layout ?? ""),
+      }));
+    },
+
+    /** Import: adds old samples that are not already stored. */
+    async importSamples(
+      hostId: number,
+      rows: MetricsHistoryRow[],
+    ): Promise<number> {
+      if (rows.length === 0) return 0;
+      const drizzle = await client();
+      const times = rows.map((row) => row.ts).sort();
+      const have = new Set<string>(
+        (
+          await drizzle
+            .select({ ts: history.ts })
+            .from(history)
+            .where(
+              and(
+                eq(history.hostId, hostId),
+                gte(history.ts, times[0]),
+                lte(history.ts, times[times.length - 1]),
+              ),
+            )
+        ).map((row: { ts: string }) => row.ts),
+      );
+      const fresh = rows.filter((row) => !have.has(row.ts));
+      for (let i = 0; i < fresh.length; i += 200) {
+        await drizzle
+          .insert(history)
+          .values(fresh.slice(i, i + 200).map((row) => ({ ...row, hostId })));
+      }
+      if (fresh.length) await db.persist({ lazy: true });
+      return fresh.length;
+    },
+
+    /** Import: adds old health results that are not already stored. */
+    async importHealth(
+      userId: string,
+      hostId: number,
+      rows: HealthHistoryRow[],
+    ): Promise<number> {
+      if (rows.length === 0) return 0;
+      const drizzle = await client();
+      const have = new Set<string>(
+        (
+          await drizzle
+            .select({ ts: health.ts, checkId: health.checkId })
+            .from(health)
+            .where(and(eq(health.userId, userId), eq(health.hostId, hostId)))
+        ).map(
+          (row: { ts: string; checkId: string }) => `${row.checkId}|${row.ts}`,
+        ),
+      );
+      const fresh = rows.filter((row) => !have.has(`${row.checkId}|${row.ts}`));
+      for (let i = 0; i < fresh.length; i += 200) {
+        await drizzle
+          .insert(health)
+          .values(
+            fresh.slice(i, i + 200).map((row) => ({ ...row, userId, hostId })),
+          );
+      }
+      if (fresh.length) await db.persist({ lazy: true });
+      return fresh.length;
+    },
+
     async listTemplates(userId: string): Promise<LayoutTemplateRow[]> {
       const drizzle = await client();
       return drizzle

@@ -23,7 +23,6 @@ vi.mock("@termix-ssh/plugin-sdk/frontend", async (original) => ({
 
 import { useCanEditHost } from "../../../../src/frontend/cards/managers/useCanEditHost";
 import { extractError } from "../../../../src/frontend/cards/managers/useManagerData";
-import { ServiceManagerCard } from "../../../../src/frontend/cards/managers/ServiceManagerCard";
 
 afterEach(() => {
   cleanup();
@@ -71,43 +70,5 @@ describe("edit access in the UI", () => {
       "hostMetrics.managers.editRequired",
     );
     expect(extractError(error).message).toBe("server text");
-  });
-
-  it("hides service actions from a connect-only user", async () => {
-    mocks.get.mockResolvedValue({
-      data: {
-        services: [
-          {
-            unit: "nginx.service",
-            active: "active",
-            sub: "running",
-            description: "nginx",
-          },
-        ],
-      },
-    });
-    mocks.host = { id: "7", isShared: true, permissionLevel: "connect" };
-    render(<ServiceManagerCard hostId={7} />);
-    expect(await screen.findByText("nginx")).toBeTruthy();
-    expect(screen.queryByTitle("hostMetrics.managers.restart")).toBeNull();
-  });
-
-  it("shows service actions to an editor", async () => {
-    mocks.get.mockResolvedValue({
-      data: {
-        services: [
-          {
-            unit: "nginx.service",
-            active: "active",
-            sub: "running",
-            description: "nginx",
-          },
-        ],
-      },
-    });
-    mocks.host = { id: "7", isShared: true, permissionLevel: "edit" };
-    render(<ServiceManagerCard hostId={7} />);
-    expect(await screen.findByText("nginx")).toBeTruthy();
-    expect(screen.getByTitle("hostMetrics.managers.restart")).toBeTruthy();
   });
 });

@@ -55,6 +55,27 @@ describe("defaultLayoutFromWidgets", () => {
     expect(layout.columns).toBe(3);
   });
 
+  it("lays every row across all 12 columns at one height", () => {
+    const layout = defaultLayoutFromWidgets([...METRIC_CARD_IDS]);
+    const rows = new Map<number, typeof layout.slots>();
+    for (const slot of layout.slots)
+      rows.set(slot.y!, [...(rows.get(slot.y!) ?? []), slot]);
+    for (const row of rows.values()) {
+      expect(row.reduce((sum, slot) => sum + slot.w!, 0)).toBe(12);
+      expect(new Set(row.map((slot) => slot.height)).size).toBe(1);
+    }
+    expect(rows.size).toBe(5);
+  });
+
+  it("widens the rest of a row when a card is off", () => {
+    const layout = defaultLayoutFromWidgets(["cpu", "disk", "uptime"]);
+    expect(layout.slots.map((s) => [s.id, s.x, s.w])).toEqual([
+      ["cpu", 0, 6],
+      ["disk", 6, 6],
+      ["uptime", 0, 12],
+    ]);
+  });
+
   it("ignores unknown widget ids", () => {
     const layout = defaultLayoutFromWidgets(["cpu", "nope", "service_manager"]);
     expect(layout.slots.map((s) => s.id)).toEqual(["cpu"]);
