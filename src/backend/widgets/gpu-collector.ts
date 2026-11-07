@@ -1,4 +1,7 @@
-import { execCommand } from "@termix-ssh/plugin-sdk/host-commands";
+import {
+  execCommand,
+  shellSingleQuote,
+} from "@termix-ssh/plugin-sdk/host-commands";
 import { toFixedNum } from "../util.js";
 import type { Client } from "ssh2";
 
@@ -274,6 +277,34 @@ export function mergeGpuMetrics(
     gpus: [...nvidia.gpus, ...amd],
     processes: nvidia.processes,
   };
+}
+
+/** Starts the GPU part of a live stream frame. */
+export const LIVE_GPU_MARK = "##GPU";
+const LIVE_AMD_MARK = "##AMD";
+
+/**
+ * Run once when a live stream starts: sets g=1 when the host has nvidia-smi
+ * or an AMD card, so hosts without a GPU never run the GPU queries, and t to
+ * a time limit when the host has `timeout`.
+ */
+export const LIVE_GPU_PROBE =
+  'g=0; command -v nvidia-smi >/dev/null 2>&1 && g=1; for v in /sys/class/drm/card[0-9]*/device/vendor; do [ "$(cat "$v" 2>/dev/null)" = 0x1002 ] && g=1; done; t=; command -v timeout >/dev/null 2>&1 && t="timeout 5";';
+
+/**
+ * The same NVIDIA and AMD queries as the full sample, for the live stream.
+ * Each runs in its own shell so its `exit` and `continue` stay inside it,
+ * and a hung nvidia-smi is stopped instead of stalling CPU and network.
+ */
+export const LIVE_GPU_COMMAND = `echo '${LIVE_GPU_MARK}'; $t sh -c ${shellSingleQuote(NVIDIA_SMI_COMMAND)}; echo '${LIVE_AMD_MARK}'; ( ${AMDGPU_COMMAND} );`;
+
+/** Parses what `LIVE_GPU_COMMAND` printed after its `LIVE_GPU_MARK` line. */
+export function parseLiveGpuOutput(stdout: string): GpuMetrics {
+  const lines = stdout.split("\n");
+  const amd = lines.findIndex((line) => line.trim() === LIVE_AMD_MARK);
+  const nvidia = amd === -1 ? stdout : lines.slice(0, amd).join("\n");
+  const amdStdout = amd === -1 ? "" : lines.slice(amd + 1).join("\n");
+  return mergeGpuMetrics(parseNvidiaSmiOutput(nvidia), amdStdout);
 }
 
 export async function collectGpuMetrics(client: Client): Promise<GpuMetrics> {
