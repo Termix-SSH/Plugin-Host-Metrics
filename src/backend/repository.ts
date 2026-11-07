@@ -149,6 +149,9 @@ export async function createHostMetricsRepository(db: PluginDatabase) {
   }
 
   return {
+    /** The tables desktop sync reads and writes directly. */
+    syncTables: { preferences, templates: definedTemplates },
+
     async findLayout(userId: string, hostId: number): Promise<string | null> {
       return (await findOne(preferences, userId, hostId))?.layout ?? null;
     },

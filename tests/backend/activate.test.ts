@@ -40,6 +40,24 @@ describe("host-metrics activate", () => {
     },
   );
 
+  it("syncs layouts per host and templates to linked desktops", async () => {
+    server = await startServer();
+    const layouts = server.mock.syncEntities.find(
+      (e) => e.type === "hostMetricsLayouts",
+    );
+    expect(layouts?.order).toBeGreaterThan(50);
+    expect(layouts?.matchOn).toEqual(["hostId"]);
+    expect(layouts?.references).toEqual([
+      { field: "hostId", syncField: "hostSyncId", entityType: "hosts" },
+    ]);
+    await expect(
+      layouts!.deserialize!({ hostId: null }, async () => null),
+    ).rejects.toThrow();
+    expect(
+      server.mock.syncEntities.some((e) => e.type === "hostMetricsTemplates"),
+    ).toBe(true);
+  });
+
   it("offers viewers as a service that runs as the caller", async () => {
     server = await startServer();
     const viewers = server.mock.services.get(
