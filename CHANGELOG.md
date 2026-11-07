@@ -9,6 +9,7 @@
 - Health checks show as a status tile on the dashboard and host page
 - CPU, memory, disk, network, uptime, system, processes and ports cards can go on Operations Center's host page as tiles
 - A Web Servers card, filled by the Web Servers plugin when it is installed
+- GPU readings on NVIDIA and AMD hosts refresh with live updates, like CPU and network
 
 ### Changed
 
@@ -24,6 +25,7 @@
 - The memory card no longer shows an empty Hardware heading when the host does not report its memory modules
 - Disk throughput charts show one decimal for small rates instead of the same label on every line
 - The Tree button in the processes card and the protocol picker in the ports card are as tall as the search box next to them
+- CPU percent is no longer too high on hosts that run VMs, like Proxmox
 
 ### Removed
 

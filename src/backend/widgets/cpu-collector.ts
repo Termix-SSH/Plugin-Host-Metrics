@@ -173,7 +173,9 @@ export async function collectCpuMetrics(
     const cpuLine = (
       statOut.stdout.split("\n").find((l) => l.startsWith("cpu ")) || ""
     ).trim();
-    const current = parseCpuLine(cpuLine);
+    // guest and guest_nice are already in user and nice, so older SDKs that
+    // sum the whole line count them twice.
+    const current = parseCpuLine(cpuLine.split(/\s+/).slice(0, 9).join(" "));
     const previous =
       hostId !== undefined ? previousStat.get(hostId) : undefined;
     if (current && previous) {
