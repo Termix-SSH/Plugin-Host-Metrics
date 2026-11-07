@@ -73,7 +73,7 @@ export function PortsCard({ metrics }: { metrics: ServerMetrics | null }) {
         <Select2
           value={proto}
           onChange={(e) => setProto(e.target.value as "all" | "tcp" | "udp")}
-          className="h-7 w-24 shrink-0 border border-border bg-background px-2 text-xs"
+          className="h-8 w-24 shrink-0 border border-border bg-background px-2 text-xs"
         >
           <option value="all">{t("hostMetrics.ports.allProtocols")}</option>
           <option value="tcp">TCP</option>

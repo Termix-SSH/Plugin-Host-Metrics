@@ -23,6 +23,7 @@
 
 - The memory card no longer shows an empty Hardware heading when the host does not report its memory modules
 - Disk throughput charts show one decimal for small rates instead of the same label on every line
+- The Tree button in the processes card and the protocol picker in the ports card are as tall as the search box next to them
 
 ### Removed
 
