@@ -290,9 +290,7 @@ describe("live GPU output", () => {
   });
 
   it("reads AMD only, and nothing from a failed driver", () => {
-    expect(parseLiveGpuOutput(`##AMD\n${AMDGPU_OUTPUT}`).source).toBe(
-      "amdgpu",
-    );
+    expect(parseLiveGpuOutput(`##AMD\n${AMDGPU_OUTPUT}`).source).toBe("amdgpu");
     expect(parseLiveGpuOutput(`${DRIVER_FAILURE}---\n##AMD\n`)).toEqual({
       source: "none",
       gpus: [],
