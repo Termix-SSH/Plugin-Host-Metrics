@@ -47,6 +47,14 @@ describe("liveStreamCmd", () => {
     expect(c).toContain("|| sleep 1;");
     expect(c).toContain("/proc/[0-9]*/stat");
   });
+
+  it("probes for a GPU once and reads it every Nth tick", () => {
+    const c = liveStreamCmd(500, 4, 2);
+    expect(c.indexOf("g=0;")).toBeLessThan(c.indexOf("while :"));
+    expect(c).toContain("if [ $g = 1 ] && [ $((n % 2)) -eq 0 ]; then echo");
+    expect(c).toContain("nvidia-smi --query-gpu=");
+    expect(liveStreamCmd(500, 4)).toContain("$((n % 4)) -eq 0 ]; then echo");
+  });
 });
 
 describe("createSamplers", () => {
@@ -58,6 +66,43 @@ describe("createSamplers", () => {
     emit(f.streams[0], 2);
     expect(await get(1, 500, false)).toMatchObject({ memTotalKb: 1000 });
     expect(f.client.exec).toHaveBeenCalledTimes(1);
+    get.dispose();
+  });
+
+  it("adds the GPU section to the sample and keeps it on ticks without one", async () => {
+    const f = fake();
+    const get = createSamplers(f.runOnHost as never);
+    expect(await get(1, 500, false)).toBeNull();
+    await Promise.resolve();
+    const gpuRow = (util: number) =>
+      `0, GPU-1, 550.54, ${util}, 2048, 12288, 61, 120.5, 350.00, 45, RTX 3060`;
+    const frame = (util: number) =>
+      `${CHUNK}##GPU\n${gpuRow(util)}\n---\n##AMD\n##END\n`;
+    f.streams[0].emit("data", Buffer.from(frame(10)));
+    f.streams[0].emit("data", Buffer.from(frame(55)));
+    const s = (await get(1, 500, false))!;
+    expect(s.memTotalKb).toBe(1000);
+    expect(s.gpu?.source).toBe("nvidia-smi");
+    expect(s.gpu?.gpus[0]).toMatchObject({
+      name: "RTX 3060",
+      utilizationPercent: 55,
+    });
+    expect(s.gpuAt).toBeGreaterThan(0);
+    emit(f.streams[0], 1);
+    const later = (await get(1, 500, false))!;
+    expect(later.gpu?.gpus[0].utilizationPercent).toBe(55);
+    get.dispose();
+  });
+
+  it("leaves GPU fields out for hosts without one", async () => {
+    const f = fake();
+    const get = createSamplers(f.runOnHost as never);
+    expect(await get(1, 500, false)).toBeNull();
+    await Promise.resolve();
+    emit(f.streams[0], 2);
+    const s = (await get(1, 500, false))!;
+    expect(s).not.toHaveProperty("gpu");
+    expect(s).not.toHaveProperty("gpuAt");
     get.dispose();
   });
 

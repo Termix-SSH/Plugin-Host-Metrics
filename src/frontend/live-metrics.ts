@@ -94,6 +94,7 @@ export function mergeLive(
         command: p.name,
       })),
     },
+    gpu: l.gpu?.gpus.length ? l.gpu : m.gpu,
   };
 }
 

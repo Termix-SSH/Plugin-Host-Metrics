@@ -236,7 +236,7 @@ export function HealthCheckCard({ hostId }: { hostId: number | null }) {
               max={1440}
               value={intervalMinutes}
               onChange={(e) => setIntervalMinutes(Number(e.target.value))}
-              className="h-7 w-16 border border-border bg-background px-1.5 text-xs outline-none focus:ring-1 focus:ring-ring"
+              className="h-7 w-16 border border-border bg-popover px-1.5 text-xs outline-none focus:ring-1 focus:ring-ring"
             />
           </label>
           {draft.map((c) => (
@@ -249,7 +249,7 @@ export function HealthCheckCard({ hostId }: { hostId: number | null }) {
                   value={c.name}
                   onChange={(e) => updateDraft(c.id, { name: e.target.value })}
                   placeholder={t("hostMetrics.managers.healthName")}
-                  className="h-7 flex-1 border border-border bg-background px-2 text-xs outline-none focus:ring-1 focus:ring-ring"
+                  className="h-7 flex-1 border border-border bg-popover px-2 text-xs outline-none focus:ring-1 focus:ring-ring"
                 />
                 <Select2
                   value={c.type}
@@ -369,7 +369,7 @@ export function HealthCheckCard({ hostId }: { hostId: number | null }) {
                       updateDraft(c.id, { target: e.target.value })
                     }
                     placeholder={t("hostMetrics.managers.healthTarget")}
-                    className="h-7 flex-1 border border-border bg-background px-2 font-mono text-xs outline-none focus:ring-1 focus:ring-ring"
+                    className="h-7 flex-1 border border-border bg-popover px-2 font-mono text-xs outline-none focus:ring-1 focus:ring-ring"
                   />
                   {c.type === "tcp" ? (
                     <input
@@ -388,7 +388,7 @@ export function HealthCheckCard({ hostId }: { hostId: number | null }) {
                         updateDraft(c.id, { path: e.target.value })
                       }
                       placeholder="/health"
-                      className="h-7 w-24 border border-border bg-background px-1.5 font-mono text-xs outline-none focus:ring-1 focus:ring-ring"
+                      className="h-7 w-24 border border-border bg-popover px-1.5 font-mono text-xs outline-none focus:ring-1 focus:ring-ring"
                     />
                   )}
                 </div>

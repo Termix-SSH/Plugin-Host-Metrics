@@ -2,6 +2,7 @@ import type { Router } from "express";
 import type { PluginContext } from "@termix-ssh/plugin-sdk/backend";
 import { createLogger } from "./log.js";
 import { createHostMetricsRepository } from "./repository.js";
+import { registerLayoutSync } from "./sync.js";
 import { createMetricsState } from "./state.js";
 import { MetricsSessions } from "./sessions.js";
 import { CollectorRegistry } from "./collectors.js";
@@ -29,6 +30,7 @@ const RETIME_DEBOUNCE_MS = 1000;
 export async function activate(ctx: PluginContext) {
   const log = createLogger(ctx.log);
   const repository = await createHostMetricsRepository(ctx.db);
+  registerLayoutSync(ctx, repository.syncTables);
   const state = createMetricsState();
   const sessions = new MetricsSessions(ctx.schedule, log);
   const collectors = new CollectorRegistry(ctx.services, log);

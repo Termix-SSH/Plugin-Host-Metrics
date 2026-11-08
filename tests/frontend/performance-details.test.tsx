@@ -32,6 +32,7 @@ vi.mock("@termix-ssh/plugin-sdk/frontend", () => ({
   }),
 }));
 vi.mock("@termix-ssh/plugin-sdk/ui", () => ({
+  Skeleton: () => null,
   Sparkline: ({ data, domain, height }: any) => (
     <div
       data-testid="history"

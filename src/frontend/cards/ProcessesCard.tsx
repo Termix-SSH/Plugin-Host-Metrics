@@ -89,7 +89,7 @@ export function ProcessesCard({ metrics }: { metrics: ServerMetrics | null }) {
           aria-pressed={tree}
           onClick={() => setTree((v) => !v)}
           className={
-            "h-7 shrink-0 border border-border px-2 text-[10px] font-bold uppercase " +
+            "h-8 shrink-0 border border-border px-2 text-[10px] font-bold uppercase " +
             (tree ? "text-accent-brand" : "text-muted-foreground")
           }
         >

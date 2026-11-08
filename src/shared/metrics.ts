@@ -1,3 +1,4 @@
+import type * as HostScripts from "@termix-ssh/plugin-sdk/host-scripts";
 import type { GpuMetrics, FirewallMetrics } from "./stats-widgets.js";
 
 /** What GET /metrics/:id answers. */
@@ -157,8 +158,14 @@ export interface ListeningPort {
 
 export type { FirewallChain } from "./stats-widgets.js";
 
-/** One 1s /proc sample from GET /host-metrics/managers/live/:id. */
-export type { LiveSample } from "@termix-ssh/plugin-sdk/host-scripts";
+/**
+ * One 1s /proc sample from GET /host-metrics/managers/live/:id. Hosts with a
+ * GPU also get its readings and when they were taken (ms since epoch).
+ */
+export type LiveSample = HostScripts.LiveSample & {
+  gpu?: GpuMetrics;
+  gpuAt?: number;
+};
 
 export type ServerMetrics = {
   cpu: CpuMetrics;

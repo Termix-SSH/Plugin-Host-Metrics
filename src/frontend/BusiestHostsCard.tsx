@@ -6,7 +6,7 @@ import {
   useTranslation,
   type DashboardCardProps,
 } from "@termix-ssh/plugin-sdk/frontend";
-import { ListRow, PanelList } from "@termix-ssh/plugin-sdk/ui";
+import { ListRow, PanelList, LoadingState } from "@termix-ssh/plugin-sdk/ui";
 import type { HostMetricsApi, MetricsSummaryRow } from "./host-metrics-api";
 import { RowBar } from "./SummaryViews";
 
@@ -44,9 +44,7 @@ export function createBusiestHostsCard(api: HostMetricsApi) {
 
     if (!allowed) return null;
     if (!rows) {
-      return (
-        <p className="p-3 text-xs text-muted-foreground">{t("card.loading")}</p>
-      );
+      return <LoadingState compact label={t("card.loading")} />;
     }
 
     const busiest = rows

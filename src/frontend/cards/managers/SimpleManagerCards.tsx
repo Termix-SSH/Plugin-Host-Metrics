@@ -1,6 +1,6 @@
-import { BarSeries, StatRow } from "@termix-ssh/plugin-sdk/ui";
+import { BarSeries } from "@termix-ssh/plugin-sdk/ui";
 import { useMemo, useState } from "react";
-import { MemoryStick, Timer, HardDrive } from "lucide-react";
+import { MemoryStick, HardDrive } from "lucide-react";
 import { useTranslation } from "@termix-ssh/plugin-sdk/frontend";
 import { useManagerData } from "./useManagerData";
 import { ManagerCardShell } from "@termix-ssh/plugin-sdk/ui";
@@ -12,11 +12,6 @@ interface MemProc {
   mem: number;
   rss: number;
   command: string;
-}
-interface TimerRow {
-  unit: string;
-  activates: string;
-  next: string;
 }
 interface MountUsage {
   filesystem: string;
@@ -68,53 +63,6 @@ export function TopMemoryCard({ hostId }: { hostId: number | null }) {
         }))}
         max={Math.max(1, ...procs.map((p) => p.mem))}
       />
-    </ManagerCardShell>
-  );
-}
-
-export function SystemdTimersCard({ hostId }: { hostId: number | null }) {
-  const { t } = useTranslation();
-  const { data, loading, error, refresh } = useManagerData<{
-    timers: TimerRow[];
-  }>(hostId, "timers");
-  const [query, setQuery] = useState("");
-  const all = useMemo(() => data?.timers ?? [], [data?.timers]);
-  const timers = useMemo(() => {
-    const q = query.toLowerCase();
-    return all.filter(
-      (tm) =>
-        !q ||
-        tm.unit.toLowerCase().includes(q) ||
-        tm.activates.toLowerCase().includes(q),
-    );
-  }, [all, query]);
-
-  return (
-    <ManagerCardShell
-      title={t("hostMetrics.managers.systemdTimers")}
-      icon={<Timer className="size-3.5" />}
-      loading={loading}
-      error={error}
-      onRefresh={refresh}
-      empty={!loading && all.length === 0}
-    >
-      {all.length > 5 && (
-        <ManagerSearch
-          value={query}
-          onChange={setQuery}
-          count={timers.length}
-        />
-      )}
-      <div className="flex flex-col divide-y divide-border">
-        {timers.map((tm) => (
-          <StatRow
-            key={tm.unit}
-            label={tm.unit.replace(/\.timer$/, "")}
-            value={tm.activates}
-            mono
-          />
-        ))}
-      </div>
     </ManagerCardShell>
   );
 }

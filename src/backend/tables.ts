@@ -23,6 +23,7 @@ export const hostMetricsPreferences = adoptLegacyTable(
       userId: refUser(),
       hostId: refHost(),
       layout: text().notNull(),
+      syncId: text().unique(),
       createdAt: timestamp().notNull().defaultNow(),
       updatedAt: timestamp().notNull().defaultNow(),
     },
@@ -121,6 +122,7 @@ export const layoutTemplates = defineTable(
     userId: refUser(),
     name: varchar(100).notNull(),
     layout: text().notNull(),
+    syncId: text().unique(),
   },
   {
     indexes: [

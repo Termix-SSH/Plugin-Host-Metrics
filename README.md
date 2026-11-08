@@ -28,9 +28,10 @@ Read the [docs](https://docs.termix.site/plugins/host-metrics) to set it up and 
 
 - CPU, memory, disk, network, temperature, NVIDIA and AMD GPUs, processes, ports and logins
 - History charts for each host
-- Manage services, packages, cron jobs, firewall rules, users, SSL certificates, logs and WireGuard
-- Health checks for your hosts and services
-- A layout you can rearrange per host
+- Health checks for your hosts and services, including your own scripts
+- A layout you can rearrange per host, with export and import
+- Cards from other plugins, like Services, Packages, Firewall and Web Servers, when they are installed
+- Health checks as a status tile, and metrics cards on the Operations Center host page
 - Live stats in the terminal toolbar
 
 <br />
@@ -48,6 +49,8 @@ Layouts save per host through the existing preferences. Layouts from older versi
 ### Dashboard layout templates
 
 In the **Host Metrics dashboard**, enter edit mode and open **Dashboard Templates** in the toolbar. Name and save your current layout, including cards, positions, sizes and presentation settings. Templates are private to your Termix user, with up to 50 saved templates per user.
+
+Use **Export / Import** in the same toolbar, or the `/export` and `/import` API routes, to back up or move layouts, health checks, templates and optional history to another server.
 
 Choose a template and review its card preview, then select accessible hosts by name or folder (up to 100 at once). **Apply to selected hosts** asks for confirmation before replacing **your** dashboard layouts on those hosts. Other users' layouts, ordinary health checks and their history, and host sampling settings are not changed. For hosts you own, the enabled widget list stays in sync with the layout for mobile clients. Failed hosts remain selected for retry; successful hosts are not reapplied on retry.
 

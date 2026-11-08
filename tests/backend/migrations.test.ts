@@ -166,6 +166,7 @@ describe("adopting the host metrics tables", () => {
       "0001_adopt_host_metrics_tables",
       "0002_bigint_network_bytes",
       "0003_layout_templates",
+      "0004_sync_ids",
     ]);
     for (const table of LEGACY) {
       expect(tableExists(table)).toBe(false);
@@ -207,6 +208,7 @@ describe("adopting the host metrics tables", () => {
 
     expect(indexNames("p_host_metrics_host_metrics_preferences")).toEqual([
       "idx_host_metrics_prefs_user_host",
+      "idx_p_host_metrics_prefs_sync_id",
     ]);
     expect(indexNames("p_host_metrics_host_health_checks")).toEqual([
       "idx_host_health_checks_user_host",
@@ -230,6 +232,7 @@ describe("adopting the host metrics tables", () => {
     expect(tableExists("p_host_metrics_layout_templates")).toBe(true);
     expect(tableExists("p_host_metrics_health_templates")).toBe(false);
     expect(indexNames("p_host_metrics_layout_templates")).toEqual([
+      "idx_p_host_metrics_layout_templates_sync_id",
       "idx_p_host_metrics_layout_templates_user",
     ]);
   });

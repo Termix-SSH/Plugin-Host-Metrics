@@ -2,17 +2,8 @@ import { detectPlatform } from "@termix-ssh/plugin-sdk/host-commands";
 import type { Router } from "express";
 import { managerHandler } from "./route-helpers.js";
 import type { ManagerRoutesDeps } from "./types.js";
-import { registerServiceRoutes } from "./services.js";
-import { registerProcessRoutes } from "./processes.js";
 import { registerSimpleReadRoutes } from "./simple-reads.js";
-import { registerCronRoutes } from "./cron.js";
-import { registerPackageRoutes } from "./packages.js";
-import { registerSslRoutes } from "./ssl.js";
-import { registerFirewallRoutes } from "./firewall.js";
-import { registerUserRoutes } from "./users.js";
 import { registerHealthRoutes } from "./health.js";
-import { registerLogRoutes } from "./logs.js";
-import { registerWireGuardRoutes } from "./wireguard.js";
 import { registerLiveRoutes } from "./live.js";
 
 /**
@@ -50,16 +41,7 @@ export function registerManagerRoutes(
     ),
   );
 
-  registerServiceRoutes(app, deps);
-  registerProcessRoutes(app, deps);
   registerSimpleReadRoutes(app, deps);
-  registerCronRoutes(app, deps);
-  registerPackageRoutes(app, deps);
-  registerSslRoutes(app, deps);
-  registerFirewallRoutes(app, deps);
-  registerUserRoutes(app, deps);
   registerHealthRoutes(app, deps);
-  registerLogRoutes(app, deps);
-  registerWireGuardRoutes(app, deps);
   registerLiveRoutes(app, deps);
 }

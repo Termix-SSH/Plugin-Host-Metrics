@@ -1,7 +1,11 @@
 import { SmoothLineChart as LineChart } from "./SmoothCharts";
 import { NetworkPerformance } from "./PerformanceDetails";
 import { useCardSettings, chartHeight } from "../card-settings";
-import { MetricCard, type LineChartSeries } from "@termix-ssh/plugin-sdk/ui";
+import {
+  MetricCard,
+  type LineChartSeries,
+  LoadingState,
+} from "@termix-ssh/plugin-sdk/ui";
 import { type ServerMetrics } from "../../shared/metrics.js";
 import { useState, useEffect } from "react";
 import { Cable, Container, Network, Wifi, WifiOff } from "lucide-react";
@@ -144,11 +148,11 @@ export function NetworkCard({
             </span>
           </div>
         ) : (
-          <div className="flex flex-col gap-2">
+          <div className="flex flex-col divide-y divide-border">
             {interfaces.map((iface, i) => (
               <div
                 key={`${iface.name}-${i}`}
-                className="flex flex-col gap-1 border border-border bg-muted/30 p-2"
+                className="flex flex-col gap-1 py-2 first:pt-0 last:pb-0"
               >
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
@@ -190,11 +194,7 @@ export function NetworkCard({
       )}
       {activeTab !== "live" && (
         <>
-          {loading && (
-            <div className="flex h-36 items-center justify-center text-xs text-muted-foreground">
-              {t("common.loading")}
-            </div>
-          )}
+          {loading && <LoadingState compact label={t("common.loading")} />}
           {!loading && rows !== null && !hasNetData && (
             <div className="flex h-36 items-center justify-center text-xs text-muted-foreground">
               {t("metricsHistory.noData")}

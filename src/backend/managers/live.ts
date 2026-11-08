@@ -122,7 +122,7 @@ export function registerLiveRoutes(app: Router, deps: ManagerRoutesDeps): void {
    * @openapi
    * /plugin-api/host-metrics/host-metrics/managers/live/{id}:
    *   get:
-   *     summary: Lightweight live CPU, memory, network and process sample (Linux)
+   *     summary: Lightweight live CPU, memory, network, process and GPU sample (Linux)
    *     tags: [Host Metrics]
    *     parameters:
    *       - in: path
@@ -130,7 +130,7 @@ export function registerLiveRoutes(app: Router, deps: ManagerRoutesDeps): void {
    *         required: true
    *         schema: { type: integer }
    *     responses:
-   *       200: { description: One live sample, shared per host and reused until the admin minimum interval passes. With ?stream it is read from a held stream per host, and with ?nowait it answers pending true instead of waiting for the stream's first frames. Includes minIntervalS. }
+   *       200: { description: One live sample, shared per host and reused until the admin minimum interval passes. With ?stream it is read from a held stream per host, which on hosts with an NVIDIA or AMD GPU also carries gpu and gpuAt, and with ?nowait it answers pending true instead of waiting for the stream's first frames. Includes minIntervalS. }
    *       403: { description: No access, or live updates are disabled (code LIVE_DISABLED). }
    */
   app.get(

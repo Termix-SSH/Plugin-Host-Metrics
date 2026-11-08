@@ -21,6 +21,10 @@
           "type": "text",
           "notNull": true
         },
+        "syncId": {
+          "type": "text",
+          "unique": true
+        },
         "createdAt": {
           "type": "timestamp",
           "notNull": true,
@@ -205,6 +209,10 @@
         "layout": {
           "type": "text",
           "notNull": true
+        },
+        "syncId": {
+          "type": "text",
+          "unique": true
         }
       },
       "indexes": [

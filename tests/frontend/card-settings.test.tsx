@@ -279,7 +279,13 @@ function card(id: HostMetricsCardId, settings: HostMetricsCardSettings = {}) {
       {CARD_DEFINITIONS[id].render({
         metrics,
         hostId: 7,
-        histories: { cpu: [], memory: [], disk: [], gpu: {} },
+        histories: {
+          cpu: [3, 5],
+          memory: [20, 21],
+          disk: [2, 2],
+          ts: ["2026-11-04T10:00:00.000Z", "2026-11-04T10:00:02.000Z"],
+          gpu: {},
+        },
       })}
     </CardSettingsContext.Provider>
   );
@@ -317,16 +323,17 @@ describe("saved presentation options", () => {
     "%s sizes its historical graph, retaining regular defaults",
     async (id) => {
       const { rerender } = render(card(id));
+      // The live chart is the same line chart the history tabs use.
       if (id !== "network")
-        expect(screen.getByTestId("sparkline")).toHaveAttribute(
+        expect(screen.getByTestId("linechart")).toHaveAttribute(
           "data-height",
-          id === "cpu" ? "190" : "48",
+          id === "disk" ? "80" : "110",
         );
       rerender(card(id, { chartSize: "large" }));
       if (id !== "network")
-        expect(screen.getByTestId("sparkline")).toHaveAttribute(
+        expect(screen.getByTestId("linechart")).toHaveAttribute(
           "data-height",
-          id === "cpu" ? "285" : "72",
+          id === "disk" ? "120" : "165",
         );
       fireEvent.click(screen.getByRole("button", { name: "1h" }));
       await waitFor(() =>

@@ -11,6 +11,7 @@ import { readHostMetricsSettings } from "../shared/stats-widgets.js";
 import type { ServerMetrics } from "../shared/metrics.js";
 import { useHostMetricsApi } from "./host-metrics-api";
 import { compactRows } from "./compact-metrics";
+import { LoadingState } from "@termix-ssh/plugin-sdk/ui";
 
 /** Starting state of the panel, from the user's settings. */
 export function useMetricsCompanionDefaults(): CompanionDefaults {
@@ -163,9 +164,7 @@ export function HostMetricsCompanion({ host, isVisible }: CompanionProps) {
           </p>
         )}
         {!metrics && !error && (
-          <p className="text-xs text-muted-foreground">
-            {t("hostMetrics.companion.loading")}
-          </p>
+          <LoadingState compact label={t("hostMetrics.companion.loading")} />
         )}
         {rows.length > 0 && (
           <div className="flex flex-col gap-2.5">
