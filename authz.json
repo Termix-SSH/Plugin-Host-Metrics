@@ -1,0 +1,280 @@
+{
+  "$schema": "https://raw.githubusercontent.com/Termix-SSH/Termix/main/scripts/authz/authz.schema.json",
+  "seed": [
+    {
+      "as": "owner",
+      "method": "POST",
+      "path": "/plugin-api/host-metrics/host-metrics/layout-templates",
+      "body": {
+        "name": "authz-own-layout",
+        "layout": {
+          "columns": 2,
+          "slots": [
+            {
+              "id": "cpu",
+              "order": 0,
+              "colSpan": 1,
+              "height": null,
+              "settings": {}
+            }
+          ]
+        }
+      },
+      "capture": {
+        "host-metrics.layout-templates": "id"
+      }
+    }
+  ],
+  "routes": {
+    "GET /plugin-api/host-metrics/export": {
+      "access": "user",
+      "permission": "host-metrics.use",
+      "resource": {
+        "kind": "host",
+        "min": "connect",
+        "key": "hostId"
+      },
+      "filtered": true,
+      "note": "Lists only what the caller may see"
+    },
+    "GET /plugin-api/host-metrics/health/summary": {
+      "access": "user",
+      "permission": "host-metrics.use",
+      "resource": {
+        "kind": "host",
+        "min": "connect",
+        "key": "hostId"
+      },
+      "filtered": true,
+      "note": "Lists only what the caller may see"
+    },
+    "GET /plugin-api/host-metrics/host-metrics/layout-templates": {
+      "access": "user",
+      "permission": "host-metrics.use"
+    },
+    "POST /plugin-api/host-metrics/host-metrics/layout-templates": {
+      "access": "user",
+      "permission": "host-metrics.use"
+    },
+    "DELETE /plugin-api/host-metrics/host-metrics/layout-templates/:id": {
+      "access": "user",
+      "permission": "host-metrics.use",
+      "resource": {
+        "kind": "own",
+        "fixture": "host-metrics.layout-templates"
+      },
+      "params": {
+        "id": "host-metrics.layout-templates"
+      },
+      "destructive": true
+    },
+    "POST /plugin-api/host-metrics/host-metrics/layout-templates/:id/apply": {
+      "access": "user",
+      "permission": "host-metrics.use",
+      "resource": {
+        "kind": "own",
+        "fixture": "host-metrics.layout-templates"
+      },
+      "params": {
+        "id": "host-metrics.layout-templates"
+      },
+      "destructive": true
+    },
+    "GET /plugin-api/host-metrics/host-metrics/layout-templates/hosts": {
+      "access": "user",
+      "permission": "host-metrics.use",
+      "resource": {
+        "kind": "host",
+        "min": "connect",
+        "key": "hostId"
+      },
+      "filtered": true,
+      "note": "Lists only what the caller may see"
+    },
+    "GET /plugin-api/host-metrics/host-metrics/managers/disk-breakdown/:id": {
+      "access": "user",
+      "permission": "host-metrics.use",
+      "resource": {
+        "kind": "own",
+        "fixture": "host"
+      },
+      "params": {
+        "id": "host"
+      }
+    },
+    "GET /plugin-api/host-metrics/host-metrics/managers/health/:id": {
+      "access": "user",
+      "permission": "host-metrics.use",
+      "resource": {
+        "kind": "own",
+        "fixture": "host"
+      },
+      "params": {
+        "id": "host"
+      }
+    },
+    "POST /plugin-api/host-metrics/host-metrics/managers/health/:id/config": {
+      "access": "user",
+      "permission": "host-metrics.use",
+      "resource": {
+        "kind": "host",
+        "min": "connect"
+      },
+      "params": {
+        "id": "host"
+      }
+    },
+    "POST /plugin-api/host-metrics/host-metrics/managers/health/:id/run": {
+      "access": "user",
+      "permission": "host-metrics.use",
+      "resource": {
+        "kind": "host",
+        "min": "connect"
+      },
+      "params": {
+        "id": "host"
+      },
+      "destructive": true
+    },
+    "GET /plugin-api/host-metrics/host-metrics/managers/live/:id": {
+      "access": "user",
+      "permission": "host-metrics.use",
+      "resource": {
+        "kind": "own",
+        "fixture": "host"
+      },
+      "params": {
+        "id": "host"
+      }
+    },
+    "GET /plugin-api/host-metrics/host-metrics/managers/top-memory/:id": {
+      "access": "user",
+      "permission": "host-metrics.use",
+      "resource": {
+        "kind": "own",
+        "fixture": "host"
+      },
+      "params": {
+        "id": "host"
+      }
+    },
+    "GET /plugin-api/host-metrics/host-metrics/platform/:id": {
+      "access": "user",
+      "permission": "host-metrics.use",
+      "resource": {
+        "kind": "own",
+        "fixture": "host"
+      },
+      "params": {
+        "id": "host"
+      }
+    },
+    "GET /plugin-api/host-metrics/host-metrics/preferences/:id": {
+      "access": "user",
+      "permission": "host-metrics.use",
+      "resource": {
+        "kind": "host",
+        "min": "connect"
+      },
+      "params": {
+        "id": "host"
+      }
+    },
+    "POST /plugin-api/host-metrics/host-metrics/preferences/:id": {
+      "access": "user",
+      "permission": "host-metrics.use",
+      "resource": {
+        "kind": "host",
+        "min": "connect"
+      },
+      "params": {
+        "id": "host"
+      }
+    },
+    "POST /plugin-api/host-metrics/import": {
+      "access": "user",
+      "permission": "host-metrics.use",
+      "resource": {
+        "kind": "host",
+        "min": "connect",
+        "key": "hostId"
+      },
+      "refuse400": "Needs a full export file"
+    },
+    "GET /plugin-api/host-metrics/metrics/:id": {
+      "access": "user",
+      "permission": "host-metrics.use",
+      "resource": {
+        "kind": "host",
+        "min": "connect"
+      },
+      "params": {
+        "id": "host"
+      }
+    },
+    "POST /plugin-api/host-metrics/metrics/connect-totp": {
+      "access": "user",
+      "permission": "host-metrics.use"
+    },
+    "POST /plugin-api/host-metrics/metrics/heartbeat": {
+      "access": "user",
+      "permission": "host-metrics.use"
+    },
+    "GET /plugin-api/host-metrics/metrics/history/:id": {
+      "access": "user",
+      "permission": "host-metrics.use",
+      "resource": {
+        "kind": "host",
+        "min": "connect"
+      },
+      "params": {
+        "id": "host"
+      }
+    },
+    "POST /plugin-api/host-metrics/metrics/register-viewer": {
+      "access": "user",
+      "permission": "host-metrics.use"
+    },
+    "POST /plugin-api/host-metrics/metrics/start/:id": {
+      "access": "user",
+      "permission": "host-metrics.use",
+      "resource": {
+        "kind": "host",
+        "min": "connect"
+      },
+      "params": {
+        "id": "host"
+      },
+      "destructive": true
+    },
+    "POST /plugin-api/host-metrics/metrics/stop/:id": {
+      "access": "user",
+      "permission": "host-metrics.use",
+      "resource": {
+        "kind": "host",
+        "min": "connect"
+      },
+      "params": {
+        "id": "host"
+      },
+      "destructive": true,
+      "filtered": true,
+      "note": "Stops only the caller own viewer; pausing needs connect access"
+    },
+    "GET /plugin-api/host-metrics/metrics/summary": {
+      "access": "user",
+      "permission": "host-metrics.use",
+      "resource": {
+        "kind": "host",
+        "min": "connect",
+        "key": "hostId"
+      },
+      "filtered": true,
+      "note": "Lists only what the caller may see"
+    },
+    "POST /plugin-api/host-metrics/metrics/unregister-viewer": {
+      "access": "user",
+      "permission": "host-metrics.use"
+    }
+  }
+}
