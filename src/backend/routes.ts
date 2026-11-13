@@ -663,6 +663,8 @@ export function registerRoutes(router: Router, deps: RouteDeps): void {
    *             properties:
    *               slots:
    *                 type: array
+   *                 items:
+   *                   type: object
    *               columns:
    *                 type: integer
    *     responses:
