@@ -28,6 +28,7 @@ Read the [docs](https://docs.termix.site/plugins/host-metrics) to set it up and 
 
 - CPU, memory, disk, network, temperature, NVIDIA and AMD GPUs, processes, ports and logins
 - History charts for each host
+- Opt-in Linux Swap Usage card with used, free and total capacity, live updates and usage history
 - Health checks for your hosts and services, including your own scripts
 - A layout you can rearrange per host, with export and import
 - Cards from other plugins, like Services, Packages, Firewall and Web Servers, when they are installed

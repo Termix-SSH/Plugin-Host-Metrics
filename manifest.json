@@ -1,8 +1,8 @@
 {
   "id": "host-metrics",
   "name": "Host Metrics",
-  "version": "1.4.0",
-  "description": "Live CPU, memory, disk, network and GPU stats, plus tools to manage your hosts.",
+  "version": "1.5.0-dev.1",
+  "description": "Live CPU, memory, swap, disk, network and GPU stats, plus tools to manage your hosts.",
   "author": {
     "name": "Termix"
   },
@@ -13,7 +13,7 @@
   "category": "Monitoring",
   "icon": "Activity",
   "features": [
-    "CPU, memory, disk, network, temperature, NVIDIA and AMD GPUs, processes, ports and logins",
+    "CPU, memory, Linux swap, disk, network, temperature, NVIDIA and AMD GPUs, processes, ports and logins",
     "History charts for each host",
     "Run health checks on each host",
     "Health checks for your hosts and services",

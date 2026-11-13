@@ -15,6 +15,7 @@ import { liveIntervalMs } from "./live-metrics";
 export const HOST_PAGE_CARDS: HostMetricsCardId[] = [
   "cpu",
   "memory",
+  "swap",
   "disk",
   "network",
   "uptime",

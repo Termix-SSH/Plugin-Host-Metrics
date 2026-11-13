@@ -1,9 +1,5 @@
 import { shellSingleQuote } from "@termix-ssh/plugin-sdk/host-commands";
-import {
-  liveCmd,
-  parseLive,
-  type LivePrev,
-} from "@termix-ssh/plugin-sdk/host-scripts";
+import { liveCmd, parseLive, type LivePrev } from "./live-swap.js";
 import type { LiveSample } from "../../shared/metrics.js";
 import type { GpuMetrics } from "../../shared/stats-widgets.js";
 import {

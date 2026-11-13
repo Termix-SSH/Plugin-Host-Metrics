@@ -1,10 +1,6 @@
 import { execCommand } from "@termix-ssh/plugin-sdk/host-commands";
-import {
-  liveCmd,
-  parseLive,
-  type LivePrev,
-  type LiveSample,
-} from "@termix-ssh/plugin-sdk/host-scripts";
+import { liveCmd, parseLive, type LivePrev } from "./live-swap.js";
+import type { LiveSample } from "../../shared/metrics.js";
 import type { RequestHandler, Router } from "express";
 import { createSamplers } from "./live-stream.js";
 import { guardedHandler, managerHandler } from "./route-helpers.js";

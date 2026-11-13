@@ -37,6 +37,24 @@ function gpuAt(utilizationPercent: number, memoryPercent: number): GpuMetrics {
 }
 
 describe("metricsChangeKey", () => {
+  it("changes for swap capacity or usage even while RAM stays the same", () => {
+    const sample = poll(gpuAt(0, 0));
+    const swap = {
+      totalBytes: 1024,
+      freeBytes: 1024,
+      usedBytes: 0,
+      percent: 0,
+    };
+    expect(metricsChangeKey(sample)).not.toBe(
+      metricsChangeKey({ ...sample, swap }),
+    );
+    expect(metricsChangeKey({ ...sample, swap })).not.toBe(
+      metricsChangeKey({
+        ...sample,
+        swap: { ...swap, freeBytes: 1023, usedBytes: 1, percent: 100 / 1024 },
+      }),
+    );
+  });
   it("changes when only GPU utilization moves", () => {
     expect(metricsChangeKey(poll(gpuAt(0, 4)))).not.toBe(
       metricsChangeKey(poll(gpuAt(95, 4))),

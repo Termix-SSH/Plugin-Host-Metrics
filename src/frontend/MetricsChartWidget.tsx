@@ -34,6 +34,8 @@ function getMetricValue(
       return row.cpu_percent;
     case "memory":
       return row.mem_percent;
+    case "swap":
+      return row.swap_percent ?? null;
     case "disk":
       return row.disk_percent;
     case "net_rx":
@@ -52,6 +54,8 @@ function getMetricLabel(
       return t("homepage.metricCpu");
     case "memory":
       return t("homepage.metricMemory");
+    case "swap":
+      return t("hostMetrics.swapUsage");
     case "disk":
       return t("homepage.metricDisk");
     case "net_rx":

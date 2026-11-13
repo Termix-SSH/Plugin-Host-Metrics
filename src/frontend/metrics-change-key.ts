@@ -8,6 +8,7 @@ export function metricsChangeKey(data: ServerMetrics): string {
   return JSON.stringify({
     cpu: bucket(data.cpu.percent),
     memory: bucket(data.memory.percent),
+    swap: data.swap ?? null,
     disk: bucket(data.disk.percent),
     running: data.processes?.running ?? null,
     ports: data.ports?.ports?.length ?? 0,
