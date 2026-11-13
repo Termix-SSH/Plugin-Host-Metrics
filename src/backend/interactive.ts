@@ -148,10 +148,13 @@ export async function startInteractive(
 
         client.on(
           "keyboard-interactive",
-          (name, instructions, _lang, prompts, finish) => {
-            const decision = ssh.classifyKeyboardInteractive(
-              { name, instructions, prompts },
-              host,
+          async (name, instructions, _lang, prompts, finish) => {
+            // A handler in a plugin process answers with a Promise.
+            const decision = await Promise.resolve(
+              ssh.classifyKeyboardInteractive(
+                { name, instructions, prompts },
+                host,
+              ),
             );
             if (decision.kind !== "totp") {
               finish(ssh.autoResponses(prompts, host.password));

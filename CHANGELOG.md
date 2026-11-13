@@ -2,6 +2,10 @@
 
 ## 1.4.1
 
+### Changed
+
+- TOTP prompts from hosts behind a plugin's keyboard-interactive handler are still found when that plugin runs in its own process (needs Termix 26.11.2)
+
 ### Fixed
 
 - The API docs list the path parameters and answers of every route
