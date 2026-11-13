@@ -99,6 +99,7 @@ export const hostMetricsHistory = adoptLegacyTable(
       ts: timestamp().notNull().defaultNow(),
       cpuPercent: real(),
       memPercent: real(),
+      swapPercent: real(),
       diskPercent: real(),
       netRxBytes: bigint(),
       netTxBytes: bigint(),

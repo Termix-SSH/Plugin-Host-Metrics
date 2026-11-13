@@ -48,6 +48,7 @@ export function mergeLive(
   const memTotal = l.memTotalKb;
   return {
     ...m,
+    swap: l.swap === undefined ? m.swap : l.swap,
     cpu: {
       ...m.cpu,
       percent: l.cpu == null ? m.cpu.percent : Math.round(l.cpu),

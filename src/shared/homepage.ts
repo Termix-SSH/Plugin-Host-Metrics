@@ -5,7 +5,7 @@ import type { ExtensionContribution } from "@termix-ssh/plugin-sdk/frontend";
 export const GRID_SIZE = 30;
 
 export type MetricsChartMetric =
-  "cpu" | "memory" | "disk" | "net_rx" | "net_tx";
+  "cpu" | "memory" | "swap" | "disk" | "net_rx" | "net_tx";
 export type MetricsChartRange = "15m" | "1h" | "6h" | "24h";
 
 export interface MetricsChartConfig {

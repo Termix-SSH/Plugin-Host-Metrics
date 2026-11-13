@@ -73,6 +73,17 @@ afterEach(() => {
 });
 
 describe("MetricsPoller", () => {
+  it("records swap percentage with the regular history sample", async () => {
+    collectMetrics.mockResolvedValue({
+      ...sample,
+      swap: { totalBytes: 1024, freeBytes: 768, usedBytes: 256, percent: 25 },
+    });
+    const { poller, samples } = setup();
+    poller.registerViewer(7, "viewer-swap", "user-1");
+    await flush();
+    expect(samples).toEqual([expect.objectContaining({ swapPercent: 25 })]);
+    poller.dispose();
+  });
   it("polls from the first viewer and reports a working login", async () => {
     collectMetrics.mockImplementation(async (_deps, _host, _mounts, onAuth) => {
       onAuth?.();

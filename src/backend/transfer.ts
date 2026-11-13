@@ -79,6 +79,7 @@ function metricRow(raw: unknown): MetricsHistoryRow | null {
     ts: sqlTimestamp(ts),
     cpuPercent: num(row.cpuPercent),
     memPercent: num(row.memPercent),
+    swapPercent: num(row.swapPercent),
     diskPercent: num(row.diskPercent),
     netRxBytes: num(row.netRxBytes),
     netTxBytes: num(row.netTxBytes),

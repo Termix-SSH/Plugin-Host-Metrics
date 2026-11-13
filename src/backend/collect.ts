@@ -9,6 +9,7 @@ import type { PluginSsh } from "@termix-ssh/plugin-sdk/backend";
 import { detectHostPlatform } from "@termix-ssh/plugin-sdk/host-commands";
 import { collectCpuMetrics } from "./widgets/cpu-collector.js";
 import { collectMemoryMetrics } from "./widgets/memory-collector.js";
+import { collectSwapMetrics } from "./widgets/swap-collector.js";
 import { collectDiskMetrics } from "./widgets/disk-collector.js";
 import { collectNetworkMetrics } from "./widgets/network-collector.js";
 import { collectUptimeMetrics } from "./widgets/uptime-collector.js";
@@ -28,6 +29,7 @@ import {
 import { sessionKey, type MetricsSessions } from "./sessions.js";
 import type { MetricsState } from "./state.js";
 import type { CollectorRegistry } from "./collectors.js";
+import type { MetricsLogger } from "./log.js";
 import {
   collectRouterOsMetrics,
   isKnownRouterOs,
@@ -46,6 +48,7 @@ export type CollectedMetrics = {
   cpu: Awaited<ReturnType<typeof collectCpuMetrics>> & ServerMetrics["cpu"];
   memory: Awaited<ReturnType<typeof collectMemoryMetrics>> &
     ServerMetrics["memory"];
+  swap?: ServerMetrics["swap"];
   disk: Awaited<ReturnType<typeof collectDiskMetrics>> & ServerMetrics["disk"];
   network: Awaited<ReturnType<typeof collectNetworkMetrics>> &
     ServerMetrics["network"];
@@ -62,6 +65,7 @@ export type CollectedMetrics = {
 };
 
 export interface CollectDeps {
+  log: MetricsLogger;
   ssh: PluginSsh;
   state: MetricsState;
   sessions: MetricsSessions;
@@ -136,6 +140,7 @@ export async function collectMetrics(
             state.rateSamples.cpu,
           ),
           memory: await collectMemoryMetrics(client, platform),
+          swap: await collectSwapMetrics(client, platform, deps.log),
           disk: await collectDiskMetrics(
             client,
             mounts.excludedMounts,

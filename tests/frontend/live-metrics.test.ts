@@ -64,6 +64,20 @@ describe("mergeLive", () => {
     expect(mergeLive(null, live)).toBeNull();
   });
 
+  it("overlays swap and preserves the slow reading only when live fields are absent", () => {
+    const swap = {
+      totalBytes: 1024,
+      usedBytes: 256,
+      freeBytes: 768,
+      percent: 25,
+    };
+    const original = { ...slow, swap };
+    expect(mergeLive(original, live)?.swap).toBe(swap);
+    const noSwap = { totalBytes: 0, usedBytes: 0, freeBytes: 0, percent: null };
+    expect(mergeLive(original, { ...live, swap: noSwap })?.swap).toBe(noSwap);
+    expect(mergeLive(original, { ...live, swap: null })?.swap).toBeNull();
+  });
+
   it("refreshes composition counters while preserving slow hardware metadata", () => {
     const details = {
       semantics: "linux",

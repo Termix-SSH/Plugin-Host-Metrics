@@ -10,6 +10,7 @@ import type {
 const METRICS: { id: MetricsChartMetric; label: string }[] = [
   { id: "cpu", label: "CPU" },
   { id: "memory", label: "Memory" },
+  { id: "swap", label: "Swap" },
   { id: "disk", label: "Disk" },
   { id: "net_rx", label: "RX MB/s" },
   { id: "net_tx", label: "TX MB/s" },

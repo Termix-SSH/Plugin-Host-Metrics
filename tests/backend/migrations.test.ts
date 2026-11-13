@@ -110,6 +110,61 @@ const seedLegacy = (sqlite: TestDb["sqlite"]) => {
 };
 
 describe("adopting the host metrics tables", () => {
+  it("adds nullable swap history to a populated 0004 database", async () => {
+    const fixture = mkdtempSync(join(tmpdir(), "host-metrics-swap-upgrade-"));
+    const migrationDir = join(fixture, "migrations", "sqlite");
+    try {
+      mkdirSync(migrationDir, { recursive: true });
+      copyFileSync(
+        join(pluginDir, "manifest.json"),
+        join(fixture, "manifest.json"),
+      );
+      for (const file of [
+        "0001_adopt_host_metrics_tables.sql",
+        "0002_bigint_network_bytes.sql",
+        "0003_layout_templates.sql",
+        "0004_sync_ids.sql",
+      ])
+        copyFileSync(
+          join(pluginDir, "migrations", "sqlite", file),
+          join(migrationDir, file),
+        );
+      db = await createTestDb(fixture, { before: seedLegacy });
+      const saved = () =>
+        db!.sqlite
+          .prepare(
+            "SELECT id, host_id, ts, cpu_percent, mem_percent, disk_percent, net_rx_bytes, net_tx_bytes FROM p_host_metrics_host_metrics_history",
+          )
+          .all();
+      const before = saved();
+      copyFileSync(
+        join(pluginDir, "migrations", "sqlite", "0005_swap_usage.sql"),
+        join(migrationDir, "0005_swap_usage.sql"),
+      );
+      expect(await db.migrate()).toEqual(["0005_swap_usage"]);
+      expect(saved()).toEqual(before);
+      expect(
+        db.sqlite
+          .prepare(
+            "SELECT swap_percent FROM p_host_metrics_host_metrics_history",
+          )
+          .get(),
+      ).toEqual({ swap_percent: null });
+      db.sqlite.exec(
+        "UPDATE p_host_metrics_host_metrics_history SET swap_percent = 12.5",
+      );
+      expect(
+        db.sqlite
+          .prepare(
+            "SELECT swap_percent FROM p_host_metrics_host_metrics_history",
+          )
+          .get(),
+      ).toEqual({ swap_percent: 12.5 });
+      expect(await db.migrate()).toEqual([]);
+    } finally {
+      rmSync(fixture, { recursive: true, force: true });
+    }
+  });
   it("upgrades an existing 0002 database without changing saved data or indexes", async () => {
     const fixture = mkdtempSync(join(tmpdir(), "host-metrics-upgrade-"));
     const migrationDir = join(fixture, "migrations", "sqlite");
@@ -167,6 +222,7 @@ describe("adopting the host metrics tables", () => {
       "0002_bigint_network_bytes",
       "0003_layout_templates",
       "0004_sync_ids",
+      "0005_swap_usage",
     ]);
     for (const table of LEGACY) {
       expect(tableExists(table)).toBe(false);

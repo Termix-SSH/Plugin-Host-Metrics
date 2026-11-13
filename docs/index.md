@@ -22,7 +22,37 @@ In edit mode, **Export / Import** saves your layouts, health checks and dashboar
 
 The same is available as an API: `GET /plugin-api/host-metrics/export?history=1&from=&to=&hostIds=` and `POST /plugin-api/host-metrics/import` with `{ "data": <file>, "overwrite": false, "history": true }`. Both are logged in the audit log.
 
-The cards: CPU, memory, disk, network, temperature, GPU, uptime, system info, top processes, listening ports, recent logins and firewall status.
+The cards: CPU, memory, swap, disk, network, temperature, GPU, uptime, system info, top processes, listening ports, recent logins and firewall status.
+
+### Swap Usage
+
+On Linux hosts, choose **Customise > Add card > Swap Usage**, then save the
+layout. The card shows the percentage used and used, total and free swap
+capacity. Presentation settings control detail visibility and graph height.
+Existing layouts and the default enabled widgets are unchanged; add the card
+only where it is useful. It is also available as an Operations Center host
+page tile and as a metric in the homepage history chart.
+
+Readings come from `SwapTotal` and `SwapFree` in `/proc/meminfo`, without
+sudo or an agent. The existing single-awk live sample already reads these
+fields, so swap adds no command to the live stream. The ordinary metrics
+poll also collects swap, and persists its percentage with the existing
+history sampling cadence and retention. Live charts keep the latest 60
+points. The card offers the same Live, 1h, 6h, 24h and 7d views as Memory
+Usage.
+
+**No swap configured** means the host reported zero swap capacity; it is
+not shown as 0% utilization. **Swap metrics unavailable** means the host is
+unsupported or the counters could not be read. Linux is supported initially;
+macOS, Windows and RouterOS do not report swap through this card. Swap is
+aggregate capacity across active swap devices, files and zram; this card
+does not identify individual swapfiles or show swap-in/out rates.
+
+History collected before this feature, missing readings and no-swap readings
+remain null gaps, not fabricated zeros. A configured but unused swap area is
+recorded as 0%. Export/import includes the nullable `swapPercent` field, while
+the history API returns `swap_percent`. A failed history request is shown
+explicitly in the card.
 
 The terminal toolbar shows small CPU, memory and disk bars for the host you are in.
 

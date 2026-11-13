@@ -64,7 +64,7 @@ describe("defaultLayoutFromWidgets", () => {
       expect(row.reduce((sum, slot) => sum + slot.w!, 0)).toBe(12);
       expect(new Set(row.map((slot) => slot.height)).size).toBe(1);
     }
-    expect(rows.size).toBe(5);
+    expect(rows.size).toBe(6);
   });
 
   it("widens the rest of a row when a card is off", () => {

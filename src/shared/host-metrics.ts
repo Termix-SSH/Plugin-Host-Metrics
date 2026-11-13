@@ -58,6 +58,7 @@ export interface HostMetricsLayout {
 export const METRIC_CARD_IDS: HostMetricCardId[] = [
   "cpu",
   "memory",
+  "swap",
   "disk",
   "network",
   "uptime",
@@ -112,6 +113,7 @@ const DEFAULT_COLSPAN: Partial<Record<HostMetricsCardId, HostMetricsColSpan>> =
   {
     cpu: 1,
     memory: 1,
+    swap: 1,
     disk: 1,
     uptime: 1,
     system: 1,
@@ -144,6 +146,10 @@ const DEFAULT_ROWS: {
       ["memory", 4],
       ["disk", 4],
     ],
+  },
+  {
+    height: 300,
+    cards: [["swap", 4]],
   },
   {
     height: 170,
@@ -266,6 +272,7 @@ export const CARD_SETTINGS: Partial<
     "showComposition",
     "showHardware",
   ],
+  swap: ["chartSize", "showDetails"],
   disk: ["chartSize", "showDetails", "showActivity", "showHardware"],
   network: [
     "chartSize",

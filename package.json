@@ -1,13 +1,15 @@
 {
   "name": "@termix-plugin/host-metrics",
   "private": true,
-  "version": "1.4.0",
+  "version": "1.5.0-dev.1",
   "type": "module",
   "scripts": {
     "build": "termix-plugin build",
     "test": "termix-plugin test",
     "typecheck": "tsc -p .",
     "validate": "termix-plugin validate",
+    "pack": "termix-plugin pack",
+    "pack:dev": "node scripts/pack-dev.mjs",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "prepare": "husky || true"

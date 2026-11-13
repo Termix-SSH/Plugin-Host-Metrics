@@ -168,6 +168,9 @@
         "memPercent": {
           "type": "real"
         },
+        "swapPercent": {
+          "type": "real"
+        },
         "diskPercent": {
           "type": "real"
         },

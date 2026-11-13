@@ -456,6 +456,7 @@ export class MetricsPoller {
           hostId,
           cpuPercent: metrics.cpu?.percent ?? null,
           memPercent: metrics.memory?.percent ?? null,
+          swapPercent: metrics.swap?.percent ?? null,
           diskPercent: metrics.disk?.percent ?? null,
           netRxBytes: bytes(iface?.rxBytes),
           netTxBytes: bytes(iface?.txBytes),

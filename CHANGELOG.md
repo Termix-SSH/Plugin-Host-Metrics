@@ -1,5 +1,14 @@
 # Changelog
 
+## 1.5.0-dev.1
+
+### Added
+
+- Opt-in Linux Swap Usage card, with used/free/total capacity, shared live
+  samples, nullable percentage history, layout settings and a host-page tile
+- Swap as a homepage history-chart metric and in history exports/imports
+- Isolated development packaging for testing beside the official plugin
+
 ## 1.4.0
 
 ### Added
