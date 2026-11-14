@@ -7,6 +7,7 @@
 - Runs in its own process with only the access it needs (plugin API 2, needs Termix 26.11.2)
 - A metrics collector from another plugin gets the host id and connects on its own
 - TOTP prompts from hosts behind a plugin's keyboard-interactive handler are still found when that plugin runs in its own process (needs Termix 26.11.2)
+- Dashboard row bars, health badges, homepage widget numbers and terminal toolbar readouts are drawn by Termix from plain values instead of a frame each, so many hosts no longer mean many frames (needs Termix 26.11.2)
 
 ### Fixed
 

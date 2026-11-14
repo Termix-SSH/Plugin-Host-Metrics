@@ -30,7 +30,7 @@
   ],
   "engine": {
     "termix": ">=26.11.2-0",
-    "api": "^2.0.0"
+    "api": "^2.6.0"
   },
   "capabilities": [
     "hosts:read",

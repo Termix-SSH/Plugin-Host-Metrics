@@ -11,7 +11,7 @@ import { HostMetricsTab } from "./HostMetricsTab";
 import HostMetricsApp from "./HostMetricsApp";
 import { HostStatsTab } from "./HostEditorStatsTab";
 import { metricsChartWidget } from "./MetricsChartWidget";
-import { TerminalMetricsStatus } from "./TerminalMetricsStatus";
+import { useTerminalStatusValue } from "./TerminalMetricsStatus";
 import { createHostMetricsApi } from "./host-metrics-api";
 import { createMetricsSummaryStore } from "./summary-store";
 import { createBusiestHostsCard } from "./BusiestHostsCard";
@@ -21,9 +21,9 @@ import {
   useMetricsCompanionDefaults,
 } from "./HostMetricsCompanion";
 import {
-  createDashboardHealthBadge,
-  createDashboardHostMetrics,
-  createHomepageHostMetrics,
+  createDashboardBadgeValue,
+  createDashboardRowValue,
+  createHomepageValue,
 } from "./SummaryViews";
 import { createHealthSummaryStore } from "./health-summary";
 import { CARD_DEFINITIONS } from "./cards";
@@ -143,11 +143,12 @@ export async function activate(app: TermixApp): Promise<void> {
   app.registerExtension("homepage.widgets", metricsChartWidget);
 
   // Live CPU, memory and disk bars in the terminal toolbar's expanded view.
+  // These are data, drawn by the shell: no frame per row or per tab.
   app.registerSlotContribution("terminal.toolbarStatus", {
     actionId: "host-metrics.terminalStatus",
     titleKey: "nav.hostMetrics",
-    kind: "component",
-    component: TerminalMetricsStatus,
+    kind: "data",
+    useValue: useTerminalStatusValue,
     when: (context) => allowed && metricsEnabledFor(context.host),
   });
 
@@ -155,16 +156,16 @@ export async function activate(app: TermixApp): Promise<void> {
   app.registerSlotContribution("dashboard.hostRow", {
     actionId: "host-metrics.dashboardHost",
     titleKey: "nav.hostMetrics",
-    kind: "component",
-    component: createDashboardHostMetrics(summaries, healthSummaries),
+    kind: "data",
+    useValue: createDashboardRowValue(summaries, healthSummaries),
   });
 
   // A dashboard check that warns or fails replaces the host row's status badge.
   app.registerSlotContribution("dashboard.hostRowBadge", {
     actionId: "host-metrics.dashboardHealthBadge",
     titleKey: "nav.hostMetrics",
-    kind: "component",
-    component: createDashboardHealthBadge(healthSummaries),
+    kind: "data",
+    useValue: createDashboardBadgeValue(healthSummaries),
   });
 
   app.registerDashboardCard({
@@ -180,8 +181,8 @@ export async function activate(app: TermixApp): Promise<void> {
   app.registerSlotContribution("homepage.hostMetrics", {
     actionId: "host-metrics.homepageHost",
     titleKey: "nav.hostMetrics",
-    kind: "component",
-    component: createHomepageHostMetrics(summaries),
+    kind: "data",
+    useValue: createHomepageValue(summaries),
   });
 
   // Metrics cards as tiles on Operations Center's host page.

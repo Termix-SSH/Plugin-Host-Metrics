@@ -35,7 +35,6 @@ vi.mock("../../src/frontend/live-metrics", () => ({
 }));
 
 vi.mock("@termix-ssh/plugin-sdk/ui", () => ({
-  cn: (...classes: unknown[]) => classes.filter(Boolean).join(" "),
   getPollingEnvironmentMultiplier: () => 1,
   resolveConnectionOrigin: async () => remote.origin,
   resolveRemoteHostId: async () => remote.remoteId,
@@ -45,7 +44,30 @@ vi.mock("@termix-ssh/plugin-sdk/ui", () => ({
   },
 }));
 
-import { TerminalMetricsStatus } from "../../src/frontend/TerminalMetricsStatus";
+import { useTerminalStatusValue } from "../../src/frontend/TerminalMetricsStatus";
+
+/** Draws the hook's value as plain text, the way the shell would show it. */
+function TerminalMetricsStatus(props: Record<string, unknown>) {
+  const value = useTerminalStatusValue(props) as {
+    shape: string;
+    text?: string;
+    items?: { label: string; value: number | null }[];
+  } | null;
+  if (!value) return null;
+  if (value.shape === "text") return <span>{value.text}</span>;
+  return (
+    <>
+      {value.items?.map((item) => (
+        <span key={item.label}>
+          <span>{item.label}</span>
+          <span>
+            {item.value === null ? "--" : `${Math.round(item.value * 100)}%`}
+          </span>
+        </span>
+      ))}
+    </>
+  );
+}
 
 afterEach(() => {
   cleanup();
@@ -184,5 +206,18 @@ describe("TerminalMetricsStatus", () => {
     await waitFor(() => expect(screen.getByText("33%")).toBeInTheDocument());
     expect(remote.api.post).toHaveBeenCalledWith("/metrics/start/70");
     expect(api.post).not.toHaveBeenCalled();
+  });
+});
+
+describe("terminal status as data", () => {
+  it("takes the host from the row context, or just its id", async () => {
+    api.post.mockResolvedValue({ data: { viewerSessionId: "v" } });
+    api.get.mockResolvedValue({
+      data: { cpu: { percent: 50 }, memory: { percent: 10 } },
+    });
+    render(<TerminalMetricsStatus hostId={7} isConnected active />);
+    await waitFor(() => expect(screen.getByText("50%")).toBeInTheDocument());
+    expect(api.post).toHaveBeenCalledWith("/metrics/start/7");
+    expect(screen.getByText("--")).toBeInTheDocument();
   });
 });

@@ -6,12 +6,12 @@ import {
   useTranslation,
 } from "@termix-ssh/plugin-sdk/frontend";
 import {
-  cn,
   getPollingEnvironmentMultiplier,
   resolveConnectionOrigin,
   resolveRemoteHostId,
   runAdaptivePolling,
 } from "@termix-ssh/plugin-sdk/ui";
+import type { DataResult } from "@termix-ssh/plugin-sdk/frontend";
 import { liveIntervalMs, useLiveMetrics } from "./live-metrics";
 
 /** What the ssh-terminal plugin hands a "terminal.toolbarStatus" component. */
@@ -32,44 +32,20 @@ interface Sample {
   disk: number | null;
 }
 
-function StatBar({
-  label,
-  percent,
-}: {
-  label: string;
-  percent: number | null;
-}) {
-  const value = percent == null ? null : Math.max(0, Math.min(100, percent));
-  return (
-    <div className="flex items-center gap-1.5 px-1.5">
-      <span className="w-12 shrink-0 text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
-        {label}
-      </span>
-      <div className="h-1.5 w-12 shrink-0 overflow-hidden rounded-full bg-muted">
-        {value != null && (
-          <div
-            className={cn(
-              "h-full rounded-full transition-all",
-              value >= 90
-                ? "bg-red-500"
-                : value >= 70
-                  ? "bg-warning"
-                  : "bg-accent-brand",
-            )}
-            style={{ width: `${value}%` }}
-          />
-        )}
-      </div>
-      <span className="w-7 shrink-0 text-right text-[10px] tabular-nums text-muted-foreground">
-        {value == null ? "--" : `${Math.round(value)}%`}
-      </span>
-    </div>
-  );
-}
-
-/** CPU, memory and disk bars in the terminal toolbar's expanded view. */
-export function TerminalMetricsStatus(props: Record<string, unknown>) {
-  const { host, active } = props as unknown as TerminalToolbarStatusProps;
+/**
+ * CPU, memory and disk bars for the terminal toolbar ("terminal.toolbarStatus",
+ * a data slot keyed by tab). Polls only while the context says active.
+ */
+export function useTerminalStatusValue(
+  context: Record<string, unknown>,
+): DataResult {
+  const props = context as unknown as Partial<TerminalToolbarStatusProps> & {
+    hostId?: number | string;
+  };
+  const host =
+    props.host ??
+    (props.hostId !== undefined ? { id: props.hostId } : undefined);
+  const active = props.active === true;
   const { t } = useTranslation();
   const localApi = usePluginApi();
   const remoteApi = usePluginApiFor("remote");
@@ -192,11 +168,11 @@ export function TerminalMetricsStatus(props: Record<string, unknown>) {
   }, [active, hostId, localApi, remoteApi]); // eslint-disable-line react-hooks/exhaustive-deps
 
   if (!available) {
-    return (
-      <span role="status" className="px-2 py-1 text-xs text-muted-foreground">
-        {t("terminalStatus.unavailable")}
-      </span>
-    );
+    return {
+      shape: "text",
+      text: t("terminalStatus.unavailable"),
+      tone: "muted",
+    };
   }
 
   // The live sample overrides CPU and memory; disk is not in it and keeps the regular value.
@@ -205,11 +181,14 @@ export function TerminalMetricsStatus(props: Record<string, unknown>) {
     ? (live.memUsedKb / live.memTotalKb) * 100
     : (metrics?.memory ?? null);
 
-  return (
-    <>
-      <StatBar label={t("hostMetrics.cpu")} percent={cpu} />
-      <StatBar label={t("hostMetrics.memory")} percent={memory} />
-      <StatBar label={t("hostMetrics.disk")} percent={metrics?.disk ?? null} />
-    </>
-  );
+  const share = (percent: number | null) =>
+    percent == null ? null : Math.max(0, Math.min(100, percent)) / 100;
+  return {
+    shape: "bars",
+    items: [
+      { label: t("hostMetrics.cpu"), value: share(cpu) },
+      { label: t("hostMetrics.memory"), value: share(memory) },
+      { label: t("hostMetrics.disk"), value: share(metrics?.disk ?? null) },
+    ],
+  };
 }

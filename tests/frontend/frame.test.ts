@@ -12,3 +12,27 @@ describe("sandboxed frame", () => {
     expect(registrations.length).toBeGreaterThan(0);
   });
 });
+
+describe("per host pieces", () => {
+  it("sends row, badge, homepage and terminal readouts as data, not frames", async () => {
+    const { registrations } = await checkFrameApp(plugin, {
+      manifest: manifest as unknown as Record<string, unknown>,
+    });
+    const slots = registrations
+      .filter((entry) => entry.kind === "slotContribution")
+      .map((entry) => entry.data as Record<string, unknown>);
+    for (const slotId of [
+      "dashboard.hostRow",
+      "dashboard.hostRowBadge",
+      "homepage.hostMetrics",
+      "terminal.toolbarStatus",
+    ]) {
+      const entry = slots.find((data) => data.slotId === slotId);
+      expect(entry, slotId).toMatchObject({ kind: "data" });
+      expect(entry?.valueKey, slotId).toBe(
+        `data:${slotId}:${String(entry?.actionId)}`,
+      );
+      expect(entry?.component, slotId).toBeUndefined();
+    }
+  });
+});
