@@ -4,6 +4,7 @@ import {
   supportsMetrics,
   type MetricsHost,
 } from "./helpers.js";
+import { keepAwake } from "./keep-awake.js";
 import type { MetricsLogger } from "./log.js";
 import {
   DEFAULT_HEALTH_INTERVAL,
@@ -48,6 +49,7 @@ export class HealthScheduler {
   constructor(private readonly deps: HealthSchedulerDeps) {}
 
   start(): void {
+    keepAwake(this.deps.ctx, "health-tick", true);
     this.stopTick = this.deps.ctx.schedule.every(
       HEALTH_TICK_MS,
       () => this.tick(),
@@ -80,6 +82,12 @@ export class HealthScheduler {
       return;
     }
     if (this.disposed) return;
+    // No saved health checks: nothing keeps the process running.
+    keepAwake(
+      this.deps.ctx,
+      "health-tick",
+      rows.some((row) => parseChecks(row.checks).length > 0),
+    );
 
     const now = Date.now();
     const random = this.deps.random ?? Math.random;

@@ -9,6 +9,7 @@
 - TOTP prompts from hosts behind a plugin's keyboard-interactive handler are still found when that plugin runs in its own process (needs Termix 26.11.2)
 - Dashboard row bars, health badges, homepage widget numbers and terminal toolbar readouts are drawn by Termix from plain values instead of a frame each, so many hosts no longer mean many frames (needs Termix 26.11.2)
 - Manager cards and toolbar buttons from other plugins draw in their own frames over the tab, and still move and resize while you edit the layout (needs Termix 26.11.2)
+- Its process stops when it has nothing to watch or run, and Termix starts it again when there is work, which saves memory on Termix 26.11.2 and later
 
 ### Fixed
 
