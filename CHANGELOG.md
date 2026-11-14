@@ -8,6 +8,7 @@
 - A metrics collector from another plugin gets the host id and connects on its own
 - TOTP prompts from hosts behind a plugin's keyboard-interactive handler are still found when that plugin runs in its own process (needs Termix 26.11.2)
 - Dashboard row bars, health badges, homepage widget numbers and terminal toolbar readouts are drawn by Termix from plain values instead of a frame each, so many hosts no longer mean many frames (needs Termix 26.11.2)
+- Manager cards and toolbar buttons from other plugins draw in their own frames over the tab, and still move and resize while you edit the layout (needs Termix 26.11.2)
 
 ### Fixed
 

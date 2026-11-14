@@ -206,11 +206,13 @@ export async function activate(app: TermixApp): Promise<void> {
   app.declareActionSlot({
     id: "host-metrics.managers",
     accepts: ["component"],
+    fit: "fill",
   });
   // Buttons before the toolbar's own controls, drawn with { hostId, host }.
   // The snippets plugin puts a host's quick actions here.
   app.declareActionSlot({
     id: "host-metrics.toolbar",
     accepts: ["component"],
+    fit: "inline",
   });
 }
