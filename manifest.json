@@ -29,8 +29,8 @@
     }
   ],
   "engine": {
-    "termix": ">=26.11.1-0",
-    "api": "^1.16"
+    "termix": ">=26.11.2-0",
+    "api": "^2.0.0"
   },
   "capabilities": [
     "hosts:read",
@@ -45,6 +45,32 @@
     "notify:send",
     "operations:provide"
   ],
+  "sandbox": {
+    "schedules": [
+      {
+        "id": "health-tick",
+        "every": 15000
+      },
+      {
+        "id": "viewer-cleanup",
+        "every": 60000
+      },
+      {
+        "id": "failure-cleanup",
+        "every": 600000
+      }
+    ],
+    "events": [
+      "host.updated",
+      "host.deleted",
+      "host.status",
+      "host.key.updated"
+    ],
+    "registry": [
+      "host-metrics.hostImportNormalizer",
+      "host-metrics.hostPayloadLegacy"
+    ]
+  },
   "provides": [
     {
       "service": "host-metrics.viewers",

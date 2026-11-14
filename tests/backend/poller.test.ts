@@ -45,6 +45,7 @@ function setup(hostIds = [7], sessions: unknown = {}, authType = "password") {
     ),
   });
   const samples: unknown[] = [];
+  const timers: Array<{ ms: number; fn: () => void; stopped: boolean }> = [];
   const state = createMetricsState();
   const poller = new MetricsPoller({
     ctx: fake.ctx,
@@ -58,8 +59,15 @@ function setup(hostIds = [7], sessions: unknown = {}, authType = "password") {
     state,
     sessions: sessions as never,
     collectors: {} as never,
+    every: (ms, _jitter, fn) => {
+      const timer = { ms, fn, stopped: false };
+      timers.push(timer);
+      return () => {
+        timer.stopped = true;
+      };
+    },
   });
-  return { fake, poller, state, samples };
+  return { fake, poller, state, samples, timers };
 }
 
 const flush = () => new Promise((resolve) => setTimeout(resolve, 10));
@@ -78,7 +86,7 @@ describe("MetricsPoller", () => {
       onAuth?.();
       return sample;
     });
-    const { fake, poller, samples } = setup();
+    const { fake, poller, samples, timers } = setup();
 
     poller.registerViewer(7, "viewer-a", "user-1");
     await flush();
@@ -103,7 +111,7 @@ describe("MetricsPoller", () => {
       state: "collecting",
       previous: null,
     });
-    const job = fake.scheduled.find((entry) => entry.kind === "every");
+    const job = timers[0];
     expect(job?.ms).toBe(30_000);
   });
 
@@ -146,21 +154,19 @@ describe("MetricsPoller", () => {
 
   it("uses the host's own interval over the admin one", async () => {
     collectMetrics.mockResolvedValue(sample);
-    const { fake, poller } = setup();
+    const { fake, poller, timers } = setup();
     await fake.ctx.settings.set("metricsInterval", 60);
     await fake.ctx.settings.setHost(7, "metricsInterval", 15);
 
     poller.registerViewer(7, "viewer-a", "user-1");
     await flush();
 
-    expect(fake.scheduled.find((entry) => entry.kind === "every")?.ms).toBe(
-      15_000,
-    );
+    expect(timers[0]?.ms).toBe(15_000);
   });
 
   it("waits for a host core sees as offline", async () => {
     collectMetrics.mockResolvedValue(sample);
-    const { fake, poller } = setup();
+    const { fake, poller, timers } = setup();
     fake.hostStatuses.set(7, { status: "offline", lastChecked: "now" });
 
     poller.registerViewer(7, "viewer-a", "user-1");
@@ -178,7 +184,7 @@ describe("MetricsPoller", () => {
     collectMetrics.mockRejectedValue(
       new Error("All configured authentication methods failed"),
     );
-    const { fake, poller } = setup();
+    const { fake, poller, timers } = setup();
 
     poller.registerViewer(7, "viewer-a", "user-1");
     await flush();
@@ -191,7 +197,7 @@ describe("MetricsPoller", () => {
 
   it("does not report a login for a connection that timed out", async () => {
     collectMetrics.mockRejectedValue(new Error("Timed out while waiting"));
-    const { fake, poller } = setup();
+    const { fake, poller, timers } = setup();
 
     poller.registerViewer(7, "viewer-a", "user-1");
     await flush();
@@ -217,12 +223,12 @@ describe("MetricsPoller", () => {
 
   it("stops with the last viewer", async () => {
     collectMetrics.mockResolvedValue(sample);
-    const { fake, poller } = setup();
+    const { fake, poller, timers } = setup();
 
     poller.registerViewer(7, "a", "user-1");
     poller.registerViewer(7, "b", "user-1");
     await flush();
-    const job = fake.scheduled.find((entry) => entry.kind === "every")!;
+    const job = timers[0]!;
 
     poller.unregisterViewer(7, "a");
     expect(job.stopped).toBe(false);
@@ -242,7 +248,7 @@ describe("MetricsPoller", () => {
   });
 
   it("skips a host with metrics turned off", async () => {
-    const { fake, poller } = setup();
+    const { fake, poller, timers } = setup();
     await fake.ctx.settings.setHost(7, "metricsEnabled", false);
 
     poller.registerViewer(7, "a", "user-1");
@@ -266,7 +272,7 @@ describe("MetricsPoller", () => {
 
   it("drops a pooled connection when a host changes", async () => {
     collectMetrics.mockResolvedValue(sample);
-    const { fake, poller } = setup();
+    const { fake, poller, timers } = setup();
     poller.registerViewer(7, "a", "user-1");
     await flush();
 

@@ -72,11 +72,17 @@ export async function activate(ctx: PluginContext) {
     recordHealth,
   });
 
-  ctx.schedule.every(60_000, () => poller.cleanupInactiveViewers());
-  ctx.schedule.every(10 * 60_000, () => {
-    state.authFailures.cleanup();
-    state.backoff.cleanup();
+  ctx.schedule.every(60_000, () => poller.cleanupInactiveViewers(), {
+    id: "viewer-cleanup",
   });
+  ctx.schedule.every(
+    10 * 60_000,
+    () => {
+      state.authFailures.cleanup();
+      state.backoff.cleanup();
+    },
+    { id: "failure-cleanup" },
+  );
 
   ctx.events.on("host.updated", (payload) => {
     const { hostId } = payload as { hostId?: number };
@@ -114,7 +120,7 @@ export async function activate(ctx: PluginContext) {
       if (!userId) return { skipped: true, reason: "no_user" };
       const host = await poller.resolve(hostId, userId);
       if (!host) return { skipped: true, reason: "host_not_found" };
-      if (!supportsMetrics(host, ctx.ssh)) {
+      if (!(await supportsMetrics(host, ctx.ssh))) {
         return { skipped: true, reason: "metrics_unsupported" };
       }
       if (!(await poller.settingsFor(hostId)).metricsEnabled) {

@@ -48,8 +48,10 @@ export class HealthScheduler {
   constructor(private readonly deps: HealthSchedulerDeps) {}
 
   start(): void {
-    this.stopTick = this.deps.ctx.schedule.every(HEALTH_TICK_MS, () =>
-      this.tick(),
+    this.stopTick = this.deps.ctx.schedule.every(
+      HEALTH_TICK_MS,
+      () => this.tick(),
+      { id: "health-tick" },
     );
   }
 
@@ -135,7 +137,7 @@ export class HealthScheduler {
         const access = await ctx.hosts.checkAccess(hostId, "connect");
         if (!access.hasAccess) return;
         const host = await poller.resolve(hostId, userId);
-        if (!host || !supportsMetrics(host, ctx.ssh)) return;
+        if (!host || !(await supportsMetrics(host, ctx.ssh))) return;
         if (!(await poller.settingsFor(hostId)).metricsEnabled) return;
         // Read again so a save during the wait is what runs.
         const row = await repository.findChecks(userId, hostId);

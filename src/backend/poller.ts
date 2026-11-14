@@ -55,6 +55,8 @@ export interface PollerDeps extends CollectDeps {
   ctx: PluginContext;
   log: MetricsLogger;
   repository: HostMetricsRepository;
+  /** Repeating timer; tests swap it. */
+  every?: typeof everyWithJitter;
 }
 
 /**
@@ -252,7 +254,7 @@ export class MetricsPoller {
     if (!host) return;
     const hasSession = () =>
       !!this.deps.sessions.get(sessionKey(hostId, userId))?.isConnected;
-    if (!supportsMetrics(host, this.ctx.ssh, hasSession)) return;
+    if (!(await supportsMetrics(host, this.ctx.ssh, hasSession))) return;
 
     const settings = await this.settingsFor(hostId);
     if (!settings.metricsEnabled) {
@@ -263,14 +265,15 @@ export class MetricsPoller {
     // Another start for this host may have finished during the awaits above.
     this.polled.get(hostId)?.stop();
     const intervalMs = settings.intervalSeconds * 1000;
-    const stop = this.ctx.schedule.every(
+    // One timer per host, kept in this process: core only runs schedules
+    // listed in the manifest. Spread so a fleet does not fire on the same second.
+    const stop = (this.deps.every ?? everyWithJitter)(
       intervalMs,
+      Math.min(intervalMs * 0.2, 15_000),
       () => {
         const latest = this.polled.get(hostId);
         if (latest) this.schedulePoll(latest.host);
       },
-      // Spread timers so a fleet does not fire on the same second.
-      { jitterMs: Math.min(intervalMs * 0.2, 15_000) },
     );
     this.polled.set(hostId, { host, viewerUserId: userId, stop });
     this.syncConcurrency();
@@ -472,4 +475,25 @@ export class MetricsPoller {
       });
     }
   }
+}
+
+/** Runs fn every ms, first after a random part of jitterMs. */
+export function everyWithJitter(
+  ms: number,
+  jitterMs: number,
+  fn: () => void,
+): () => void {
+  let interval: NodeJS.Timeout | null = null;
+  const start = setTimeout(
+    () => {
+      interval = setInterval(fn, ms);
+      interval.unref?.();
+    },
+    ms + Math.floor(Math.random() * Math.max(0, jitterMs)),
+  );
+  start.unref?.();
+  return () => {
+    clearTimeout(start);
+    if (interval) clearInterval(interval);
+  };
 }

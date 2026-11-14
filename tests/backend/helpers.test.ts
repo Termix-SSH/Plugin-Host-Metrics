@@ -10,50 +10,55 @@ import { createFakeContext } from "@termix-ssh/plugin-sdk/testing";
 const ssh = createFakeContext().ctx.ssh;
 
 describe("supportsMetrics", () => {
-  it("supports plain ssh hosts", () => {
+  it("supports plain ssh hosts", async () => {
     expect(
-      supportsMetrics({ connectionType: "ssh", authType: "password" }, ssh),
+      await supportsMetrics(
+        { connectionType: "ssh", authType: "password" },
+        ssh,
+      ),
     ).toBe(true);
   });
 
-  it("defaults missing connectionType to ssh", () => {
-    expect(supportsMetrics({ authType: "key" }, ssh)).toBe(true);
+  it("defaults missing connectionType to ssh", async () => {
+    expect(await supportsMetrics({ authType: "key" }, ssh)).toBe(true);
   });
 
-  it("rejects remote desktop only hosts", () => {
-    expect(supportsMetrics({ connectionType: "rdp" }, ssh)).toBe(false);
-    expect(supportsMetrics({ connectionType: "vnc" }, ssh)).toBe(false);
-    expect(supportsMetrics({ connectionType: "telnet" }, ssh)).toBe(false);
+  it("rejects remote desktop only hosts", async () => {
+    expect(await supportsMetrics({ connectionType: "rdp" }, ssh)).toBe(false);
+    expect(await supportsMetrics({ connectionType: "vnc" }, ssh)).toBe(false);
+    expect(await supportsMetrics({ connectionType: "telnet" }, ssh)).toBe(
+      false,
+    );
   });
 
-  it("accepts a remote desktop host that also has ssh on", () => {
+  it("accepts a remote desktop host that also has ssh on", async () => {
     expect(
-      supportsMetrics(
+      await supportsMetrics(
         { connectionType: "rdp", enableSsh: true, authType: "password" },
         ssh,
       ),
     ).toBe(true);
   });
 
-  it("rejects ssh hosts that cannot connect unattended", () => {
+  it("rejects ssh hosts that cannot connect unattended", async () => {
     expect(
-      supportsMetrics({ connectionType: "ssh", authType: "none" }, ssh),
+      await supportsMetrics({ connectionType: "ssh", authType: "none" }, ssh),
     ).toBe(false);
     expect(
-      supportsMetrics({ connectionType: "ssh", authType: "opkssh" }, ssh),
+      await supportsMetrics({ connectionType: "ssh", authType: "opkssh" }, ssh),
     ).toBe(false);
   });
 
-  it("accepts any ssh host with a session opened from the tab", () => {
+  it("accepts any ssh host with a session opened from the tab", async () => {
     expect(
-      supportsMetrics(
+      await supportsMetrics(
         { connectionType: "ssh", authType: "opkssh" },
         ssh,
         () => true,
       ),
     ).toBe(true);
     expect(
-      supportsMetrics(
+      await supportsMetrics(
         { connectionType: "rdp", authType: "opkssh" },
         ssh,
         () => true,

@@ -93,7 +93,9 @@ export async function collectMetrics(
 ): Promise<CollectedMetrics> {
   const { ssh, state, sessions, collectors } = deps;
   const key = sessionKey(host.id, host.userId);
-  if (!supportsMetrics(host, ssh, () => !!sessions.get(key)?.isConnected)) {
+  if (
+    !(await supportsMetrics(host, ssh, () => !!sessions.get(key)?.isConnected))
+  ) {
     throw new Error("Metrics collection only supported for SSH hosts");
   }
 
@@ -198,7 +200,7 @@ export async function collectMetrics(
           ),
         );
 
-        const extra = await collectors.run(client, host.id, host.userId);
+        const extra = await collectors.run(host.id, host.userId);
         if (Object.keys(extra).length > 0) result.extra = extra;
 
         state.metricsCache.set(host.id, result);

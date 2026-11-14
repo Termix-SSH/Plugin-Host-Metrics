@@ -30,6 +30,7 @@ describe("host-metrics activate", () => {
       const mock = createMockCtx({
         pluginId: manifest.id,
         manifest,
+        sandbox: true,
         capabilities: manifest.capabilities.filter((cap) => cap !== missing),
         db: db.database,
         router: () => express.Router(),
@@ -93,7 +94,9 @@ describe("host-metrics activate", () => {
   it("registers its host import normalizer", async () => {
     server = await startServer();
     expect(
-      server.mock.ctx.registry.consume("host-metrics.hostImportNormalizer"),
+      await server.mock.ctx.registry.consume(
+        "host-metrics.hostImportNormalizer",
+      ),
     ).toBe(hostImportNormalizer);
   });
 });
