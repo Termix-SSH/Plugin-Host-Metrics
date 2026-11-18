@@ -16,14 +16,16 @@ export type MetricsHost = PluginSshHost & {
  * Metrics run over SSH. The auth type has to work unattended, unless the
  * person already opened a session from the tab that polling can reuse.
  */
-export function supportsMetrics(
+export async function supportsMetrics(
   host: Pick<MetricsHost, "connectionType" | "enableSsh" | "authType">,
   ssh: Pick<PluginSsh, "supportsBackground">,
   hasSession: () => boolean = () => false,
-): boolean {
+): Promise<boolean> {
   const connectionType = host.connectionType || "ssh";
   if (connectionType !== "ssh" && host.enableSsh !== true) return false;
-  return ssh.supportsBackground(host.authType || "none") || hasSession();
+  return (
+    (await ssh.supportsBackground(host.authType || "none")) || hasSession()
+  );
 }
 
 /** How manager routes and scheduled health checks reach a host. */

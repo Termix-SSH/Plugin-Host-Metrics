@@ -46,8 +46,12 @@ export function mergeLive(
   if (!m || !l) return m;
   const gib = (kb: number) => Math.round((kb / 1024 / 1024) * 100) / 100;
   const memTotal = l.memTotalKb;
+  const arc = Math.min(Math.max(m.memory.arcKb ?? 0, 0), l.memUsedKb);
+  const memUsed = l.memUsedKb - arc;
+  const memCached = l.memCachedKb + arc;
   return {
     ...m,
+    swap: l.swap === undefined ? m.swap : l.swap,
     cpu: {
       ...m.cpu,
       percent: l.cpu == null ? m.cpu.percent : Math.round(l.cpu),
@@ -59,16 +63,16 @@ export function mergeLive(
     memory: memTotal
       ? {
           ...m.memory,
-          percent: Math.round((l.memUsedKb / memTotal) * 100),
-          usedGiB: gib(l.memUsedKb),
+          percent: Math.round((memUsed / memTotal) * 100),
+          usedGiB: gib(memUsed),
           totalGiB: gib(memTotal),
-          cachedGiB: gib(l.memCachedKb),
+          cachedGiB: gib(memCached),
           freeGiB: gib(l.memFreeKb),
           ...(m.memory.details && {
             details: {
               ...m.memory.details,
-              availableBytes: Math.max(0, memTotal - l.memUsedKb) * 1024,
-              cachedBytes: l.memCachedKb * 1024,
+              availableBytes: Math.max(0, memTotal - memUsed) * 1024,
+              cachedBytes: memCached * 1024,
             },
           }),
         }

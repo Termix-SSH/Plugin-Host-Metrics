@@ -58,6 +58,23 @@ describe("liveStreamCmd", () => {
 });
 
 describe("createSamplers", () => {
+  it("refreshes swap on every stream tick, including ticks without processes", async () => {
+    const f = fake();
+    const get = createSamplers(f.runOnHost as never);
+    expect(await get(1, 500, false)).toBeNull();
+    await Promise.resolve();
+    const frame = (free: number) =>
+      CHUNK.replace(
+        "MemAvailable: 400 kB",
+        `MemAvailable: 400 kB\nSwapTotal: 1000 kB\nSwapFree: ${free} kB`,
+      );
+    f.streams[0].emit("data", Buffer.from(frame(1000) + "##END\n"));
+    f.streams[0].emit("data", Buffer.from(frame(750) + "##END\n"));
+    expect((await get(1, 500, false))?.swap?.percent).toBe(25);
+    f.streams[0].emit("data", Buffer.from(frame(500) + "##END\n"));
+    expect((await get(1, 500, false))?.swap?.percent).toBe(50);
+    get.dispose();
+  });
   it("answers null at once with wait false until the first frames are in", async () => {
     const f = fake();
     const get = createSamplers(f.runOnHost as never);

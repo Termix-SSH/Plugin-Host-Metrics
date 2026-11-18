@@ -2,6 +2,7 @@ import { describe, it, expect } from "vitest";
 import {
   buildSudoCommand,
   shellSingleQuote,
+  sudoStdin,
   parsePlatformProbe,
 } from "@termix-ssh/plugin-sdk/host-commands";
 import { isValidPort } from "../../../src/backend/managers/validation.js";
@@ -19,16 +20,18 @@ describe("exec-elevated", () => {
     expect(shellSingleQuote("abc")).toBe("'abc'");
     expect(shellSingleQuote("a'b")).toBe(`'a'"'"'b'`);
   });
-  it("builds the sudo -S pipeline wrapping the command in sh -c with a success marker", () => {
-    expect(buildSudoCommand("systemctl restart nginx", "pw")).toBe(
-      `echo 'pw' | sudo -S -p '' sh -c 'echo __TX_SUDO_OK__; systemctl restart nginx'`,
-    );
+  it("builds a sudo -S pipeline that reads the password from stdin", () => {
+    const command = buildSudoCommand("systemctl restart nginx");
+    expect(command).toContain("sudo -k -S");
+    expect(command).toContain("__TX_SUDO_OK__");
+    expect(command).toContain("systemctl restart nginx");
   });
   it("does not merge stderr into stdout (no 2>&1)", () => {
-    expect(buildSudoCommand("id", "pw")).not.toContain("2>&1");
+    expect(buildSudoCommand("id")).not.toContain("2>&1");
   });
-  it("escapes a password containing a quote", () => {
-    expect(buildSudoCommand("id", "p'w")).toContain(`echo 'p'"'"'w'`);
+  it("never puts the password in the command", () => {
+    expect(buildSudoCommand("id")).not.toContain("p'w");
+    expect(sudoStdin("p'w")).toBe("p'w\n");
   });
 });
 

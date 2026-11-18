@@ -26,7 +26,7 @@ describe("useSmoothSeries", () => {
     rerender({ rows: [[2, 10]] });
     expect(result.current).toEqual([[2, 2]]);
     act(() => {
-      vi.advanceTimersByTime(400);
+      vi.advanceTimersByTime(150);
     });
     expect(result.current[0][1]).toBeGreaterThan(2);
     expect(result.current[0][1]).toBeLessThan(10);

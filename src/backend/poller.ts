@@ -1,3 +1,4 @@
+import { AsyncResource } from "node:async_hooks";
 import type {
   PluginContext,
   PluginHostStatusEntry,
@@ -55,6 +56,8 @@ export interface PollerDeps extends CollectDeps {
   ctx: PluginContext;
   log: MetricsLogger;
   repository: HostMetricsRepository;
+  /** Repeating timer; tests swap it. */
+  every?: typeof everyWithJitter;
 }
 
 /**
@@ -73,6 +76,8 @@ export class MetricsPoller {
   private readonly inFlight = new Set<number>();
   private readonly initialRequested = new Set<number>();
   private readonly collectionState = new Map<number, CollectionState>();
+  // Made in activate, so it carries no request's actor.
+  private readonly background = new AsyncResource("host-metrics-polls");
 
   constructor(private readonly deps: PollerDeps) {}
 
@@ -246,13 +251,19 @@ export class MetricsPoller {
     };
   }
 
-  private async start(hostId: number, userId: string): Promise<void> {
+  // Polls run here, not in the request that started them: a request's actor
+  // expires soon after the reply in a plugin process.
+  private start(hostId: number, userId: string): Promise<void> {
+    return this.background.runInAsyncScope(() => this.startNow(hostId, userId));
+  }
+
+  private async startNow(hostId: number, userId: string): Promise<void> {
     const host = await this.resolve(hostId, userId);
     this.stop(hostId, false);
     if (!host) return;
     const hasSession = () =>
       !!this.deps.sessions.get(sessionKey(hostId, userId))?.isConnected;
-    if (!supportsMetrics(host, this.ctx.ssh, hasSession)) return;
+    if (!(await supportsMetrics(host, this.ctx.ssh, hasSession))) return;
 
     const settings = await this.settingsFor(hostId);
     if (!settings.metricsEnabled) {
@@ -263,14 +274,15 @@ export class MetricsPoller {
     // Another start for this host may have finished during the awaits above.
     this.polled.get(hostId)?.stop();
     const intervalMs = settings.intervalSeconds * 1000;
-    const stop = this.ctx.schedule.every(
+    // One timer per host, kept in this process: core only runs schedules
+    // listed in the manifest. Spread so a fleet does not fire on the same second.
+    const stop = (this.deps.every ?? everyWithJitter)(
       intervalMs,
+      Math.min(intervalMs * 0.2, 15_000),
       () => {
         const latest = this.polled.get(hostId);
         if (latest) this.schedulePoll(latest.host);
       },
-      // Spread timers so a fleet does not fire on the same second.
-      { jitterMs: Math.min(intervalMs * 0.2, 15_000) },
     );
     this.polled.set(hostId, { host, viewerUserId: userId, stop });
     this.syncConcurrency();
@@ -456,6 +468,7 @@ export class MetricsPoller {
           hostId,
           cpuPercent: metrics.cpu?.percent ?? null,
           memPercent: metrics.memory?.percent ?? null,
+          swapPercent: metrics.swap?.percent ?? null,
           diskPercent: metrics.disk?.percent ?? null,
           netRxBytes: bytes(iface?.rxBytes),
           netTxBytes: bytes(iface?.txBytes),
@@ -472,4 +485,25 @@ export class MetricsPoller {
       });
     }
   }
+}
+
+/** Runs fn every ms, first after a random part of jitterMs. */
+export function everyWithJitter(
+  ms: number,
+  jitterMs: number,
+  fn: () => void,
+): () => void {
+  let interval: NodeJS.Timeout | null = null;
+  const start = setTimeout(
+    () => {
+      interval = setInterval(fn, ms);
+      interval.unref?.();
+    },
+    ms + Math.floor(Math.random() * Math.max(0, jitterMs)),
+  );
+  start.unref?.();
+  return () => {
+    clearTimeout(start);
+    if (interval) clearInterval(interval);
+  };
 }

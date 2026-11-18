@@ -11,6 +11,7 @@ import {
 } from "./helpers.js";
 import type { MetricsLogger } from "./log.js";
 import { sessionKey, type MetricsSessions } from "./sessions.js";
+import { hostKeyRefusalText, isHostKeyRefusal } from "./host-key-refusal.js";
 
 const CONNECT_TIMEOUT_MS = 60_000;
 const TOTP_TTL_MS = 180_000;
@@ -18,7 +19,7 @@ const MAX_TOTP_ATTEMPTS = 3;
 
 export type StartResult =
   | { status: 200; body: Record<string, unknown> }
-  | { status: 400 | 401 | 500; body: Record<string, unknown> };
+  | { status: 400 | 401 | 409 | 500; body: Record<string, unknown> };
 
 export interface InteractiveDeps {
   ssh: PluginSsh;
@@ -42,11 +43,8 @@ function stageForError(message: string): [string, string] {
   if (/authentication/i.test(message)) {
     return ["auth", `Authentication failed: ${message}`];
   }
-  if (message.includes("verification failed")) {
-    return [
-      "handshake",
-      "SSH host key has changed. For security, please open a Terminal connection to this host first to verify and accept the new key fingerprint.",
-    ];
+  if (isHostKeyRefusal(message)) {
+    return ["handshake", hostKeyRefusalText(message)];
   }
   return ["error", `SSH connection failed: ${message}`];
 }
@@ -148,10 +146,13 @@ export async function startInteractive(
 
         client.on(
           "keyboard-interactive",
-          (name, instructions, _lang, prompts, finish) => {
-            const decision = ssh.classifyKeyboardInteractive(
-              { name, instructions, prompts },
-              host,
+          async (name, instructions, _lang, prompts, finish) => {
+            // A handler in a plugin process answers with a Promise.
+            const decision = await Promise.resolve(
+              ssh.classifyKeyboardInteractive(
+                { name, instructions, prompts },
+                host,
+              ),
             );
             if (decision.kind !== "totp") {
               finish(ssh.autoResponses(prompts, host.password));
@@ -313,7 +314,8 @@ export async function startInteractive(
       ),
     );
     return {
-      status: 500,
+      // Not a server fault: the user has to trust the host in a terminal first.
+      status: isHostKeyRefusal(message) ? 409 : 500,
       body: {
         error: message || "Failed to start metrics collection",
         connectionLogs: logs,

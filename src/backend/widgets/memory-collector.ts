@@ -4,6 +4,7 @@ import {
   type HostPlatform,
 } from "@termix-ssh/plugin-sdk/host-commands";
 import { toFixedNum, kibToGiB } from "../util.js";
+import { ARC_SCRIPT, splitArc } from "./zfs-arc.js";
 import type { Client } from "ssh2";
 
 async function collectDarwinMemoryMetrics(client: Client): Promise<{
@@ -116,6 +117,8 @@ export async function collectMemoryMetrics(
   percent: number | null;
   usedGiB: number | null;
   totalGiB: number | null;
+  /** Reclaimable ZFS ARC, left out of usedGiB. */
+  arcKb?: number;
 }> {
   if (platform === "darwin") {
     return collectDarwinMemoryMetrics(client);
@@ -127,10 +130,15 @@ export async function collectMemoryMetrics(
   let memPercent: number | null = null;
   let usedGiB: number | null = null;
   let totalGiB: number | null = null;
+  let arcKb = 0;
 
   try {
-    const memInfo = await execCommand(client, "cat /proc/meminfo");
-    const lines = memInfo.stdout.split("\n");
+    const memInfo = await execCommand(
+      client,
+      `cat /proc/meminfo; ${ARC_SCRIPT}`,
+    );
+    const { rest, arcBytes } = splitArc(memInfo.stdout);
+    const lines = rest.split("\n");
     const getVal = (key: string) => {
       const line = lines.find((l) => l.startsWith(key));
       if (!line) return null;
@@ -146,7 +154,8 @@ export async function collectMemoryMetrics(
       availKb >= 0 &&
       availKb <= totalKb
     ) {
-      const usedKb = totalKb - availKb;
+      arcKb = Math.min(Math.floor(arcBytes / 1024), totalKb - availKb);
+      const usedKb = totalKb - availKb - arcKb;
       memPercent = Math.max(0, Math.min(100, (usedKb / totalKb) * 100));
       usedGiB = kibToGiB(usedKb);
       totalGiB = kibToGiB(totalKb);
@@ -155,11 +164,13 @@ export async function collectMemoryMetrics(
     memPercent = null;
     usedGiB = null;
     totalGiB = null;
+    arcKb = 0;
   }
 
   return {
     percent: toFixedNum(memPercent, 0),
     usedGiB: usedGiB != null ? toFixedNum(usedGiB, 2) : null,
     totalGiB: totalGiB ? toFixedNum(totalGiB, 2) : null,
+    ...(arcKb > 0 && { arcKb }),
   };
 }

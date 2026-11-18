@@ -1,4 +1,5 @@
 import type * as HostScripts from "@termix-ssh/plugin-sdk/host-scripts";
+import type { SwapMetrics } from "./swap.js";
 import type { GpuMetrics, FirewallMetrics } from "./stats-widgets.js";
 
 /** What GET /metrics/:id answers. */
@@ -24,6 +25,8 @@ interface MemoryMetrics {
   cachedGiB?: number;
   /** Completely unused memory, from the live sample. */
   freeGiB?: number;
+  /** Reclaimable ZFS ARC in KiB, counted as cache instead of used. */
+  arcKb?: number;
 }
 
 export interface DiskFilesystem {
@@ -163,6 +166,7 @@ export type { FirewallChain } from "./stats-widgets.js";
  * GPU also get its readings and when they were taken (ms since epoch).
  */
 export type LiveSample = HostScripts.LiveSample & {
+  swap?: SwapMetrics | null;
   gpu?: GpuMetrics;
   gpuAt?: number;
 };
@@ -170,6 +174,7 @@ export type LiveSample = HostScripts.LiveSample & {
 export type ServerMetrics = {
   cpu: CpuMetrics;
   memory: MemoryMetrics;
+  swap?: SwapMetrics | null;
   disk: DiskMetrics;
   network?: { interfaces?: NetworkInterface[] };
   uptime?: { seconds?: number | null; formatted?: string | null };

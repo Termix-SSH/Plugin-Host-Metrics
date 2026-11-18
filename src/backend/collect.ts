@@ -9,6 +9,7 @@ import type { PluginSsh } from "@termix-ssh/plugin-sdk/backend";
 import { detectHostPlatform } from "@termix-ssh/plugin-sdk/host-commands";
 import { collectCpuMetrics } from "./widgets/cpu-collector.js";
 import { collectMemoryMetrics } from "./widgets/memory-collector.js";
+import { collectSwapMetrics } from "./widgets/swap-collector.js";
 import { collectDiskMetrics } from "./widgets/disk-collector.js";
 import { collectNetworkMetrics } from "./widgets/network-collector.js";
 import { collectUptimeMetrics } from "./widgets/uptime-collector.js";
@@ -28,6 +29,7 @@ import {
 import { sessionKey, type MetricsSessions } from "./sessions.js";
 import type { MetricsState } from "./state.js";
 import type { CollectorRegistry } from "./collectors.js";
+import type { MetricsLogger } from "./log.js";
 import {
   collectRouterOsMetrics,
   isKnownRouterOs,
@@ -38,7 +40,9 @@ export function isHostKeyVerificationError(error: unknown): boolean {
   return (
     error instanceof Error &&
     (error.message.includes("Host denied (verification failed)") ||
-      error.message.includes("Host key changed"))
+      error.message.includes("Host key changed") ||
+      // What core says since 26.11.2.
+      /host's key (is not trusted yet|has changed)/i.test(error.message))
   );
 }
 
@@ -46,6 +50,7 @@ export type CollectedMetrics = {
   cpu: Awaited<ReturnType<typeof collectCpuMetrics>> & ServerMetrics["cpu"];
   memory: Awaited<ReturnType<typeof collectMemoryMetrics>> &
     ServerMetrics["memory"];
+  swap?: ServerMetrics["swap"];
   disk: Awaited<ReturnType<typeof collectDiskMetrics>> & ServerMetrics["disk"];
   network: Awaited<ReturnType<typeof collectNetworkMetrics>> &
     ServerMetrics["network"];
@@ -62,6 +67,7 @@ export type CollectedMetrics = {
 };
 
 export interface CollectDeps {
+  log: MetricsLogger;
   ssh: PluginSsh;
   state: MetricsState;
   sessions: MetricsSessions;
@@ -93,7 +99,9 @@ export async function collectMetrics(
 ): Promise<CollectedMetrics> {
   const { ssh, state, sessions, collectors } = deps;
   const key = sessionKey(host.id, host.userId);
-  if (!supportsMetrics(host, ssh, () => !!sessions.get(key)?.isConnected)) {
+  if (
+    !(await supportsMetrics(host, ssh, () => !!sessions.get(key)?.isConnected))
+  ) {
     throw new Error("Metrics collection only supported for SSH hosts");
   }
 
@@ -136,6 +144,7 @@ export async function collectMetrics(
             state.rateSamples.cpu,
           ),
           memory: await collectMemoryMetrics(client, platform),
+          swap: await collectSwapMetrics(client, platform, deps.log),
           disk: await collectDiskMetrics(
             client,
             mounts.excludedMounts,
@@ -198,7 +207,7 @@ export async function collectMetrics(
           ),
         );
 
-        const extra = await collectors.run(client, host.id, host.userId);
+        const extra = await collectors.run(host.id, host.userId);
         if (Object.keys(extra).length > 0) result.extra = extra;
 
         state.metricsCache.set(host.id, result);

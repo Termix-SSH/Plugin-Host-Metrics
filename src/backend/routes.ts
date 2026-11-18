@@ -172,7 +172,7 @@ export function registerRoutes(router: Router, deps: RouteDeps): void {
    * /plugin-api/host-metrics/metrics/{id}:
    *   get:
    *     summary: Get host metrics
-   *     description: Returns the latest sample for a host, including CPU, memory, disk, network, processes and system information.
+   *     description: Returns the latest sample for a host, including CPU, memory, swap (Linux), disk, network, processes and system information.
    *     tags:
    *       - Host Metrics
    *     parameters:
@@ -223,6 +223,8 @@ export function registerRoutes(router: Router, deps: RouteDeps): void {
    *         description: The host needs a sign-in step first.
    *       404:
    *         description: Host not found.
+   *       409:
+   *         description: The host key is not trusted yet or has changed.
    *       500:
    *         description: Failed to start metrics collection.
    */
@@ -432,7 +434,7 @@ export function registerRoutes(router: Router, deps: RouteDeps): void {
       if (!host) return skipped("host_not_found");
       const hasSession = () =>
         !!sessions.get(sessionKey(hostId, userId))?.isConnected;
-      if (!supportsMetrics(host, ctx.ssh, hasSession))
+      if (!(await supportsMetrics(host, ctx.ssh, hasSession)))
         return skipped("metrics_unsupported");
       if (!(await poller.settingsFor(hostId)).metricsEnabled) {
         return skipped("metrics_disabled");
@@ -497,7 +499,7 @@ export function registerRoutes(router: Router, deps: RouteDeps): void {
    * /plugin-api/host-metrics/metrics/history/{id}:
    *   get:
    *     summary: Get metrics history
-   *     description: Returns stored CPU, memory, disk and network samples for a host over a range.
+   *     description: Returns stored CPU, memory, swap, disk and network samples for a host over a range. swap_percent is null for older samples, unavailable readings and hosts with no swap.
    *     tags:
    *       - Host Metrics
    *     parameters:
@@ -568,6 +570,7 @@ export function registerRoutes(router: Router, deps: RouteDeps): void {
         ts: row.ts,
         cpu_percent: row.cpuPercent,
         mem_percent: row.memPercent,
+        swap_percent: row.swapPercent ?? null,
         disk_percent: row.diskPercent,
         net_rx_bytes: row.netRxBytes,
         net_tx_bytes: row.netTxBytes,
@@ -663,6 +666,8 @@ export function registerRoutes(router: Router, deps: RouteDeps): void {
    *             properties:
    *               slots:
    *                 type: array
+   *                 items:
+   *                   type: object
    *               columns:
    *                 type: integer
    *     responses:

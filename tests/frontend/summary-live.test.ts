@@ -57,12 +57,12 @@ describe("useMetricsSummary live overlay", () => {
     const { result } = renderHook(() => useMetricsSummary(store, 7));
     expect(result.current?.cpu.percent).toBe(66);
     expect(result.current?.memory.percent).toBe(50);
-    expect(mocks.calls.at(-1)).toEqual([7, true, 5000]);
+    expect(mocks.calls.at(-1)).toEqual([7, true, 10000]);
   });
 
   it("does not poll live when the caller needs no live field or the host is offline", () => {
     renderHook(() => useMetricsSummary(store, 7, false));
-    expect(mocks.calls[0]).toEqual([7, false, 5000]);
+    expect(mocks.calls[0]).toEqual([7, false, 10000]);
   });
 
   it("does not poll live when no host is shown", () => {

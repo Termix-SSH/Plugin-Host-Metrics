@@ -12,7 +12,8 @@ const COLLECTORS_SERVICE = "host-metrics.collectors";
  * collector that throws is skipped for that sample.
  */
 export interface MetricsCollectorV1 {
-  collect: (client: Client, hostId: number) => Promise<unknown>;
+  /** Collectors run in their own process, so they connect to the host themselves. */
+  collect: (hostId: number) => Promise<unknown>;
 }
 
 export class CollectorRegistry {
@@ -22,20 +23,19 @@ export class CollectorRegistry {
   ) {}
 
   async run(
-    client: Client,
     hostId: number,
     ownerUserId: string,
   ): Promise<Record<string, unknown>> {
     const results: Record<string, unknown> = {};
-    for (const provider of this.services.providers(COLLECTORS_SERVICE)) {
+    for (const provider of await this.services.providers(COLLECTORS_SERVICE)) {
       if (!provider) continue;
       try {
-        const collector = this.services.get<Partial<MetricsCollectorV1>>(
+        const collector = await this.services.get<Partial<MetricsCollectorV1>>(
           COLLECTORS_SERVICE,
           { provider, userId: ownerUserId },
         );
         if (typeof collector.collect !== "function") continue;
-        results[provider] = await collector.collect(client, hostId);
+        results[provider] = await collector.collect(hostId);
       } catch (error) {
         this.log.debug(`Metrics collector ${provider} failed`, {
           hostId,

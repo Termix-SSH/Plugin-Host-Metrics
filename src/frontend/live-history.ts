@@ -5,7 +5,7 @@ import type { MetricCardHistories } from "./cards";
 export const LIVE_POINTS = 60;
 
 export function emptyHistories(): MetricCardHistories {
-  return { cpu: [], memory: [], disk: [], ts: [], gpu: {} };
+  return { cpu: [], memory: [], swap: [], disk: [], ts: [], gpu: {} };
 }
 
 /**
@@ -26,6 +26,7 @@ export function pushLive(
     ...prev,
     cpu: add(prev.cpu, data.cpu?.percent ?? null),
     memory: add(prev.memory, data.memory?.percent ?? null),
+    swap: add(prev.swap ?? [], data.swap?.percent ?? null),
     disk: add(prev.disk, data.disk?.percent ?? null),
     ts: add(prev.ts, stamp),
   };

@@ -333,6 +333,18 @@ function HostMetricsInner({
     }));
   }, []);
 
+  // Polls that land while the tab is hidden wait here until it shows again.
+  const visibleRef = React.useRef(isVisible);
+  const heldRef = React.useRef<ServerMetrics[]>([]);
+  React.useEffect(() => {
+    visibleRef.current = isVisible;
+    if (!isVisible || heldRef.current.length === 0) return;
+    const held = heldRef.current;
+    heldRef.current = [];
+    setMetrics(held[held.length - 1]);
+    held.forEach((data) => pushHistory(data));
+  }, [isVisible, pushHistory]);
+
   const handleTOTPSubmit = async (totpCode: string) => {
     if (!totpSessionId || !currentHostConfig) return;
     try {
@@ -468,8 +480,14 @@ function HostMetricsInner({
         const nextSignature = metricsChangeKey(next);
         const changed = nextSignature !== signature;
         signature = nextSignature;
-        setMetrics(next);
-        pushHistory(next);
+        // A hidden tab keeps polling but does not redraw: every card render
+        // shares a thread with the tab in front.
+        if (visibleRef.current) {
+          setMetrics(next);
+          pushHistory(next);
+        } else {
+          heldRef.current = [...heldRef.current, next].slice(-HISTORY_LEN);
+        }
         return changed;
       },
       {

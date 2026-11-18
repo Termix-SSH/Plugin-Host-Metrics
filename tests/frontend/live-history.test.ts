@@ -11,6 +11,19 @@ const reading = (cpu: number | null) =>
   }) as unknown as ServerMetrics;
 
 describe("pushLive", () => {
+  it("keeps zero usage and missing/no-swap readings distinct in the swap series", () => {
+    const swap = {
+      totalBytes: 1024,
+      usedBytes: 0,
+      freeBytes: 1024,
+      percent: 0,
+    };
+    let h = pushLive(emptyHistories(), { ...reading(0), swap }, 0);
+    h = pushLive(h, { ...reading(0), swap: { ...swap, percent: 25 } }, 1000);
+    h = pushLive(h, { ...reading(0), swap: null }, 2000);
+    expect(h.swap).toEqual([0, 25, null]);
+    expect(h.swap).toHaveLength(h.ts.length);
+  });
   it("adds a timed point per reading and keeps the newest ones", () => {
     let h = emptyHistories();
     for (let i = 0; i < 5; i++) h = pushLive(h, reading(i), 1000 * i, 3);

@@ -40,6 +40,41 @@ describe("startInteractive with an encrypted key", () => {
   });
 });
 
+describe("startInteractive on a host whose key is refused", () => {
+  const host = { id: 7, ip: "h", port: 22, username: "u" } as never;
+  const run = (message: string) =>
+    startInteractive(
+      {
+        ssh: {
+          prepare: vi.fn(async () => ({
+            config: {},
+            outcome: { status: "ready" },
+          })),
+          openTransport: vi.fn(async () => {
+            throw new Error(message);
+          }),
+        } as unknown as PluginSsh,
+        sessions: { get: () => undefined } as never,
+        log: { info: vi.fn(), warn: vi.fn(), error: vi.fn() } as never,
+        registerViewer: vi.fn(),
+      },
+      host,
+      "user",
+    );
+
+  it("answers 409 with what to do, not a server error", async () => {
+    const message =
+      "This host's key is not trusted yet. Open a terminal to the host once to check and trust it.";
+    const result = await run(message);
+    expect(result.status).toBe(409);
+    expect(result.body.error).toBe(message);
+  });
+
+  it("keeps 500 for other failures", async () => {
+    expect((await run("connect ECONNREFUSED")).status).toBe(500);
+  });
+});
+
 describe("startInteractive through a jump host", () => {
   it("returns requires_totp when a jump host asks for a code", async () => {
     let answer: Promise<string | null> | null = null;

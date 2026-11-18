@@ -6,7 +6,7 @@ import { liveIntervalMs, mergeLive, useLiveMetrics } from "./live-metrics";
 
 const REFRESH_MS = 30_000;
 // A dashboard can list many hosts, so its rows follow the live sample more slowly than the tab does.
-const SUMMARY_LIVE_MIN_MS = 5_000;
+const SUMMARY_LIVE_MIN_MS = 10_000;
 // Each live row holds an SSH connection, so the rest stay on the 30 second sample.
 const SUMMARY_LIVE_MAX_HOSTS = 6;
 

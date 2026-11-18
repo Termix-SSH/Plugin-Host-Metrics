@@ -70,7 +70,7 @@ export function TemperatureCard({
             <Select2
               value={preferredSensor?.label ?? ""}
               onChange={(event) => chooseSensor(event.target.value)}
-              className="h-8 border border-border bg-background px-2 text-xs text-foreground outline-none focus:ring-1 focus:ring-ring"
+              className="h-8 border border-border bg-(--field) px-2 text-xs text-foreground outline-none focus:ring-1 focus:ring-ring"
             >
               <option value="">{t("hostMetrics.highestTemperature")}</option>
               {sensors.map((sensor) => (

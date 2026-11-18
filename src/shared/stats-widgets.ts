@@ -1,6 +1,7 @@
 export type WidgetType =
   | "cpu"
   | "memory"
+  | "swap"
   | "disk"
   | "network"
   | "uptime"

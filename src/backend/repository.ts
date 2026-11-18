@@ -61,6 +61,7 @@ export interface MetricsHistoryInput {
   hostId: number;
   cpuPercent: number | null;
   memPercent: number | null;
+  swapPercent?: number | null;
   diskPercent: number | null;
   netRxBytes: number | null;
   netTxBytes: number | null;
@@ -70,6 +71,7 @@ export interface MetricsHistoryRow {
   ts: string;
   cpuPercent: number | null;
   memPercent: number | null;
+  swapPercent?: number | null;
   diskPercent: number | null;
   netRxBytes: number | null;
   netTxBytes: number | null;
@@ -463,6 +465,7 @@ export async function createHostMetricsRepository(db: PluginDatabase) {
           ts: history.ts,
           cpuPercent: history.cpuPercent,
           memPercent: history.memPercent,
+          swapPercent: history.swapPercent,
           diskPercent: history.diskPercent,
           netRxBytes: history.netRxBytes,
           netTxBytes: history.netTxBytes,

@@ -11,6 +11,7 @@ import type {
   AdapterDetails,
   ServerMetrics,
 } from "../../shared/metrics.js";
+import { ARC_SCRIPT, parseArcReclaimableBytes } from "./zfs-arc.js";
 
 export type PerformanceGroup = "cpu" | "memory" | "disk" | "network";
 export const HARDWARE_REFRESH_MS = 5 * 60_000;
@@ -23,7 +24,8 @@ printf '\\n@@FREQ\\n'; cat /sys/devices/system/cpu/cpu0/cpufreq/base_frequency 2
 printf '\\n@@UPTIME\\n'; cat /proc/uptime 2>/dev/null
 printf '\\n@@COUNTS\\n'; ps -e -o nlwp= 2>/dev/null | awk '{p++; t+=$1} END {if(p) print p,t}'
 printf '\\n@@HANDLES\\n'; cat /proc/sys/fs/file-nr 2>/dev/null`,
-  memory: `printf '\\n@@MEM\\n'; cat /proc/meminfo 2>/dev/null`,
+  memory: `printf '\\n@@MEM\\n'; cat /proc/meminfo 2>/dev/null
+${ARC_SCRIPT}`,
   disk: `printf '\\n@@BLOCK\\n'; LC_ALL=C lsblk -b -J -o NAME,TYPE,SIZE,MODEL,ROTA,TRAN 2>/dev/null
 printf '\\n@@DISKSTATS\\n'; cat /proc/diskstats 2>/dev/null
 printf '\\n@@DISKUPTIME\\n'; cat /proc/uptime 2>/dev/null`,
@@ -513,12 +515,16 @@ export function parsePerformance(
         const p = line.match(/^(\w+):\s+(\d+)\s+kB/);
         if (p) vals[p[1]] = Number(p[2]) * 1024;
       }
-      m.availableBytes = vals.MemAvailable ?? null;
+      const arc = s.ARC ? (parseArcReclaimableBytes(s.ARC) ?? 0) : 0;
+      m.availableBytes =
+        vals.MemAvailable != null
+          ? Math.min(vals.MemTotal ?? Infinity, vals.MemAvailable + arc)
+          : null;
       m.committedBytes = vals.Committed_AS ?? null;
       m.commitLimitBytes = vals.CommitLimit ?? null;
       m.cachedBytes =
         vals.Cached != null && vals.Buffers != null
-          ? vals.Cached + vals.Buffers
+          ? vals.Cached + vals.Buffers + arc
           : null;
       m.reclaimableSlabBytes = vals.SReclaimable ?? null;
       m.unreclaimableSlabBytes = vals.SUnreclaim ?? null;

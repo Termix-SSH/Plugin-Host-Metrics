@@ -19,6 +19,7 @@ export interface MetricsHistoryRow {
   ts: string;
   cpu_percent: number | null;
   mem_percent: number | null;
+  swap_percent?: number | null;
   disk_percent: number | null;
   net_rx_bytes: number | null;
   net_tx_bytes: number | null;

@@ -5,13 +5,15 @@ type Row = Array<number | null | undefined>;
 type Last = Array<number | null>;
 
 const ease = (t: number) => 1 - (1 - t) ** 3;
+/** Frames per second while a point glides in. Low, since every frame redraws each chart. */
+const FPS = 20;
 
 // All charts share one frame request, including hosts with many logical cores.
 const pending = new Set<() => void>();
 let frame: number | undefined;
 let lastFrame = 0;
 function flush(now: number) {
-  if (now - lastFrame < 1000 / 30) {
+  if (now - lastFrame < 1000 / FPS) {
     frame = requestAnimationFrame(flush);
     return;
   }
@@ -48,9 +50,10 @@ export function tweenLast(rows: Row[], from: Last, progress: number): Row[] {
 
 /**
  * The SDK charts redraw instantly, so the newest point glides in from the last
- * one instead. Frames are capped near 30 fps so many charts stay cheap.
+ * one instead, briefly and at a low frame rate, so many charts stay cheap
+ * (each tile is its own frame, and Firefox runs them all on one thread).
  */
-export function useSmoothSeries(rows: Row[], durationMs = 800): Row[] {
+export function useSmoothSeries(rows: Row[], durationMs = 300): Row[] {
   const signature = JSON.stringify(rows);
   const [out, setOut] = useState(rows);
   const shown = useRef(rows);

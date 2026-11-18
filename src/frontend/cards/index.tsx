@@ -7,6 +7,7 @@ import {
 import type { ComponentType, ReactNode } from "react";
 import { CpuCard } from "./CpuCard";
 import { MemoryCard } from "./MemoryCard";
+import { SwapCard } from "./SwapCard";
 import { DiskCard } from "./DiskCard";
 import { NetworkCard } from "./NetworkCard";
 import { UptimeCard } from "./UptimeCard";
@@ -29,6 +30,7 @@ export interface MetricCardHistories {
   ts: string[];
   cpu: Array<number | null>;
   memory: Array<number | null>;
+  swap?: Array<number | null>;
   disk: Array<number | null>;
   gpu: GpuHistories;
 }
@@ -75,7 +77,7 @@ function historyCard(
   id: HostMetricsCardId,
   labelKey: string,
   Comp: HistoryMetricCard,
-  series: "cpu" | "memory" | "disk",
+  series: "cpu" | "memory" | "swap" | "disk",
 ): CardDefinition {
   return {
     id,
@@ -84,7 +86,7 @@ function historyCard(
     render: ({ metrics, histories, hostId }) => (
       <Comp
         metrics={metrics}
-        history={histories[series]}
+        history={histories[series] ?? []}
         timestamps={histories.ts}
         hostId={hostId}
       />
@@ -116,6 +118,7 @@ export const CARD_DEFINITIONS: Record<string, CardDefinition> = {
     "memory",
   ),
   disk: historyCard("disk", "hostMetrics.diskUsage", DiskCard, "disk"),
+  swap: historyCard("swap", "hostMetrics.swapUsage", SwapCard, "swap"),
   network: metricCard("network", "hostMetrics.networkInterfaces", NetworkCard),
   uptime: metricCard("uptime", "hostMetrics.uptime", UptimeCard),
   system: metricCard("system", "hostMetrics.systemInfo", SystemCard),
