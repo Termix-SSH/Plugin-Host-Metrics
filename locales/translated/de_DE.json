@@ -327,6 +327,9 @@
     "metricsIntervalS": "Metriken-Intervall (s)",
     "metricsIntervalDesc2": "Sekunden zwischen Metriken-Snapshots",
     "excludedMountsLabel": "Ausgeschlossene Mounts",
+    "defaultMountLabel": "Haupt-Mount",
+    "defaultMountDesc": "Der Mount, der auf der Disk-Karte und den Dashboards zuerst angezeigt wird. Leer lassen, um / oder den Mount mit dem meisten freien Speicher zu verwenden.",
+    "defaultMountPlaceholder": "/share/ZFS25_DATA",
     "monitoredMountsLabel": "Benutzerdefinierte überwachte Pfade",
     "monitoredMountsDesc": "Fügen Sie Pfade hinzu, die nicht als separate Mounts angezeigt werden, einschließlich bind-mounteter Home Assistant-Pfade wie /config.",
     "monitoredMountPathPlaceholder": "Pfad (/config, /mnt/data)",
@@ -463,6 +466,9 @@
       },
       "monitoredMounts": {
         "label": "Überwachte Pfade"
+      },
+      "defaultMount": {
+        "label": "Haupt-Mount"
       },
       "showPanel": {
         "label": "Metriken-Panel in Terminals anzeigen"

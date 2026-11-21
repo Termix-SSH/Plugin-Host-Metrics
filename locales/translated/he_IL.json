@@ -328,6 +328,9 @@
     "metricsIntervalS": "רווח מדדים (שניות)",
     "metricsIntervalDesc2": "שניות בין צילומי מצב של מדדים",
     "excludedMountsLabel": "חיבורים מופרים",
+    "defaultMountLabel": "התקנה ראשית",
+    "defaultMountDesc": "ההתקנה שמוצגת ראשונה בכרטיס הדיסק ובלוחות המחוונים. השאר ריק כדי להשתמש ב-/ או בהתקנה עם הכי הרבה מקום פנוי.",
+    "defaultMountPlaceholder": "/share/ZFS25_DATA",
     "monitoredMountsLabel": "נתיבי ניטור מותאמים אישית",
     "monitoredMountsDesc": "הוסף נתיבים שאינם חשופים כחיבורים נפרדים, כולל נתיבי Home Assistant מחוברים כמו /config.",
     "monitoredMountPathPlaceholder": "נתיב (/config, /mnt/data)",
@@ -464,6 +467,9 @@
       },
       "monitoredMounts": {
         "label": "נתיבים מנטרים"
+      },
+      "defaultMount": {
+        "label": "התקנה ראשית"
       },
       "showPanel": {
         "label": "הצג פאנל מדדים בטרמינלים"

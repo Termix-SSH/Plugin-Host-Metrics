@@ -327,6 +327,9 @@
     "metricsIntervalS": "Metriikkaväli (s)",
     "metricsIntervalDesc2": "Sekunteja metriikkakuvien välillä",
     "excludedMountsLabel": "Poissuljetut liitospisteet",
+    "defaultMountLabel": "Pääasiallinen liitoskohta",
+    "defaultMountDesc": "Liitoskohta, jonka levykortti ja kojelaudat näyttävät ensimmäisenä. Jätä tyhjäksi käyttääksesi / tai täydetöntä liitoskohtaa.",
+    "defaultMountPlaceholder": "/share/ZFS25_DATA",
     "monitoredMountsLabel": "Mukautetut seurattavat polut",
     "monitoredMountsDesc": "Lisää polkuja, jotka eivät ole erillisiä liitospisteitä, mukaan lukien Home Assistantin bind-mount-polkuja kuten /config.",
     "monitoredMountPathPlaceholder": "Polku (/config, /mnt/data)",
@@ -463,6 +466,9 @@
       },
       "monitoredMounts": {
         "label": "Valvotut polut"
+      },
+      "defaultMount": {
+        "label": "Pääasiallinen liitoskohta"
       },
       "showPanel": {
         "label": "Näytä mittaripaneeli terminaaleissa"

@@ -326,6 +326,9 @@
     "metricsIntervalS": "Selang Metrik (s)",
     "metricsIntervalDesc2": "Saat antara tangkapan metrik",
     "excludedMountsLabel": "Pemasangan Dikecualikan",
+    "defaultMountLabel": "Pemasangan utama",
+    "defaultMountDesc": "Pemasangan yang dipaparkan pertama oleh kad cakera dan papan pemuka. Biarkan kosong untuk menggunakan / atau pemasangan dengan ruang paling banyak.",
+    "defaultMountPlaceholder": "/share/ZFS25_DATA",
     "monitoredMountsLabel": "Laluan dipantau tersuai",
     "monitoredMountsDesc": "Tambah laluan yang tidak terdedah sebagai pemasangan berasingan, termasuk laluan Home Assistant yang dipasang ikatan seperti /config.",
     "monitoredMountPathPlaceholder": "Laluan (/config, /mnt/data)",
@@ -462,6 +465,9 @@
       },
       "monitoredMounts": {
         "label": "Laluan yang dipantau"
+      },
+      "defaultMount": {
+        "label": "Pemasangan utama"
       },
       "showPanel": {
         "label": "Paparkan panel metrik dalam terminal"

@@ -326,6 +326,9 @@
     "metricsIntervalS": "指標間隔（秒）",
     "metricsIntervalDesc2": "指標快照之間的秒數",
     "excludedMountsLabel": "排除的掛載點",
+    "defaultMountLabel": "主要掛載點",
+    "defaultMountDesc": "磁碟卡片與儀表板會優先顯示的掛載點。留空則使用 / 或空間最充足的掛載點。",
+    "defaultMountPlaceholder": "/share/ZFS25_DATA",
     "monitoredMountsLabel": "自訂監控路徑",
     "monitoredMountsDesc": "新增未顯示為獨立掛載點的路徑，包括 Home Assistant 的綁定掛載路徑（例如 /config）。",
     "monitoredMountPathPlaceholder": "路徑（/config、/mnt/data）",
@@ -462,6 +465,9 @@
       },
       "monitoredMounts": {
         "label": "監控路徑"
+      },
+      "defaultMount": {
+        "label": "主要掛載點"
       },
       "showPanel": {
         "label": "在終端機中顯示效能面板"

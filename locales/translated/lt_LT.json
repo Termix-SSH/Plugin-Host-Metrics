@@ -329,6 +329,9 @@
     "metricsIntervalS": "Metrikų intervalas (s)",
     "metricsIntervalDesc2": "Sekundės tarp metrikų momentinių vaizdų",
     "excludedMountsLabel": "Išimtos montavimo vietos",
+    "defaultMountLabel": "Pagrindinis prijungimas",
+    "defaultMountDesc": "Prijungimas, kuris pirmiausia rodomas disko kortelėje ir skydeliuose. Palikite tuščią, kad būtų naudojama / arba pilniausias prijungimas.",
+    "defaultMountPlaceholder": "/share/ZFS25_DATA",
     "monitoredMountsLabel": "Pritaikytos stebimos vietos",
     "monitoredMountsDesc": "Pridėkite kelius, kurie nėra rodomi kaip atskiros montavimo vietos, įskaitant Home Assistant kelius, tokius kaip /config.",
     "monitoredMountPathPlaceholder": "Kelias (/config, /mnt/data)",
@@ -465,6 +468,9 @@
       },
       "monitoredMounts": {
         "label": "Stebimi keliai"
+      },
+      "defaultMount": {
+        "label": "Pagrindinis prijungimas"
       },
       "showPanel": {
         "label": "Rodyti metrikų skydelį terminaluose"

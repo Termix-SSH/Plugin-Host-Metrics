@@ -329,6 +329,9 @@
     "metricsIntervalS": "Интервал метрик (с)",
     "metricsIntervalDesc2": "Секунды между снимками метрик",
     "excludedMountsLabel": "Исключенные точки монтирования",
+    "defaultMountLabel": "Основной раздел",
+    "defaultMountDesc": "Раздел, который отображается первым на карточке диска и в панелях мониторинга. Оставьте пустым, чтобы использовать / или раздел с наибольшим свободным местом.",
+    "defaultMountPlaceholder": "/share/ZFS25_DATA",
     "monitoredMountsLabel": "Пользовательские пути для мониторинга",
     "monitoredMountsDesc": "Добавьте пути, которые не отображаются как отдельные точки монтирования, включая пути Home Assistant, смонтированные через bind, например /config.",
     "monitoredMountPathPlaceholder": "Путь (/config, /mnt/data)",
@@ -465,6 +468,9 @@
       },
       "monitoredMounts": {
         "label": "Мониторимые пути"
+      },
+      "defaultMount": {
+        "label": "Основной раздел"
       },
       "showPanel": {
         "label": "Показывать панель метрик в терминалах"

@@ -409,12 +409,9 @@ function HostMetricsInner({
 
   /** Resolves false when it stopped to ask the person for something. */
   const fetchMetrics = React.useCallback(async (): Promise<boolean> => {
+    // The server decides if metrics can run: a shared host's own auth type
+    // says nothing about the login this person's folder credentials give it.
     if (!currentHostConfig?.id) return false;
-    if (currentHostConfig.authType === "none") {
-      toast.error(t("hostMetrics.noneAuthNotSupported"));
-      if (currentTab !== null) removeTab(currentTab);
-      throw new Error(t("hostMetrics.noneAuthNotSupported"));
-    }
 
     if (!totpVerified) {
       addLog({

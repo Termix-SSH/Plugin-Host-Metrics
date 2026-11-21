@@ -328,6 +328,9 @@
     "metricsIntervalS": "Interval Metrici (s)",
     "metricsIntervalDesc2": "Secunde între instantaneele de metrici",
     "excludedMountsLabel": "Puncte de montare excluse",
+    "defaultMountLabel": "Montare principală",
+    "defaultMountDesc": "Montarea afișată prima dată pe cardul de disc și pe panourile de control. Lăsați gol pentru a folosi / sau montarea cu cel mai mult spațiu liber.",
+    "defaultMountPlaceholder": "/share/ZFS25_DATA",
     "monitoredMountsLabel": "Căi monitorizate personalizate",
     "monitoredMountsDesc": "Adaugă căi care nu sunt expuse ca puncte de montare separate, inclusiv căile Home Assistant montate prin bind, cum ar fi /config.",
     "monitoredMountPathPlaceholder": "Cale (/config, /mnt/data)",
@@ -464,6 +467,9 @@
       },
       "monitoredMounts": {
         "label": "Căi monitorizate"
+      },
+      "defaultMount": {
+        "label": "Montare principală"
       },
       "showPanel": {
         "label": "Afișează panoul de metrici în terminale"

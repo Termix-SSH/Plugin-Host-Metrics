@@ -327,6 +327,9 @@
     "metricsIntervalS": "Διάστημα Μετρικών (δλ.)",
     "metricsIntervalDesc2": "Δευτερόλεπτα μεταξύ στιγμιότυπων μετρικών",
     "excludedMountsLabel": "Εξαιρούμενες Σημεία Σύνδεσης",
+    "defaultMountLabel": "Κύρια σύνδεση",
+    "defaultMountDesc": "Η σύνδεση που εμφανίζεται πρώτη στην κάρτα δίσκου και στα πίνακες ελέγχου. Αφήστε κενό για να χρησιμοποιηθεί το / ή η σύνδεση με τον περισσότερο ελεύθερο χώρο.",
+    "defaultMountPlaceholder": "/share/ZFS25_DATA",
     "monitoredMountsLabel": "Προσαρμοσμένες παρακολουθούμενες διαδρομές",
     "monitoredMountsDesc": "Προσθήκη διαδρομών που δεν εκτίθενται ως ξεχωριστά σημεία σύνδεσης, συμπεριλαμβανομένων των διαδρομών Home Assistant που έχουν συνδεθεί όπως το /config.",
     "monitoredMountPathPlaceholder": "Διαδρομή (/config, /mnt/data)",
@@ -463,6 +466,9 @@
       },
       "monitoredMounts": {
         "label": "Μονιτοριζόμενες διαδρομές"
+      },
+      "defaultMount": {
+        "label": "Κύρια σύνδεση"
       },
       "showPanel": {
         "label": "Εμφάνιση πίνακα μετρήσεων στους τερματικούς"

@@ -185,3 +185,24 @@ describe("HostMetricsTab coming back from the background", () => {
     },
   );
 });
+
+describe("HostMetricsTab on a shared host", () => {
+  it(
+    "leaves the login to the server when the host's own auth type is none",
+    { timeout: 15_000 },
+    async () => {
+      // The person's folder credentials apply on the server, not here.
+      render(<HostMetricsTab hostConfig={{ ...HOST, authType: "none" }} />);
+      await waitFor(() => expect(api.startMetrics).toHaveBeenCalled(), {
+        timeout: 3000,
+      });
+      expect(
+        await screen.findByRole(
+          "figure",
+          { name: "hostMetrics.gpu.memory" },
+          { timeout: 5000 },
+        ),
+      ).toBeInTheDocument();
+    },
+  );
+});

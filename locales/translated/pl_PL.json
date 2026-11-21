@@ -329,6 +329,9 @@
     "metricsIntervalS": "Interwał metryk (s)",
     "metricsIntervalDesc2": "Sekundy między migawkami metryk",
     "excludedMountsLabel": "Wykluczone punkty montowania",
+    "defaultMountLabel": "Główny montaż",
+    "defaultMountDesc": "Montaż wyświetlany jako pierwszy na karcie dysku i panelach. Zostaw puste, aby użyć / lub montażu z największą ilością wolnego miejsca.",
+    "defaultMountPlaceholder": "/share/ZFS25_DATA",
     "monitoredMountsLabel": "Własne ścieżki monitorowane",
     "monitoredMountsDesc": "Dodaj ścieżki, które nie są udostępniane jako osobne punkty montowania, w tym ścieżki Home Assistant zamontowane przez bind, takie jak /config.",
     "monitoredMountPathPlaceholder": "Ścieżka (/config, /mnt/data)",
@@ -465,6 +468,9 @@
       },
       "monitoredMounts": {
         "label": "Monitorowane ścieżki"
+      },
+      "defaultMount": {
+        "label": "Główny montaż"
       },
       "showPanel": {
         "label": "Pokaż panel metryk w terminalach"

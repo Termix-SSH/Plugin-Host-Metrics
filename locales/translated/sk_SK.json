@@ -329,6 +329,9 @@
     "metricsIntervalS": "Interval metrík (s)",
     "metricsIntervalDesc2": "Sekundy medzi snímkami metrík",
     "excludedMountsLabel": "Vylúčené pripojenia",
+    "defaultMountLabel": "Hlavný mount",
+    "defaultMountDesc": "Mount, ktorý sa zobrazí ako prvý na karte disku a v paneloch. Nechajte prázdne, aby sa použil / alebo najväčší dostupný mount.",
+    "defaultMountPlaceholder": "/share/ZFS25_DATA",
     "monitoredMountsLabel": "Vlastné monitorované cesty",
     "monitoredMountsDesc": "Pridajte cesty, ktoré nie sú vystavené ako samostatné pripojenia, vrátane ciest Home Assistant pripojených cez bind, ako napr. /config.",
     "monitoredMountPathPlaceholder": "Cesta (/config, /mnt/data)",
@@ -465,6 +468,9 @@
       },
       "monitoredMounts": {
         "label": "Monitorované cesty"
+      },
+      "defaultMount": {
+        "label": "Hlavný mount"
       },
       "showPanel": {
         "label": "Zobraziť panel metrík v termináloch"

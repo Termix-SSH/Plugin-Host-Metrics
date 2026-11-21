@@ -31,3 +31,15 @@ describe("swap layout", () => {
     ).toEqual(["cpu", "memory"]);
   });
 });
+
+describe("defaultMount setting", () => {
+  it("reads a trimmed path and drops empty values", () => {
+    expect(
+      readHostMetricsSettings({ defaultMount: " /data " }).defaultMount,
+    ).toBe("/data");
+    expect(
+      readHostMetricsSettings({ defaultMount: "" }).defaultMount,
+    ).toBeNull();
+    expect(readHostMetricsSettings({}).defaultMount).toBeNull();
+  });
+});

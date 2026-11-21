@@ -329,6 +329,9 @@
     "metricsIntervalS": "Інтервал метрик (с)",
     "metricsIntervalDesc2": "Секунди між знімками метрик",
     "excludedMountsLabel": "Виключені точки монтування",
+    "defaultMountLabel": "Основний монтування",
+    "defaultMountDesc": "Монтування, яке спочатку показують картка диска та панелі. Залиште порожнім, щоб використовувати / або найменш заповнене монтування.",
+    "defaultMountPlaceholder": "/share/ZFS25_DATA",
     "monitoredMountsLabel": "Власні моніторені шляхи",
     "monitoredMountsDesc": "Додайте шляхи, які не відображаються як окремі точки монтування, включаючи шляхи Home Assistant, такі як /config.",
     "monitoredMountPathPlaceholder": "Шлях (/config, /mnt/data)",
@@ -465,6 +468,9 @@
       },
       "monitoredMounts": {
         "label": "Шляхи для моніторингу"
+      },
+      "defaultMount": {
+        "label": "Основний монтування"
       },
       "showPanel": {
         "label": "Показувати панель метрик у терміналах"

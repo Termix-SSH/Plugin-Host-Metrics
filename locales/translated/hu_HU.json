@@ -327,6 +327,9 @@
     "metricsIntervalS": "Metrika-intervallum (mp)",
     "metricsIntervalDesc2": "Másodpercek a metrika-snapshotelemek között",
     "excludedMountsLabel": "Kizárt csatolási pontok",
+    "defaultMountLabel": "Fő csatolási pont",
+    "defaultMountDesc": "A csatolási pont, amelyet a lemez kártya és a vezérlőpultok először megjelenítenek. Hagyja üresen, ha a / vagy a legteljesebb csatolási pontot szeretné használni.",
+    "defaultMountPlaceholder": "/share/ZFS25_DATA",
     "monitoredMountsLabel": "Egyéni monitorozott elérési utak",
     "monitoredMountsDesc": "Adjon hozzá olyan elérési utakat, amelyek nem külön csatolásként jelennek meg, beleértve a Home Assistant bind-csatolt elérési utait, például a /config-ot.",
     "monitoredMountPathPlaceholder": "Elérési út (/config, /mnt/data)",
@@ -463,6 +466,9 @@
       },
       "monitoredMounts": {
         "label": "Figyelt elérési utak"
+      },
+      "defaultMount": {
+        "label": "Fő csatolási pont"
       },
       "showPanel": {
         "label": "Mérőpanel megjelenítése a terminálokban"

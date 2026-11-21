@@ -326,6 +326,9 @@
     "metricsIntervalS": "Khoảng thời gian chỉ số (giây)",
     "metricsIntervalDesc2": "Số giây giữa các bản chụp chỉ số",
     "excludedMountsLabel": "Điểm gắn bị loại trừ",
+    "defaultMountLabel": "Điểm gắn chính",
+    "defaultMountDesc": "Điểm gắn được hiển thị đầu tiên trên thẻ ổ đĩa và bảng điều khiển. Để trống để sử dụng / hoặc điểm gắn có nhiều dung lượng trống nhất.",
+    "defaultMountPlaceholder": "/share/ZFS25_DATA",
     "monitoredMountsLabel": "Đường dẫn được giám sát tùy chỉnh",
     "monitoredMountsDesc": "Thêm các đường dẫn không được hiển thị dưới dạng điểm gắn riêng biệt, bao gồm các đường dẫn Home Assistant được gắn liên kết như /config.",
     "monitoredMountPathPlaceholder": "Đường dẫn (/config, /mnt/data)",
@@ -462,6 +465,9 @@
       },
       "monitoredMounts": {
         "label": "Đường dẫn được giám sát"
+      },
+      "defaultMount": {
+        "label": "Điểm gắn chính"
       },
       "showPanel": {
         "label": "Hiển thị bảng chỉ số trong terminal"

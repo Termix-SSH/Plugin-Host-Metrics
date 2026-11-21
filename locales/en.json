@@ -327,6 +327,9 @@
     "metricsIntervalS": "Metrics Interval (s)",
     "metricsIntervalDesc2": "Seconds between metric snapshots",
     "excludedMountsLabel": "Excluded Mounts",
+    "defaultMountLabel": "Main mount",
+    "defaultMountDesc": "The mount the disk card and dashboards show first. Leave empty to use / or the fullest mount.",
+    "defaultMountPlaceholder": "/share/ZFS25_DATA",
     "monitoredMountsLabel": "Custom monitored paths",
     "monitoredMountsDesc": "Add paths that are not exposed as separate mounts, including bind-mounted Home Assistant paths such as /config.",
     "monitoredMountPathPlaceholder": "Path (/config, /mnt/data)",
@@ -463,6 +466,9 @@
       },
       "monitoredMounts": {
         "label": "Monitored paths"
+      },
+      "defaultMount": {
+        "label": "Main mount"
       },
       "showPanel": {
         "label": "Show metrics panel in terminals"

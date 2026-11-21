@@ -327,6 +327,9 @@
     "metricsIntervalS": "Metrikintervall (s)",
     "metricsIntervalDesc2": "Sekunder mellan metrikfoton",
     "excludedMountsLabel": "Exkluderade monteringar",
+    "defaultMountLabel": "Huvudmontering",
+    "defaultMountDesc": "Den montering som diskkortet och instrumentpanelerna visar först. Lämna tomt för att använda / eller den montering med mest ledigt utrymme.",
+    "defaultMountPlaceholder": "/share/ZFS25_DATA",
     "monitoredMountsLabel": "Anpassade övervakade sökvägar",
     "monitoredMountsDesc": "Lägg till sökvägar som inte exponeras som separata monteringar, inklusive bind-monterade sökvägar för Home Assistant som /config.",
     "monitoredMountPathPlaceholder": "Sökväg (/config, /mnt/data)",
@@ -463,6 +466,9 @@
       },
       "monitoredMounts": {
         "label": "Övervakade sökvägar"
+      },
+      "defaultMount": {
+        "label": "Huvudmontering"
       },
       "showPanel": {
         "label": "Visa mätvärdespanel i terminaler"

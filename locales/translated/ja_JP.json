@@ -326,6 +326,9 @@
     "metricsIntervalS": "メトリクス間隔 (秒)",
     "metricsIntervalDesc2": "メトリクススナップショット間の秒数",
     "excludedMountsLabel": "除外するマウント",
+    "defaultMountLabel": "メインマウント",
+    "defaultMountDesc": "ディスクカードとダッシュボードで最初に表示されるマウントです。空欄のままにすると、/ または最も空き容量が多いマウントが使用されます。",
+    "defaultMountPlaceholder": "/share/ZFS25_DATA",
     "monitoredMountsLabel": "監視対象のカスタムパス",
     "monitoredMountsDesc": "個別のマウントとして公開されていないパス、または /config などの Home Assistant のバインドマウントパスを追加します。",
     "monitoredMountPathPlaceholder": "パス (/config, /mnt/data)",
@@ -462,6 +465,9 @@
       },
       "monitoredMounts": {
         "label": "監視対象パス"
+      },
+      "defaultMount": {
+        "label": "メインマウント"
       },
       "showPanel": {
         "label": "ターミナルでメトリクスパネルを表示"

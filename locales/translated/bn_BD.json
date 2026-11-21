@@ -327,6 +327,9 @@
     "metricsIntervalS": "মেট্রিক্স ইন্টারভাল (সেকেন্ড)",
     "metricsIntervalDesc2": "মেট্রিক্স স্ন্যাপশটের মধ্যে সেকেন্ড",
     "excludedMountsLabel": "বর্জিত মাউন্ট",
+    "defaultMountLabel": "প্রধান মাউন্ট",
+    "defaultMountDesc": "ডিস্ক কার্ড এবং ড্যাশবোর্ড প্রথমে যে মাউন্টটি দেখায়। / বা সবচেয়ে বেশি ফাঁকা জায়গাযুক্ত মাউন্ট ব্যবহার করতে চাইলে এটি খালি রাখুন।",
+    "defaultMountPlaceholder": "/share/ZFS25_DATA",
     "monitoredMountsLabel": "কাস্টম পর্যবেক্ষিত পাথ",
     "monitoredMountsDesc": "সেপারেট মাউন্ট হিসেবে প্রদর্শিত না হওয়া পাথ যোগ করুন, যার মধ্যে /config এর মতো Home Assistant-এর বাইন্ড-মাউন্টেড পাথ অন্তর্ভুক্ত।",
     "monitoredMountPathPlaceholder": "পাথ (/config, /mnt/data)",
@@ -463,6 +466,9 @@
       },
       "monitoredMounts": {
         "label": "নিরীক্ষিত পথ"
+      },
+      "defaultMount": {
+        "label": "প্রধান মাউন্ট"
       },
       "showPanel": {
         "label": "টার্মিনালে মেট্রিক্স প্যানেল দেখান"

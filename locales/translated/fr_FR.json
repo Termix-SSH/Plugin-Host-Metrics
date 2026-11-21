@@ -328,6 +328,9 @@
     "metricsIntervalS": "Intervalle des métriques (s)",
     "metricsIntervalDesc2": "Secondes entre chaque instantané de métriques",
     "excludedMountsLabel": "Points de montage exclus",
+    "defaultMountLabel": "Montage principal",
+    "defaultMountDesc": "Le montage affiché en premier sur la carte disque et les tableaux de bord. Laissez vide pour utiliser / ou le montage le moins rempli.",
+    "defaultMountPlaceholder": "/share/ZFS25_DATA",
     "monitoredMountsLabel": "Chemins surveillés personnalisés",
     "monitoredMountsDesc": "Ajoutez des chemins qui ne sont pas exposés en tant que points de montage séparés, y compris les chemins montés par liaison de Home Assistant tels que /config.",
     "monitoredMountPathPlaceholder": "Chemin (/config, /mnt/data)",
@@ -464,6 +467,9 @@
       },
       "monitoredMounts": {
         "label": "Chemins surveillés"
+      },
+      "defaultMount": {
+        "label": "Montage principal"
       },
       "showPanel": {
         "label": "Afficher le panneau de métriques dans les terminaux"

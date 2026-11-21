@@ -327,6 +327,9 @@
     "metricsIntervalS": "Meetrikate intervall (s)",
     "metricsIntervalDesc2": "Sekundeid meetrikate hetktahvlite vahel",
     "excludedMountsLabel": "Välistatud mnt-punktid",
+    "defaultMountLabel": "Põhimonteerimiskoha",
+    "defaultMountDesc": "Monteerimiskoht, mida kettakaart ja armatuurlaud näitavad esimesena. Jäta tühjaks, et kasutada / või kõige rohkem vaba ruumi omavat monteerimiskohta.",
+    "defaultMountPlaceholder": "/share/ZFS25_DATA",
     "monitoredMountsLabel": "Kohandatud jälgitavad teed",
     "monitoredMountsDesc": "Lisa teed, mida ei kuvata eraldi mnt-punktidega, sealhulgas Home Assistanti sidumismnt-punktid nagu /config.",
     "monitoredMountPathPlaceholder": "Tee (/config, /mnt/data)",
@@ -463,6 +466,9 @@
       },
       "monitoredMounts": {
         "label": "Monitooritavad asukohad"
+      },
+      "defaultMount": {
+        "label": "Põhimonteerimiskoht"
       },
       "showPanel": {
         "label": "Kuva mõõdikute paneel terminalides"

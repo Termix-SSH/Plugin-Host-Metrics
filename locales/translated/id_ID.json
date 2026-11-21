@@ -326,6 +326,9 @@
     "metricsIntervalS": "Interval Metrik (dtk)",
     "metricsIntervalDesc2": "Detik antara setiap snapshot metrik",
     "excludedMountsLabel": "Mount yang Dikecualikan",
+    "defaultMountLabel": "Mount utama",
+    "defaultMountDesc": "Mount yang ditampilkan pertama kali pada kartu disk dan dasbor. Kosongkan untuk menggunakan / atau mount dengan ruang tersisa terbanyak.",
+    "defaultMountPlaceholder": "/share/ZFS25_DATA",
     "monitoredMountsLabel": "Path yang dipantau secara kustom",
     "monitoredMountsDesc": "Tambahkan path yang tidak terpapar sebagai mount terpisah, termasuk path Home Assistant yang di-bind-mount seperti /config.",
     "monitoredMountPathPlaceholder": "Path (/config, /mnt/data)",
@@ -462,6 +465,9 @@
       },
       "monitoredMounts": {
         "label": "Path yang dipantau"
+      },
+      "defaultMount": {
+        "label": "Mount utama"
       },
       "showPanel": {
         "label": "Tampilkan panel metrik di terminal"

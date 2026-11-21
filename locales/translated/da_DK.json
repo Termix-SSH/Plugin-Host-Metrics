@@ -327,6 +327,9 @@
     "metricsIntervalS": "Metrikinterval (s)",
     "metricsIntervalDesc2": "Sekunder mellem metrik-snapshots",
     "excludedMountsLabel": "Udelukkede mountpunkter",
+    "defaultMountLabel": "Hovedmontering",
+    "defaultMountDesc": "Den montering, som diskkortet og dashboards viser først. Lad være tom for at bruge / eller den fyldigste montering.",
+    "defaultMountPlaceholder": "/share/ZFS25_DATA",
     "monitoredMountsLabel": "Brugerdefinerede overvågede stier",
     "monitoredMountsDesc": "Tilføj stier, der ikke vises som separate mountpunkter, herunder bind-mounted Home Assistant-stier som /config.",
     "monitoredMountPathPlaceholder": "Sti (/config, /mnt/data)",
@@ -463,6 +466,9 @@
       },
       "monitoredMounts": {
         "label": "Overvågede stier"
+      },
+      "defaultMount": {
+        "label": "Hovedmontering"
       },
       "showPanel": {
         "label": "Vis målepænel i terminaler"

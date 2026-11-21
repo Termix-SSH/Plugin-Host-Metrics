@@ -326,6 +326,9 @@
     "metricsIntervalS": "ช่วงเวลาเมตริก (วินาที)",
     "metricsIntervalDesc2": "วินาทีระหว่างแต่ละการบันทึกเมตริก",
     "excludedMountsLabel": "จุดติดตั้งที่กีดกัน",
+    "defaultMountLabel": "จุดติดตั้งหลัก",
+    "defaultMountDesc": "จุดติดตั้งที่แสดงเป็นอันดับแรกในการ์ดดิสก์และแดชบอร์ด หากเว้นว่างไว้ จะใช้ / หรือจุดติดตั้งที่มีพื้นที่ว่างมากที่สุด",
+    "defaultMountPlaceholder": "/share/ZFS25_DATA",
     "monitoredMountsLabel": "เส้นทางที่ตรวจสอบแบบกำหนดเอง",
     "monitoredMountsDesc": "เพิ่มเส้นทางที่ไม่ได้แสดงเป็นจุดติดตั้งแยกต่างหาก รวมถึงเส้นทาง Home Assistant ที่ติดตั้งแบบ bind เช่น /config",
     "monitoredMountPathPlaceholder": "เส้นทาง (/config, /mnt/data)",
@@ -462,6 +465,9 @@
       },
       "monitoredMounts": {
         "label": "เส้นทางที่ติดตาม"
+      },
+      "defaultMount": {
+        "label": "จุดติดตั้งหลัก"
       },
       "showPanel": {
         "label": "แสดงแผงเมตริกในเทอร์มินัล"

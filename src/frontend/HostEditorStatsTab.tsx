@@ -127,6 +127,20 @@ export function HostStatsTab({ form, updateForm }: HostEditorSectionProps) {
               />
             </SettingRow>
           )}
+          {settings.metricsEnabled && (
+            <SettingRow
+              label={t("hosts.defaultMountLabel")}
+              description={t("hosts.defaultMountDesc")}
+              defaultKey="defaultMount"
+            >
+              <Input
+                value={(bag?.defaultMount as string | undefined) ?? ""}
+                placeholder={t("hosts.defaultMountPlaceholder")}
+                onChange={(e) => patch({ defaultMount: e.target.value })}
+                className="w-56 h-7 text-xs font-mono"
+              />
+            </SettingRow>
+          )}
         </div>
       </SectionCard>
       <SectionCard

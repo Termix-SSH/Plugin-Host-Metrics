@@ -327,6 +327,9 @@
     "metricsIntervalS": "Metriekinterval (s)",
     "metricsIntervalDesc2": "Seconden tussen metriekmomentopnames",
     "excludedMountsLabel": "Uitgesloten mountpunten",
+    "defaultMountLabel": "Hoofdmount",
+    "defaultMountDesc": "De mount die als eerste wordt getoond op de schijfkaart en dashboards. Laat leeg om / of de mount met de meeste vrije ruimte te gebruiken.",
+    "defaultMountPlaceholder": "/share/ZFS25_DATA",
     "monitoredMountsLabel": "Aangepaste gemonitorde paden",
     "monitoredMountsDesc": "Voeg paden toe die niet als aparte mountpunten worden weergegeven, inclusief bind-mounted Home Assistant-paden zoals /config.",
     "monitoredMountPathPlaceholder": "Pad (/config, /mnt/data)",
@@ -463,6 +466,9 @@
       },
       "monitoredMounts": {
         "label": "Gemonitorde paden"
+      },
+      "defaultMount": {
+        "label": "Hoofdmount"
       },
       "showPanel": {
         "label": "Toon het metriekevenementenpaneel in terminals"

@@ -1,7 +1,7 @@
 {
   "id": "host-metrics",
   "name": "Host Metrics",
-  "version": "1.4.1",
+  "version": "1.5.0",
   "description": "Live CPU, memory, disk, network and GPU stats, plus tools to manage your hosts.",
   "author": {
     "name": "Termix"
@@ -287,6 +287,12 @@
             "key": "monitoredMounts",
             "type": "json",
             "labelKey": "settings.host.monitoredMounts.label",
+            "hidden": true
+          },
+          {
+            "key": "defaultMount",
+            "type": "string",
+            "labelKey": "settings.host.defaultMount.label",
             "hidden": true
           },
           {

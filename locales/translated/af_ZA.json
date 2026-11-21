@@ -327,6 +327,9 @@
     "metricsIntervalS": "Metriekinterval (s)",
     "metricsIntervalDesc2": "Sekondes tussen metriekskoppe",
     "excludedMountsLabel": "Uitgesluitte monteringpunte",
+    "defaultMountLabel": "Hoofmont",
+    "defaultMountDesc": "Die montpunt wat die skyfkaart en dashboards eerste wys. Laat leeg om / of die volste montpunt te gebruik.",
+    "defaultMountPlaceholder": "/share/ZFS25_DATA",
     "monitoredMountsLabel": "Aangepaste gemonitorde paaie",
     "monitoredMountsDesc": "Voeg paaie by wat nie as aparte monteringpunte blootgestel word nie, insluitend bind-gemonteerde Home Assistant-paaie soos /config.",
     "monitoredMountPathPlaceholder": "Pad (/config, /mnt/data)",
@@ -463,6 +466,9 @@
       },
       "monitoredMounts": {
         "label": "Gemonitorde paaie"
+      },
+      "defaultMount": {
+        "label": "Hoofmont"
       },
       "showPanel": {
         "label": "Wys metriekepaneel in terminale"

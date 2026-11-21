@@ -327,6 +327,9 @@
     "metricsIntervalS": "मेट्रिक्स अंतराल (सेकंड)",
     "metricsIntervalDesc2": "मेट्रिक्स स्नैपशॉट के बीच सेकंड",
     "excludedMountsLabel": "बहिष्कृत माउंट",
+    "defaultMountLabel": "मुख्य माउंट",
+    "defaultMountDesc": "वह माउंट जो डिस्क कार्ड और डैशबोर्ड सबसे पहले दिखाते हैं। / या सबसे अधिक खाली जगह वाला माउंट उपयोग करने के लिए इसे खाली छोड़ दें।",
+    "defaultMountPlaceholder": "/share/ZFS25_DATA",
     "monitoredMountsLabel": "कस्टम निगरानी वाले पथ",
     "monitoredMountsDesc": "उन पथों को जोड़ें जो अलग-अलग माउंट के रूप में प्रदर्शित नहीं होते हैं, जिसमें बाइंड-माउंटेड Home Assistant पथ जैसे /config शामिल हैं।",
     "monitoredMountPathPlaceholder": "पथ (/config, /mnt/data)",
@@ -463,6 +466,9 @@
       },
       "monitoredMounts": {
         "label": "निगरानी वाले पथ"
+      },
+      "defaultMount": {
+        "label": "मुख्य माउंट"
       },
       "showPanel": {
         "label": "टर्मिनल में मेट्रिक्स पैनल दिखाएं"

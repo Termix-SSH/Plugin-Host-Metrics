@@ -328,6 +328,9 @@
     "metricsIntervalS": "Interval de mètriques (s)",
     "metricsIntervalDesc2": "Segons entre instantànies de mètriques",
     "excludedMountsLabel": "Muntatges exclosos",
+    "defaultMountLabel": "Muntatge principal",
+    "defaultMountDesc": "El muntatge que es mostra primer a la targeta de disc i als panells de control. Deixeu-lo buit per utilitzar / o el muntatge amb més espai lliure.",
+    "defaultMountPlaceholder": "/share/ZFS25_DATA",
     "monitoredMountsLabel": "Camins monitoritzats personalitzats",
     "monitoredMountsDesc": "Afegeix camins que no s'exposen com a muntatges separats, inclosos els camins de Home Assistant muntats per vinculació, com ara /config.",
     "monitoredMountPathPlaceholder": "Camí (/config, /mnt/data)",
@@ -464,6 +467,9 @@
       },
       "monitoredMounts": {
         "label": "Rutes supervisades"
+      },
+      "defaultMount": {
+        "label": "Muntatge principal"
       },
       "showPanel": {
         "label": "Mostrar el panell de mètriques als terminals"

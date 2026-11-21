@@ -326,6 +326,9 @@
     "metricsIntervalS": "指标间隔（秒）",
     "metricsIntervalDesc2": "指标快照之间的秒数",
     "excludedMountsLabel": "排除的挂载点",
+    "defaultMountLabel": "主挂载点",
+    "defaultMountDesc": "磁盘卡片和仪表板首先显示的挂载点。留空则使用 / 或空间最充足的挂载点。",
+    "defaultMountPlaceholder": "/share/ZFS25_DATA",
     "monitoredMountsLabel": "自定义监控路径",
     "monitoredMountsDesc": "添加未作为独立挂载点暴露的路径，包括 Home Assistant 的绑定挂载路径（如 /config）。",
     "monitoredMountPathPlaceholder": "路径（/config, /mnt/data）",
@@ -462,6 +465,9 @@
       },
       "monitoredMounts": {
         "label": "监控路径"
+      },
+      "defaultMount": {
+        "label": "主挂载点"
       },
       "showPanel": {
         "label": "在终端中显示指标面板"

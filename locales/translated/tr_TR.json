@@ -327,6 +327,9 @@
     "metricsIntervalS": "Metrik Aralığı (s)",
     "metricsIntervalDesc2": "Metrik anlık görüntüleri arasındaki saniye sayısı",
     "excludedMountsLabel": "Hariç Tutulan Bağlantı Noktaları",
+    "defaultMountLabel": "Ana birim",
+    "defaultMountDesc": "Disk kartı ve panellerin ilk gösterdiği birim. / veya en dolu birimi kullanmak için boş bırakın.",
+    "defaultMountPlaceholder": "/share/ZFS25_DATA",
     "monitoredMountsLabel": "Özel izlenen yollar",
     "monitoredMountsDesc": "/config gibi ayrı bağlantı noktaları olarak gösterilmeyen yolları, bağlanmış Home Assistant yollarını da içerecek şekilde ekleyin.",
     "monitoredMountPathPlaceholder": "Yol (/config, /mnt/data)",
@@ -463,6 +466,9 @@
       },
       "monitoredMounts": {
         "label": "İzlenen yollar"
+      },
+      "defaultMount": {
+        "label": "Ana birim"
       },
       "showPanel": {
         "label": "Terminalde metrikler panelini göster"

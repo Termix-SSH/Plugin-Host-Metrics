@@ -329,9 +329,12 @@ export class MetricsPoller {
     this.initialRequested.add(host.id);
     void this.state.initialLimiter
       .run(async () => {
-        let status: PluginHostStatusEntry | null =
-          await this.ctx.hosts.status.get(host.id);
-        if (!status) status = await this.ctx.hosts.status.check(host.id);
+        // Background work has no request's actor; the owner may check.
+        const status = await this.ctx.asUser(host.userId, async () => {
+          const known: PluginHostStatusEntry | null =
+            await this.ctx.hosts.status.get(host.id);
+          return known ?? (await this.ctx.hosts.status.check(host.id));
+        });
         if (!canStartInitialMetrics(status?.status, this.hasViewers(host.id))) {
           return;
         }

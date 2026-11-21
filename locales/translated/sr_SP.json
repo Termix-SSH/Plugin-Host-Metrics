@@ -328,6 +328,9 @@
     "metricsIntervalS": "Интервал метрика (с)",
     "metricsIntervalDesc2": "Секунде између снимака метрика",
     "excludedMountsLabel": "Искључене мапе",
+    "defaultMountLabel": "Главна тачка монтирања",
+    "defaultMountDesc": "Тачка монтирања коју прво приказују картица диска и таблоси. Оставите празно да би се користило / или тачка монтирања са највише слободног простора.",
+    "defaultMountPlaceholder": "/share/ZFS25_DATA",
     "monitoredMountsLabel": "Прилагођене путање за праћење",
     "monitoredMountsDesc": "Додај путање које нису изложене као посебне мапе, укључујући путање Home Assistant-а попут /config.",
     "monitoredMountPathPlaceholder": "Путања (/config, /mnt/data)",
@@ -464,6 +467,9 @@
       },
       "monitoredMounts": {
         "label": "Праћене путање"
+      },
+      "defaultMount": {
+        "label": "Главна тачка монтирања"
       },
       "showPanel": {
         "label": "Прикажи панел метрика у терминалима"

@@ -101,6 +101,8 @@ export interface HostMetricsSettings {
   excludedMounts: string[];
   /** Extra paths to monitor, including paths inside bind-mounted containers. */
   monitoredMounts: Array<{ path: string; label?: string }>;
+  /** Mount the disk widget shows first; null picks / or the fullest one. */
+  defaultMount: string | null;
 }
 
 const DEFAULT_ENABLED_WIDGETS: WidgetType[] = [
@@ -123,6 +125,7 @@ const DEFAULT_HOST_METRICS_SETTINGS: HostMetricsSettings = {
   enabledWidgets: DEFAULT_ENABLED_WIDGETS,
   excludedMounts: [],
   monitoredMounts: [],
+  defaultMount: null,
 };
 
 /** Host settings with defaults filled in and bad values dropped. */
@@ -158,5 +161,9 @@ export function readHostMetricsSettings(
             typeof (mount as { path?: unknown }).path === "string",
         )
       : [],
+    defaultMount:
+      typeof bag.defaultMount === "string" && bag.defaultMount.trim()
+        ? bag.defaultMount.trim()
+        : null,
   };
 }

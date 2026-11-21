@@ -274,19 +274,61 @@ async function collectWindowsDiskMetrics(
   }
 }
 
-export async function collectDiskMetrics(
-  client: Client,
-  excludedMounts?: string[] | null,
-  monitoredMounts?: MonitoredMount[] | null,
-  platform?: HostPlatform,
-): Promise<{
+type DiskMetrics = {
   percent: number | null;
   usedHuman: string | null;
   totalHuman: string | null;
   availableHuman: string | null;
   mount: string | null;
   filesystems: DiskFilesystem[];
-}> {
+};
+
+/** Makes the chosen mount the primary one when the host still has it. */
+export function applyDefaultMount(
+  metrics: DiskMetrics,
+  defaultMount?: string | null,
+): DiskMetrics {
+  const wanted = defaultMount?.trim();
+  if (!wanted) return metrics;
+  const match = metrics.filesystems.find(
+    (fs) =>
+      fs.mount === wanted || fs.mount.toLowerCase() === wanted.toLowerCase(),
+  );
+  if (!match) return metrics;
+  return {
+    ...metrics,
+    percent: match.percent ?? null,
+    usedHuman: match.usedHuman ?? null,
+    totalHuman: match.totalHuman ?? null,
+    availableHuman: match.availableHuman ?? null,
+    mount: match.mount,
+  };
+}
+
+export async function collectDiskMetrics(
+  client: Client,
+  excludedMounts?: string[] | null,
+  monitoredMounts?: MonitoredMount[] | null,
+  platform?: HostPlatform,
+  defaultMount?: string | null,
+): Promise<DiskMetrics> {
+  return applyDefaultMount(
+    await collectPlatformDisk(
+      client,
+      excludedMounts,
+      monitoredMounts,
+      platform,
+    ),
+    defaultMount,
+  );
+}
+
+async function collectPlatformDisk(
+  client: Client,
+  excludedMounts?: string[] | null,
+  monitoredMounts?: MonitoredMount[] | null,
+  platform?: HostPlatform,
+): Promise<DiskMetrics> {
   if (platform === "windows") {
     return collectWindowsDiskMetrics(client, excludedMounts);
   }

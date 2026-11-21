@@ -326,6 +326,9 @@
     "metricsIntervalS": "메트릭스 간격 (초)",
     "metricsIntervalDesc2": "메트릭스 스냅샷 간 초 단위",
     "excludedMountsLabel": "제외된 마운트",
+    "defaultMountLabel": "기본 마운트",
+    "defaultMountDesc": "디스크 카드와 대시보드에서 먼저 표시되는 마운트입니다. 비워두면 / 또는 가장 여유 공간이 많은 마운트를 사용합니다.",
+    "defaultMountPlaceholder": "/share/ZFS25_DATA",
     "monitoredMountsLabel": "사용자 정의 모니터링 경로",
     "monitoredMountsDesc": "별도 마운트로 표시되지 않는 경로를 추가합니다. /config와 같은 바인드 마운트된 Home Assistant 경로도 포함됩니다.",
     "monitoredMountPathPlaceholder": "경로 (/config, /mnt/data)",
@@ -462,6 +465,9 @@
       },
       "monitoredMounts": {
         "label": "모니터링 경로"
+      },
+      "defaultMount": {
+        "label": "기본 마운트"
       },
       "showPanel": {
         "label": "터미널에서 메트릭 패널 표시"

@@ -4,6 +4,7 @@ import {
   parseWindowsDiskJson,
   parseDarwinMountTypes,
   parseDarwinDfRows,
+  applyDefaultMount,
 } from "../../../src/backend/widgets/disk-collector.js";
 
 // The Linux df parsing is tested in the SDK, where it lives now.
@@ -110,5 +111,41 @@ describe("parseWindowsDiskJson", () => {
   it("returns an empty array for blank or invalid output", () => {
     expect(parseWindowsDiskJson("")).toEqual([]);
     expect(parseWindowsDiskJson("not json")).toEqual([]);
+  });
+});
+
+describe("applyDefaultMount", () => {
+  const fs = (mount: string, percent: number) => ({
+    filesystem: mount,
+    type: "ext4",
+    mount,
+    percent,
+    usedHuman: `${percent}G`,
+    totalHuman: "100G",
+    availableHuman: `${100 - percent}G`,
+    usedBytes: percent,
+    totalBytes: 100,
+    availableBytes: 100 - percent,
+  });
+  const metrics = {
+    percent: 94,
+    usedHuman: "94G",
+    totalHuman: "100G",
+    availableHuman: "6G",
+    mount: "/mnt/ext",
+    filesystems: [fs("/mnt/ext", 94), fs("/share/data", 23)],
+  };
+
+  it("makes the chosen mount the primary one", () => {
+    const result = applyDefaultMount(metrics, "/share/data");
+    expect(result.mount).toBe("/share/data");
+    expect(result.percent).toBe(23);
+    expect(result.filesystems).toHaveLength(2);
+  });
+
+  it("keeps the picked mount when the chosen one is gone or empty", () => {
+    expect(applyDefaultMount(metrics, "/missing").mount).toBe("/mnt/ext");
+    expect(applyDefaultMount(metrics, "  ").mount).toBe("/mnt/ext");
+    expect(applyDefaultMount(metrics, null).mount).toBe("/mnt/ext");
   });
 });

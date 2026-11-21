@@ -328,6 +328,9 @@
     "metricsIntervalS": "Metriķu intervāls (s)",
     "metricsIntervalDesc2": "Sekundes starp metriķu uzņēmumiem",
     "excludedMountsLabel": "Izslēgtās pievienošanas",
+    "defaultMountLabel": "Galvenais pievienojums",
+    "defaultMountDesc": "Pievienojums, ko disku karšu un panelu skats rāda pirmais. Atstājiet tukšu, lai izmantotu / vai pilnāk pievienoto disku.",
+    "defaultMountPlaceholder": "/share/ZFS25_DATA",
     "monitoredMountsLabel": "Pielāgoti uzraudzītie ceļi",
     "monitoredMountsDesc": "Pievienojiet ceļus, kas nav izveidoti kā atsevišķas pievienošanas, tostarp Home Assistant ceļi, piemēram, /config.",
     "monitoredMountPathPlaceholder": "Ceļš (/config, /mnt/data)",
@@ -464,6 +467,9 @@
       },
       "monitoredMounts": {
         "label": "Pārraugāmie ceļi"
+      },
+      "defaultMount": {
+        "label": "Galvenais pievienojums"
       },
       "showPanel": {
         "label": "Rādīt metriku paneli termināļos"

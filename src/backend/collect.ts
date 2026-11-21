@@ -94,6 +94,7 @@ export async function collectMetrics(
     enabledWidgets?: string[];
     excludedMounts: string[];
     monitoredMounts: Array<{ path: string; label?: string }>;
+    defaultMount?: string | null;
   },
   onAuthenticated?: () => void,
 ): Promise<CollectedMetrics> {
@@ -150,6 +151,7 @@ export async function collectMetrics(
             mounts.excludedMounts,
             mounts.monitoredMounts,
             platform,
+            mounts.defaultMount,
           ),
           network: await collectNetworkMetrics(
             client,

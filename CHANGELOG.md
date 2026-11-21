@@ -1,5 +1,16 @@
 # Changelog
 
+## 1.5.0
+
+### Added
+
+- A Main mount setting per host that picks which mount the disk card and dashboards show first
+
+### Fixed
+
+- The first sample after Termix starts no longer fails with "probeTargets needs an acting user"
+- Shared hosts with your own folder credentials show metrics instead of saying 'none' authentication is not supported
+
 ## 1.4.1
 
 ### Added

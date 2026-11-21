@@ -328,6 +328,9 @@
     "metricsIntervalS": "Intervalo de Métricas (s)",
     "metricsIntervalDesc2": "Segundos entre capturas de métricas",
     "excludedMountsLabel": "Montagens Excluídas",
+    "defaultMountLabel": "Montagem principal",
+    "defaultMountDesc": "A montagem exibida primeiro no cartão de disco e nos painéis. Deixe vazio para usar / ou a montagem com mais espaço livre.",
+    "defaultMountPlaceholder": "/share/ZFS25_DATA",
     "monitoredMountsLabel": "Caminhos monitorados personalizados",
     "monitoredMountsDesc": "Adicione caminhos que não aparecem como montagens separadas, incluindo caminhos montados do Home Assistant, como /config.",
     "monitoredMountPathPlaceholder": "Caminho (/config, /mnt/data)",
@@ -464,6 +467,9 @@
       },
       "monitoredMounts": {
         "label": "Caminhos monitorados"
+      },
+      "defaultMount": {
+        "label": "Montagem principal"
       },
       "showPanel": {
         "label": "Mostrar painel de métricas nos terminais"

@@ -94,6 +94,23 @@ describe("MetricsPoller", () => {
     poller.dispose();
   });
 
+  it("checks a host's status as its owner before the first sample", async () => {
+    collectMetrics.mockResolvedValue(sample);
+    const { fake, poller, samples } = setup();
+    const status = fake.ctx.hosts.status;
+    vi.spyOn(status, "get").mockResolvedValue(null);
+    const check = vi
+      .spyOn(status, "check")
+      .mockResolvedValue({ status: "online", lastChecked: "now" } as never);
+    const asUser = vi.spyOn(fake.ctx, "asUser");
+    poller.registerViewer(7, "viewer-owner", "user-1");
+    await flush();
+    expect(asUser).toHaveBeenCalledWith("user-1", expect.any(Function));
+    expect(check).toHaveBeenCalledWith(7);
+    expect(samples).toHaveLength(1);
+    poller.dispose();
+  });
+
   it("polls outside the request that registered the viewer", async () => {
     // Stands in for the plugin process's request token store.
     const request = new AsyncLocalStorage<string>();

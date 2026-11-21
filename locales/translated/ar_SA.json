@@ -331,6 +331,9 @@
     "metricsIntervalS": "الفاصل الزمني للمقاييس (ثانية)",
     "metricsIntervalDesc2": "الثواني بين لقطات المقاييس",
     "excludedMountsLabel": "النقاط المرفقة المستبعدة",
+    "defaultMountLabel": "نقطة التركيب الرئيسية",
+    "defaultMountDesc": "نقطة التركيب التي تظهر أولاً في بطاقة القرص ولوحات المعلومات. اتركها فارغة لاستخدام / أو نقطة التركيب الأكثر سعة.",
+    "defaultMountPlaceholder": "/share/ZFS25_DATA",
     "monitoredMountsLabel": "المسارات المراقبة المخصصة",
     "monitoredMountsDesc": "أضف مسارات غير معرّضة كنقاط ربط منفصلة، بما في ذلك مسارات Home Assistant المرتبطة مثل /config.",
     "monitoredMountPathPlaceholder": "المسار (/config, /mnt/data)",
@@ -467,6 +470,9 @@
       },
       "monitoredMounts": {
         "label": "المسارات المراقبة"
+      },
+      "defaultMount": {
+        "label": "نقطة التركيب الرئيسية"
       },
       "showPanel": {
         "label": "إظهار لوحة المقاييس في نوافذ الطرفية"

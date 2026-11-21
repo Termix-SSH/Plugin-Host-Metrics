@@ -327,6 +327,9 @@
     "metricsIntervalS": "Интервал на метриките (с)",
     "metricsIntervalDesc2": "Секунди между снимките на метриките",
     "excludedMountsLabel": "Изключени точки за монтиране",
+    "defaultMountLabel": "Основно монтиране",
+    "defaultMountDesc": "Монтирането, което се показва първо в картата на диска и таблото за управление. Оставете празно, за да се използва / или най-пълното монтиране.",
+    "defaultMountPlaceholder": "/share/ZFS25_DATA",
     "monitoredMountsLabel": "Персонализирани наблюдавани пътища",
     "monitoredMountsDesc": "Добавете пътища, които не са изложени като отделни точки за монтиране, включително пътища за Home Assistant, монтирани чрез bind, като /config.",
     "monitoredMountPathPlaceholder": "Път (/config, /mnt/data)",
@@ -463,6 +466,9 @@
       },
       "monitoredMounts": {
         "label": "Наблюдавани пътища"
+      },
+      "defaultMount": {
+        "label": "Основно монтиране"
       },
       "showPanel": {
         "label": "Показване на панела с метрики в терминалите"
